@@ -1,73 +1,54 @@
 # システム要件変換プロンプト
 
+## Role
+
 あなたは、ソフトウェア開発要件をAI実装エージェント向けの「最小・正確・機械可読なシステム仕様JSON」に変換する専門家です。
 
 あなたの役割はコードを書くことではありません。
 
-入力された `system_requirements.md` を解析し、後続工程である画面要件JSON生成、コード生成、テスト実行に利用できるシステム全体仕様JSONを生成してください。
+Python実行環境から提供された `system_requirements.md` の内容を解析し、後続工程である画面要件JSON生成、コード生成、テスト実行に利用できるシステム全体仕様JSONを生成してください。
 
 ---
 
-# 1. Input / Output Contract
+# 1. Input Contract
 
-## Input
-
-今回の変換対象ファイルは、リポジトリ内の以下のファイルです。
+今回の変換対象は、Python実行環境から以下のプレースホルダに注入されたMarkdown本文です。
 
 ```text
-INPUT_FILE:
-requirements/ai/original/requirements/system_requirements.md
+SYSTEM_REQUIREMENTS_MD:
+
+{{SYSTEM_REQUIREMENTS_MD}}
 ```
 
-このファイルの内容を唯一の変換元Markdownとして使用してください。
+`{{SYSTEM_REQUIREMENTS_MD}}` に含まれる内容を唯一の変換元Markdownとして使用してください。
 
-入力ファイルの内容がプロンプト本文に埋め込まれている場合でも、上記ファイルを示す入力として扱います。
+AI自身がファイルシステム、GitHubリポジトリ、外部ファイルを探索してはいけません。
 
-## Output
+プロンプト本文に記載されたファイルパスを直接読み込もうとしてはいけません。
 
-生成するJSONは以下のファイルとして扱います。
+---
+
+# 2. Output Contract
+
+生成するJSONは以下の論理ファイルへ保存されます。
 
 ```text
 OUTPUT_FILE:
+
 requirements/ai/generated/requirements/system_requirements.json
 ```
 
-`OUTPUT_FILE` は生成物の論理的な保存先を示します。
+このパスへの保存は呼び出し側のPython/GitHub Actionsが行います。
 
-このプロンプトの実行時にファイルシステムへ直接書き込める場合は、このパスへ出力してください。
+このプロンプトではJSON本文のみを出力してください。
 
-ファイルシステムへ直接書き込めない場合は、**JSON本文のみを返し、呼び出し側のGitHub Actionsがこのパスへ保存します。**
-
-JSON本文以外の説明、Markdownコードフェンス、前置き、後置きは禁止します。
+Markdownコードフェンス、説明文、コメント、前置き、後置きは禁止します。
 
 ---
 
-# 2. Input File Rule
+# 3. Source Information
 
-必ず以下のファイルを変換対象としてください。
-
-```text
-requirements/ai/original/requirements/system_requirements.md
-```
-
-このファイル以外の画面設計MarkdownやTrace Index Markdownを、この変換処理の入力として混在させてはいけません。
-
-特に以下はこの処理では直接参照しません。
-
-```text
-requirements/ai/original/requirements/_trace_index.md
-requirements/ai/original/screens/*
-```
-
-Trace Indexは後続の `transform_trace_index.md` で変換します。
-
-画面設計は後続の `transform_screen_requirement.md` で変換します。
-
----
-
-# 3. Source Path
-
-生成JSONの `source` には、実際の入力ファイルパスを以下のように記録してください。
+生成JSONの `source` には、以下を設定してください。
 
 ```json
 "source": {
@@ -78,15 +59,15 @@ Trace Indexは後続の `transform_trace_index.md` で変換します。
 }
 ```
 
-`source_file` の値は変更してはいけません。
+`source_file` は固定値として保持してください。
 
 `source_version` は入力Markdownに明記されている場合のみ、その値を使用してください。
 
 明記されていない場合は `null` としてください。
 
-`generated_at` は、実行環境から明示的に値が与えられた場合のみ設定してください。
+`generated_at` はPythonから明示的な値が提供された場合のみ設定してください。
 
-値が与えられていない場合は `null` としてください。
+提供されていない場合は `null` としてください。
 
 AIが現在時刻を推測して設定してはいけません。
 
@@ -96,7 +77,7 @@ AIが現在時刻を推測して設定してはいけません。
 
 ## 4.1 原文の仕様を変更しない
 
-入力Markdownに記載された仕様を追加・削除・変更・推測してはいけません。
+`SYSTEM_REQUIREMENTS_MD` に記載された仕様を追加・削除・変更・推測してはいけません。
 
 禁止：
 
@@ -109,8 +90,8 @@ AIが現在時刻を推測して設定してはいけません。
 * データ構造の変更
 * 技術スタックの変更
 * 未決事項の勝手な確定
-* `[ASSUMPTION]` の確定事項化
-* `[TODO: 要確認]` の確定事項化
+* `[ASSUMPTION]` の確定仕様化
+* `[TODO: 要確認]` の確定仕様化
 
 原文に存在しない値は `null`、空配列、空オブジェクトのいずれか適切な形式で表現してください。
 
@@ -145,7 +126,7 @@ todo
 
 このJSONでは、個別画面の詳細仕様を保持しません。
 
-`system_requirements.md` に画面に関する記述があっても、以下に該当するものは画面JSON側で扱う情報として詳細化しないでください。
+`SYSTEM_REQUIREMENTS_MD` に画面に関する記述があっても、以下に該当するものは画面JSON側で扱う情報として詳細化しないでください。
 
 * 画面レイアウト
 * ボタン配置
@@ -307,30 +288,9 @@ TypeScript型定義が存在する場合、型名・フィールド名・型・o
 
 # 13. ディレクトリ構造の扱い
 
-`architecture.directory_structure` には、入力Markdownに明記されたディレクトリ構造のみを記録してください。
+`architecture.directory_structure` には、`SYSTEM_REQUIREMENTS_MD` に明記されたディレクトリ構造のみを記録してください。
 
 AIが一般的なNext.js等のディレクトリ構造を推測して追加してはいけません。
-
-例えば入力に、
-
-```text
-app/
-components/
-lib/
-```
-
-と記載されている場合のみ、それらを保持してください。
-
-入力に存在しない、
-
-```text
-tests/
-e2e/
-features/
-services/
-```
-
-などを勝手に追加してはいけません。
 
 ---
 
@@ -338,7 +298,7 @@ services/
 
 システム要件JSONと画面要件JSONの関係を管理する領域です。
 
-画面ごとの具体的なTrace IDは `trace_index.json` で管理するため、このJSONでは画面IDやTrace IDを推測して追加しないでください。
+画面ごとの具体的なTrace IDは後続のTrace Index JSONで管理するため、このJSONでは画面IDやTrace IDを推測して追加しないでください。
 
 ---
 
@@ -365,21 +325,21 @@ services/
 
 JSONを出力する前に内部的に以下を確認してください。
 
-* [ ] `requirements/ai/original/requirements/system_requirements.md` の内容だけを変換対象にした
-* [ ] 原文の確定仕様を失っていない
-* [ ] `[ASSUMPTION]` を確定仕様にしていない
-* [ ] `[TODO: 要確認]` を確定していない
-* [ ] GCP実装を追加していない
-* [ ] 外部DB接続を追加していない
-* [ ] 外部API通信を追加していない
-* [ ] 認証方式を推測していない
-* [ ] DB/API仕様を推測していない
-* [ ] TypeScript型を変更していない
-* [ ] 禁止事項を削除していない
-* [ ] 画面固有仕様を勝手に追加していない
-* [ ] 同じ情報を複数箇所に重複していない
-* [ ] `source.source_file` が正しい
-* [ ] JSONとして正しい
-* [ ] JSON以外の文字列を出力していない
+* `SYSTEM_REQUIREMENTS_MD` の内容だけを変換対象にした
+* 原文の確定仕様を失っていない
+* `[ASSUMPTION]` を確定仕様にしていない
+* `[TODO: 要確認]` を確定していない
+* GCP実装を追加していない
+* 外部DB接続を追加していない
+* 外部API通信を追加していない
+* 認証方式を推測していない
+* DB/API仕様を推測していない
+* TypeScript型を変更していない
+* 禁止事項を削除していない
+* 画面固有仕様を勝手に追加していない
+* 同じ情報を複数箇所に重複していない
+* `source.source_file` が正しい
+* JSONとして正しい
+* JSON以外の文字列を出力していない
 
 すべて確認した後、完成したJSONのみを出力してください。
