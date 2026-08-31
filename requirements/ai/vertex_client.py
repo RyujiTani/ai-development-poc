@@ -3,6 +3,10 @@ import os
 from google import genai
 from google.genai import types
 from typing import Optional
+import random
+import time
+
+from google.genai.errors import ClientError
 
 
 class VertexClient:
@@ -47,27 +51,63 @@ class VertexClient:
             ),
         )
 
-    def generate(self, prompt: str) -> str:
-        """
-        プロンプトをGeminiへ送信し、生成されたテキストを返す。
-        """
+    def generate(
+        self,
+        prompt: str,
+    ) -> str:
 
-        if not prompt.strip():
-            raise ValueError("Prompt must not be empty.")
+        max_retries = 5
+        base_delay_seconds = 10
 
-        response = self.client.models.generate_content(
-            model=self.model,
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                temperature=0,
-                candidate_count=1,
-                response_mime_type="application/json",
-            ),
+        for attempt in range(
+            max_retries + 1
+        ):
+            try:
+                response = self.client.models.generate_content(
+                    model=self.model,
+                    contents=prompt
+                )
+
+                return response.text
+
+            except ClientError as exc:
+
+                status_code = getattr(
+                    exc,
+                    "status_code",
+                    None,
+                )
+
+                if status_code != 429:
+                    raise
+
+                if attempt >= max_retries:
+                    raise
+
+                # 10, 20, 40, 80, 160秒程度
+                # ＋同時刻への再集中を避けるjitter
+                delay = (
+                    base_delay_seconds
+                    * (2 ** attempt)
+                    + random.uniform(0, 5)
+                )
+
+                print()
+                print(
+                    "Vertex AI returned 429 "
+                    "RESOURCE_EXHAUSTED."
+                )
+                print(
+                    f"Retrying in "
+                    f"{delay:.1f} seconds..."
+                )
+                print(
+                    f"Retry "
+                    f"{attempt + 1}/{max_retries}"
+                )
+
+                time.sleep(delay)
+
+        raise RuntimeError(
+            "Vertex AI generation failed."
         )
-
-        if not response.text:
-            raise RuntimeError(
-                "Vertex AI returned an empty response."
-            )
-
-        return response.text

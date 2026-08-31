@@ -188,7 +188,9 @@ def parse_generated_files(
     """
     Vertex AIのレスポンスから生成ファイルを取得する。
 
-    基本形式:
+    対応形式:
+
+    1. files配列形式
 
     {
       "files": [
@@ -199,8 +201,18 @@ def parse_generated_files(
       ]
     }
 
-    Vertex AIがJSON内のコード中に未エスケープの
-    ダブルクォートを返した場合は、ファイル単位で復旧する。
+    2. ファイルパスをキーにした辞書形式
+
+    {
+      "app/page.tsx": "...",
+      "components/Button.tsx": "..."
+    }
+
+    Vertex AIがJSONとして返した場合は、
+    まずJSONとして解析する。
+
+    JSONとして解析できない場合のみ、
+    壊れたJSONからの復旧を試みる。
     """
 
     if not response_text:
@@ -217,11 +229,42 @@ def parse_generated_files(
     try:
         parsed = extract_json(text)
 
+        # ----------------------------------------------------
+        # 1-1. files配列形式
+        # ----------------------------------------------------
+
         if isinstance(parsed, dict):
             files = parsed.get("files")
 
             if isinstance(files, list):
                 return normalize_generated_files(files)
+
+            # ------------------------------------------------
+            # 1-2. ファイルパスをキーにした辞書形式
+            # ------------------------------------------------
+
+            if parsed:
+                result: Dict[str, str] = {}
+
+                for path, content in parsed.items():
+
+                    if not isinstance(path, str):
+                        continue
+
+                    if content is None:
+                        content = ""
+
+                    if not isinstance(content, str):
+                        content = str(content)
+
+                    result[path.strip()] = content
+
+                if result:
+                    return result
+
+        # ----------------------------------------------------
+        # 1-3. files配列そのもの
+        # ----------------------------------------------------
 
         if isinstance(parsed, list):
             return normalize_generated_files(parsed)
@@ -241,7 +284,6 @@ def parse_generated_files(
     raise ValueError(
         "No generated files found in Vertex AI response."
     )
-
 
 def recover_generated_files(
     text: str,
@@ -682,6 +724,68 @@ def transform_all_screens(
 
 
 # ============================================================
+# Generated requirement validation
+# ============================================================
+
+def validate_generated_requirements() -> None:
+    """
+    生成された要件JSONに対して、
+    構造ValidationとSemantic Validationを実行する。
+
+    どちらか一方でも失敗した場合は、
+    実装処理へ進まず例外を発生させる。
+    """
+
+    print()
+    print("=" * 60)
+    print("Generated Requirements Validation")
+    print("=" * 60)
+
+    # --------------------------------------------------------
+    # Structural validation
+    # --------------------------------------------------------
+
+    print()
+    print("=== Structural Validation ===")
+    print()
+
+    from requirements.ai.validate_generated_requirements import (
+        main as validate_structure,
+    )
+
+    structural_result = validate_structure()
+
+    if structural_result != 0:
+        raise RuntimeError(
+            "Generated requirements structural validation failed."
+        )
+
+    # --------------------------------------------------------
+    # Semantic validation
+    # --------------------------------------------------------
+
+    print()
+    print("=== Semantic Validation ===")
+    print()
+
+    from requirements.ai.validate_generated_semantics import (
+        main as validate_semantics,
+    )
+
+    semantic_result = validate_semantics()
+
+    if semantic_result != 0:
+        raise RuntimeError(
+            "Generated requirements semantic validation failed."
+        )
+
+    print()
+    print("=" * 60)
+    print("All generated requirement validations passed.")
+    print("=" * 60)
+
+
+# ============================================================
 # Implementation
 # ============================================================
 
@@ -910,6 +1014,13 @@ def implement_screen(
         prompt
     )
 
+    print()
+    print("-" * 60)
+    print("Vertex AI raw response:")
+    print(response)
+    print("-" * 60)
+    print()
+
     generated_files = parse_generated_files(
         response
     )
@@ -940,6 +1051,75 @@ def implement_screen(
     )
 
 
+def implement_all_screens(
+    vertex_client,
+) -> None:
+    """
+    生成済みの全画面要件JSONから
+    すべての画面を実装する。
+
+    generated/screens/*.json
+    ↓
+    1画面ずつ実装
+    ↓
+    generated/implementation/<screen_id>/
+    """
+
+    validate_required_files(
+        [
+            GENERATED_REQUIREMENTS_DIR
+            / "system_requirements.json",
+
+            GENERATED_REQUIREMENTS_DIR
+            / "trace_index.json",
+
+            IMPLEMENT_SCREEN_PROMPT,
+        ]
+    )
+
+    screen_requirement_files = sorted(
+        GENERATED_SCREEN_DIR.glob("*.json")
+    )
+
+    if not screen_requirement_files:
+        raise FileNotFoundError(
+            f"Screen requirement JSON files not found: "
+            f"{GENERATED_SCREEN_DIR}"
+        )
+
+    print(
+        f"Found {len(screen_requirement_files)} "
+        f"screen requirement files."
+    )
+
+    print()
+    print("=" * 60)
+    print("Starting implementation of all screens")
+    print("=" * 60)
+
+    for index, screen_requirement_file in enumerate(
+        screen_requirement_files,
+        start=1,
+    ):
+        screen_id = screen_requirement_file.stem
+
+        print()
+        print(
+            f"[{index}/{len(screen_requirement_files)}] "
+            f"Implementing: {screen_id}"
+        )
+
+        implement_screen(
+            vertex_client,
+            screen_id,
+        )
+
+    print()
+    print("=" * 60)
+    print("All screen implementations completed.")
+    print("=" * 60)
+
+
 # ============================================================
 # CLI
 # ============================================================
@@ -960,8 +1140,10 @@ def parse_args() -> argparse.Namespace:
             "system",
             "trace",
             "screens",
+            "validate",
             "all",
             "implement",
+            "implement-all",
         ],
         default="all",
         help="Execution target. default: all",
@@ -993,8 +1175,10 @@ def main(
         system
         trace
         screens
+        validate
         all
         implement
+        implement-all
     """
 
     # --------------------------------------------------------
@@ -1028,6 +1212,14 @@ def main(
         return
 
     # --------------------------------------------------------
+    # validate
+    # --------------------------------------------------------
+
+    if args.target == "validate":
+        validate_generated_requirements()
+        return
+
+    # --------------------------------------------------------
     # implement
     # --------------------------------------------------------
 
@@ -1041,6 +1233,16 @@ def main(
         implement_screen(
             vertex_client,
             args.screen,
+        )
+        return
+
+    # --------------------------------------------------------
+    # implement-all
+    # --------------------------------------------------------
+
+    if args.target == "implement-all":
+        implement_all_screens(
+            vertex_client
         )
         return
 
@@ -1083,7 +1285,21 @@ def main(
     )
 
     print(
-        "=== Transformation completed ==="
+        "=== Generated Requirements Validation ==="
+    )
+
+    validate_generated_requirements()
+
+    print(
+        "=== Screen Implementation ==="
+    )
+
+    implement_all_screens(
+        vertex_client
+    )
+
+    print(
+        "=== All processing completed ==="
     )
 
 
