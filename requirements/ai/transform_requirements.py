@@ -2,7 +2,7 @@ from pathlib import Path
 import argparse
 import json
 import re
-from typing import Any, Dict, List, Tuple, Optional, Union
+from typing import Any, Dict, List, Tuple
 
 
 # ============================================================
@@ -10,7 +10,6 @@ from typing import Any, Dict, List, Tuple, Optional, Union
 # ============================================================
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-
 BASE_DIR = PROJECT_ROOT / "requirements" / "ai"
 
 ORIGINAL_DIR = BASE_DIR / "original"
@@ -109,10 +108,15 @@ def validate_required_files(
 
 def extract_json(text: str) -> Any:
     """
-    AIレスポンスからJSONを抽出する。
+    AIレスポンスからJSONを取得する。
 
-    主に要件変換用。
+    ```json
+    {...}
+    ```
+
+    のようなコードブロックにも対応する。
     """
+
     if not text:
         raise ValueError(
             "Vertex AI response is empty."
@@ -120,21 +124,14 @@ def extract_json(text: str) -> Any:
 
     text = text.strip()
 
-    # ```json ... ```
-    text = re.sub(
-        r"^\s*```json\s*",
-        "",
+    match = re.search(
+        r"```json\s*(.*?)\s*```",
         text,
-        flags=re.IGNORECASE,
+        flags=re.DOTALL | re.IGNORECASE,
     )
 
-    text = re.sub(
-        r"\s*```\s*$",
-        "",
-        text,
-    )
-
-    text = text.strip()
+    if match:
+        text = match.group(1).strip()
 
     try:
         return json.loads(text)
@@ -144,11 +141,11 @@ def extract_json(text: str) -> Any:
         ) from exc
 
 
-def _normalize_generated_files(
+def normalize_generated_files(
     files: Any,
 ) -> Dict[str, str]:
     """
-    generated files を {path: content} に統一する。
+    files配列を {path: content} に変換する。
     """
 
     if not isinstance(files, list):
@@ -158,8 +155,7 @@ def _normalize_generated_files(
 
     result: Dict[str, str] = {}
 
-    for index, item in enumerate(files, start=1):
-
+    for item in files:
         if not isinstance(item, dict):
             continue
 
@@ -183,325 +179,6 @@ def _normalize_generated_files(
 
 
 # ============================================================
-# Robust JSON repair
-# ============================================================
-
-def repair_malformed_json(text: str) -> str:
-    """
-    Vertex AIが返す「ほぼJSON」について、
-    JSON文字列内の未エスケープ引用符を可能な範囲で修復する。
-
-    典型例:
-
-        "content": "const x = <div className="foo">"
-
-    本来:
-
-        "content": "const x = <div className=\"foo\">"
-
-    のようになっているケースを修復する。
-    """
-
-    chars = list(text)
-
-    result: List[str] = []
-
-    in_string = False
-    escaped = False
-
-    length = len(chars)
-    i = 0
-
-    while i < length:
-        ch = chars[i]
-
-        if not in_string:
-            result.append(ch)
-
-            if ch == '"':
-                in_string = True
-
-            i += 1
-            continue
-
-        # ----------------------------------------------------
-        # string mode
-        # ----------------------------------------------------
-
-        if escaped:
-            result.append(ch)
-            escaped = False
-            i += 1
-            continue
-
-        if ch == "\\":
-            result.append(ch)
-            escaped = True
-            i += 1
-            continue
-
-        if ch == '"':
-            # 次の非空白文字を見る
-            j = i + 1
-
-            while j < length and chars[j] in " \t\r\n":
-                j += 1
-
-            next_char = (
-                chars[j]
-                if j < length
-                else ""
-            )
-
-            # JSON文字列の終了と判断できるパターン
-            #
-            # "...",
-            # "..."}
-            # "..."]
-            # "...":
-            #
-            if next_char in [",", "}", "]", ":"]:
-                result.append('"')
-                in_string = False
-            else:
-                # HTML/JSX等に含まれる未エスケープの "
-                result.append('\\"')
-
-            i += 1
-            continue
-
-        # JSONでは生の改行は許されない
-        if ch == "\n":
-            result.append("\\n")
-        elif ch == "\r":
-            result.append("\\r")
-        else:
-            result.append(ch)
-
-        i += 1
-
-    return "".join(result)
-
-
-def _try_parse_generated_json(
-    text: str,
-) -> Optional[Dict[str, str]]:
-    """
-    通常JSON → 修復JSONの順で試す。
-    """
-
-    # --------------------------------------------------------
-    # 1. 通常のJSON
-    # --------------------------------------------------------
-
-    try:
-        parsed = json.loads(text)
-
-        if isinstance(parsed, dict):
-            files = parsed.get("files")
-
-            if isinstance(files, list):
-                return _normalize_generated_files(files)
-
-        if isinstance(parsed, list):
-            return _normalize_generated_files(parsed)
-
-    except json.JSONDecodeError:
-        pass
-
-    # --------------------------------------------------------
-    # 2. malformed JSON repair
-    # --------------------------------------------------------
-
-    repaired = repair_malformed_json(text)
-
-    if repaired == text:
-        return None
-
-    try:
-        parsed = json.loads(repaired)
-
-        if isinstance(parsed, dict):
-            files = parsed.get("files")
-
-            if isinstance(files, list):
-                return _normalize_generated_files(files)
-
-        if isinstance(parsed, list):
-            return _normalize_generated_files(parsed)
-
-    except json.JSONDecodeError as exc:
-        print(
-            "DEBUG: repaired JSON still invalid: "
-            f"{exc}"
-        )
-
-    return None
-
-
-# ============================================================
-# FILE format parser
-# ============================================================
-
-def parse_file_format(
-    text: str,
-) -> Dict[str, str]:
-    """
-    以下の形式を解析する。
-
-    FILE: app/page.tsx
-    ```typescript
-    ...
-    ```
-    """
-
-    pattern = re.compile(
-        r"""
-        ^FILE:\s*(?P<path>[^\r\n]+)
-        \s*
-        ```[a-zA-Z0-9_+#.-]*
-        \s*
-        (?P<content>.*?)
-        ```
-        """,
-        flags=re.DOTALL | re.MULTILINE | re.VERBOSE,
-    )
-
-    matches = list(
-        pattern.finditer(text)
-    )
-
-    print(
-        f"DEBUG: FILE format matches = {len(matches)}"
-    )
-
-    result: Dict[str, str] = {}
-
-    for match in matches:
-
-        path = match.group("path").strip()
-        content = match.group("content")
-
-        if path:
-            result[path] = content
-
-    return result
-
-
-# ============================================================
-# Fallback parser for malformed JSON
-# ============================================================
-
-def parse_malformed_file_objects(
-    text: str,
-) -> Dict[str, str]:
-    """
-    JSONが壊れていてjson.loads()できない場合の
-    最終フォールバック。
-
-    以下のような構造を探す。
-
-    {
-      "path": "xxx",
-      "content": "..."
-    }
-
-    content内にJSXの " が入っていても、
-    次のファイルの {"path": ...} を境界として
-    可能な限り抽出する。
-    """
-
-    result: Dict[str, str] = {}
-
-    path_pattern = re.compile(
-        r'"path"\s*:\s*"([^"]+)"\s*,\s*"content"\s*:\s*"',
-        flags=re.DOTALL,
-    )
-
-    matches = list(
-        path_pattern.finditer(text)
-    )
-
-    print(
-        "DEBUG: malformed object candidates = "
-        f"{len(matches)}"
-    )
-
-    if not matches:
-        return result
-
-    for index, match in enumerate(matches):
-
-        path = match.group(1)
-
-        content_start = match.end()
-
-        # 次の {"path": ... を探す
-        next_match = None
-
-        if index + 1 < len(matches):
-            next_match = matches[index + 1]
-
-        if next_match:
-            content_end = next_match.start()
-
-            raw_content = text[
-                content_start:content_end
-            ]
-
-            # 次のJSONオブジェクト直前の
-            # content終了部分を除去
-            raw_content = re.sub(
-                r'"\s*\},?\s*$',
-                "",
-                raw_content,
-                flags=re.DOTALL,
-            )
-
-        else:
-            # 最後のcontent
-            raw_content = text[
-                content_start:
-            ]
-
-            # 最終JSON終了部分を削る
-            raw_content = re.sub(
-                r'"\s*\}\s*\]\s*\}\s*$',
-                "",
-                raw_content,
-                flags=re.DOTALL,
-            )
-
-            raw_content = re.sub(
-                r'"\s*\}\s*\]\s*$',
-                "",
-                raw_content,
-                flags=re.DOTALL,
-            )
-
-        # JSONのエスケープを戻す
-        try:
-            content = json.loads(
-                '"' + raw_content + '"'
-            )
-        except json.JSONDecodeError:
-            # JSON decodeできなければ
-            # 最低限のエスケープ復元
-            content = (
-                raw_content
-                .replace('\\"', '"')
-                .replace("\\n", "\n")
-                .replace("\\r", "\r")
-                .replace("\\t", "\t")
-                .replace("\\\\", "\\")
-            )
-
-        result[path] = content
-
-    return result
-
-
-# ============================================================
 # Generated files parser
 # ============================================================
 
@@ -509,35 +186,21 @@ def parse_generated_files(
     response_text: str,
 ) -> Dict[str, str]:
     """
-    Vertex AI のレスポンスから生成ファイルを抽出する。
+    Vertex AIのレスポンスから生成ファイルを取得する。
 
-    対応形式:
+    基本形式:
 
-    1. JSON object
+    {
+      "files": [
+        {
+          "path": "app/page.tsx",
+          "content": "..."
+        }
+      ]
+    }
 
-       {
-         "files": [
-           {
-             "path": "app/page.tsx",
-             "content": "..."
-           }
-         ]
-       }
-
-    2. JSON array
-
-       [
-         {
-           "path": "app/page.tsx",
-           "content": "..."
-         }
-       ]
-
-    3. Markdown code fence 内の JSON
-
-    4. FILE: 形式
-
-    5. 壊れたJSONからのフォールバック抽出
+    Vertex AIがJSON内のコード中に未エスケープの
+    ダブルクォートを返した場合は、ファイル単位で復旧する。
     """
 
     if not response_text:
@@ -547,208 +210,206 @@ def parse_generated_files(
 
     text = response_text.strip()
 
-    print(
-        "DEBUG: parse_generated_files() called"
-    )
-
-    print(
-        f"DEBUG: response length = {len(text)}"
-    )
-
-    print(
-        "DEBUG: response first 200 chars = "
-        f"{text[:200]!r}"
-    )
-
     # --------------------------------------------------------
-    # 1. レスポンス全体をJSONとして解析
+    # 1. 正常なJSON
     # --------------------------------------------------------
 
-    parsed_files = _try_parse_generated_json(
-        text
-    )
+    try:
+        parsed = extract_json(text)
 
-    if parsed_files:
-        print(
-            f"DEBUG: parsed {len(parsed_files)} "
-            "files from JSON"
-        )
+        if isinstance(parsed, dict):
+            files = parsed.get("files")
 
-        return parsed_files
+            if isinstance(files, list):
+                return normalize_generated_files(files)
 
-    print(
-        "DEBUG: full response could not be parsed "
-        "as normal JSON."
-    )
+        if isinstance(parsed, list):
+            return normalize_generated_files(parsed)
+
+    except ValueError:
+        pass
 
     # --------------------------------------------------------
-    # 2. Markdown JSON code block
+    # 2. 壊れたJSONから files を復旧
     # --------------------------------------------------------
 
-    json_blocks = re.findall(
-        r"```(?:json)?\s*(.*?)```",
-        text,
-        flags=re.DOTALL | re.IGNORECASE,
-    )
+    recovered = recover_generated_files(text)
 
-    print(
-        "DEBUG: markdown code blocks found = "
-        f"{len(json_blocks)}"
-    )
-
-    for block in json_blocks:
-
-        block = block.strip()
-
-        parsed_files = _try_parse_generated_json(
-            block
-        )
-
-        if parsed_files:
-            print(
-                "DEBUG: parsed "
-                f"{len(parsed_files)} files "
-                "from markdown JSON"
-            )
-
-            return parsed_files
-
-    # --------------------------------------------------------
-    # 3. JSON object部分だけを抽出
-    # --------------------------------------------------------
-
-    object_start = text.find("{")
-    object_end = text.rfind("}")
-
-    if (
-        object_start >= 0
-        and object_end > object_start
-    ):
-        candidate = text[
-            object_start:object_end + 1
-        ]
-
-        parsed_files = _try_parse_generated_json(
-            candidate
-        )
-
-        if parsed_files:
-            print(
-                "DEBUG: parsed "
-                f"{len(parsed_files)} files "
-                "from extracted JSON object"
-            )
-
-            return parsed_files
-
-    # --------------------------------------------------------
-    # 4. JSON array部分だけを抽出
-    # --------------------------------------------------------
-
-    array_start = text.find("[")
-    array_end = text.rfind("]")
-
-    if (
-        array_start >= 0
-        and array_end > array_start
-    ):
-        candidate = text[
-            array_start:array_end + 1
-        ]
-
-        parsed_files = _try_parse_generated_json(
-            candidate
-        )
-
-        if parsed_files:
-            print(
-                "DEBUG: parsed "
-                f"{len(parsed_files)} files "
-                "from extracted JSON array"
-            )
-
-            return parsed_files
-
-    # --------------------------------------------------------
-    # 5. FILE: 形式
-    # --------------------------------------------------------
-
-    file_result = parse_file_format(
-        text
-    )
-
-    if file_result:
-        print(
-            "DEBUG: parsed "
-            f"{len(file_result)} files "
-            "from FILE format"
-        )
-
-        return file_result
-
-    # --------------------------------------------------------
-    # 6. 壊れたJSONからファイルを救出
-    # --------------------------------------------------------
-
-    fallback_result = (
-        parse_malformed_file_objects(
-            text
-        )
-    )
-
-    if fallback_result:
-        print(
-            "DEBUG: parsed "
-            f"{len(fallback_result)} files "
-            "using malformed JSON fallback"
-        )
-
-        return fallback_result
-
-    # --------------------------------------------------------
-    # 7. 最終エラー
-    # --------------------------------------------------------
-
-    preview = text[:3000]
+    if recovered:
+        return recovered
 
     raise ValueError(
-        "No generated files found in "
-        "Vertex AI response.\n\n"
-        "Supported formats:\n"
-        "\n"
-        "1. JSON object:\n"
-        "{\n"
-        '  "files": [\n'
-        "    {\n"
-        '      "path": "app/page.tsx",\n'
-        '      "content": "..."\n'
-        "    }\n"
-        "  ]\n"
-        "}\n"
-        "\n"
-        "2. JSON array:\n"
-        "[\n"
-        "  {\n"
-        '    "path": "app/page.tsx",\n'
-        '    "content": "..."\n'
-        "  }\n"
-        "]\n"
-        "\n"
-        "3. FILE format:\n"
-        "FILE: relative/path/to/file.ts\n"
-        "```typescript\n"
-        "...\n"
-        "```\n"
-        "\n"
-        "Response preview:\n"
-        "----------------------------------------\n"
-        f"{preview}\n"
-        "----------------------------------------"
+        "No generated files found in Vertex AI response."
     )
+
+
+def recover_generated_files(
+    text: str,
+) -> Dict[str, str]:
+    """
+    Vertex AIがJSONとしては不正なレスポンスを返した場合に、
+    path/content単位で生成ファイルを復旧する。
+
+    JSON全体を修復するのではなく、
+    各ファイルのcontentだけを個別に復元する。
+    """
+
+    result: Dict[str, str] = {}
+
+    pattern = re.compile(
+        r'"path"\s*:\s*"(?P<path>[^"]+)"'
+        r'\s*,\s*'
+        r'"content"\s*:\s*"',
+        flags=re.DOTALL,
+    )
+
+    matches = list(pattern.finditer(text))
+
+    if not matches:
+        return result
+
+    for index, match in enumerate(matches):
+        path = match.group("path").strip()
+
+        content_start = match.end()
+
+        if index + 1 < len(matches):
+            next_match = matches[index + 1]
+
+            raw_content = text[
+                content_start:next_match.start()
+            ]
+
+            raw_content = remove_file_object_tail(
+                raw_content
+            )
+        else:
+            raw_content = text[content_start:]
+            raw_content = remove_final_json_tail(
+                raw_content
+            )
+
+        content = decode_generated_content(
+            raw_content
+        )
+
+        result[path] = content
+
+    return result
+
+
+def remove_file_object_tail(
+    content: str,
+) -> str:
+    """
+    次のpathの直前にあるJSONオブジェクト終了部分を削除する。
+    """
+
+    content = content.rstrip()
+
+    if content.endswith("}"):
+        content = content[:-1].rstrip()
+
+    if content.endswith(","):
+        content = content[:-1].rstrip()
+
+    if content.endswith('"'):
+        content = content[:-1]
+
+    return content
+
+
+def remove_final_json_tail(
+    content: str,
+) -> str:
+    """
+    最後のcontentからJSON全体の終了部分を削除する。
+    """
+
+    content = content.rstrip()
+
+    # 典型的な:
+    #
+    # "
+    #     }
+    #   ]
+    # }
+    #
+    # を除去する。
+
+    match = re.search(
+        r'"?\s*}\s*]\s*}\s*$',
+        content,
+        flags=re.DOTALL,
+    )
+
+    if match:
+        content = content[:match.start()]
+
+    return content
+
+
+def decode_generated_content(
+    raw_content: str,
+) -> str:
+    """
+    JSON contentとして返されたコードを復元する。
+
+    正常なJSONエスケープは維持し、
+    Vertex AIがコード中の未エスケープの
+    ダブルクォートを返した場合だけ補正する。
+    """
+
+    raw_content = raw_content.rstrip()
+
+    if raw_content.endswith('"'):
+        raw_content = raw_content[:-1]
+
+    result: List[str] = []
+
+    escaped = False
+
+    for char in raw_content:
+        if escaped:
+            result.append("\\")
+            result.append(char)
+            escaped = False
+            continue
+
+        if char == "\\":
+            escaped = True
+            continue
+
+        if char == '"':
+            result.append('\\"')
+        elif char == "\n":
+            result.append("\\n")
+        elif char == "\r":
+            result.append("\\r")
+        elif char == "\t":
+            result.append("\\t")
+        else:
+            result.append(char)
+
+    if escaped:
+        result.append("\\")
+
+    encoded = "".join(result)
+
+    try:
+        return json.loads(
+            '"' + encoded + '"'
+        )
+    except json.JSONDecodeError:
+        # 最終的にはコードとしてそのまま扱う
+        return (
+            raw_content
+            .replace('\\"', '"')
+        )
 
 
 # ============================================================
-# Screen requirement transformation
+# JSON file output
 # ============================================================
 
 def save_json(
@@ -771,6 +432,10 @@ def save_json(
         encoding="utf-8",
     )
 
+
+# ============================================================
+# Screen requirement transformation
+# ============================================================
 
 def get_screen_id(
     screen_file: Path,
@@ -804,15 +469,10 @@ def transform_system_requirement(
         SYSTEM_REQUIREMENTS_MD
     )
 
-    prompt_template = load_prompt(
-        SYSTEM_PROMPT
-    )
-
     prompt = inject_prompt(
-        prompt_template,
+        load_prompt(SYSTEM_PROMPT),
         {
-            "{{SYSTEM_REQUIREMENTS_MD}}":
-                source_md,
+            "{{SYSTEM_REQUIREMENTS_MD}}": source_md,
         },
     )
 
@@ -820,13 +480,9 @@ def transform_system_requirement(
         "Generating system_requirements.json..."
     )
 
-    response = vertex_client.generate(
-        prompt
-    )
+    response = vertex_client.generate(prompt)
 
-    data = extract_json(
-        response
-    )
+    data = extract_json(response)
 
     output_file = (
         GENERATED_REQUIREMENTS_DIR
@@ -865,15 +521,10 @@ def transform_trace_index(
         TRACE_INDEX_MD
     )
 
-    prompt_template = load_prompt(
-        TRACE_PROMPT
-    )
-
     prompt = inject_prompt(
-        prompt_template,
+        load_prompt(TRACE_PROMPT),
         {
-            "{{TRACE_INDEX_MD}}":
-                source_md,
+            "{{TRACE_INDEX_MD}}": source_md,
         },
     )
 
@@ -881,13 +532,9 @@ def transform_trace_index(
         "Generating trace_index.json..."
     )
 
-    response = vertex_client.generate(
-        prompt
-    )
+    response = vertex_client.generate(prompt)
 
-    data = extract_json(
-        response
-    )
+    data = extract_json(response)
 
     output_file = (
         GENERATED_REQUIREMENTS_DIR
@@ -941,33 +588,17 @@ def transform_screen_requirement(
         ]
     )
 
-    system_requirements = read_text(
-        system_requirements_file
-    )
-
-    trace_index = read_text(
-        trace_index_file
-    )
-
-    screen_design = read_text(
-        screen_file
-    )
-
-    prompt_template = load_prompt(
-        SCREEN_PROMPT
-    )
-
     prompt = inject_prompt(
-        prompt_template,
+        load_prompt(SCREEN_PROMPT),
         {
             "{{SYSTEM_REQUIREMENTS_JSON}}":
-                system_requirements,
+                read_text(system_requirements_file),
 
             "{{TRACE_INDEX_JSON}}":
-                trace_index,
+                read_text(trace_index_file),
 
             "{{SCREEN_DESIGN_MD}}":
-                screen_design,
+                read_text(screen_file),
 
             "{{SCREEN_DESIGN_FILE}}":
                 str(screen_file),
@@ -979,17 +610,12 @@ def transform_screen_requirement(
     )
 
     print(
-        "Generating screen requirement: "
-        f"{screen_id}"
+        f"Generating screen requirement: {screen_id}"
     )
 
-    response = vertex_client.generate(
-        prompt
-    )
+    response = vertex_client.generate(prompt)
 
-    data = extract_json(
-        response
-    )
+    data = extract_json(response)
 
     output_file = (
         GENERATED_SCREEN_DIR
@@ -1033,8 +659,7 @@ def transform_all_screens(
 
     if not screen_files:
         raise FileNotFoundError(
-            "Screen design files not found: "
-            f"{SCREEN_DIR}"
+            f"Screen design files not found: {SCREEN_DIR}"
         )
 
     print(
@@ -1092,8 +717,8 @@ def find_screen_requirement_file(
 
     if len(candidates) > 1:
         raise RuntimeError(
-            "Multiple screen requirement files "
-            f"matched '{screen}': "
+            f"Multiple screen requirement files matched "
+            f"'{screen}': "
             + ", ".join(
                 str(path)
                 for path in candidates
@@ -1101,124 +726,8 @@ def find_screen_requirement_file(
         )
 
     raise FileNotFoundError(
-        "Screen requirement JSON not found: "
-        f"{screen}"
+        f"Screen requirement JSON not found: {screen}"
     )
-
-
-def _convert_generated_files(
-    generated_files: Union[Dict[str, str], List],
-) -> List[Tuple[str, str]]:
-    """
-    JSONのfiles配列またはdictを
-    [(path, content), ...]
-    に変換する。
-    """
-
-    if isinstance(
-        generated_files,
-        dict,
-    ):
-        if not generated_files:
-            raise ValueError(
-                "Vertex AI returned an empty files list."
-            )
-
-        return [
-            (
-                str(path),
-                str(content),
-            )
-            for path, content
-            in generated_files.items()
-        ]
-
-    if not isinstance(
-        generated_files,
-        list,
-    ):
-        raise ValueError(
-            "Generated files must be "
-            "a dict or list."
-        )
-
-    if not generated_files:
-        raise ValueError(
-            "Vertex AI returned an empty files list."
-        )
-
-    files: List[Tuple[str, str]] = []
-
-    for index, file_data in enumerate(
-        generated_files,
-        start=1,
-    ):
-
-        if isinstance(
-            file_data,
-            dict,
-        ):
-            relative_path = (
-                file_data.get("path")
-            )
-
-            content = (
-                file_data.get("content")
-            )
-
-        elif (
-            isinstance(
-                file_data,
-                (tuple, list),
-            )
-            and len(file_data) == 2
-        ):
-            relative_path, content = (
-                file_data
-            )
-
-        else:
-            raise ValueError(
-                "Invalid file entry at index "
-                f"{index}: {file_data!r}"
-            )
-
-        if not isinstance(
-            relative_path,
-            str,
-        ):
-            raise ValueError(
-                "Generated file path is invalid "
-                f"at index {index}."
-            )
-
-        if content is None:
-            content = ""
-
-        if not isinstance(
-            content,
-            str,
-        ):
-            content = str(content)
-
-        relative_path = (
-            relative_path.strip()
-        )
-
-        if not relative_path:
-            raise ValueError(
-                "Generated file path is empty "
-                f"at index {index}."
-            )
-
-        files.append(
-            (
-                relative_path,
-                content,
-            )
-        )
-
-    return files
 
 
 def validate_generated_file_path(
@@ -1229,15 +738,6 @@ def validate_generated_file_path(
     出力ディレクトリ外へ脱出しないことを確認する。
     """
 
-    if not isinstance(
-        relative_path,
-        str,
-    ):
-        raise ValueError(
-            "Generated file path must be a string."
-        )
-
-    # AIがWindowsパスを返した場合も正規化
     normalized = (
         relative_path
         .replace("\\", "/")
@@ -1253,14 +753,14 @@ def validate_generated_file_path(
 
     if path.is_absolute():
         raise ValueError(
-            "Generated file path must be relative: "
+            f"Generated file path must be relative: "
             f"{relative_path}"
         )
 
     if ".." in path.parts:
         raise ValueError(
-            "Generated file path must not contain "
-            f"'..': {relative_path}"
+            f"Generated file path must not contain '..': "
+            f"{relative_path}"
         )
 
     # Windowsドライブ指定
@@ -1269,7 +769,7 @@ def validate_generated_file_path(
         normalized,
     ):
         raise ValueError(
-            "Generated file path must not contain "
+            f"Generated file path must not contain "
             f"a drive letter: {relative_path}"
         )
 
@@ -1277,140 +777,32 @@ def validate_generated_file_path(
 
 
 def save_generated_files(
-    files,
+    files: Dict[str, str],
     output_dir: Path,
 ) -> List[str]:
-    """
-    生成ファイルをoutput_dirへ保存する。
-
-    対応形式:
-
-    1. dict
-
-       {
-           "app/page.tsx": "..."
-       }
-
-    2. list[dict]
-
-       [
-           {
-               "path": "app/page.tsx",
-               "content": "..."
-           }
-       ]
-
-    3. list[tuple]
-
-       [
-           ("app/page.tsx", "...")
-       ]
-    """
-
-    output_dir = Path(
-        output_dir
-    )
 
     output_dir.mkdir(
         parents=True,
         exist_ok=True,
     )
 
-    # --------------------------------------------------------
-    # dict -> list
-    # --------------------------------------------------------
-
-    if isinstance(
-        files,
-        dict,
-    ):
-        iterable = [
-            (
-                path,
-                content,
-            )
-            for path, content
-            in files.items()
-        ]
-
-    else:
-        iterable = files
-
-    if not iterable:
+    if not files:
         raise ValueError(
             "No generated files to save."
         )
 
+    output_root = output_dir.resolve()
+
     saved_files: List[str] = []
 
-    for file_item in iterable:
+    for relative_path, content in files.items():
 
-        # ----------------------------------------------------
-        # JSON dict format
-        # ----------------------------------------------------
-
-        if isinstance(
-            file_item,
-            dict,
-        ):
-            relative_path = (
-                file_item.get("path")
-            )
-
-            content = (
-                file_item.get("content")
-            )
-
-        # ----------------------------------------------------
-        # Tuple/list format
-        # ----------------------------------------------------
-
-        elif (
-            isinstance(
-                file_item,
-                (tuple, list),
-            )
-            and len(file_item) == 2
-        ):
-            relative_path, content = (
-                file_item
-            )
-
-        else:
-            raise ValueError(
-                "Invalid generated file format: "
-                f"{file_item!r}"
-            )
-
-        if not relative_path:
-            raise ValueError(
-                "Generated file is missing path: "
-                f"{file_item!r}"
-            )
-
-        if content is None:
-            raise ValueError(
-                "Generated file is missing content: "
-                f"{relative_path}"
-            )
-
-        # ----------------------------------------------------
-        # Path validation
-        # ----------------------------------------------------
-
-        relative = (
-            validate_generated_file_path(
-                str(relative_path)
-            )
+        relative = validate_generated_file_path(
+            relative_path
         )
 
         file_path = (
             output_dir / relative
-        )
-
-        # 念のためresolveして出力ディレクトリ外を防止
-        output_root = (
-            output_dir.resolve()
         )
 
         resolved_file = (
@@ -1421,16 +813,11 @@ def save_generated_files(
             resolved_file.relative_to(
                 output_root
             )
-        except ValueError:
+        except ValueError as exc:
             raise ValueError(
                 "Generated file path escapes "
-                "output directory: "
-                f"{relative_path}"
-            )
-
-        # ----------------------------------------------------
-        # Save
-        # ----------------------------------------------------
+                f"output directory: {relative_path}"
+            ) from exc
 
         file_path.parent.mkdir(
             parents=True,
@@ -1438,7 +825,7 @@ def save_generated_files(
         )
 
         file_path.write_text(
-            str(content),
+            content,
             encoding="utf-8",
         )
 
@@ -1446,16 +833,8 @@ def save_generated_files(
             str(file_path)
         )
 
-        print(
-            f"Generated: {file_path}"
-        )
-
     return saved_files
 
-
-# ============================================================
-# Implement screen
-# ============================================================
 
 def implement_screen(
     vertex_client,
@@ -1486,9 +865,7 @@ def implement_screen(
     )
 
     screen_requirement_file = (
-        find_screen_requirement_file(
-            screen
-        )
+        find_screen_requirement_file(screen)
     )
 
     validate_required_files(
@@ -1500,33 +877,17 @@ def implement_screen(
         ]
     )
 
-    system_requirements = read_text(
-        system_requirements_file
-    )
-
-    trace_index = read_text(
-        trace_index_file
-    )
-
-    screen_requirement = read_text(
-        screen_requirement_file
-    )
-
-    prompt_template = load_prompt(
-        IMPLEMENT_SCREEN_PROMPT
-    )
-
     prompt = inject_prompt(
-        prompt_template,
+        load_prompt(IMPLEMENT_SCREEN_PROMPT),
         {
             "{{SYSTEM_REQUIREMENTS_JSON}}":
-                system_requirements,
+                read_text(system_requirements_file),
 
             "{{TRACE_INDEX_JSON}}":
-                trace_index,
+                read_text(trace_index_file),
 
             "{{SCREEN_REQUIREMENT_JSON}}":
-                screen_requirement,
+                read_text(screen_requirement_file),
         },
     )
 
@@ -1536,99 +897,27 @@ def implement_screen(
 
     print()
     print("=" * 60)
-
     print(
         f"Implementing screen: {screen_id}"
     )
-
     print("=" * 60)
-
-    print(
-        "System requirements: "
-        f"{system_requirements_file}"
-    )
-
-    print(
-        "Trace index: "
-        f"{trace_index_file}"
-    )
-
-    print(
-        "Screen requirement: "
-        f"{screen_requirement_file}"
-    )
 
     print(
         "Generating implementation..."
     )
 
-    # --------------------------------------------------------
-    # Vertex AI
-    # --------------------------------------------------------
-
     response = vertex_client.generate(
         prompt
     )
 
-    # --------------------------------------------------------
-    # Debug response保存
-    # --------------------------------------------------------
-
-    debug_response_file = (
-        GENERATED_SCREEN_DIR
-        / f"{screen_id}_implementation_response.txt"
+    generated_files = parse_generated_files(
+        response
     )
-
-    write_text(
-        debug_response_file,
-        response,
-    )
-
-    print(
-        "DEBUG: Vertex response saved: "
-        f"{debug_response_file}"
-    )
-
-    # --------------------------------------------------------
-    # Parse
-    # --------------------------------------------------------
-
-    generated_files = (
-        parse_generated_files(
-            response
-        )
-    )
-
-    print(
-        "DEBUG: generated files parsed = "
-        f"{len(generated_files)}"
-    )
-
-    # --------------------------------------------------------
-    # Output directory
-    # --------------------------------------------------------
 
     output_dir = (
         IMPLEMENTED_SCREEN_DIR
         / screen_id
     )
-
-    print(
-        "DEBUG: implementation output dir = "
-        f"{output_dir}"
-    )
-
-    # --------------------------------------------------------
-    # IMPORTANT:
-    #
-    # 正しい引数順:
-    #
-    # save_generated_files(
-    #     generated_files,
-    #     output_dir,
-    # )
-    #
-    # --------------------------------------------------------
 
     saved_files = save_generated_files(
         generated_files,
@@ -1636,7 +925,6 @@ def implement_screen(
     )
 
     print()
-
     print(
         f"Generated {len(saved_files)} file(s):"
     )
@@ -1647,10 +935,8 @@ def implement_screen(
         )
 
     print()
-
     print(
-        "Implementation output: "
-        f"{output_dir}"
+        f"Implementation output: {output_dir}"
     )
 
 
@@ -1678,10 +964,7 @@ def parse_args() -> argparse.Namespace:
             "implement",
         ],
         default="all",
-        help=(
-            "Execution target. "
-            "default: all"
-        ),
+        help="Execution target. default: all",
     )
 
     parser.add_argument(
@@ -1719,15 +1002,9 @@ def main(
     # --------------------------------------------------------
 
     if args.target == "system":
-
-        print(
-            "=== System Requirements ==="
-        )
-
         transform_system_requirement(
             vertex_client
         )
-
         return
 
     # --------------------------------------------------------
@@ -1735,15 +1012,9 @@ def main(
     # --------------------------------------------------------
 
     if args.target == "trace":
-
-        print(
-            "=== Trace Index ==="
-        )
-
         transform_trace_index(
             vertex_client
         )
-
         return
 
     # --------------------------------------------------------
@@ -1751,15 +1022,9 @@ def main(
     # --------------------------------------------------------
 
     if args.target == "screens":
-
-        print(
-            "=== Screen Requirements ==="
-        )
-
         transform_all_screens(
             vertex_client
         )
-
         return
 
     # --------------------------------------------------------
@@ -1767,7 +1032,6 @@ def main(
     # --------------------------------------------------------
 
     if args.target == "implement":
-
         if not args.screen:
             raise ValueError(
                 "--screen is required when "
@@ -1778,23 +1042,20 @@ def main(
             vertex_client,
             args.screen,
         )
-
         return
 
     # --------------------------------------------------------
     # all
     # --------------------------------------------------------
 
-    required_files = [
-        SYSTEM_REQUIREMENTS_MD,
-        TRACE_INDEX_MD,
-        SYSTEM_PROMPT,
-        TRACE_PROMPT,
-        SCREEN_PROMPT,
-    ]
-
     validate_required_files(
-        required_files
+        [
+            SYSTEM_REQUIREMENTS_MD,
+            TRACE_INDEX_MD,
+            SYSTEM_PROMPT,
+            TRACE_PROMPT,
+            SCREEN_PROMPT,
+        ]
     )
 
     print(
@@ -1831,7 +1092,6 @@ def main(
 # ============================================================
 
 if __name__ == "__main__":
-
     import sys
 
     project_root = (
