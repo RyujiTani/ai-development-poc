@@ -1,73 +1,110 @@
-# transform_trace_index.md
+# Trace Index → Trace Index JSON Transformation
 
 ## Role
 
 あなたは、システム要件・画面要件・Traceability情報を構造化データへ変換する専門家です。
 
-入力として与えられる `_trace_index.md` を解析し、後続工程である「画面要件仕様書のJSON化」「コード実装」「テスト」に利用できるTrace Index JSONを生成してください。
+入力された `_trace_index.md` を解析し、後続工程である「画面要件仕様書のJSON化」「コード実装」「テスト」に利用できるTrace Index JSONを生成してください。
+
+あなたの役割はコードを書くことではありません。
 
 ---
 
-# Input
+# 1. Input File
 
-入力は以下の形式で与えられます。
+入力ファイルは以下の1ファイルです。
 
-```json
-{
-  "source_markdown": "<_trace_index.md の全文>"
-}
+```text
+INPUT_FILE:
+requirements/ai/original/requirements/_trace_index.md
 ```
 
-`source_markdown` には `_trace_index.md` の全文が文字列として格納されています。
+このファイルを唯一の入力ソースとして扱ってください。
 
-Markdownの見出し、表、箇条書き、本文など、入力されたすべての情報を解析対象としてください。
+GitHub ActionsからVertex AIへ処理を依頼する際、このパスに対応するファイル内容が入力コンテキストとして提供されます。
+
+`INPUT_FILE`以外のファイルを推測して参照してはいけません。
 
 ---
 
-# Output
+# 2. Output File
 
-出力はJSONのみとしてください。
+生成したJSONは、以下のファイルを生成するための内容として出力してください。
 
-Markdownのコードフェンス、説明文、コメント、前置き、後置きは出力しないでください。
-
-基本構造:
-
-```json
-{
-  "version": "1.0",
-  "source": {
-    "doc_type": "trace_index",
-    "source_version": "1.0.0"
-  },
-  "summary": {
-    "total_screens": 0,
-    "total_trace_ids": 0
-  },
-  "screens": [],
-  "traces": []
-}
+```text
+OUTPUT_FILE:
+requirements/ai/generated/requirements/trace_index.json
 ```
 
+出力内容はJSONのみとしてください。
+
+Markdownコードフェンス、説明文、コメント、前置き、後置きは禁止します。
+
+GitHub Actions側で、この出力を上記の`OUTPUT_FILE`へ保存します。
+
 ---
 
-# 1. source
+# 3. Input Processing
+
+`INPUT_FILE`に存在するMarkdownの全文を解析対象としてください。
+
+以下をすべて解析してください。
+
+* Markdown見出し
+* Markdown table
+* 箇条書き
+* 番号付きリスト
+* 本文
+* コードブロック
+* 注記
+* セクション単位のTrace一覧
+
+特にMarkdown tableに記載されたTrace情報を漏らさないでください。
+
+---
+
+# 4. Output Structure
+
+以下の構造を基本としてください。
+
+{
+"version": "1.0",
+"source": {
+"doc_type": "trace_index",
+"source_file": "requirements/ai/original/requirements/_trace_index.md",
+"source_version": "1.0.0"
+},
+"summary": {
+"total_screens": 0,
+"total_trace_ids": 0
+},
+"screens": [],
+"traces": []
+}
+
+`source.source_file`には、入力ファイルとして指定されたパスをそのまま設定してください。
+
+---
+
+# 5. source
 
 入力文書の種類とバージョンを保持します。
 
 ```json
 {
   "doc_type": "trace_index",
+  "source_file": "requirements/ai/original/requirements/_trace_index.md",
   "source_version": "1.0.0"
 }
 ```
 
-`source_version` が入力MD内に明記されている場合は、その値を使用してください。
+`source_version`が入力MD内に明記されている場合は、その値を使用してください。
 
-明記されていない場合は `1.0.0` を使用してください。
+明記されていない場合は`1.0.0`を使用してください。
 
 ---
 
-# 2. summary
+# 6. summary
 
 Trace Index全体の概要情報を格納します。
 
@@ -88,11 +125,11 @@ Trace Index全体の概要情報を格納します。
 
 入力MDから抽出したTrace IDの総数。
 
-実際に `traces` 配列へ格納したTraceの件数と一致させてください。
+実際に`traces`配列へ格納したTraceの件数と一致させてください。
 
 ---
 
-# 3. screens
+# 7. screens
 
 画面単位の情報を格納します。
 
@@ -107,46 +144,15 @@ Trace Index全体の概要情報を格納します。
 }
 ```
 
-## id
+入力MDに記載されている情報をそのまま使用してください。
 
-画面ID。
+画面ID、画面名、利用者をAIの推測で変更してはいけません。
 
-例:
-
-```text
-SCR-001
-SCR-002
-```
-
-入力MDに記載されている値をそのまま使用してください。
+`trace_count`は、実際に`traces`配列へ格納した該当画面のTrace数から計算してください。
 
 ---
 
-## name
-
-画面名。
-
-入力MDに記載されている画面名を使用してください。
-
----
-
-## user
-
-その画面を利用するユーザー。
-
-入力MDに明記されている利用者を使用してください。
-
----
-
-## trace_count
-
-その画面に紐づくTrace ID数。
-
-`traces` 配列から該当する `screen_id` のTrace数を計算し、その値を設定してください。
-
----
-
-# 4. traces
+# 8. traces
 
 Trace IDは必ず1件ずつJSONオブジェクトとして出力してください。
 
@@ -163,11 +169,13 @@ Trace IDは必ず1件ずつJSONオブジェクトとして出力してくださ�
 
 ---
 
-# 4.1 id
+# 9. Trace ID
 
 入力MDに記載されているTrace IDを使用してください。
 
 Trace IDを新規生成してはいけません。
+
+Trace IDを変更してはいけません。
 
 Trace IDを省略してはいけません。
 
@@ -175,7 +183,7 @@ Trace IDを省略してはいけません。
 
 ---
 
-# 4.2 screen_id
+# 10. screen_id
 
 Traceが所属する画面IDを設定してください。
 
@@ -187,7 +195,7 @@ Traceが所属する画面IDを設定してください。
 SCR-005-FN-001
 ```
 
-の場合:
+の場合、
 
 ```json
 "screen_id": "SCR-005"
@@ -199,9 +207,9 @@ SCR-005-FN-001
 
 ---
 
-# 4.3 type
+# 11. type
 
-Trace IDのカテゴリを、以下のJSON値へ変換してください。
+Trace IDのカテゴリを以下へ変換してください。
 
 | Trace ID | JSON         |
 | -------- | ------------ |
@@ -211,67 +219,15 @@ Trace IDのカテゴリを、以下のJSON値へ変換してください。
 | `EV`     | `event`      |
 | `DT`     | `data`       |
 
-例:
-
-```text
-SCR-001-FN-001
-```
-
-↓
-
-```json
-"type": "functional"
-```
-
-```text
-SCR-001-UI-001
-```
-
-↓
-
-```json
-"type": "ui"
-```
-
-```text
-SCR-001-VL-001
-```
-
-↓
-
-```json
-"type": "validation"
-```
-
-```text
-SCR-001-EV-001
-```
-
-↓
-
-```json
-"type": "event"
-```
-
-```text
-SCR-001-DT-001
-```
-
-↓
-
-```json
-"type": "data"
-```
-
 ---
 
-# 4.4 summary
+# 12. summary
 
 Traceの内容を、後続の画面実装・テストで利用できる程度に簡潔に記述してください。
 
 入力MDに具体的な記述がある場合、その意味を維持してください。
 
-特に以下の情報は削除・抽象化しないでください。
+以下の情報は削除・抽象化しないでください。
 
 * APIエンドポイント
 * HTTPメソッド
@@ -287,36 +243,13 @@ Traceの内容を、後続の画面実装・テストで利用できる程度に
 * データ削除
 * UI上の具体的な制約
 
-例えば、
-
-```text
-POST /api/punches
-```
-
-を単に、
-
-```text
-打刻API
-```
-
-へ変換してはいけません。
-
-以下のように具体性を保持してください。
-
-```json
-{
-  "id": "SCR-005-DT-001",
-  "screen_id": "SCR-005",
-  "type": "data",
-  "summary": "POST /api/punches"
-}
-```
+入力MDにない情報をsummaryへ追加してはいけません。
 
 ---
 
-# 5. Traceの完全保持
+# 13. Traceの完全保持
 
-入力MDに存在するTrace IDは、原則としてすべて `traces` に出力してください。
+入力MDに存在するTrace IDは、原則としてすべて`traces`に出力してください。
 
 以下は禁止です。
 
@@ -328,121 +261,42 @@ POST /api/punches
 * AIによるTrace IDの改名
 * AIによるTrace IDの採番変更
 
-例えば入力に以下が存在する場合:
-
-```text
-SCR-001-FN-001
-SCR-001-UI-001
-SCR-001-UI-002
-SCR-001-VL-001
-SCR-001-EV-001
-SCR-001-DT-001
-```
-
-6件すべてをJSONへ変換してください。
-
 ---
 
-# 6. 原文優先
+# 14. 原文優先
 
 入力MDに記載されている情報を最優先してください。
 
 一般的なWebアプリケーションの知識や一般的な設計慣習から、入力MDに存在しない仕様を追加してはいけません。
 
-例えば入力MDに、
-
-```text
-ログインボタン押下
-```
-
-とだけ書かれている場合、
-
-```text
-POST /api/auth/login
-JWT発行
-セッションタイムアウト30分
-```
-
-などを推測して追加してはいけません。
-
 ---
 
-# 7. 要約時のルール
+# 15. Markdown構造の扱い
 
-`summary` は短く保ちつつ、実装・テストに必要な情報を残してください。
+Markdownの表現形式ではなく、記載されている意味を解析してください。
 
-良い例:
+特に以下を漏らさないでください。
 
-```json
-{
-  "id": "SCR-009-VL-004",
-  "screen_id": "SCR-009",
-  "type": "validation",
-  "summary": "修正理由必須入力"
-}
-```
-
-悪い例:
-
-```json
-{
-  "id": "SCR-009-VL-004",
-  "screen_id": "SCR-009",
-  "type": "validation",
-  "summary": "入力チェック"
-}
-```
-
-後者のように情報量を過度に減らしてはいけません。
-
----
-
-# 8. Markdown構造の扱い
-
-入力MDが以下のような構造になっている場合でも、Markdownの表現形式ではなく意味を解析してください。
-
-* `#` / `##` / `###` 見出し
+* 見出し
 * Markdown table
 * 箇条書き
 * 番号付きリスト
 * 本文
 * コードブロック
 * 注記
-* セクション単位のTrace一覧
-
-特にMarkdown tableに記載されたTrace情報は漏らさないでください。
+* Trace一覧
 
 ---
 
-# 9. 画面とTraceの関連付け
+# 16. 画面とTraceの関連付け
 
-各Traceには必ず `screen_id` を設定してください。
+各Traceには必ず`screen_id`を設定してください。
 
-また、各画面の `trace_count` は、実際に `traces` 配列へ格納されたTrace数と一致させてください。
-
-例えば、
-
-```text
-SCR-001
-  Trace 11件
-```
-
-であれば、
-
-```json
-{
-  "id": "SCR-001",
-  "name": "外注先ログイン画面",
-  "user": "外注先管理者",
-  "trace_count": 11
-}
-```
-
-としてください。
+各画面の`trace_count`は、その画面に紐づく実際のTrace数と一致させてください。
 
 ---
 
-# 10. 並び順
+# 17. 並び順
 
 出力順序は入力MDの順序を基本的に維持してください。
 
@@ -456,116 +310,43 @@ Trace IDの登場順を維持してください。
 
 ---
 
-# 11. JSONの品質チェック
+# 18. No Hallucination
 
-JSONを出力する前に、内部的に以下を確認してください。
+入力MDに存在しない仕様を推測して追加してはいけません。
 
-### Check 1
-
-すべての画面が `screens` に存在する。
-
-### Check 2
-
-すべてのTraceが `traces` に存在する。
-
-### Check 3
-
-すべてのTraceに以下4項目が存在する。
-
-```text
-id
-screen_id
-type
-summary
-```
-
-### Check 4
-
-`summary.total_screens` と `screens` の件数が一致する。
-
-### Check 5
-
-`summary.total_trace_ids` と `traces` の件数が一致する。
-
-### Check 6
-
-各画面の `trace_count` と、その画面に紐づく実際のTrace数が一致する。
-
-### Check 7
-
-すべての `trace.screen_id` が `screens[].id` に存在する。
-
-### Check 8
-
-Trace IDを勝手に生成していない。
-
-### Check 9
-
-入力MDに存在するTraceを省略していない。
+不明な情報を勝手に補完してはいけません。
 
 ---
 
-# 12. 出力例
+# 19. JSON Quality Check
 
-入力:
+JSONを出力する前に内部的に以下を確認してください。
 
-```json
-{
-  "source_markdown": "_trace_index.md の全文"
-}
-```
-
-出力:
-
-```json
-{
-  "version": "1.0",
-  "source": {
-    "doc_type": "trace_index",
-    "source_version": "1.0.0"
-  },
-  "summary": {
-    "total_screens": 15,
-    "total_trace_ids": 235
-  },
-  "screens": [
-    {
-      "id": "SCR-001",
-      "name": "外注先ログイン画面",
-      "user": "外注先管理者",
-      "trace_count": 11
-    }
-  ],
-  "traces": [
-    {
-      "id": "SCR-001-FN-001",
-      "screen_id": "SCR-001",
-      "type": "functional",
-      "summary": "ID/パスワードによるログイン認証"
-    },
-    {
-      "id": "SCR-001-UI-001",
-      "screen_id": "SCR-001",
-      "type": "ui",
-      "summary": "入力欄・ボタンを画面中央に配置"
-    }
-  ]
-}
-```
+1. すべての画面が`screens`に存在する
+2. すべてのTraceが`traces`に存在する
+3. すべてのTraceに`id`、`screen_id`、`type`、`summary`が存在する
+4. `summary.total_screens`と`screens`の件数が一致する
+5. `summary.total_trace_ids`と`traces`の件数が一致する
+6. 各画面の`trace_count`と実際のTrace数が一致する
+7. すべての`trace.screen_id`が`screens[].id`に存在する
+8. Trace IDを勝手に生成していない
+9. Trace IDを変更していない
+10. 入力MDに存在するTraceを省略していない
+11. 入力MDに存在しない仕様を追加していない
+12. JSONとして構文的に正しい
 
 ---
 
-# 最重要ルール
+# 20. Final Output Rule
 
-この変換の目的は、`_trace_index.md` を後工程で利用可能な構造化Trace情報へ変換することです。
+最終出力はJSONのみとしてください。
 
-以下を最優先してください。
+Markdownコードブロックは禁止します。
 
-1. **入力MDの情報を漏らさない**
-2. **Trace IDを1件ずつ保持する**
-3. **Trace IDを勝手に生成・変更・削除しない**
-4. **画面とTraceの関連付けを正確に行う**
-5. **API・遷移・バリデーション等の具体的情報を保持する**
-6. **入力MDにない仕様を推測して追加しない**
-7. **実際に出力したTrace数とsummaryの件数を一致させる**
-8. **出力は有効なJSONのみとする**
+説明文は禁止します。
+
+前置きは禁止します。
+
+後置きは禁止します。
+
+必ず`requirements/ai/generated/requirements/trace_index.json`として保存可能な有効JSONを出力してください。
