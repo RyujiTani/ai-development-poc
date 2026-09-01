@@ -1,0 +1,23 @@
+steps:
+  - id: install-test-dependencies
+    name: node:20-bookworm
+    dir: test-runner
+    entrypoint: npm
+    args:
+      - install
+      - --no-audit
+      - --no-fund
+
+  - id: test-generated-implementations
+    name: node:20-bookworm
+    dir: test-runner
+    entrypoint: npm
+    args:
+      - run
+      - test:generated
+    allowExitCodes: [1]
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: 1800s

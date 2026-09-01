@@ -1,68 +1,296 @@
-name: Transform Requirements
+name: AI Development Pipeline
 
 on:
-  workflow_dispatch:
+  push:
+    paths:
+      - "requirements/ai/original/**"
 
 permissions:
   contents: write
+  pull-requests: write
   id-token: write
 
+env:
+  GCP_PROJECT_ID: aidf-team-suda
+  GCP_REGION: asia-northeast1
+
 jobs:
-  transform:
+  ai-development:
     runs-on: ubuntu-latest
 
-    env:
-      GOOGLE_CLOUD_PROJECT: ${{ vars.GOOGLE_CLOUD_PROJECT }}
-      GOOGLE_CLOUD_LOCATION: ${{ vars.GOOGLE_CLOUD_LOCATION }}
-      VERTEX_AI_MODEL: ${{ vars.VERTEX_AI_MODEL }}
-
     steps:
-      - name: Checkout
+      # ======================================================
+      # 1. Checkout
+      # ======================================================
+
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+
+      # ======================================================
+      # 2. Python
+      # ======================================================
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.11"
 
-      - name: Install dependencies
+
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements/ai/requirements.txt
+          pip install -r requirements/ai/requirement.txt
+
+
+      # ======================================================
+      # 3. Authenticate to GCP
+      # ======================================================
 
       - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@v3
         with:
+          project_id: ${{ env.GCP_PROJECT_ID }}
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-      - name: Verify Google Cloud authentication
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          project_id: ${{ env.GCP_PROJECT_ID }}
+
+
+      # ======================================================
+      # 4. Generate requirements / implementation
+      # ======================================================
+
+      - name: Run AI development pipeline
         run: |
-          gcloud auth list
-          gcloud config get-value project
+          python requirements/ai/transform_requirements.py --target all
 
-      - name: Run requirement transformation
+
+      # ======================================================
+      # 5. Start Cloud Build
+      #
+      # --async にして、自分で起動したBUILD_IDを保持する
+      # ======================================================
+
+      - name: Start Cloud Build
+        id: cloud-build
+        shell: bash
         run: |
-          python requirements/ai/transform_requirements.py --target system
+          BUILD_ID=$(
+            gcloud builds submit \
+              --project="${GCP_PROJECT_ID}" \
+              --config=cloudbuild.yaml \
+              --async \
+              --format="value(id)" \
+              .
+          )
 
-      - name: Check generated files
+          if [ -z "$BUILD_ID" ]; then
+            echo "Failed to get Cloud Build ID."
+            exit 1
+          fi
+
+          echo "Cloud Build ID: $BUILD_ID"
+
+          echo "build_id=$BUILD_ID" >> "$GITHUB_OUTPUT"
+
+
+      # ======================================================
+      # 6. Wait Cloud Build
+      # ======================================================
+
+      - name: Wait for Cloud Build
+        id: wait-cloud-build
+        shell: bash
         run: |
-          test -f requirements/ai/generated/requirements/system_requirements.json
-          test -f requirements/ai/generated/requirements/trace_index.json
+          BUILD_ID="${{ steps.cloud-build.outputs.build_id }}"
 
-          echo "Generated requirement files:"
-          find requirements/ai/generated -type f -name "*.json" | sort
+          while true
+          do
+            STATUS=$(
+              gcloud builds describe "$BUILD_ID" \
+                --project="${GCP_PROJECT_ID}" \
+                --format="value(status)"
+            )
 
-      - name: Commit generated JSON
+            echo "Cloud Build status: $STATUS"
+
+            case "$STATUS" in
+
+              SUCCESS)
+                echo "Cloud Build completed successfully."
+                break
+                ;;
+
+              FAILURE|INTERNAL_ERROR|TIMEOUT|CANCELLED|EXPIRED)
+                echo "Cloud Build infrastructure failed."
+                exit 1
+                ;;
+
+              QUEUED|WORKING|PENDING)
+                sleep 10
+                ;;
+
+              *)
+                echo "Unknown Cloud Build status: $STATUS"
+                sleep 10
+                ;;
+
+            esac
+          done
+
+
+      # ======================================================
+      # 7. Save Cloud Build log
+      # ======================================================
+
+      - name: Save Cloud Build log
+        shell: bash
+        run: |
+          BUILD_ID="${{ steps.cloud-build.outputs.build_id }}"
+
+          mkdir -p requirements/ai/generated/test-results
+
+          gcloud builds log "$BUILD_ID" \
+            --project="${GCP_PROJECT_ID}" \
+            > requirements/ai/generated/test-results/cloudbuild.log \
+            2>&1 || true
+
+
+      # ======================================================
+      # 8. Check generated test summary
+      # ======================================================
+
+      - name: Check test result summary
+        id: test-summary
+        shell: bash
+        run: |
+          SUMMARY_FILE="requirements/ai/generated/test-results/summary.json"
+
+          if [ ! -f "$SUMMARY_FILE" ]; then
+            echo "summary.json was not generated."
+            exit 1
+          fi
+
+          TOTAL=$(jq -r '.total' "$SUMMARY_FILE")
+          PASSED=$(jq -r '.passed' "$SUMMARY_FILE")
+          TEST_FAILED=$(jq -r '.test_failed' "$SUMMARY_FILE")
+          INFRA_FAILED=$(jq -r '.infrastructure_failed' "$SUMMARY_FILE")
+
+          echo "Total: $TOTAL"
+          echo "Passed: $PASSED"
+          echo "Test failed: $TEST_FAILED"
+          echo "Infrastructure failed: $INFRA_FAILED"
+
+          if [ "$INFRA_FAILED" -ne 0 ]; then
+            echo "Test infrastructure error detected."
+            exit 1
+          fi
+
+          echo "total=$TOTAL" >> "$GITHUB_OUTPUT"
+          echo "passed=$PASSED" >> "$GITHUB_OUTPUT"
+          echo "test_failed=$TEST_FAILED" >> "$GITHUB_OUTPUT"
+
+
+      # ======================================================
+      # 9. Create AI generated branch
+      # ======================================================
+
+      - name: Create generated branch
+        id: branch
+        shell: bash
+        run: |
+          BRANCH_NAME="ai-generated/run-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+
+          echo "Generated branch: $BRANCH_NAME"
+
+          git checkout -b "$BRANCH_NAME"
+
+          echo "branch_name=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
+
+
+      # ======================================================
+      # 10. Commit generated artifacts
+      # ======================================================
+
+      - name: Commit generated artifacts
+        shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add requirements/ai/generated/
+          git add requirements/ai/generated
 
           if git diff --cached --quiet; then
-            echo "No generated changes."
-          else
-            git commit -m "chore: update generated AI requirements"
-            git push
+            echo "No generated changes to commit."
+            exit 1
           fi
+
+          git commit -m "chore: add AI generated implementation and test results"
+
+          git push origin "${{ steps.branch.outputs.branch_name }}"
+
+
+      # ======================================================
+      # 11. Create PR body
+      # ======================================================
+
+      - name: Create PR body
+        shell: bash
+        run: |
+          BUILD_ID="${{ steps.cloud-build.outputs.build_id }}"
+          TOTAL="${{ steps.test-summary.outputs.total }}"
+          PASSED="${{ steps.test-summary.outputs.passed }}"
+          TEST_FAILED="${{ steps.test-summary.outputs.test_failed }}"
+
+          cat <<EOF > pr-body.md
+          ## AI自動実装結果
+
+          要件Pushをトリガーに、AIによる実装とGCP上での自動テストを実行しました。
+
+          ### 実行結果
+
+          - 対象画面数: ${TOTAL}
+          - テスト成功: ${PASSED}
+          - テスト失敗: ${TEST_FAILED}
+          - Cloud Build ID: \`${BUILD_ID}\`
+
+          ### 生成物
+
+          - AI生成コード
+            - \`requirements/ai/generated/implementation/\`
+
+          - テスト結果
+            - \`requirements/ai/generated/test-results/\`
+
+          - Cloud Buildログ
+            - \`requirements/ai/generated/test-results/cloudbuild.log\`
+
+          ### 注意
+
+          テストFAILが存在する場合でも、このPRはレビュー用成果物として作成されています。
+
+          AI生成コードを確認し、必要に応じて修正・統合してください。
+          EOF
+
+
+      # ======================================================
+      # 12. Create Pull Request
+      # ======================================================
+
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh pr create \
+            --base "${GITHUB_REF_NAME}" \
+            --head "${{ steps.branch.outputs.branch_name }}" \
+            --title "AI generated implementation - run ${GITHUB_RUN_ID}" \
+            --body-file pr-body.md
