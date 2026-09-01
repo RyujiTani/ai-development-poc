@@ -13,6 +13,7 @@ permissions:
 env:
   GCP_PROJECT_ID: aidf-team-suda
   GCP_REGION: asia-northeast1
+  GCS_RESULT_BUCKET: aidf-team-suda.appspot.com
 
 jobs:
   ai-development:
@@ -147,15 +148,40 @@ jobs:
 
 
       # ======================================================
-      # 7. Save Cloud Build log
+      # 7. Download test results from GCS
+      # ======================================================
+
+      - name: Download Cloud Build test results
+        shell: bash
+        run: |
+          BUILD_ID="${{ steps.cloud-build.outputs.build_id }}"
+
+          echo "Downloading test results for Cloud Build: $BUILD_ID"
+
+          rm -rf requirements/ai/generated/test-results
+
+          mkdir -p requirements/ai/generated/test-results
+
+          gcloud storage cp \
+            --recursive \
+            "gs://${GCS_RESULT_BUCKET}/ai-development/${BUILD_ID}/test-results/*" \
+            "requirements/ai/generated/test-results/"
+
+          echo "Downloaded test results:"
+
+          find requirements/ai/generated/test-results \
+            -type f \
+            -print
+
+
+      # ======================================================
+      # 8. Save Cloud Build log
       # ======================================================
 
       - name: Save Cloud Build log
         shell: bash
         run: |
           BUILD_ID="${{ steps.cloud-build.outputs.build_id }}"
-
-          mkdir -p requirements/ai/generated/test-results
 
           gcloud builds log "$BUILD_ID" \
             --project="${GCP_PROJECT_ID}" \
@@ -164,7 +190,7 @@ jobs:
 
 
       # ======================================================
-      # 8. Check generated test summary
+      # 9. Check generated test summary
       # ======================================================
 
       - name: Check test result summary
@@ -199,7 +225,7 @@ jobs:
 
 
       # ======================================================
-      # 9. Create AI generated branch
+      # 10. Create AI generated branch
       # ======================================================
 
       - name: Create generated branch
@@ -216,7 +242,7 @@ jobs:
 
 
       # ======================================================
-      # 10. Commit generated artifacts
+      # 11. Commit generated artifacts
       # ======================================================
 
       - name: Commit generated artifacts
@@ -232,13 +258,16 @@ jobs:
             exit 1
           fi
 
-          git commit -m "chore: add AI generated implementation and test results"
+          git commit \
+            -m "chore: add AI generated implementation and test results"
 
-          git push origin "${{ steps.branch.outputs.branch_name }}"
+          git push \
+            origin \
+            "${{ steps.branch.outputs.branch_name }}"
 
 
       # ======================================================
-      # 11. Create PR body
+      # 12. Create PR body
       # ======================================================
 
       - name: Create PR body
@@ -281,7 +310,7 @@ jobs:
 
 
       # ======================================================
-      # 12. Create Pull Request
+      # 13. Create Pull Request
       # ======================================================
 
       - name: Create Pull Request

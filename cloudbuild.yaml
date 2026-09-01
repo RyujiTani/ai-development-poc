@@ -17,6 +17,17 @@ steps:
       - test:generated
     allowExitCodes: [1]
 
+  - id: upload-test-results
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        gcloud storage cp \
+          --recursive \
+          requirements/ai/generated/test-results \
+          gs://aidf-team-suda.appspot.com/ai-development/$BUILD_ID/
+
 options:
   logging: CLOUD_LOGGING_ONLY
 
