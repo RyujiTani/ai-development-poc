@@ -1,0 +1,8 @@
+{
+  "screen": "SCR-003_punch_mode_select",
+  "status": "PASSED",
+  "passed": true,
+  "exit_code": 0,
+  "stdout": "\n\u001b[1m\u001b[7m\u001b[36m RUN \u001b[39m\u001b[27m\u001b[22m \u001b[36mv2.1.9 \u001b[39m\u001b[90m/tmp/SCR-003_punch_mode_select-NqNFn8\u001b[39m\n\n \u001b[32m✓\u001b[39m tests/punch-mode.test.tsx\u001b[2m > \u001b[22mSCR-003 打刻モード選択画面\u001b[2m > \u001b[22mSCR-003-UT-001: 画面上部の日時表示部に、設定したシステム時刻に対応する日付・時刻情報が含まれていること\n \u001b[32m✓\u001b[39m tests/punch-mode.test.tsx\u001b[2m > \u001b[22mSCR-003 打刻モード選択画面\u001b[2m > \u001b[22mSCR-003-UT-002: sessionStorageが空（未ログイン）の状態の時、/loginにリダイレクトされること\n \u001b[32m✓\u001b[39m tests/punch-mode.test.tsx\u001b[2m > \u001b[22mSCR-003 打刻モード選択画面\u001b[2m > \u001b[22mSCR-003-IT-001: 出勤ボタンをクリックしたとき、打刻モードがCLOCK_INに更新され、/worker-selectに遷移すること\n \u001b[32m✓\u001b[39m tests/punch-mode.test.tsx\u001b[2m > \u001b[22mSCR-003 打刻モード選択画面\u001b[2m > \u001b[22mSCR-003-IT-002: 退勤ボタンをクリックしたとき、打刻モードがCLOCK_OUTに更新され、/worker-selectに遷移すること\n \u001b[32m✓\u001b[39m tests/punch-mode.test.tsx\u001b[2m > \u001b[22mSCR-003 打刻モード選択画面\u001b[2m > \u001b[22mSCR-003-IT-003: 戻るボタンをクリックしたとき、/contractor-homeへの画面遷移が要求されること\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m5 passed\u001b[39m\u001b[22m\u001b[90m (5)\u001b[39m\n\u001b[2m   Start at \u001b[22m 09:46:23\n\u001b[2m   Duration \u001b[22m 1.09s\u001b[2m (transform 116ms, setup 115ms, collect 210ms, tests 144ms, environment 405ms, prepare 88ms)\u001b[22m\n\n",
+  "stderr": "\u001b[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.\u001b[39m\n"
+}

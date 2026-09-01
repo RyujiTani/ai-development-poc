@@ -1,0 +1,312 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-002_contractor_home.md"
+  },
+  "screen": {
+    "id": "SCR-002",
+    "name": "外注先ホーム画面",
+    "user": "外注先管理者",
+    "description": "外注先管理者がログイン後に最初に表示される画面。「打刻」と「作業員管理」の2つの主要メニューを選択できるハブ画面。スマホでの操作を前提とし、大きなボタンで直感的に操作できるようにする。"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-002-FN-001",
+        "summary": "打刻メニュー選択",
+        "description": "「打刻」メニューを選択して打刻モード選択画面（SCR-003）へ遷移できる。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-002-FN-002",
+        "summary": "作業員管理メニュー選択",
+        "description": "「作業員管理」メニューを選択して作業員一覧画面（SCR-007）へ遷移できる。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-002-FN-003",
+        "summary": "ログアウト",
+        "description": "画面上のログアウトボタンを押下してログアウトできる。sessionStorageに保持されているセッション情報（user_id, role）を破棄する。",
+        "priority": "High"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-002-UI-001",
+        "summary": "大きなメニューボタン配置",
+        "description": "「打刻」「作業員管理」の2つの大きなメニューボタンを縦並びまたはグリッド状に配置する。屋外操作を考慮し、スマホ等でタップしやすい十分な余白と最小タップターゲット領域（48px以上）を確保する。"
+      },
+      {
+        "id": "SCR-002-UI-002",
+        "summary": "レスポンシブWebデザイン",
+        "description": "Tailwind CSSを使用し、PC、タブレット、スマホの各画面サイズに対応する。"
+      },
+      {
+        "id": "SCR-002-UI-003",
+        "summary": "ログインユーザー名表示",
+        "description": "画面上部（ヘッダー領域等）にログインユーザー名（外注先管理者名）を表示する。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-002-VL-001",
+        "summary": "未認証リダイレクト",
+        "description": "認証状態（sessionStorageの user_id, role が CONTRACTOR_MANAGER ）でない状態でアクセスした場合はログイン画面（SCR-001）へリダイレクトする。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-002-EV-001",
+        "summary": "打刻ボタン→打刻モード選択画面遷移",
+        "description": "「打刻」ボタン押下時、打刻モード選択画面（SCR-003）へ遷移する。"
+      },
+      {
+        "id": "SCR-002-EV-002",
+        "summary": "作業員管理ボタン→作業員一覧画面遷移",
+        "description": "「作業員管理」ボタン押下時、作業員一覧画面（SCR-007）へ遷移する。"
+      },
+      {
+        "id": "SCR-002-EV-003",
+        "summary": "ログアウト→ログイン画面遷移",
+        "description": "ログアウトボタン押下時、sessionStorageを破棄した上で、ログイン画面（SCR-001）へリダイレクトする。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-002-DT-001",
+        "summary": "GET /api/user/me",
+        "description": "ログイン中のユーザー情報を取得して表示するために、モックAPI /api/user/me からデータをロードする。"
+      }
+    ],
+    "api": [
+      {
+        "id": "SCR-002-AP-001",
+        "name": "Get Me",
+        "method": "GET",
+        "path": "/api/user/me",
+        "description": "ログイン中のユーザー情報を取得する。実際の実装では、sessionStorageの user_id に紐づく IndexedDB 内の users 情報を返却するか、モックデータを返却する。"
+      }
+    ],
+    "state": [
+      {
+        "id": "SCR-002-ST-001",
+        "name": "currentUser",
+        "type": "object",
+        "description": "API /api/user/me から取得した現在のログインユーザー情報（ユーザー名、ロール、企業IDなど）。"
+      },
+      {
+        "id": "SCR-002-ST-002",
+        "name": "isLoading",
+        "type": "boolean",
+        "description": "ユーザー情報の初期取得中のローディング状態。"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-002"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "ACC-SCR-002-001",
+      "requirement_id": "SCR-002-FN-001",
+      "description": "ログイン状態で画面を表示し、「打刻」ボタンをクリックしたとき、打刻モード選択画面（SCR-003）に遷移すること。"
+    },
+    {
+      "id": "ACC-SCR-002-002",
+      "requirement_id": "SCR-002-FN-002",
+      "description": "ログイン状態で画面を表示し、「作業員管理」ボタンをクリックしたとき、作業員一覧画面（SCR-007）に遷移すること。"
+    },
+    {
+      "id": "ACC-SCR-002-003",
+      "requirement_id": "SCR-002-FN-003",
+      "description": "ログイン状態で画面を表示し、「ログアウト」ボタンをクリックしたとき、sessionStorageから「user_id」および「role」が削除され、ログイン画面（SCR-001）へリダイレクトすること。"
+    },
+    {
+      "id": "ACC-SCR-002-004",
+      "requirement_id": "SCR-002-UI-001",
+      "description": "画面上に「打刻」および「作業員管理」のボタンが表示され、それぞれ48px以上のタップ領域を持っていること。"
+    },
+    {
+      "id": "ACC-SCR-002-005",
+      "requirement_id": "SCR-002-UI-002",
+      "description": "画面幅をモバイルサイズ（375px程度）およびデスクトップサイズ（1024px以上）に変更した際、要素がはみ出さず、適切にレイアウト調整されること。"
+    },
+    {
+      "id": "ACC-SCR-002-006",
+      "requirement_id": "SCR-002-UI-003",
+      "description": "画面上部（ヘッダー領域）に、ログイン中の外注先管理者の名前が正しく表示されること。"
+    },
+    {
+      "id": "ACC-SCR-002-007",
+      "requirement_id": "SCR-002-VL-001",
+      "description": "sessionStorageに認証情報がない状態で本URLに直接アクセスした際、即座にログイン画面（SCR-001）へリダイレクトされること。"
+    },
+    {
+      "id": "ACC-SCR-002-008",
+      "requirement_id": "SCR-002-DT-001",
+      "description": "画面描画時に /api/user/me からログイン中のユーザーデータが取得され、ユーザー名が表示されること。取得中はローディングスケルトンまたはローディングスピナーが表示されること。"
+    }
+  ],
+  "tests": [
+    {
+      "id": "TST-SCR-002-001",
+      "type": "unit",
+      "requirement_id": "SCR-002-VL-001",
+      "input": "sessionStorageが空の状態でホーム画面を描画する",
+      "steps": [
+        "1. sessionStorageをクリアする",
+        "2. SCR-002 画面をレンダリングする"
+      ],
+      "expected": "ログイン画面（SCR-001）へリダイレクトされること。"
+    },
+    {
+      "id": "TST-SCR-002-002",
+      "type": "unit",
+      "requirement_id": "SCR-002-DT-001",
+      "input": "sessionStorageに外注先管理者セッションを設定し、モックAPI /api/user/me を準備する",
+      "steps": [
+        "1. sessionStorageに user_id='usr001', role='CONTRACTOR_MANAGER' を設定する",
+        "2. /api/user/me のモックが display_name='テスト管理者' を返すよう設定する",
+        "3. SCR-002 画面をレンダリングする",
+        "4. レンダリング初期のローディング表示を確認する",
+        "5. ロード完了後の表示を確認する"
+      ],
+      "expected": "画面描画時、最初は isLoading=true に応じたローディング状態になり、取得完了後に 'テスト管理者' が画面上部に表示されること。"
+    },
+    {
+      "id": "TST-SCR-002-003",
+      "type": "unit",
+      "requirement_id": "SCR-002-FN-001",
+      "input": "打刻ボタンをクリックする",
+      "steps": [
+        "1. ログイン済みの状態でSCR-002画面をレンダリングする",
+        "2. 『打刻』ボタンをクリックする"
+      ],
+      "expected": "打刻モード選択画面（SCR-003）への遷移処理（router.push等）が呼び出されること。"
+    },
+    {
+      "id": "TST-SCR-002-004",
+      "type": "unit",
+      "requirement_id": "SCR-002-FN-002",
+      "input": "作業員管理ボタンをクリックする",
+      "steps": [
+        "1. ログイン済みの状態でSCR-002画面をレンダリングする",
+        "2. 『作業員管理』ボタンをクリックする"
+      ],
+      "expected": "作業員一覧画面（SCR-007）への遷移処理（router.push等）が呼び出されること。"
+    },
+    {
+      "id": "TST-SCR-002-005",
+      "type": "unit",
+      "requirement_id": "SCR-002-FN-003",
+      "input": "ログアウトボタンをクリックする",
+      "steps": [
+        "1. ログイン済みの状態でSCR-002画面をレンダリングする",
+        "2. 『ログアウト』ボタンをクリックする"
+      ],
+      "expected": "sessionStorageがクリアされ、ログイン画面（SCR-001）への遷移処理が呼び出されること。"
+    },
+    {
+      "id": "TST-SCR-002-006",
+      "type": "e2e",
+      "requirement_id": "SCR-002-UI-002",
+      "input": "Playwrightによるビューポート幅の切り替えテスト",
+      "steps": [
+        "1. モバイル（375x667）およびPC（1280x800）のビューポートでログイン後のホーム画面を表示する",
+        "2. ボタンや文字の重なり、表示位置を検証する"
+      ],
+      "expected": "どちらの画面サイズでも縦スクロールのみ、またはスクロールなしの最適なレスポンシブ配置になり、はみ出しや崩れがないこと。"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-001",
+      "target": "GET /api/user/me モックAPIの実装方式",
+      "reason": "システム要件に『フロントエンドのみで完結し、バックエンドは不要』とあるが、GET /api/user/me を Next.js API Route Handlers で実装するべきか、あるいはフロントエンドのMock Service/Repository層から直接 IndexedDB を参照して解決させるべきかが未確定である。",
+      "sources": {
+        "system_requirements": "本来要件を、Next.js 単体で動作する画面プロトタイプとして検証する。データはクライアント内で擬似的に保持・操作する。",
+        "trace_index": "SCR-002-DT-001: GET /api/user/me",
+        "screen_design": "GET /api/user/me — ログインユーザー情報を取得して表示する"
+      },
+      "resolution": "system_requirements"
+    },
+    {
+      "id": "AMB-002",
+      "target": "ログアウト時のセッション破棄範囲",
+      "reason": "セッションはsessionStorageで保持するとシステム要件に定義されているが、ログアウト時にIndexedDB側に保持した状態のクリアを行うかどうかについての記載がない。",
+      "sources": {
+        "system_requirements": "sessionStorage: user_id, role",
+        "trace_index": "SCR-002-EV-003: ログアウト→ログイン画面遷移",
+        "screen_design": "セッションを破棄しログイン画面（SCR-001）へ遷移する"
+      },
+      "resolution": "system_requirements"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-002-FN-001",
+      "acceptance_id": "ACC-SCR-002-001",
+      "test_id": "TST-SCR-002-003"
+    },
+    {
+      "requirement_id": "SCR-002-FN-002",
+      "acceptance_id": "ACC-SCR-002-002",
+      "test_id": "TST-SCR-002-004"
+    },
+    {
+      "requirement_id": "SCR-002-FN-003",
+      "acceptance_id": "ACC-SCR-002-003",
+      "test_id": "TST-SCR-002-005"
+    },
+    {
+      "requirement_id": "SCR-002-UI-001",
+      "acceptance_id": "ACC-SCR-002-004",
+      "test_id": "TST-SCR-002-003"
+    },
+    {
+      "requirement_id": "SCR-002-UI-002",
+      "acceptance_id": "ACC-SCR-002-005",
+      "test_id": "TST-SCR-002-006"
+    },
+    {
+      "requirement_id": "SCR-002-UI-003",
+      "acceptance_id": "ACC-SCR-002-006",
+      "test_id": "TST-SCR-002-002"
+    },
+    {
+      "requirement_id": "SCR-002-VL-001",
+      "acceptance_id": "ACC-SCR-002-007",
+      "test_id": "TST-SCR-002-001"
+    },
+    {
+      "requirement_id": "SCR-002-EV-001",
+      "acceptance_id": "ACC-SCR-002-001",
+      "test_id": "TST-SCR-002-003"
+    },
+    {
+      "requirement_id": "SCR-002-EV-002",
+      "acceptance_id": "ACC-SCR-002-002",
+      "test_id": "TST-SCR-002-004"
+    },
+    {
+      "requirement_id": "SCR-002-EV-003",
+      "acceptance_id": "ACC-SCR-002-003",
+      "test_id": "TST-SCR-002-005"
+    },
+    {
+      "requirement_id": "SCR-002-DT-001",
+      "acceptance_id": "ACC-SCR-002-008",
+      "test_id": "TST-SCR-002-002"
+    }
+  ]
+}

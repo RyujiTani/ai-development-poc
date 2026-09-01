@@ -1,0 +1,397 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-004_worker_select.md"
+  },
+  "screen": {
+    "id": "SCR-004",
+    "name": "作業員選択画面",
+    "user_role": "CONTRACTOR_MANAGER",
+    "route": "app/(contractor)/worker-select/page.tsx",
+    "description": "外注先管理者が打刻対象の作業員を一覧から選択する画面。チェックボックスによる一括選択が可能。選択された打刻モード（出勤/退勤）が画面上部に表示される。"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-004-FN-001",
+        "summary": "ログイン中の外注先管理者の所属企業に紐づく作業員一覧を表示できる",
+        "description": "認証されたセッション情報（sessionStorage 等）から取得した contractor_id に基づき、IndexedDB の workers テーブルから status が 'ACTIVE' の該当作業員データを取得・表示する。"
+      },
+      {
+        "id": "SCR-004-FN-002",
+        "summary": "作業員をチェックボックスで個別に選択できる",
+        "description": "一覧に表示された各作業員の行に対してチェックボックスを設け、クリックすることで個別に選択・選択解除を行える。"
+      },
+      {
+        "id": "SCR-004-FN-003",
+        "summary": "全作業員を一括選択/一括解除できる",
+        "description": "リスト上部の全選択/全解除チェックボックスを操作することで、現在表示されているすべての作業員を選択または選択解除できる。"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-004-UI-001",
+        "summary": "作業員をチェックボックス付きリストで表示する",
+        "description": "作業員一覧をチェックボックスと氏名等の情報（資格や連絡先など、必要に応じた最小限の情報）を伴うリスト形式で配置する。"
+      },
+      {
+        "id": "SCR-004-UI-002",
+        "summary": "全選択/全解除のチェックボックスをリスト上部に配置する",
+        "description": "作業員リストのヘッダーまたはリスト上部に、一括操作用チェックボックスを明確に配置する。"
+      },
+      {
+        "id": "SCR-004-UI-003",
+        "summary": "選択中の打刻モード（出勤/退勤）を画面上部に明示する",
+        "description": "前画面（SCR-003）から引き継いだ打刻モード（CLOCK_IN / CLOCK_OUT）を、画面上部の目立つ位置にバッジまたはテキストで表示する。"
+      },
+      {
+        "id": "SCR-004-UI-004",
+        "summary": "レスポンシブWebデザインでPC/スマホ両対応とする",
+        "description": "Tailwind CSS を利用し、PC、タブレット、スマートフォン（Chrome 最新版）の各画面幅において適切にレイアウトが調整されるレスポンシブデザインを適用する。"
+      },
+      {
+        "id": "SCR-004-UI-005",
+        "summary": "スマホ利用時はボタン・チェックボックスを大きくタップしやすいUIとする",
+        "description": "屋外など現場での片手操作を考慮し、チェックボックスおよび遷移ボタンのタップ可能領域を大きめ（最低 44x44px 以上）に確保する。"
+      },
+      {
+        "id": "SCR-004-UI-006",
+        "summary": "一覧はページネーションまたは無限スクロールで表示する",
+        "description": "数十名以上の作業員が登録されている場合を考慮し、画面表示のパフォーマンスを落とさないようページネーションまたは無限スクロールを実装する。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-004-VL-001",
+        "summary": "1名以上の作業員が選択されていない場合は次へ進めない",
+        "description": "「次へ」ボタン押下時に、選択された作業員の数が0名の場合は遷移を拒否し、トースト通知等でエラーメッセージ（例: 「作業員を1名以上選択してください」）を表示する。"
+      },
+      {
+        "id": "SCR-004-VL-002",
+        "summary": "未認証状態でアクセスした場合はログイン画面へリダイレクトする",
+        "description": "セッション（sessionStorage 内の user_id, role）が存在しないか、ロールが 'CONTRACTOR_MANAGER' 以外のユーザーがアクセスした場合、ログイン画面（SCR-001）へ強制的にリダイレクトする。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-004-EV-001",
+        "summary": "「次へ」ボタン押下かつ1名以上選択済時の画面遷移",
+        "description": "バリデーションを通過した場合、選択された作業員のIDリストおよび打刻モード（CLOCK_IN / CLOCK_OUT）の情報を状態保持したまま、撮影・送信画面（SCR-005）へ遷移する。"
+      },
+      {
+        "id": "SCR-004-EV-002",
+        "summary": "戻るボタン押下時の画面遷移",
+        "description": "「戻る」ボタンを押下した際、状態を破棄または戻した上で、打刻モード選択画面（SCR-003）へ遷移する。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-004-DT-001",
+        "summary": "ログインユーザーの所属企業に紐づく作業員一覧を取得する",
+        "description": "ログインユーザー（外注先管理者）の contractor_id に紐づく作業員一覧を IndexedDB の workers ストアから取得する。※モックAPI GET /api/workers と等価なフロントエンド内処理。"
+      },
+      {
+        "id": "SCR-004-DT-002",
+        "summary": "選択された作業員IDリストと打刻モードを後続画面に引き継ぐ",
+        "description": "React Context、Zustand、あるいはルーティング上の状態（State）を利用して、選択された作業員IDの配列および打刻モードを SCR-005 へ引き継ぐために保持する。"
+      }
+    ],
+    "api": [
+      {
+        "id": "SCR-004-API-001",
+        "method": "GET",
+        "path": "/api/workers",
+        "description": "ログイン中ユーザーの所属企業（contractor_id）に合致する workers データを IndexedDB よりロードする擬似的なAPI処理。"
+      }
+    ],
+    "state": [
+      {
+        "name": "selectedWorkerIds",
+        "type": "string[]",
+        "description": "現在選択されている作業員のID（worker_id）の配列。"
+      },
+      {
+        "name": "punchMode",
+        "type": "PunchType ('CLOCK_IN' | 'CLOCK_OUT')",
+        "description": "前画面から引き継がれた現在の打刻モード。"
+      },
+      {
+        "name": "isLoading",
+        "type": "boolean",
+        "description": "IndexedDB からのデータロード中状態を示すフラグ。"
+      },
+      {
+        "name": "errorMessage",
+        "type": "string | null",
+        "description": "未選択状態で遷移しようとした際などに表示するエラー文言を保持する状態。"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-004"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "AC-004-001",
+      "requirements": [
+        "SCR-004-FN-001",
+        "SCR-004-DT-001",
+        "SCR-004-VL-002"
+      ],
+      "description": "未ログイン状態で /worker-select にアクセスした場合は SCR-001（ログイン画面）にリダイレクトされること。ログイン済みの場合は、その管理者の所属企業（contractor_id）に該当するアクティブな作業員のみが一覧表示されること。"
+    },
+    {
+      "id": "AC-004-002",
+      "requirements": [
+        "SCR-004-FN-002",
+        "SCR-004-FN-003",
+        "SCR-004-UI-001",
+        "SCR-004-UI-002"
+      ],
+      "description": "各作業員の個別チェックボックスをクリックして選択/解除ができること。上部の一括チェックボックスをONにすると表示されている全作業員が選択され、OFFにすると全選択が解除されること。"
+    },
+    {
+      "id": "AC-004-003",
+      "requirements": [
+        "SCR-004-UI-003"
+      ],
+      "description": "画面上部に、前画面で選択された打刻モード（CLOCK_IN の場合は「出勤」、CLOCK_OUT の場合は「退勤」など）が明確に確認できるテキストが表示されていること。"
+    },
+    {
+      "id": "AC-004-004",
+      "requirements": [
+        "SCR-004-VL-001"
+      ],
+      "description": "作業員を1名も選択していない状態で「次へ」ボタンを押下した際、画面遷移せず、適切なトースト通知または画面上のメッセージでエラーが表示されること。"
+    },
+    {
+      "id": "AC-004-005",
+      "requirements": [
+        "SCR-004-EV-001",
+        "SCR-004-DT-002"
+      ],
+      "description": "作業員を1名以上選択した状態で「次へ」ボタンを押下した際、選択された作業員IDのリストおよび打刻モードが保持され、SCR-005（撮影・送信画面）へ正常に遷移すること。"
+    },
+    {
+      "id": "AC-004-006",
+      "requirements": [
+        "SCR-004-EV-002"
+      ],
+      "description": "「戻る」ボタンを押下した際、選択状態を破棄して SCR-003（打刻モード選択画面）へ正常に戻ること。"
+    },
+    {
+      "id": "AC-004-007",
+      "requirements": [
+        "SCR-004-UI-004",
+        "SCR-004-UI-005"
+      ],
+      "description": "スマートフォン等、モバイル端末の画面幅で崩れがなく表示され、チェックボックスや操作ボタンがタップしやすい大きさ（タップ領域が狭すぎない）で表示されること。"
+    }
+  ],
+  "tests": [
+    {
+      "test_id": "T-004-001",
+      "test_type": "unit",
+      "requirements": [
+        "SCR-004-VL-002",
+        "SCR-004-FN-001",
+        "SCR-004-DT-001"
+      ],
+      "input": "未認証状態でのアクセス、および特定 contractor_id 管理者でのアクセス",
+      "steps": [
+        "1. セッション情報（sessionStorage）が空の状態で画面にアクセスを試みる。",
+        "2. sessionStorage に contractor_id = 'C01', role = 'CONTRACTOR_MANAGER' をセットして再度画面にアクセスする。"
+      ],
+      "expected": [
+        "1. ログイン画面（SCR-001）へリダイレクトされること。",
+        "2. リダイレクトされず、IndexedDB の 'workers' ストアから contractor_id = 'C01' のアクティブ作業員のみがロードされ、画面上にレンダリングされること。"
+      ]
+    },
+    {
+      "test_id": "T-004-002",
+      "test_type": "unit",
+      "requirements": [
+        "SCR-004-FN-002",
+        "SCR-004-FN-003",
+        "SCR-004-UI-001",
+        "SCR-004-UI-002"
+      ],
+      "input": "一覧のチェックボックス操作",
+      "steps": [
+        "1. ロードされた作業員一覧の中で、1行目の個別チェックボックスをクリックする。",
+        "2. リスト上部の一括選択用チェックボックスをクリックしてONにする。",
+        "3. 再度、一括選択用チェックボックスをクリックしてOFFにする。"
+      ],
+      "expected": [
+        "1. 1行目の作業員のみが選択状態になり、状態変数（selectedWorkerIds）にその ID が追加されること。",
+        "2. 一覧に存在するすべての作業員のチェックボックスがONになり、selectedWorkerIds に全員の ID が含まれること。",
+        "3. すべての作業員のチェックボックスがOFFになり、selectedWorkerIds が空（[]）になること。"
+      ]
+    },
+    {
+      "test_id": "T-004-003",
+      "test_type": "e2e",
+      "requirements": [
+        "SCR-004-VL-001",
+        "SCR-004-EV-001",
+        "SCR-004-DT-002"
+      ],
+      "input": "未選択状態および選択状態での「次へ」ボタンの押下",
+      "steps": [
+        "1. 作業員を1名も選択していない初期状態で「次へ」ボタンをクリックする。",
+        "2. 任意の作業員を2名選択し、再度「次へ」ボタンをクリックする。"
+      ],
+      "expected": [
+        "1. 画面遷移が発生せず、画面上にエラー表示またはトースト通知（「作業員を1名以上選択してください」等のエラー）が発生すること。",
+        "2. 選択された2名の作業員IDと打刻モードが状態に保持（引き継ぎ可能な形に）され、撮影・送信画面（SCR-005）へ遷移すること。"
+      ]
+    },
+    {
+      "test_id": "T-004-004",
+      "test_type": "e2e",
+      "requirements": [
+        "SCR-004-EV-002"
+      ],
+      "input": "戻るボタンの押下",
+      "steps": [
+        "1. 画面内の「戻る」ボタンをクリックする。"
+      ],
+      "expected": [
+        "1. 画面遷移が発生し、打刻モード選択画面（SCR-003）に戻ること。"
+      ]
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-001",
+      "target": "作業員リストの表示順",
+      "reason": "作業員リストの表示順（例：五十音順、登録日時順、最終打刻順など）が要件および画面設計内に定義されておらず、どのようなソート順で表示すべきかが確定していない。",
+      "sources": {
+        "system_requirements": null,
+        "trace_index": null,
+        "screen_design": "## 確認事項\n- 作業員リストの表示順（氏名五十音順、登録順など）の仕様が未定。"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-002",
+      "target": "当日打刻済み作業員の表示制御",
+      "reason": "既に当日中に出勤打刻が完了している作業員について、一覧上でどのようなUI表現（非活性グレーアウト、チェック不可、打刻済みマークの明記など）を行うべきかが未定。",
+      "sources": {
+        "system_requirements": null,
+        "trace_index": null,
+        "screen_design": "## 確認事項\n- 既に当日の出勤打刻済みの作業員をリスト上でどう表示するか（グレーアウト、打刻済みマーク等）が未定。"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-003",
+      "target": "画面ルーティングURLパスの確定",
+      "reason": "Next.js App Routerでのルーティング構成において、'app/(contractor)/...' とのみ決定されており、画面IDに対応する具体的なURLセグメント（例：/contractor/worker-select もしくは /contractor/attendance/worker-select 等）が確定していない。",
+      "sources": {
+        "system_requirements": "app/(contractor)/...",
+        "trace_index": null,
+        "screen_design": null
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-004",
+      "target": "ページネーションまたは無限スクロールの選択",
+      "reason": "表示制御方式として『ページネーションまたは無限スクロール』と選択肢が提示されており、どちらを具体的に適用してコーディングするかが確定していない。",
+      "sources": {
+        "system_requirements": null,
+        "trace_index": "SCR-004-UI-006: ページネーション/無限スクロール",
+        "screen_design": "SCR-004-UI-006: 一覧はページネーションまたは無限スクロールで表示する"
+      },
+      "resolution": "manual_confirmation"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-004-FN-001",
+      "acceptance_id": "AC-004-001",
+      "test_id": "T-004-001"
+    },
+    {
+      "requirement_id": "SCR-004-FN-002",
+      "acceptance_id": "AC-004-002",
+      "test_id": "T-004-002"
+    },
+    {
+      "requirement_id": "SCR-004-FN-003",
+      "acceptance_id": "AC-004-002",
+      "test_id": "T-004-002"
+    },
+    {
+      "requirement_id": "SCR-004-UI-001",
+      "acceptance_id": "AC-004-002",
+      "test_id": "T-004-002"
+    },
+    {
+      "requirement_id": "SCR-004-UI-002",
+      "acceptance_id": "AC-004-002",
+      "test_id": "T-004-002"
+    },
+    {
+      "requirement_id": "SCR-004-UI-003",
+      "acceptance_id": "AC-004-003",
+      "test_id": "T-004-003"
+    },
+    {
+      "requirement_id": "SCR-004-UI-004",
+      "acceptance_id": "AC-004-007",
+      "test_id": "T-004-001"
+    },
+    {
+      "requirement_id": "SCR-004-UI-005",
+      "acceptance_id": "AC-004-007",
+      "test_id": "T-004-002"
+    },
+    {
+      "requirement_id": "SCR-004-UI-006",
+      "acceptance_id": "AC-004-001",
+      "test_id": "T-004-001"
+    },
+    {
+      "requirement_id": "SCR-004-VL-001",
+      "acceptance_id": "AC-004-004",
+      "test_id": "T-004-003"
+    },
+    {
+      "requirement_id": "SCR-004-VL-002",
+      "acceptance_id": "AC-004-001",
+      "test_id": "T-004-001"
+    },
+    {
+      "requirement_id": "SCR-004-EV-001",
+      "acceptance_id": "AC-004-005",
+      "test_id": "T-004-003"
+    },
+    {
+      "requirement_id": "SCR-004-EV-002",
+      "acceptance_id": "AC-004-006",
+      "test_id": "T-004-004"
+    },
+    {
+      "requirement_id": "SCR-004-DT-001",
+      "acceptance_id": "AC-004-001",
+      "test_id": "T-004-001"
+    },
+    {
+      "requirement_id": "SCR-004-DT-002",
+      "acceptance_id": "AC-004-005",
+      "test_id": "T-004-003"
+    }
+  ]
+}

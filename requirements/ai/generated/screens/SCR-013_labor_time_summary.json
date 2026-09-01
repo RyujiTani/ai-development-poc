@@ -1,0 +1,453 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-013_labor_time_summary.md"
+  },
+  "screen": {
+    "id": "SCR-013",
+    "name": "労働時間集計画面",
+    "user": "FACTORY_ADMIN",
+    "route": "app/(factory)/labor-summary/page.tsx",
+    "description": "工場側管理者が作業員ごとの実労働時間を期間指定（日次・月次）で集計し確認する画面。集計結果のCSVダウンロード機能を備える。"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-013-FN-001",
+        "summary": "作業員ごとの実労働時間を日次で集計表示できる",
+        "description": "指定された期間および「日次」の単位に基づいて、作業員ごとの実労働時間を計算・集計して画面上に表示する。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-013-FN-002",
+        "summary": "作業員ごとの実労働時間を月次で集計表示できる",
+        "description": "指定された期間および「月次」の単位に基づいて、作業員ごとの実労働時間を計算・集計して画面上に表示する。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-013-FN-003",
+        "summary": "集計期間を指定できる",
+        "description": "集計の対象とする「開始日」および「終了日」のカレンダー指定が可能であること。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-013-FN-004",
+        "summary": "集計結果をCSVファイルでダウンロードできる",
+        "description": "画面に表示されている集計結果データと同等の内容を、外部システム連携用にCSV形式のファイルとしてクライアント側で生成・ダウンロードできる。",
+        "priority": "High"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-013-UI-001",
+        "summary": "画面上部に期間指定（開始日・終了日）と集計単位（日次/月次）の選択欄を配置する",
+        "description": "集計条件を指定するための日付ピッカー（開始日・終了日）および集計単位選択ラジオボタン/セレクトボックスを画面上部に配置する。"
+      },
+      {
+        "id": "SCR-013-UI-002",
+        "summary": "集計結果をテーブル形式で表示する",
+        "description": "作業員名、外注先名、日付（または月）、労働時間等のカラムを持つグリッドテーブルを表示する。"
+      },
+      {
+        "id": "SCR-013-UI-003",
+        "summary": "CSVダウンロードボタンを配置する",
+        "description": "集計結果テーブルの付近に、CSVダウンロード処理をキックするボタンを分かりやすく配置する。"
+      },
+      {
+        "id": "SCR-013-UI-004",
+        "summary": "一覧はページネーションまたは無限スクロールで表示する",
+        "description": "大量データ表示に対応するため、初期表示件数を制限し、ページネーションコントロールまたはスクロールによる追加読み込み機能を提供する。"
+      },
+      {
+        "id": "SCR-013-UI-005",
+        "summary": "レスポンシブWebデザインでPC/スマホ両対応とする",
+        "description": "Tailwind CSSを使用し、PCの大画面とスマホ/タブレットの小画面双方でテーブルやフォーム要素が適切に縮小・折り返されて表示されるレスポンシブ対応を行う。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-013-VL-001",
+        "summary": "期間指定（開始日）の必須および有効形式バリデーション",
+        "description": "集計開始日は必須入力項目であり、かつ未来日や無効な日付形式ではないこと（カレンダーUIによる入力制限を推奨）。"
+      },
+      {
+        "id": "SCR-013-VL-002",
+        "summary": "期間指定（終了日）の必須、有効形式、日付前後バリデーション",
+        "description": "集計終了日は必須入力項目であり、有効な日付形式かつ、開始日と同日か開始日より後の日付であること。"
+      },
+      {
+        "id": "SCR-013-VL-003",
+        "summary": "認証状態および管理者権限（FACTORY_ADMIN）のチェック",
+        "description": "セッションに有効な user_id がない、または role が FACTORY_ADMIN 以外の場合は、直ちに管理者ログイン画面（SCR-010）へリダイレクトする。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-013-EV-001",
+        "summary": "「集計」ボタン押下イベント",
+        "description": "バリデーション通過後、指定された条件でAPI（GET /api/admin/labor-summary）をコールして集計データを再取得し、画面表示テーブルを更新する。"
+      },
+      {
+        "id": "SCR-013-EV-002",
+        "summary": "「CSVダウンロード」ボタン押下イベント",
+        "description": "現在の条件に基づきCSVダウンロードAPI（GET /api/admin/labor-summary/csv）をコール、またはクライアント側でBlobを生成して「labor_summary_{yyyyMMdd}.csv」としてダウンロードを実行する。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-013-DT-001",
+        "summary": "API: GET /api/admin/labor-summary",
+        "description": "クエリパラメータ start_date (YYYY-MM-DD), end_date (YYYY-MM-DD), unit ('daily' | 'monthly') を指定して集計結果JSONを取得する（IndexedDBから計算したモック応答）。"
+      },
+      {
+        "id": "SCR-013-DT-002",
+        "summary": "API: GET /api/admin/labor-summary/csv",
+        "description": "クエリパラメータ start_date, end_date, unit を指定して、CSV形式のBlobデータまたはテキストデータを取得・生成する。"
+      }
+    ],
+    "api": [
+      {
+        "id": "SCR-013-AP-001",
+        "method": "GET",
+        "path": "/api/admin/labor-summary",
+        "queries": {
+          "start_date": "string (YYYY-MM-DD)",
+          "end_date": "string (YYYY-MM-DD)",
+          "unit": "daily | monthly"
+        },
+        "response": {
+          "status": 200,
+          "body_format": "Array<{ worker_id: string, worker_name: string, contractor_name: string, period: string, total_hours: number }>"
+        }
+      },
+      {
+        "id": "SCR-013-AP-002",
+        "method": "GET",
+        "path": "/api/admin/labor-summary/csv",
+        "queries": {
+          "start_date": "string (YYYY-MM-DD)",
+          "end_date": "string (YYYY-MM-DD)",
+          "unit": "daily | monthly"
+        },
+        "response": {
+          "status": 200,
+          "body_format": "text/csv"
+        }
+      }
+    ],
+    "state": [
+      {
+        "id": "SCR-013-ST-001",
+        "name": "searchConditions",
+        "type": "object",
+        "description": "集計条件（startDate, endDate, unit）を保持する。"
+      },
+      {
+        "id": "SCR-013-ST-002",
+        "name": "summaryData",
+        "type": "array",
+        "description": "APIから取得した集計結果レコードのリスト。"
+      },
+      {
+        "id": "SCR-013-ST-003",
+        "name": "isLoading",
+        "type": "boolean",
+        "description": "データ集計取得中のローディング状態を示すフラグ。"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-013"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "SCR-013-AC-001",
+      "requirement_id": "SCR-013-FN-001",
+      "input": "開始日「2026-04-01」、終了日「2026-04-07」、集計単位「日次」を設定",
+      "operation": "「集計」ボタンを押下する",
+      "expectation": "テーブルに各作業員の日次（日付別）労働時間レコードが表示されること。"
+    },
+    {
+      "id": "SCR-013-AC-002",
+      "requirement_id": "SCR-013-FN-002",
+      "input": "開始日「2026-04-01」、終了日「2026-04-30」、集計単位「月次」を設定",
+      "operation": "「集計」ボタンを押下する",
+      "expectation": "テーブルに各作業員の月次（2026-04）集計労働時間レコードが表示されること。"
+    },
+    {
+      "id": "SCR-013-AC-003",
+      "requirement_id": "SCR-013-FN-003",
+      "input": "期間指定入力欄をクリックし、カレンダーピッカーから任意の日付を選択",
+      "operation": "開始日と終了日を選択・入力する",
+      "expectation": "選択した日付値が入力欄に正しく反映されること。"
+    },
+    {
+      "id": "SCR-013-AC-004",
+      "requirement_id": "SCR-013-FN-004",
+      "input": "任意の条件で集計結果が表示されている状態",
+      "operation": "「CSVダウンロード」ボタンを押下する",
+      "expectation": "PapaParse等を用いてブラウザ経由でCSVファイル（BOM付きUTF-8推奨）がダウンロードされること。"
+    },
+    {
+      "id": "SCR-013-AC-005",
+      "requirement_id": "SCR-013-UI-001",
+      "input": "画面を表示する",
+      "operation": "目視で確認",
+      "expectation": "画面上部（ファーストビュー）に開始日、終了日、日次/月次切り替えコントロール、集計ボタンが配置されていること。"
+    },
+    {
+      "id": "SCR-013-AC-006",
+      "requirement_id": "SCR-013-UI-002",
+      "input": "集計処理が完了した状態",
+      "operation": "目視で確認",
+      "expectation": "テーブル内に「作業員名」「外注先名」「日付/月」「労働時間（時間）」がカラムとして表示されていること。"
+    },
+    {
+      "id": "SCR-013-AC-007",
+      "requirement_id": "SCR-013-UI-003",
+      "input": "画面を表示する",
+      "operation": "目視で確認",
+      "expectation": "集計テーブルの上部または下部に「CSVダウンロード」と書かれたボタンが適切にスタイルされて配置されていること。"
+    },
+    {
+      "id": "SCR-013-AC-008",
+      "requirement_id": "SCR-013-UI-004",
+      "input": "大量データがある状態で集計を実行する",
+      "operation": "テーブル最下部までスクロール、またはページネーションボタンを押下する",
+      "expectation": "指定件数（例: 20件等）で区切られ、次のページが読み込める、あるいはページが切り替わること。"
+    },
+    {
+      "id": "SCR-013-AC-009",
+      "requirement_id": "SCR-013-UI-005",
+      "input": "ブラウザ幅をスマホサイズ（例: 375px）に変更する",
+      "operation": "目視で確認",
+      "expectation": "テーブルが横スクロール可能になる、あるいはカード型に変化し、画面外に要素がはみ出して崩れないこと。"
+    },
+    {
+      "id": "SCR-013-AC-010",
+      "requirement_id": "SCR-013-VL-001",
+      "input": "開始日を空欄にして集計単位を「日次」に設定",
+      "operation": "「集計」ボタンを押下する",
+      "expectation": "フォームバリデーションエラーが発生し、「開始日は必須項目です」等のメッセージがトーストまたはインラインで表示されること。"
+    },
+    {
+      "id": "SCR-013-AC-011",
+      "requirement_id": "SCR-013-VL-002",
+      "input": "開始日を「2026-04-10」、終了日を「2026-04-05」に設定",
+      "operation": "「集計」ボタンを押下する",
+      "expectation": "バリデーションエラーとなり、「終了日は開始日以降の日付を指定してください」等のメッセージが表示されること。"
+    },
+    {
+      "id": "SCR-013-AC-012",
+      "requirement_id": "SCR-013-VL-003",
+      "input": "未ログイン状態、または外注先管理者（CONTRACTOR_MANAGER）のアカウントで直接対象URL（/labor-summary）にアクセスを試みる",
+      "operation": "ページをリクエストする",
+      "expectation": "管理者ログイン画面（/login または SCR-010 に準ずるパス）に自動的にリダイレクトされること。"
+    }
+  ],
+  "tests": [
+    {
+      "test_id": "SCR-013-UT-001",
+      "test_type": "unit",
+      "requirement_id": "SCR-013-VL-001",
+      "input": "startDate: \"\"",
+      "steps": [
+        "React Hook Formで作成されたコンポーネントに入力のない状態を渡す",
+        "バリデーションメソッドをトリガーする"
+      ],
+      "expected": "開始日必須のスキーマエラーが返却されること。"
+    },
+    {
+      "test_id": "SCR-013-UT-002",
+      "test_type": "unit",
+      "requirement_id": "SCR-013-VL-002",
+      "input": "startDate: \"2026-04-10\", endDate: \"2026-04-09\"",
+      "steps": [
+        "開始日よりも前の終了日を渡す",
+        "Zod等のスキーマバリデーションをトリガーする"
+      ],
+      "expected": "終了日が開始日より過去であるためエラーメッセージが返却されること。"
+    },
+    {
+      "test_id": "SCR-013-IT-001",
+      "test_type": "integration",
+      "requirement_id": "SCR-013-FN-001",
+      "input": "開始日 \"2026-04-13\", 終了日 \"2026-04-13\", 単位 \"daily\"",
+      "steps": [
+        "IndexedDBにダミーの打刻情報（CLOCK_IN 09:00, CLOCK_OUT 18:00）をシードする",
+        "集計画面にて上記日付条件を設定し「集計」ボタンをモッククリックする",
+        "API (GET /api/admin/labor-summary) 経由で取得されたデータが画面上にロードされるのを待つ"
+      ],
+      "expected": "テーブルに実労働時間が「9.00時間」（または規定の丸め計算に従う値）として1件出力されていること。"
+    },
+    {
+      "test_id": "SCR-013-IT-002",
+      "test_type": "integration",
+      "requirement_id": "SCR-013-FN-004",
+      "input": "任意の有効な集計データがロードされている状態",
+      "steps": [
+        "CSVダウンロードボタンをクリックする",
+        "window.URL.createObjectURL と HTMLAnchorElement.click のモック処理がコールされるか確認する"
+      ],
+      "expected": "CSV文字列にヘッダー行、および表示データがカンマ区切りで正しく書き出されていること。"
+    },
+    {
+      "test_id": "SCR-013-IT-003",
+      "test_type": "integration",
+      "requirement_id": "SCR-013-VL-003",
+      "input": "sessionStorageにロールが未格納、もしくはCONTRACTOR_MANAGERの状態",
+      "steps": [
+        "ページコンポーネントをマウントする"
+      ],
+      "expected": "認証ガード（useAuthやルートガード）が機能し、ログイン画面等へ遷移するリダイレクト処理（router.replace）が実行されること。"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-013-001",
+      "target": "打刻時刻の丸めルール",
+      "reason": "労働時間の自動計算ロジック（15分単位の切り捨て/切り上げなど）が未定。本プロトタイプでの実装仕様がシステム要件定義・画面設計書双方でTODO扱いとなっている。",
+      "sources": {
+        "system_requirements": "TODO-005 打刻時刻の丸めルール",
+        "screen_design": "確認事項 - 労働時間の自動計算ロジックが未定"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-013-002",
+      "target": "CSV出力フォーマット",
+      "reason": "CSVファイルのヘッダーカラム定義および文字コード要件（BOM有無、改行コード）が未定義。給与ソフト連携用の仕様が決定していない。",
+      "sources": {
+        "system_requirements": "CSV 出力: papaparse + Blob ダウンロード",
+        "screen_design": "確認事項 - CSV出力のカラム定義・フォーマットが未定"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-013-003",
+      "target": "外注先別絞り込みフィルターの要否",
+      "reason": "画面設計上では[ASSUMPTION]として「全外注先を一括表示とする」と仮定されているが、本来システム管理者としては外注先別のフィルター機能が実務上要求される可能性が高い。",
+      "sources": {
+        "screen_design": "確認事項 - 外注先別の絞り込み機能が必要かどうかの確認が必要。[ASSUMPTION] 全外注先を一括表示とする。"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-013-004",
+      "target": "深夜労働・残業時間等の内訳集計の要否",
+      "reason": "機能要件では「実労働時間を日次/月次で集計」とだけ定義されており、法定内/法定外時間や深夜時間の切り分けを行うべきか否かが不明確。",
+      "sources": {
+        "screen_design": "要件一覧 - 実労働時間を日次/月次で集計表示できる"
+      },
+      "resolution": "manual_confirmation"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-013-FN-001",
+      "acceptance_ids": [
+        "SCR-013-AC-001"
+      ],
+      "test_ids": [
+        "SCR-013-IT-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-013-FN-002",
+      "acceptance_ids": [
+        "SCR-013-AC-002"
+      ],
+      "test_ids": []
+    },
+    {
+      "requirement_id": "SCR-013-FN-003",
+      "acceptance_ids": [
+        "SCR-013-AC-003"
+      ],
+      "test_ids": []
+    },
+    {
+      "requirement_id": "SCR-013-FN-004",
+      "acceptance_ids": [
+        "SCR-013-AC-004"
+      ],
+      "test_ids": [
+        "SCR-013-IT-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-013-UI-001",
+      "acceptance_ids": [
+        "SCR-013-AC-005"
+      ],
+      "test_ids": []
+    },
+    {
+      "requirement_id": "SCR-013-UI-002",
+      "acceptance_ids": [
+        "SCR-013-AC-006"
+      ],
+      "test_ids": [
+        "SCR-013-IT-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-013-UI-003",
+      "acceptance_ids": [
+        "SCR-013-AC-007"
+      ],
+      "test_ids": []
+    },
+    {
+      "requirement_id": "SCR-013-UI-004",
+      "acceptance_ids": [
+        "SCR-013-AC-008"
+      ],
+      "test_ids": []
+    },
+    {
+      "requirement_id": "SCR-013-UI-005",
+      "acceptance_ids": [
+        "SCR-013-AC-009"
+      ],
+      "test_ids": []
+    },
+    {
+      "requirement_id": "SCR-013-VL-001",
+      "acceptance_ids": [
+        "SCR-013-AC-010"
+      ],
+      "test_ids": [
+        "SCR-013-UT-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-013-VL-002",
+      "acceptance_ids": [
+        "SCR-013-AC-011"
+      ],
+      "test_ids": [
+        "SCR-013-UT-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-013-VL-003",
+      "acceptance_ids": [
+        "SCR-013-AC-012"
+      ],
+      "test_ids": [
+        "SCR-013-IT-003"
+      ]
+    }
+  ]
+}

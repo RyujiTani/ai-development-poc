@@ -1,0 +1,326 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-006_punch_complete.md"
+  },
+  "screen": {
+    "id": "SCR-006",
+    "name": "打刻完了画面",
+    "user_role": "CONTRACTOR_MANAGER",
+    "description": "打刻データの送信が正常に完了したことを外注先管理者に通知する画面。送信完了メッセージを表示し、ホーム画面に戻る導線を提供する。"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-006-FN-001",
+        "summary": "打刻送信完了メッセージを表示する",
+        "details": "打刻データの送信が正常に完了したことを示すメッセージを画面上に明示する。"
+      },
+      {
+        "id": "SCR-006-FN-002",
+        "summary": "ホーム画面へ戻るボタンを提供する",
+        "details": "外注先ホーム画面へ容易に戻ることができるナビゲーション要素を提供する。"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-006-UI-001",
+        "summary": "送信完了メッセージを画面中央に大きく表示する",
+        "details": "一目で送信が成功したことが視認できるよう、画面のメインコンテツエリア（中央部）に大きくメッセージを配置する。"
+      },
+      {
+        "id": "SCR-006-UI-002",
+        "summary": "「ホームへ戻る」ボタンを大きくタップしやすいサイズで配置する",
+        "details": "屋外等の作業環境におけるモバイルデバイスでの操作を考慮し、ボタンは十分な高さ・幅を持たせ、タップしやすいように設計する（Tailwindのpy-3、w-full等の活用）。"
+      },
+      {
+        "id": "SCR-006-UI-003",
+        "summary": "レスポンシブWebデザインでPC/スマホ両対応とする",
+        "details": "モバイルファーストのレイアウトにし、PC・タブレット表示時にもレイアウトが不自然に広がらないように最大幅制限（max-w-md等）を適用する。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-006-VL-001",
+        "summary": "未認証状態でのリダイレクト",
+        "details": "ユーザーが未ログイン状態（sessionStorage内の認証キーなし、またはロール不一致）で直接このURLにアクセスした場合、外注先ログイン画面（SCR-001）へリダイレクトする。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-006-EV-001",
+        "summary": "「ホームへ戻る」ボタン押下による画面遷移",
+        "details": "「ホームへ戻る」ボタンをクリックまたはタップした際、外注先ホーム画面（SCR-002）へ遷移する。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-006-DT-001",
+        "summary": "前画面（SCR-005）からの送信成功情報の受け取りと表示",
+        "details": "前画面（SCR-005）から送信成功時のレスポンス情報（出勤/退勤の打刻モード、打刻対象となった人数）を安全に引き継ぎ、画面上に反映表示する。"
+      }
+    ],
+    "api": [],
+    "state": [
+      {
+        "id": "SCR-006-ST-001",
+        "summary": "送信情報表示ステート",
+        "details": "表示対象となる打刻種別（PunchType）および対象人数を一時的な状態（ReactのState、Context、またはURLクエリパラメータ）として保持・管理する。"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-006"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "AC-SCR-006-FN-001",
+      "requirement_id": "SCR-006-FN-001",
+      "input": "打刻処理完了後の正常な遷移",
+      "operation": "完了画面表示",
+      "occurrence": "画面内に「打刻が完了しました」またはそれに類する明確な完了メッセージが表示される",
+      "confirmation": "要素がDOMにレンダリングされ、かつ非表示（hidden等）になっていないこと"
+    },
+    {
+      "id": "AC-SCR-006-FN-002",
+      "requirement_id": "SCR-006-FN-002",
+      "input": "なし",
+      "operation": "ナビゲーション要素の配置確認",
+      "occurrence": "画面内に「ホームへ戻る」等のナビゲーションボタンが確認できること",
+      "confirmation": "テキスト「ホームへ戻る」（または同等のラベル）を持つボタン要素が存在すること"
+    },
+    {
+      "id": "AC-SCR-006-UI-001",
+      "requirement_id": "SCR-006-UI-001",
+      "input": "なし",
+      "operation": "完了メッセージのレイアウト検証",
+      "occurrence": "完了メッセージが画面の中央エリアに表示される",
+      "confirmation": "フレックスボックスやグリッドなどのスタイリングにより、コンテンツが中央に配置されていること"
+    },
+    {
+      "id": "AC-SCR-006-UI-002",
+      "requirement_id": "SCR-006-UI-002",
+      "input": "なし",
+      "operation": "ボタンのタップ領域サイズ検証",
+      "occurrence": "戻るボタンが押しやすい十分な大きさであること",
+      "confirmation": "ボタン要素のCSSに高さやパディング（Tailwindでのpy-3、px-4など）が十分に設定されていること"
+    },
+    {
+      "id": "AC-SCR-006-UI-003",
+      "requirement_id": "SCR-006-UI-003",
+      "input": "ビューポートの横幅を375pxから1200px以上に変更",
+      "operation": "表示状態の確認",
+      "occurrence": "デザインが崩れることなく、幅に応じて適切にスケールされる",
+      "confirmation": "横スクロールバーが出現せず、PC表示時には最大幅（max-w-mdなど）が設定されてメッセージカードとして美しく配置されていること"
+    },
+    {
+      "id": "AC-SCR-006-VL-001",
+      "requirement_id": "SCR-006-VL-001",
+      "input": "sessionStorageが空の状態で本画面URL（/contractor/punch-completeなど）へアクセス",
+      "operation": "直接URL入力アクセス",
+      "occurrence": "自動的に認証ガードが働き、ログイン画面へ強制リダイレクトされる",
+      "confirmation": "ブラウザのアドレスがSCR-001（/login等）のパスに変更されること"
+    },
+    {
+      "id": "AC-SCR-006-EV-001",
+      "requirement_id": "SCR-006-EV-001",
+      "input": "「ホームへ戻る」ボタンをクリック",
+      "operation": "ボタンクリック操作",
+      "occurrence": "ルーター遷移がトリガーされる",
+      "confirmation": "画面表示が外注先ホーム画面（SCR-002）へ遷移し、アドレスがSCR-002のパスになること"
+    },
+    {
+      "id": "AC-SCR-006-DT-001",
+      "requirement_id": "SCR-006-DT-001",
+      "input": "前画面（SCR-005）から送信成功パラメータ（例: mode='CLOCK_IN', count=3）を渡して遷移させる",
+      "operation": "画面描画完了時",
+      "occurrence": "画面内に「出勤」および「3名」という内容が含まれる動的なテキストが表示される",
+      "confirmation": "モック送信した打刻モードと人数がそのまま完了文言として表示に埋め込まれていること"
+    }
+  ],
+  "tests": [
+    {
+      "id": "TS-SCR-006-001",
+      "type": "unit",
+      "requirement_id": "SCR-006-FN-001",
+      "input": "正常な遷移ステート（打刻完了状態）",
+      "steps": [
+        "SCR-006コンポーネントを適当な送信情報ステートを与えてレンダリングする。",
+        "完了を示す文言（例：'打刻データの送信が完了しました'）が描画されているかチェックする。"
+      ],
+      "expected": "指定された完了文言が正しくDOM上に確認できること。"
+    },
+    {
+      "id": "TS-SCR-006-002",
+      "type": "unit",
+      "requirement_id": "SCR-006-FN-002",
+      "input": "デフォルトレンダリング",
+      "steps": [
+        "SCR-006コンポーネントをマウントする。",
+        "「ホームへ戻る」に該当するボタン要素が存在することを確認する。"
+      ],
+      "expected": "「ホームへ戻る」テキストを持つボタンが1件以上検出されること。"
+    },
+    {
+      "id": "TS-SCR-006-003",
+      "type": "unit",
+      "requirement_id": "SCR-006-UI-001",
+      "input": "デフォルトレンダリング",
+      "steps": [
+        "完了メッセージが表示される中央コンテナ要素のクラスリストを検証する。"
+      ],
+      "expected": "中央揃えを実現するためのレイアウトクラス（例：flex, justify-center, items-center 等のTailwindクラス）が含まれていること。"
+    },
+    {
+      "id": "TS-SCR-006-004",
+      "type": "unit",
+      "requirement_id": "SCR-006-UI-002",
+      "input": "デフォルトレンダリング",
+      "steps": [
+        "「ホームへ戻る」ボタンのパディング、または高さを指定するCSSクラスを検証する。"
+      ],
+      "expected": "十分なサイズ感（例: w-full、かつpy-3、h-12など）がクラスに含まれていること。"
+    },
+    {
+      "id": "TS-SCR-006-005",
+      "type": "unit",
+      "requirement_id": "SCR-006-UI-003",
+      "input": "デフォルトレンダリング",
+      "steps": [
+        "最外周ラッパーの最大幅制御に関するスタイリングを検証する。"
+      ],
+      "expected": "極端にPC画面いっぱいにレイアウトが広がらないよう制限するクラス（例: max-w-md, mx-auto など）が適用されていること。"
+    },
+    {
+      "id": "TS-SCR-006-006",
+      "type": "integration",
+      "requirement_id": "SCR-006-VL-001",
+      "input": "未認証のsessionStorage状態",
+      "steps": [
+        "sessionStorageの認証情報をクリア（空に）する。",
+        "SCR-006が定義されたルーティングへアクセスをシミュレートする（Next.js App RouterのMiddlewareまたはレイアウト保護を介した動作）。"
+      ],
+      "expected": "ログインページ（SCR-001）へのリダイレクト処理（router.push等）が発火、または表示が拒否されること。"
+    },
+    {
+      "id": "TS-SCR-006-007",
+      "type": "integration",
+      "requirement_id": "SCR-006-EV-001",
+      "input": "認証済みの正常レンダリング状態でボタンをクリック",
+      "steps": [
+        "Next.jsルーターのモック（useRouter）をセットアップする。",
+        "「ホームへ戻る」ボタンをシミュレートクリックする。",
+        "ルーターのpushまたはreplaceメソッドが、外注先ホーム画面（SCR-002、パス: /contractor/home等）のパスで呼び出されたことをアサートする。"
+      ],
+      "expected": "ルーターに対して適切な遷移先が指定されてメソッドが呼び出されること。"
+    },
+    {
+      "id": "TS-SCR-006-008",
+      "type": "unit",
+      "requirement_id": "SCR-006-DT-001",
+      "input": "表示パラメータ設定（mode = CLOCK_OUT, count = 5）",
+      "steps": [
+        "パラメータの受け取りに対応するMocking ContextまたはState（例: router query、または Zustandストア等）にて、mode='CLOCK_OUT', count=5 を設定してコンポーネントをレンダーする。",
+        "画面の表記内容（'退勤', '5'等）を検索、評価する。"
+      ],
+      "expected": "前画面での送信詳細（'退勤の打刻が5名完了しました' 等）が動的に差し込まれて描画されていること。"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-001",
+      "target": "送信成功データの受け渡し方法",
+      "reason": "画面設計書（SCR-006-DT-001）において前画面から「送信成功レスポンスの情報」を受け取ると定義されているが、Next.jsのApp Router環境で具体的にどの方式（クエリパラメータ、Next.jsの並行ルーティング、グローバルステート（Zustand）、またはセッションストレージ）を利用して引き継ぐべきか、システム要件・アーキテクチャ設計側に共通方針の明記がない。",
+      "sources": {
+        "system_requirements": "architecture.persistenceやtechnology項目において、クライアント内状態管理としてReact Context + Zustandが挙げられているものの、画面間引数設計の詳細は未定義。",
+        "trace_index": "SCR-006-DT-001: 前画面からの送信成功情報表示",
+        "screen_design": "SCR-006-DT-001: 前画面（SCR-005）から送信成功レスポンスの情報（打刻モード、対象人数等）を受け取り表示する [ASSUMPTION]"
+      },
+      "resolution": "manual_confirmation"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement": "SCR-006-FN-001",
+      "acceptance": [
+        "AC-SCR-006-FN-001"
+      ],
+      "tests": [
+        "TS-SCR-006-001"
+      ]
+    },
+    {
+      "requirement": "SCR-006-FN-002",
+      "acceptance": [
+        "AC-SCR-006-FN-002"
+      ],
+      "tests": [
+        "TS-SCR-006-002"
+      ]
+    },
+    {
+      "requirement": "SCR-006-UI-001",
+      "acceptance": [
+        "AC-SCR-006-UI-001"
+      ],
+      "tests": [
+        "TS-SCR-006-003"
+      ]
+    },
+    {
+      "requirement": "SCR-006-UI-002",
+      "acceptance": [
+        "AC-SCR-006-UI-002"
+      ],
+      "tests": [
+        "TS-SCR-006-004"
+      ]
+    },
+    {
+      "requirement": "SCR-006-UI-003",
+      "acceptance": [
+        "AC-SCR-006-UI-003"
+      ],
+      "tests": [
+        "TS-SCR-006-005"
+      ]
+    },
+    {
+      "requirement": "SCR-006-VL-001",
+      "acceptance": [
+        "AC-SCR-006-VL-001"
+      ],
+      "tests": [
+        "TS-SCR-006-006"
+      ]
+    },
+    {
+      "requirement": "SCR-006-EV-001",
+      "acceptance": [
+        "AC-SCR-006-EV-001"
+      ],
+      "tests": [
+        "TS-SCR-006-007"
+      ]
+    },
+    {
+      "requirement": "SCR-006-DT-001",
+      "acceptance": [
+        "AC-SCR-006-DT-001"
+      ],
+      "tests": [
+        "TS-SCR-006-008"
+      ]
+    }
+  ]
+}

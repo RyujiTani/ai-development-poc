@@ -1,0 +1,1382 @@
+/home/runner/work/_temp/efa134ad-4b47-4564-b34a-874e9fe7b653/google-cloud-sdk/lib/third_party/google/cloud/__init__.py:20: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+/home/runner/work/_temp/efa134ad-4b47-4564-b34a-874e9fe7b653/google-cloud-sdk/lib/third_party/google/cloud/appengine_v1alpha/proto/version_pb2.py:1659: SyntaxWarning: "\ " is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\ "? A raw string is also an option.
+  '__doc__': """\ `Cloud Endpoints <https://cloud.google.com/endpoints>`__
+/home/runner/work/_temp/efa134ad-4b47-4564-b34a-874e9fe7b653/google-cloud-sdk/lib/third_party/google/cloud/appengine_v1alpha/proto/app_yaml_pb2.py:991: SyntaxWarning: "\ " is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\ "? A raw string is also an option.
+  \ ``30x`` code to use when performing redirects for the
+----------------------------- REMOTE BUILD OUTPUT ------------------------------
+starting build "9e450daf-7d8c-4cc8-bb74-c2a81032082d"
+FETCHSOURCE
+Fetching storage object: gs://aidf-team-suda_cloudbuild/source/1788255920.906327-3f7e6f86dd444d0f8fd941e43ef42817.tgz#1788255921501984
+Copying gs://aidf-team-suda_cloudbuild/source/1788255920.906327-3f7e6f86dd444d0f8fd941e43ef42817.tgz#1788255921501984...
+/ [0 files][    0.0 B/250.0 KiB]                                                / [1 files][250.0 KiB/250.0 KiB]
+Operation completed over 1 objects/250.0 KiB.
+BUILD
+Starting Step #0 - "install-test-dependencies"
+Step #0 - "install-test-dependencies": Pulling image: node:20-bookworm
+Step #0 - "install-test-dependencies": 20-bookworm: Pulling from library/node
+Step #0 - "install-test-dependencies": db53381ee51f: Pulling fs layer
+Step #0 - "install-test-dependencies": e5203b2bfeff: Pulling fs layer
+Step #0 - "install-test-dependencies": 8fcda2b4d799: Pulling fs layer
+Step #0 - "install-test-dependencies": 2933ecab0f11: Pulling fs layer
+Step #0 - "install-test-dependencies": c83419f44309: Pulling fs layer
+Step #0 - "install-test-dependencies": 76e6b8204a89: Pulling fs layer
+Step #0 - "install-test-dependencies": 2f2ab6e4eb46: Pulling fs layer
+Step #0 - "install-test-dependencies": 0b22ec2d9b1a: Pulling fs layer
+Step #0 - "install-test-dependencies": 2f2ab6e4eb46: Waiting
+Step #0 - "install-test-dependencies": 0b22ec2d9b1a: Waiting
+Step #0 - "install-test-dependencies": c83419f44309: Verifying Checksum
+Step #0 - "install-test-dependencies": c83419f44309: Download complete
+Step #0 - "install-test-dependencies": 2f2ab6e4eb46: Verifying Checksum
+Step #0 - "install-test-dependencies": 2f2ab6e4eb46: Download complete
+Step #0 - "install-test-dependencies": e5203b2bfeff: Verifying Checksum
+Step #0 - "install-test-dependencies": e5203b2bfeff: Download complete
+Step #0 - "install-test-dependencies": db53381ee51f: Verifying Checksum
+Step #0 - "install-test-dependencies": db53381ee51f: Download complete
+Step #0 - "install-test-dependencies": 0b22ec2d9b1a: Verifying Checksum
+Step #0 - "install-test-dependencies": 0b22ec2d9b1a: Download complete
+Step #0 - "install-test-dependencies": 76e6b8204a89: Verifying Checksum
+Step #0 - "install-test-dependencies": 76e6b8204a89: Download complete
+Step #0 - "install-test-dependencies": 8fcda2b4d799: Verifying Checksum
+Step #0 - "install-test-dependencies": 8fcda2b4d799: Download complete
+Step #0 - "install-test-dependencies": 2933ecab0f11: Verifying Checksum
+Step #0 - "install-test-dependencies": 2933ecab0f11: Download complete
+Step #0 - "install-test-dependencies": db53381ee51f: Pull complete
+Step #0 - "install-test-dependencies": e5203b2bfeff: Pull complete
+Step #0 - "install-test-dependencies": 8fcda2b4d799: Pull complete
+Step #0 - "install-test-dependencies": 2933ecab0f11: Pull complete
+Step #0 - "install-test-dependencies": c83419f44309: Pull complete
+Step #0 - "install-test-dependencies": 76e6b8204a89: Pull complete
+Step #0 - "install-test-dependencies": 2f2ab6e4eb46: Pull complete
+Step #0 - "install-test-dependencies": 0b22ec2d9b1a: Pull complete
+Step #0 - "install-test-dependencies": Digest: sha256:8f693eaa7e0a8e71560c9a82b55fd54c2ae920a2ba5d2cde28bac7d1c01c9ba5
+Step #0 - "install-test-dependencies": Status: Downloaded newer image for node:20-bookworm
+Step #0 - "install-test-dependencies": docker.io/library/node:20-bookworm
+Step #0 - "install-test-dependencies": npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+Step #0 - "install-test-dependencies":
+Step #0 - "install-test-dependencies": added 195 packages in 27s
+Finished Step #0 - "install-test-dependencies"
+Starting Step #1 - "test-generated-implementations"
+Step #1 - "test-generated-implementations": Already have image (with digest): node:20-bookworm
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": > generated-screen-test-runner@1.0.0 test:generated
+Step #1 - "test-generated-implementations": > node run_generated_tests.mjs
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Found 15 generated screen implementation(s).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [1/15] Testing: SCR-001_contractor_login
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-001_contractor_login-tgpO51[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [2mno tests[22m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 09:46:20
+Step #1 - "test-generated-implementations": [2m   Duration [22m 776ms[2m (transform 42ms, setup 112ms, collect 0ms, tests 0ms, environment 436ms, prepare 84ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": FAIL: SCR-001_contractor_login
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯[1m[7m Failed Suites 1 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[1m[7m FAIL [27m[22m[39m tests/contractorLogin.test.tsx[2m [ tests/contractorLogin.test.tsx ][22m
+Step #1 - "test-generated-implementations": [31m[1mError[22m: Transform failed with 1 error:
+Step #1 - "test-generated-implementations": /tmp/SCR-001_contractor_login-tgpO51/tests/contractorLogin.test.tsx:115:5: ERROR: Unterminated string literal[39m
+Step #1 - "test-generated-implementations":   Plugin: [35mvite:esbuild[39m
+Step #1 - "test-generated-implementations":   File: [36m/tmp/SCR-001_contractor_login-tgpO51/tests/contractorLogin.test.tsx[39m:115:5
+Step #1 - "test-generated-implementations": [33m
+Step #1 - "test-generated-implementations":   [33mUnterminated string literal[33m
+Step #1 - "test-generated-implementations":   113|    });
+Step #1 - "test-generated-implementations":   114|  });
+Step #1 - "test-generated-implementations":   115|  "}, {
+Step #1 - "test-generated-implementations":      |       ^
+Step #1 - "test-generated-implementations":   [39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m failureErrorWithLog ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m1472:15[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m755:50[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m responseCallbacks.<computed> ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m622:9[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m handleIncomingPacket ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m677:12[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m Socket.readFromStdout ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m600:7[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+Step #1 - "test-generated-implementations": [31m[1mSerialized Error:[22m[39m [90m{ __vitest_rollup_error__: { plugin: 'vite:esbuild', id: '/tmp/SCR-001_contractor_login-tgpO51/tests/contractorLogin.test.tsx', loc: { column: 5, file: '/tmp/SCR-001_contractor_login-tgpO51/tests/contractorLogin.test.tsx', length: +0, line: 115, lineText: '"}, {', namespace: '', suggestion: '' }, frame: '\n\u001b[33mUnterminated string literal\u001b[39m\n113|    });\n114|  });\n115|  "}, {\n   |       ^\n' } }[39m
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [2/15] Testing: SCR-002_contractor_home
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-002_contractor_home-VG0nTT[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [2mno tests[22m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 09:46:21
+Step #1 - "test-generated-implementations": [2m   Duration [22m 895ms[2m (transform 84ms, setup 120ms, collect 0ms, tests 0ms, environment 405ms, prepare 82ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯[1m[7m Failed Suites 1 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[1m[7m FAIL [27m[22m[39m tests/SCR-002.test.tsx[2m [ tests/SCR-002.test.tsx ][22m
+Step #1 - "test-generated-implementations": [31m[1mError[22m: Transform failed with 1 error:
+Step #1 - "test-generated-implementations": /tmp/SCR-002_contractor_home-VG0nTT/app/(contractor)/home/page.tsx:202:1: ERROR: Unterminated string literal[39m
+Step #1 - "test-generated-implementations":   Plugin: [35mvite:esbuild[39m
+Step #1 - "test-generated-implementations":   File: [36m/tmp/SCR-002_contractor_home-VG0nTT/app/(contractor)/home/page.tsx[39m:202:1
+Step #1 - "test-generated-implementations": [33m
+Step #1 - "test-generated-implementations":   [33mUnterminated string literal[33m
+Step #1 - "test-generated-implementations":   200|    );
+Step #1 - "test-generated-implementations":   201|  }
+Step #1 - "test-generated-implementations":   202|  "
+Step #1 - "test-generated-implementations":      |   ^
+Step #1 - "test-generated-implementations":   203|      },
+Step #1 - "test-generated-implementations":   204|      {
+Step #1 - "test-generated-implementations":   [39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m failureErrorWithLog ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m1472:15[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m755:50[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m responseCallbacks.<computed> ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m622:9[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m handleIncomingPacket ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m677:12[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m Socket.readFromStdout ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m600:7[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+Step #1 - "test-generated-implementations": [31m[1mSerialized Error:[22m[39m [90m{ __vitest_rollup_error__: { plugin: 'vite:esbuild', id: '/tmp/SCR-002_contractor_home-VG0nTT/app/(contractor)/home/page.tsx', loc: { column: 1, file: '/tmp/SCR-002_contractor_home-VG0nTT/app/(contractor)/home/page.tsx', length: +0, line: 202, lineText: '"', namespace: '', suggestion: '' }, frame: '\n\u001b[33mUnterminated string literal\u001b[39m\n200|    );\n201|  }\n202|  "\n   |   ^\n203|      },\n204|      {\n' } }[39m
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": FAIL: SCR-002_contractor_home
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [3/15] Testing: SCR-003_punch_mode_select
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-003_punch_mode_select-NqNFn8[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/punch-mode.test.tsx[2m > [22mSCR-003 打刻モード選択画面[2m > [22mSCR-003-UT-001: 画面上部の日時表示部に、設定したシステム時刻に対応する日付・時刻情報が含まれていること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/punch-mode.test.tsx[2m > [22mSCR-003 打刻モード選択画面[2m > [22mSCR-003-UT-002: sessionStorageが空（未ログイン）の状態の時、/loginにリダイレクトされること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/punch-mode.test.tsx[2m > [22mSCR-003 打刻モード選択画面[2m > [22mSCR-003-IT-001: 出勤ボタンをクリックしたとき、打刻モードがCLOCK_INに更新され、/worker-selectに遷移すること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/punch-mode.test.tsx[2m > [22mSCR-003 打刻モード選択画面[2m > [22mSCR-003-IT-002: 退勤ボタンをクリックしたとき、打刻モードがCLOCK_OUTに更新され、/worker-selectに遷移すること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/punch-mode.test.tsx[2m > [22mSCR-003 打刻モード選択画面[2m > [22mSCR-003-IT-003: 戻るボタンをクリックしたとき、/contractor-homeへの画面遷移が要求されること
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 09:46:23
+Step #1 - "test-generated-implementations": [2m   Duration [22m 1.09s[2m (transform 116ms, setup 115ms, collect 210ms, tests 144ms, environment 405ms, prepare 88ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": PASS: SCR-003_punch_mode_select
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [4/15] Testing: SCR-004_worker_select
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-004_worker_select-vZva68[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯[1m[7m Unhandled Errors [27m[22m⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations": [31m[1m
+Step #1 - "test-generated-implementations": Vitest caught 1 unhandled error during the test run.
+Step #1 - "test-generated-implementations": This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.[22m[39m
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations": [2m Test Files [22m [90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [90m (5)[39m
+Step #1 - "test-generated-implementations": [2m     Errors [22m [1m[31m1 error[39m[22m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 09:46:24
+Step #1 - "test-generated-implementations": [2m   Duration [22m 102.47s[2m (transform 169ms, setup 113ms, collect 249ms, tests 0ms, environment 408ms, prepare 76ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": <--- Last few GCs --->
+Step #1 - "test-generated-implementations":  0[231:0x63abfe0]    88754 ms: Mark-Compact (reduce) 2047.7 (2080.7) -> 2046.8 (2081.0) MB, 1470.87 / 0.01 ms  (+ 21.7 ms in 15 steps since start of marking, biggest step 9.9 ms, walltime since start of marking 1530 ms) (average mu = 0.276, current mu = 0.2[231:0x63abfe0]    90678 ms: Mark-Compact (reduce) 2047.9 (2081.0) -> 2046.9 (2081.2) MB, 1378.86 / 0.01 ms  (+ 93.4 ms in 15 steps since start of marking, biggest step 18.9 ms, walltime since start of marking 1505 ms) (average mu = 0.256, current mu = 0.
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": <--- JS stacktrace --->
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
+Step #1 - "test-generated-implementations": ----- Native stack trace -----
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  1: 0xb78db3 node::OOMErrorHandler(char const*, v8::OOMDetails const&) [node (vitest 1)]
+Step #1 - "test-generated-implementations":  2: 0xee8300 v8::Utils::ReportOOMFailure(v8::internal::Isolate*, char const*, v8::OOMDetails const&) [node (vitest 1)]
+Step #1 - "test-generated-implementations":  3: 0xee85e7 v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, v8::OOMDetails const&) [node (vitest 1)]
+Step #1 - "test-generated-implementations":  4: 0x10fb205  [node (vitest 1)]
+Step #1 - "test-generated-implementations":  5: 0x10fb794 v8::internal::Heap::RecomputeLimits(v8::internal::GarbageCollector) [node (vitest 1)]
+Step #1 - "test-generated-implementations":  6: 0x1112684 v8::internal::Heap::PerformGarbageCollection(v8::internal::GarbageCollector, v8::internal::GarbageCollectionReason, char const*) [node (vitest 1)]
+Step #1 - "test-generated-implementations":  7: 0x1112e9c v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags) [node (vitest 1)]
+Step #1 - "test-generated-implementations":  8: 0x10e91f1 v8::internal::HeapAllocator::AllocateRawWithLightRetrySlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [node (vitest 1)]
+Step #1 - "test-generated-implementations":  9: 0x10ea385 v8::internal::HeapAllocator::AllocateRawWithRetryOrFailSlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [node (vitest 1)]
+Step #1 - "test-generated-implementations": 10: 0x10c78d6 v8::internal::Factory::NewFillerObject(int, v8::internal::AllocationAlignment, v8::internal::AllocationType, v8::internal::AllocationOrigin) [node (vitest 1)]
+Step #1 - "test-generated-implementations": 11: 0x15247d6 v8::internal::Runtime_AllocateInYoungGeneration(int, unsigned long*, v8::internal::Isolate*) [node (vitest 1)]
+Step #1 - "test-generated-implementations": 12: 0x7f01f3eda476
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯[1m[7m Unhandled Error [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations": [31m[1mError[22m: Worker exited unexpectedly[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ChildProcess.onUnexpectedExit ../../workspace/test-runner/node_modules/tinypool/dist/index.js:[2m118:30[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ChildProcess.emit node:events:[2m536:35[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ChildProcess._handle.onexit node:internal/child_process:[2m293:12[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": FAIL: SCR-004_worker_select
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [5/15] Testing: SCR-005_capture_and_submit
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯[1m[7m Failed Suites 1 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[1m[7m FAIL [27m[22m[39m tests/capture.test.tsx[2m [ tests/capture.test.tsx ][22m
+Step #1 - "test-generated-implementations": [31m[1mError[22m: Transform failed with 1 error:
+Step #1 - "test-generated-implementations": /tmp/SCR-005_capture_and_submit-GVL2AO/app/(contractor)/capture/page.tsx:468:1: ERROR: Unterminated string literal[39m
+Step #1 - "test-generated-implementations":   Plugin: [35mvite:esbuild[39m
+Step #1 - "test-generated-implementations":   File: [36m/tmp/SCR-005_capture_and_submit-GVL2AO/app/(contractor)/capture/page.tsx[39m:468:1
+Step #1 - "test-generated-implementations": [33m
+Step #1 - "test-generated-implementations":   [33mUnterminated string literal[33m
+Step #1 - "test-generated-implementations":   466|    );
+Step #1 - "test-generated-implementations":   467|  }
+Step #1 - "test-generated-implementations":   468|  "
+Step #1 - "test-generated-implementations":      |   ^
+Step #1 - "test-generated-implementations":   469|      },
+Step #1 - "test-generated-implementations":   470|      {
+Step #1 - "test-generated-implementations":   [39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m failureErrorWithLog ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m1472:15[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m755:50[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m responseCallbacks.<computed> ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m622:9[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m handleIncomingPacket ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m677:12[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m Socket.readFromStdout ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m600:7[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+Step #1 - "test-generated-implementations": [31m[1mSerialized Error:[22m[39m [90m{ __vitest_rollup_error__: { plugin: 'vite:esbuild', id: '/tmp/SCR-005_capture_and_submit-GVL2AO/app/(contractor)/capture/page.tsx', loc: { column: 1, file: '/tmp/SCR-005_capture_and_submit-GVL2AO/app/(contractor)/capture/page.tsx', length: +0, line: 468, lineText: '"', namespace: '', suggestion: '' }, frame: '\n\u001b[33mUnterminated string literal\u001b[39m\n466|    );\n467|  }\n468|  "\n   |   ^\n469|      },\n470|      {\n' } }[39m
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-005_capture_and_submit-GVL2AO[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [2mno tests[22m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 09:48:07
+Step #1 - "test-generated-implementations": [2m   Duration [22m 888ms[2m (transform 79ms, setup 111ms, collect 0ms, tests 0ms, environment 413ms, prepare 79ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": FAIL: SCR-005_capture_and_submit
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [6/15] Testing: SCR-006_punch_complete
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯[1m[7m Failed Suites 1 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[1m[7m FAIL [27m[22m[39m tests/punchComplete.test.tsx[2m [ tests/punchComplete.test.tsx ][22m
+Step #1 - "test-generated-implementations": [31m[1mError[22m: Transform failed with 1 error:
+Step #1 - "test-generated-implementations": /tmp/SCR-006_punch_complete-w8ihYV/app/(contractor)/punch-complete/page.tsx:95:1: ERROR: Unterminated string literal[39m
+Step #1 - "test-generated-implementations":   Plugin: [35mvite:esbuild[39m
+Step #1 - "test-generated-implementations":   File: [36m/tmp/SCR-006_punch_complete-w8ihYV/app/(contractor)/punch-complete/page.tsx[39m:95:1
+Step #1 - "test-generated-implementations": [33m
+Step #1 - "test-generated-implementations":   [33mUnterminated string literal[33m
+Step #1 - "test-generated-implementations":   93 |    );
+Step #1 - "test-generated-implementations":   94 |  }
+Step #1 - "test-generated-implementations":   95 |  "
+Step #1 - "test-generated-implementations":      |   ^
+Step #1 - "test-generated-implementations":   96 |      },
+Step #1 - "test-generated-implementations":   97 |      {
+Step #1 - "test-generated-implementations":   [39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m failureErrorWithLog ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m1472:15[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m755:50[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m responseCallbacks.<computed> ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m622:9[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m handleIncomingPacket ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m677:12[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m Socket.readFromStdout ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m600:7[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+Step #1 - "test-generated-implementations": [31m[1mSerialized Error:[22m[39m [90m{ __vitest_rollup_error__: { plugin: 'vite:esbuild', id: '/tmp/SCR-006_punch_complete-w8ihYV/app/(contractor)/punch-complete/page.tsx', loc: { column: 1, file: '/tmp/SCR-006_punch_complete-w8ihYV/app/(contractor)/punch-complete/page.tsx', length: +0, line: 95, lineText: '"', namespace: '', suggestion: '' }, frame: '\n\u001b[33mUnterminated string literal\u001b[39m\n93 |    );\n94 |  }\n95 |  "\n   |   ^\n96 |      },\n97 |      {\n' } }[39m
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-006_punch_complete-w8ihYV[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [2mno tests[22m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 09:48:09
+Step #1 - "test-generated-implementations": [2m   Duration [22m 879ms[2m (transform 78ms, setup 110ms, collect 0ms, tests 0ms, environment 407ms, prepare 75ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": FAIL: SCR-006_punch_complete
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [7/15] Testing: SCR-007_worker_list
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯[1m[7m Failed Suites 1 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[1m[7m FAIL [27m[22m[39m tests/workerList.test.tsx[2m [ tests/workerList.test.tsx ][22m
+Step #1 - "test-generated-implementations": [31m[1mError[22m: Transform failed with 1 error:
+Step #1 - "test-generated-implementations": /tmp/SCR-007_worker_list-5Dz8f1/features/worker/ui/WorkerList.tsx:434:14: ERROR: Expected ")" but found "ceiling"[39m
+Step #1 - "test-generated-implementations":   Plugin: [35mvite:esbuild[39m
+Step #1 - "test-generated-implementations":   File: [36m/tmp/SCR-007_worker_list-5Dz8f1/features/worker/ui/WorkerList.tsx[39m:434:14
+Step #1 - "test-generated-implementations": [33m
+Step #1 - "test-generated-implementations":   [33mExpected ")" but found "ceiling"[33m
+Step #1 - "test-generated-implementations":   432|                </div>
+Step #1 - "test-generated-implementations":   433|              </div>
+Step #1 - "test-generated-implementations":   434|            </> ceiling
+Step #1 - "test-generated-implementations":      |                ^
+Step #1 - "test-generated-implementations":   435|          )}
+Step #1 - "test-generated-implementations":   436|        </main>
+Step #1 - "test-generated-implementations":   [39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m failureErrorWithLog ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m1472:15[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m755:50[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m responseCallbacks.<computed> ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m622:9[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m handleIncomingPacket ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m677:12[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m Socket.readFromStdout ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m600:7[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+Step #1 - "test-generated-implementations": [31m[1mSerialized Error:[22m[39m [90m{ __vitest_rollup_error__: { plugin: 'vite:esbuild', id: '/tmp/SCR-007_worker_list-5Dz8f1/features/worker/ui/WorkerList.tsx', loc: { column: 14, file: '/tmp/SCR-007_worker_list-5Dz8f1/features/worker/ui/WorkerList.tsx', length: 7, line: 434, lineText: '          </> ceiling', namespace: '', suggestion: ')' }, frame: '\n\u001b[33mExpected ")" but found "ceiling"\u001b[39m\n432|                </div>\n433|              </div>\n434|            </> ceiling\n   |                ^\n435|          )}\n436|        </main>\n' } }[39m
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-007_worker_list-5Dz8f1[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [2mno tests[22m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 09:48:10
+Step #1 - "test-generated-implementations": [2m   Duration [22m 912ms[2m (transform 138ms, setup 109ms, collect 0ms, tests 0ms, environment 403ms, prepare 79ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": FAIL: SCR-007_worker_list
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [8/15] Testing: SCR-008_worker_add_edit
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯[1m[7m Failed Suites 1 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[1m[7m FAIL [27m[22m[39m tests/features/worker/ui/WorkerForm.test.tsx[2m [ tests/features/worker/ui/WorkerForm.test.tsx ][22m
+Step #1 - "test-generated-implementations": [31m[1mError[22m: Transform failed with 1 error:
+Step #1 - "test-generated-implementations": /tmp/SCR-008_worker_add_edit-aClDwn/tests/features/worker/ui/WorkerForm.test.tsx:144:1: ERROR: Unterminated string literal[39m
+Step #1 - "test-generated-implementations":   Plugin: [35mvite:esbuild[39m
+Step #1 - "test-generated-implementations":   File: [36m/tmp/SCR-008_worker_add_edit-aClDwn/tests/features/worker/ui/WorkerForm.test.tsx[39m:144:1
+Step #1 - "test-generated-implementations": [33m
+Step #1 - "test-generated-implementations":   [33mUnterminated string literal[33m
+Step #1 - "test-generated-implementations":   142|    });
+Step #1 - "test-generated-implementations":   143|  });
+Step #1 - "test-generated-implementations":   144|  "
+Step #1 - "test-generated-implementations":      |   ^
+Step #1 - "test-generated-implementations":   145|      }
+Step #1 - "test-generated-implementations":   146|    ]
+Step #1 - "test-generated-implementations":   [39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m failureErrorWithLog ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m1472:15[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m755:50[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m responseCallbacks.<computed> ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m622:9[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m handleIncomingPacket ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m677:12[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m Socket.readFromStdout ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m600:7[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+Step #1 - "test-generated-implementations": [31m[1mSerialized Error:[22m[39m [90m{ __vitest_rollup_error__: { plugin: 'vite:esbuild', id: '/tmp/SCR-008_worker_add_edit-aClDwn/tests/features/worker/ui/WorkerForm.test.tsx', loc: { column: 1, file: '/tmp/SCR-008_worker_add_edit-aClDwn/tests/features/worker/ui/WorkerForm.test.tsx', length: +0, line: 144, lineText: '"', namespace: '', suggestion: '' }, frame: '\n\u001b[33mUnterminated string literal\u001b[39m\n142|    });\n143|  });\n144|  "\n   |   ^\n145|      }\n146|    ]\n' } }[39m
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-008_worker_add_edit-aClDwn[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [2mno tests[22m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 09:48:11
+Step #1 - "test-generated-implementations": [2m   Duration [22m 737ms[2m (transform 40ms, setup 114ms, collect 0ms, tests 0ms, environment 411ms, prepare 76ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": FAIL: SCR-008_worker_add_edit
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [9/15] Testing: SCR-009_contractor_punch_correction
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [90mstderr[2m | tests/PunchCorrection.test.tsx[2m > [22m[2mPunchCorrectionPage (SCR-009)[2m > [22m[2mTST-001: 未入力状態で送信ボタンを押したときに各必須項目のバリデーションエラーが表示されること
+Step #1 - "test-generated-implementations": [22m[39mFailed to load initial data: TypeError: workerRepo.getByContractorId is not a function
+Step #1 - "test-generated-implementations":     at checkAuthAndLoad [90m(/tmp/SCR-009_contractor_punch_correction-AgF9TI/[39mapp/(contractor)/punch-correction/page.tsx:51:39[90m)[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstderr[2m | tests/PunchCorrection.test.tsx[2m > [22m[2mPunchCorrectionPage (SCR-009)[2m > [22m[2mTST-004: キャンセルボタンを押した際、即座にホーム画面に遷移すること
+Step #1 - "test-generated-implementations": [22m[39mFailed to load initial data: TypeError: workerRepo.getByContractorId is not a function
+Step #1 - "test-generated-implementations":     at checkAuthAndLoad [90m(/tmp/SCR-009_contractor_punch_correction-AgF9TI/[39mapp/(contractor)/punch-correction/page.tsx:51:39[90m)[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstderr[2m | tests/PunchCorrection.test.tsx[2m > [22m[2mPunchCorrectionPage (SCR-009)[2m > [22m[2mTST-003: 正常値を入力して送信した際、打刻修正が正常に完了しホーム画面へ遷移すること
+Step #1 - "test-generated-implementations": [22m[39mFailed to load initial data: TypeError: workerRepo.getByContractorId is not a function
+Step #1 - "test-generated-implementations":     at checkAuthAndLoad [90m(/tmp/SCR-009_contractor_punch_correction-AgF9TI/[39mapp/(contractor)/punch-correction/page.tsx:51:39[90m)[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯⎯[1m[7m Failed Tests 2 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[1m[7m FAIL [27m[22m[39m tests/PunchCorrection.test.tsx[2m > [22mPunchCorrectionPage (SCR-009)[2m > [22mTST-001: 未入力状態で送信ボタンを押したときに各必須項目のバリデーションエラーが表示されること
+Step #1 - "test-generated-implementations": [31m[1mTestingLibraryElementError[22m[39m: Found a label with the text of: /打刻日時/i, however no form control was found associated to that label. Make sure you're using the "for" attribute or "aria-labelledby" attribute correctly.
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Ignored nodes: comments, script, style
+Step #1 - "test-generated-implementations": [36m<body>[39m
+Step #1 - "test-generated-implementations":   [36m<div>[39m
+Step #1 - "test-generated-implementations":     [36m<div[39m
+Step #1 - "test-generated-implementations":       [33mclass[39m=[32m"min-h-screen bg-gray-50 flex flex-col justify-between"[39m
+Step #1 - "test-generated-implementations":     [36m>[39m
+Step #1 - "test-generated-implementations":       [36m<header[39m
+Step #1 - "test-generated-implementations":         [33mclass[39m=[32m"bg-white shadow-sm border-b border-gray-200 py-4 px-6"[39m
+Step #1 - "test-generated-implementations":       [36m>[39m
+Step #1 - "test-generated-implementations":         [36m<h1[39m
+Step #1 - "test-generated-implementations":           [33mclass[39m=[32m"text-xl font-bold text-gray-800 text-center md:text-left"[39m
+Step #1 - "test-generated-implementations":         [36m>[39m
+Step #1 - "test-generated-implementations":           [0m外注先打刻修正フォーム[0m
+Step #1 - "test-generated-implementations":         [36m</h1>[39m
+Step #1 - "test-generated-implementations":       [36m</header>[39m
+Step #1 - "test-generated-implementations":       [36m<main[39m
+Step #1 - "test-generated-implementations":         [33mclass[39m=[32m"flex-1 w-full max-w-lg mx-auto p-4 md:py-8"[39m
+Step #1 - "test-generated-implementations":       [36m>[39m
+Step #1 - "test-generated-implementations":         [36m<div[39m
+Step #1 - "test-generated-implementations":           [33mclass[39m=[32m"bg-white rounded-xl shadow-md border border-gray-100 p-6 md:p-8"[39m
+Step #1 - "test-generated-implementations":         [36m>[39m
+Step #1 - "test-generated-implementations":           [36m<form[39m
+Step #1 - "test-generated-implementations":             [33mclass[39m=[32m"space-y-6"[39m
+Step #1 - "test-generated-implementations":           [36m>[39m
+Step #1 - "test-generated-implementations":             [36m<div[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"bg-red-50 text-red-600 p-3 rounded-lg text-sm font-semibold border border-red-200"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [0mデータの読み込みに失敗しました。[0m
+Step #1 - "test-generated-implementations":             [36m</div>[39m
+Step #1 - "test-generated-implementations":             [36m<div[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"space-y-2"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [36m<label[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"block text-gray-700 font-bold text-lg"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [0m対象作業員 [0m
+Step #1 - "test-generated-implementations":                 [36m<span[39m
+Step #1 - "test-generated-implementations":                   [33mclass[39m=[32m"text-red-500"[39m
+Step #1 - "test-generated-implementations":                 [36m>[39m
+Step #1 - "test-generated-implementations":                   [0m*[0m
+Step #1 - "test-generated-implementations":                 [36m</span>[39m
+Step #1 - "test-generated-implementations":               [36m</label>[39m
+Step #1 - "test-generated-implementations":               [36m<select[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"w-full bg-gray-50 border border-gray-300 rounded-lg p-4 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none min-h-[56px]"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [36m<option[39m
+Step #1 - "test-generated-implementations":                   [33mvalue[39m=[32m""[39m
+Step #1 - "test-generated-implementations":                 [36m>[39m
+Step #1 - "test-generated-implementations":                   [0m-- 作業員を選択してください --[0m
+Step #1 - "test-generated-implementations":                 [36m</option>[39m
+Step #1 - "test-generated-implementations":               [36m</select>[39m
+Step #1 - "test-generated-implementations":             [36m</div>[39m
+Step #1 - "test-generated-implementations":             [36m<div[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"space-y-2"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [36m<label[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"block text-gray-700 font-bold text-lg"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [0m打刻日時 [0m
+Step #1 - "test-generated-implementations":                 [36m<span[39m
+Step #1 - "test-generated-implementations":                   [33mclass[39m=[32m"text-red-500"[39m
+Step #1 - "test-generated-implementations":                 [36m>[39m
+Step #1 - "test-generated-implementations":                   [0m*[0m
+Step #1 - "test-generated-implementations":                 [36m</span>[39m
+Step #1 - "test-generated-implementations":               [36m</label>[39m
+Step #1 - "test-generated-implementations":               [36m<input[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"w-full bg-gray-50 border border-gray-300 rounded-lg p-4 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none min-h-[56px]"[39m
+Step #1 - "test-generated-implementations":                 [33mtype[39m=[32m"datetime-local"[39m
+Step #1 - "test-generated-implementations":                 [33mvalue[39m=[32m""[39m
+Step #1 - "test-generated-implementations":               [36m/>[39m
+Step #1 - "test-generated-implementations":             [36m</div>[39m
+Step #1 - "test-generated-implementations":             [36m<div[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"space-y-2"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [36m<label[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"block text-gray-700 font-bold text-lg"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [0m打刻種別 [0m
+Step #1 - "test-generated-implementations":                 [36m<span[39m
+Step #1 - "test-generated-implementations":                   [33mclass[39m=[32m"text-red-500"[39m
+Step #1 - "test-generated-implementations":                 [36m>[39m
+Step #1 - "test-generated-implementations":                   [0m*[0m
+Step #1 - "test-generated-implementations":                 [36m</span>[39m
+Step #1 - "test-generated-implementations":               [36m</label>[39m
+Step #1 - "test-generated-implementations":               [36m<div[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"grid grid-cols-2 gap-4"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [36m<label[39m
+Step #1 - "test-generated-implementations":                   [33mclass[39m=[32m"flex items-center justify-center border-2 rounded-xl p-4 cursor-pointer text-lg font-bold transition-all min-h-[56px] border-gray-200 bg-white hover:bg-gray-50 text-gray-600"[39m
+Step #1 - "test-generated-implementations":                 [36m>[39m
+Step #1 - "test-generated-implementations":                   [36m<input[39m
+Step #1 - "test-generated-implementations":                     [33mclass[39m=[32m"sr-only"[39m
+Step #1 - "test-generated-implementations":                     [33mname[39m=[32m"punch_type"[39m
+Step #1 - "test-generated-implementations":                     [33mtype[39m=[32m"radio"[39m
+Step #1 - "test-generated-implementations":                     [33mvalue[39m=[32m"CLOCK_IN"[39m
+Step #1 - "test-generated-implementations":                   [36m/>[39m
+Step #1 - "test-generated-implementations":                   [0m出勤[0m
+Step #1 - "test-generated-implementations":                 [36m</label>[39m
+Step #1 - "test-generated-implementations":                 [36m<label[39m
+Step #1 - "test-generated-implementations":                   [33mclass[39m=[32m"flex items-center justify-center border-2 rounded-xl p-4 cursor-pointer text-lg font-bold transition-all min-h-[56px] border-gray-200 bg-white hover:bg-gray-50 text-gray-600"[39m
+Step #1 - "test-generated-implementations":                 [36m>[39m
+Step #1 - "test-generated-implementations":                   [36m<input[39m
+Step #1 - "test-generated-implementations":                     [33mclass[39m=[32m"sr-only"[39m
+Step #1 - "test-generated-implementations":                     [33mname[39m=[32m"punch_type"[39m
+Step #1 - "test-generated-implementations":                     [33mtype[39m=[32m"radio"[39m
+Step #1 - "test-generated-implementations":                     [33mvalue[39m=[32m"CLOCK_OUT"[39m
+Step #1 - "test-generated-implementations":                   [36m/>[39m
+Step #1 - "test-generated-implementations":                   [0m退勤[0m
+Step #1 - "test-generated-implementations":                 [36m</label>[39m
+Step #1 - "test-generated-implementations":               [36m</div>[39m
+Step #1 - "test-generated-implementations":             [36m</div>[39m
+Step #1 - "test-generated-implementations":             [36m<div[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"space-y-2"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [36m<label[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"block text-gray-700 font-bold text-lg"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [0m修正・手動打刻の理由 [0m
+Step #1 - "test-generated-implementations":                 [36m<span[39m
+Step #1 - "test-generated-implementations":                   [33mclass[39m=[32m"text-red-500"[39m
+Step #1 - "test-generated-implementations":                 [36m>[39m
+Step #1 - "test-generated-implementations":                   [0m*[0m
+Step #1 - "test-generated-implementations":                 [36m</span>[39m
+Step #1 - "test-generated-implementations":               [36m</label>[39m
+Step #1 - "test-generated-implementations":               [36m<textarea[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"w-full bg-gray-50 border border-gray-300 rounded-lg p-4 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none min-h-[100px]"[39m
+Step #1 - "test-generated-implementations":                 [33mplaceholder[39m=[32m"打刻漏れのため、手動で実績を追加します。"[39m
+Step #1 - "test-generated-implementations":                 [33mrows[39m=[32m"3"[39m
+Step #1 - "test-generated-implementations":               [36m/>[39m
+Step #1 - "test-generated-implementations":             [36m</div>[39m
+Step #1 - "test-generated-implementations":             [36m<div[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"flex flex-col gap-3 pt-4"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [36m<button[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg text-lg transition-colors shadow-md active:scale-95 disabled:opacity-50 min-h-[56px]"[39m
+Step #1 - "test-generated-implementations":                 [33mtype[39m=[32m"submit"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [0m送信[0m
+Step #1 - "test-generated-implementations":               [36m</button>[39m
+Step #1 - "test-generated-implementations":               [36m<button[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-4 px-6 rounded-lg text-lg transition-colors active:scale-95 disabled:opacity-50 min-h-[56px]"[39m
+Step #1 - "test-generated-implementations":                 [33mtype[39m=[32m"button"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [0mキャンセル[0m
+Step #1 - "test-generated-implementations":               [36m</button>[39m
+Step #1 - "test-generated-implementations":             [36m</div>[39m
+Step #1 - "test-generated-implementations":           [36m</form>[39m
+Step #1 - "test-generated-implementations":         [36m</div>[39m
+Step #1 - "test-generated-implementations":       [36m</main>[39m
+Step #1 - "test-generated-implementations":       [36m<footer[39m
+Step #1 - "test-generated-implementations":         [33mclass[39m=[32m"bg-white border-t border-gray-200 py-4 px-6 text-center text-xs text-gray-400"[39m
+Step #1 - "test-generated-implementations":       [36m>[39m
+Step #1 - "test-generated-implementations":         [0m© 2026 外注作業員 勤怠・配置管理システム フロントエンドプロトタイプ[0m
+Step #1 - "test-generated-implementations":       [36m</footer>[39m
+Step #1 - "test-generated-implementations":     [36m</div>[39m
+Step #1 - "test-generated-implementations":   [36m</div>[39m
+Step #1 - "test-generated-implementations": [36m</body>[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m Object.getElementError ../../workspace/test-runner/node_modules/@testing-library/dom/dist/config.js:[2m37:19[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m getAllByLabelText ../../workspace/test-runner/node_modules/@testing-library/dom/dist/queries/label-text.js:[2m108:40[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/@testing-library/dom/dist/query-helpers.js:[2m52:17[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/@testing-library/dom/dist/query-helpers.js:[2m95:19[22m[39m
+Step #1 - "test-generated-implementations": [36m [2m❯[22m tests/PunchCorrection.test.tsx:[2m84:30[22m[39m
+Step #1 - "test-generated-implementations":     [90m 82| [39m
+Step #1 - "test-generated-implementations":     [90m 83| [39m    [90m// Empty date field first[39m
+Step #1 - "test-generated-implementations":     [90m 84| [39m    [35mconst[39m dateInput [33m=[39m screen[33m.[39m[34mgetByLabelText[39m([36m/打刻日時/i[39m) [35mas[39m [33mHTMLInputE[39m…
+Step #1 - "test-generated-implementations":     [90m   | [39m                             [31m^[39m
+Step #1 - "test-generated-implementations":     [90m 85| [39m    fireEvent[33m.[39m[34mchange[39m(dateInput[33m,[39m { target[33m:[39m { value[33m:[39m [32m''[39m } })[33m;[39m
+Step #1 - "test-generated-implementations":     [90m 86| [39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[1m[7m FAIL [27m[22m[39m tests/PunchCorrection.test.tsx[2m > [22mPunchCorrectionPage (SCR-009)[2m > [22mTST-003: 正常値を入力して送信した際、打刻修正が正常に完了しホーム画面へ遷移すること
+Step #1 - "test-generated-implementations": [31m[1mTestingLibraryElementError[22m[39m: Found a label with the text of: /打刻日時/i, however no form control was found associated to that label. Make sure you're using the "for" attribute or "aria-labelledby" attribute correctly.
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Ignored nodes: comments, script, style
+Step #1 - "test-generated-implementations": [36m<body>[39m
+Step #1 - "test-generated-implementations":   [36m<div>[39m
+Step #1 - "test-generated-implementations":     [36m<div[39m
+Step #1 - "test-generated-implementations":       [33mclass[39m=[32m"min-h-screen bg-gray-50 flex flex-col justify-between"[39m
+Step #1 - "test-generated-implementations":     [36m>[39m
+Step #1 - "test-generated-implementations":       [36m<header[39m
+Step #1 - "test-generated-implementations":         [33mclass[39m=[32m"bg-white shadow-sm border-b border-gray-200 py-4 px-6"[39m
+Step #1 - "test-generated-implementations":       [36m>[39m
+Step #1 - "test-generated-implementations":         [36m<h1[39m
+Step #1 - "test-generated-implementations":           [33mclass[39m=[32m"text-xl font-bold text-gray-800 text-center md:text-left"[39m
+Step #1 - "test-generated-implementations":         [36m>[39m
+Step #1 - "test-generated-implementations":           [0m外注先打刻修正フォーム[0m
+Step #1 - "test-generated-implementations":         [36m</h1>[39m
+Step #1 - "test-generated-implementations":       [36m</header>[39m
+Step #1 - "test-generated-implementations":       [36m<main[39m
+Step #1 - "test-generated-implementations":         [33mclass[39m=[32m"flex-1 w-full max-w-lg mx-auto p-4 md:py-8"[39m
+Step #1 - "test-generated-implementations":       [36m>[39m
+Step #1 - "test-generated-implementations":         [36m<div[39m
+Step #1 - "test-generated-implementations":           [33mclass[39m=[32m"bg-white rounded-xl shadow-md border border-gray-100 p-6 md:p-8"[39m
+Step #1 - "test-generated-implementations":         [36m>[39m
+Step #1 - "test-generated-implementations":           [36m<form[39m
+Step #1 - "test-generated-implementations":             [33mclass[39m=[32m"space-y-6"[39m
+Step #1 - "test-generated-implementations":           [36m>[39m
+Step #1 - "test-generated-implementations":             [36m<div[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"bg-red-50 text-red-600 p-3 rounded-lg text-sm font-semibold border border-red-200"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [0mデータの読み込みに失敗しました。[0m
+Step #1 - "test-generated-implementations":             [36m</div>[39m
+Step #1 - "test-generated-implementations":             [36m<div[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"space-y-2"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [36m<label[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"block text-gray-700 font-bold text-lg"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [0m対象作業員 [0m
+Step #1 - "test-generated-implementations":                 [36m<span[39m
+Step #1 - "test-generated-implementations":                   [33mclass[39m=[32m"text-red-500"[39m
+Step #1 - "test-generated-implementations":                 [36m>[39m
+Step #1 - "test-generated-implementations":                   [0m*[0m
+Step #1 - "test-generated-implementations":                 [36m</span>[39m
+Step #1 - "test-generated-implementations":               [36m</label>[39m
+Step #1 - "test-generated-implementations":               [36m<select[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"w-full bg-gray-50 border border-gray-300 rounded-lg p-4 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none min-h-[56px]"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [36m<option[39m
+Step #1 - "test-generated-implementations":                   [33mvalue[39m=[32m""[39m
+Step #1 - "test-generated-implementations":                 [36m>[39m
+Step #1 - "test-generated-implementations":                   [0m-- 作業員を選択してください --[0m
+Step #1 - "test-generated-implementations":                 [36m</option>[39m
+Step #1 - "test-generated-implementations":               [36m</select>[39m
+Step #1 - "test-generated-implementations":             [36m</div>[39m
+Step #1 - "test-generated-implementations":             [36m<div[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"space-y-2"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [36m<label[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"block text-gray-700 font-bold text-lg"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [0m打刻日時 [0m
+Step #1 - "test-generated-implementations":                 [36m<span[39m
+Step #1 - "test-generated-implementations":                   [33mclass[39m=[32m"text-red-500"[39m
+Step #1 - "test-generated-implementations":                 [36m>[39m
+Step #1 - "test-generated-implementations":                   [0m*[0m
+Step #1 - "test-generated-implementations":                 [36m</span>[39m
+Step #1 - "test-generated-implementations":               [36m</label>[39m
+Step #1 - "test-generated-implementations":               [36m<input[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"w-full bg-gray-50 border border-gray-300 rounded-lg p-4 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none min-h-[56px]"[39m
+Step #1 - "test-generated-implementations":                 [33mtype[39m=[32m"datetime-local"[39m
+Step #1 - "test-generated-implementations":                 [33mvalue[39m=[32m""[39m
+Step #1 - "test-generated-implementations":               [36m/>[39m
+Step #1 - "test-generated-implementations":             [36m</div>[39m
+Step #1 - "test-generated-implementations":             [36m<div[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"space-y-2"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [36m<label[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"block text-gray-700 font-bold text-lg"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [0m打刻種別 [0m
+Step #1 - "test-generated-implementations":                 [36m<span[39m
+Step #1 - "test-generated-implementations":                   [33mclass[39m=[32m"text-red-500"[39m
+Step #1 - "test-generated-implementations":                 [36m>[39m
+Step #1 - "test-generated-implementations":                   [0m*[0m
+Step #1 - "test-generated-implementations":                 [36m</span>[39m
+Step #1 - "test-generated-implementations":               [36m</label>[39m
+Step #1 - "test-generated-implementations":               [36m<div[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"grid grid-cols-2 gap-4"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [36m<label[39m
+Step #1 - "test-generated-implementations":                   [33mclass[39m=[32m"flex items-center justify-center border-2 rounded-xl p-4 cursor-pointer text-lg font-bold transition-all min-h-[56px] border-gray-200 bg-white hover:bg-gray-50 text-gray-600"[39m
+Step #1 - "test-generated-implementations":                 [36m>[39m
+Step #1 - "test-generated-implementations":                   [36m<input[39m
+Step #1 - "test-generated-implementations":                     [33mclass[39m=[32m"sr-only"[39m
+Step #1 - "test-generated-implementations":                     [33mname[39m=[32m"punch_type"[39m
+Step #1 - "test-generated-implementations":                     [33mtype[39m=[32m"radio"[39m
+Step #1 - "test-generated-implementations":                     [33mvalue[39m=[32m"CLOCK_IN"[39m
+Step #1 - "test-generated-implementations":                   [36m/>[39m
+Step #1 - "test-generated-implementations":                   [0m出勤[0m
+Step #1 - "test-generated-implementations":                 [36m</label>[39m
+Step #1 - "test-generated-implementations":                 [36m<label[39m
+Step #1 - "test-generated-implementations":                   [33mclass[39m=[32m"flex items-center justify-center border-2 rounded-xl p-4 cursor-pointer text-lg font-bold transition-all min-h-[56px] border-gray-200 bg-white hover:bg-gray-50 text-gray-600"[39m
+Step #1 - "test-generated-implementations":                 [36m>[39m
+Step #1 - "test-generated-implementations":                   [36m<input[39m
+Step #1 - "test-generated-implementations":                     [33mclass[39m=[32m"sr-only"[39m
+Step #1 - "test-generated-implementations":                     [33mname[39m=[32m"punch_type"[39m
+Step #1 - "test-generated-implementations":                     [33mtype[39m=[32m"radio"[39m
+Step #1 - "test-generated-implementations":                     [33mvalue[39m=[32m"CLOCK_OUT"[39m
+Step #1 - "test-generated-implementations":                   [36m/>[39m
+Step #1 - "test-generated-implementations":                   [0m退勤[0m
+Step #1 - "test-generated-implementations":                 [36m</label>[39m
+Step #1 - "test-generated-implementations":               [36m</div>[39m
+Step #1 - "test-generated-implementations":             [36m</div>[39m
+Step #1 - "test-generated-implementations":             [36m<div[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"space-y-2"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [36m<label[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"block text-gray-700 font-bold text-lg"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [0m修正・手動打刻の理由 [0m
+Step #1 - "test-generated-implementations":                 [36m<span[39m
+Step #1 - "test-generated-implementations":                   [33mclass[39m=[32m"text-red-500"[39m
+Step #1 - "test-generated-implementations":                 [36m>[39m
+Step #1 - "test-generated-implementations":                   [0m*[0m
+Step #1 - "test-generated-implementations":                 [36m</span>[39m
+Step #1 - "test-generated-implementations":               [36m</label>[39m
+Step #1 - "test-generated-implementations":               [36m<textarea[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"w-full bg-gray-50 border border-gray-300 rounded-lg p-4 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none min-h-[100px]"[39m
+Step #1 - "test-generated-implementations":                 [33mplaceholder[39m=[32m"打刻漏れのため、手動で実績を追加します。"[39m
+Step #1 - "test-generated-implementations":                 [33mrows[39m=[32m"3"[39m
+Step #1 - "test-generated-implementations":               [36m/>[39m
+Step #1 - "test-generated-implementations":             [36m</div>[39m
+Step #1 - "test-generated-implementations":             [36m<div[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"flex flex-col gap-3 pt-4"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [36m<button[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg text-lg transition-colors shadow-md active:scale-95 disabled:opacity-50 min-h-[56px]"[39m
+Step #1 - "test-generated-implementations":                 [33mtype[39m=[32m"submit"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [0m送信[0m
+Step #1 - "test-generated-implementations":               [36m</button>[39m
+Step #1 - "test-generated-implementations":               [36m<button[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-4 px-6 rounded-lg text-lg transition-colors active:scale-95 disabled:opacity-50 min-h-[56px]"[39m
+Step #1 - "test-generated-implementations":                 [33mtype[39m=[32m"button"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [0mキャンセル[0m
+Step #1 - "test-generated-implementations":               [36m</button>[39m
+Step #1 - "test-generated-implementations":             [36m</div>[39m
+Step #1 - "test-generated-implementations":           [36m</form>[39m
+Step #1 - "test-generated-implementations":         [36m</div>[39m
+Step #1 - "test-generated-implementations":       [36m</main>[39m
+Step #1 - "test-generated-implementations":       [36m<footer[39m
+Step #1 - "test-generated-implementations":         [33mclass[39m=[32m"bg-white border-t border-gray-200 py-4 px-6 text-center text-xs text-gray-400"[39m
+Step #1 - "test-generated-implementations":       [36m>[39m
+Step #1 - "test-generated-implementations":         [0m© 2026 外注作業員 勤怠・配置管理システム フロントエンドプロトタイプ[0m
+Step #1 - "test-generated-implementations":       [36m</footer>[39m
+Step #1 - "test-generated-implementations":     [36m</div>[39m
+Step #1 - "test-generated-implementations":   [36m</div>[39m
+Step #1 - "test-generated-implementations": [36m</body>[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m Object.getElementError ../../workspace/test-runner/node_modules/@testing-library/dom/dist/config.js:[2m37:19[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m getAllByLabelText ../../workspace/test-runner/node_modules/@testing-library/dom/dist/queries/label-text.js:[2m108:40[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/@testing-library/dom/dist/query-helpers.js:[2m52:17[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/@testing-library/dom/dist/query-helpers.js:[2m95:19[22m[39m
+Step #1 - "test-generated-implementations": [36m [2m❯[22m tests/PunchCorrection.test.tsx:[2m129:30[22m[39m
+Step #1 - "test-generated-implementations":     [90m127| [39m
+Step #1 - "test-generated-implementations":     [90m128| [39m    [90m// Set DateTime[39m
+Step #1 - "test-generated-implementations":     [90m129| [39m    [35mconst[39m dateInput [33m=[39m screen[33m.[39m[34mgetByLabelText[39m([36m/打刻日時/i[39m) [35mas[39m [33mHTMLInputE[39m…
+Step #1 - "test-generated-implementations":     [90m   | [39m                             [31m^[39m
+Step #1 - "test-generated-implementations":     [90m130| [39m    fireEvent[33m.[39m[34mchange[39m(dateInput[33m,[39m { target[33m:[39m { value[33m:[39m [32m'2026-04-13T09:00'[39m …
+Step #1 - "test-generated-implementations":     [90m131| [39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-009_contractor_punch_correction-AgF9TI[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/PunchCorrection.test.tsx[2m > [22mPunchCorrectionPage (SCR-009)[2m > [22mTST-005: 未認証ユーザーがアクセスした際、ログイン画面にリダイレクトされること
+Step #1 - "test-generated-implementations":  [31m×[39m tests/PunchCorrection.test.tsx[2m > [22mPunchCorrectionPage (SCR-009)[2m > [22mTST-001: 未入力状態で送信ボタンを押したときに各必須項目のバリデーションエラーが表示されること
+Step #1 - "test-generated-implementations": [31m   → Found a label with the text of: /打刻日時/i, however no form control was found associated to that label. Make sure you're using the "for" attribute or "aria-labelledby" attribute correctly.
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Ignored nodes: comments, script, style
+Step #1 - "test-generated-implementations": [36m<body>[31m
+Step #1 - "test-generated-implementations":   [36m<div>[31m
+Step #1 - "test-generated-implementations":     [36m<div[31m
+Step #1 - "test-generated-implementations":       [33mclass[31m=[32m"min-h-screen bg-gray-50 flex flex-col justify-between"[31m
+Step #1 - "test-generated-implementations":     [36m>[31m
+Step #1 - "test-generated-implementations":       [36m<header[31m
+Step #1 - "test-generated-implementations":         [33mclass[31m=[32m"bg-white shadow-sm border-b border-gray-200 py-4 px-6"[31m
+Step #1 - "test-generated-implementations":       [36m>[31m
+Step #1 - "test-generated-implementations":         [36m<h1[31m
+Step #1 - "test-generated-implementations":           [33mclass[31m=[32m"text-xl font-bold text-gray-800 text-center md:text-left"[31m
+Step #1 - "test-generated-implementations":         [36m>[31m
+Step #1 - "test-generated-implementations":           [0m外注先打刻修正フォーム[0m
+Step #1 - "test-generated-implementations":         [36m</h1>[31m
+Step #1 - "test-generated-implementations":       [36m</header>[31m
+Step #1 - "test-generated-implementations":       [36m<main[31m
+Step #1 - "test-generated-implementations":         [33mclass[31m=[32m"flex-1 w-full max-w-lg mx-auto p-4 md:py-8"[31m
+Step #1 - "test-generated-implementations":       [36m>[31m
+Step #1 - "test-generated-implementations":         [36m<div[31m
+Step #1 - "test-generated-implementations":           [33mclass[31m=[32m"bg-white rounded-xl shadow-md border border-gray-100 p-6 md:p-8"[31m
+Step #1 - "test-generated-implementations":         [36m>[31m
+Step #1 - "test-generated-implementations":           [36m<form[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"space-y-6"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [36m<div[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"bg-red-50 text-red-600 p-3 rounded-lg text-sm font-semibold border border-red-200"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [0mデータの読み込みに失敗しました。[0m
+Step #1 - "test-generated-implementations":             [36m</div>[31m
+Step #1 - "test-generated-implementations":             [36m<div[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"space-y-2"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [36m<label[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"block text-gray-700 font-bold text-lg"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [0m対象作業員 [0m
+Step #1 - "test-generated-implementations":                 [36m<span[31m
+Step #1 - "test-generated-implementations":                   [33mclass[31m=[32m"text-red-500"[31m
+Step #1 - "test-generated-implementations":                 [36m>[31m
+Step #1 - "test-generated-implementations":                   [0m*[0m
+Step #1 - "test-generated-implementations":                 [36m</span>[31m
+Step #1 - "test-generated-implementations":               [36m</label>[31m
+Step #1 - "test-generated-implementations":               [36m<select[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"w-full bg-gray-50 border border-gray-300 rounded-lg p-4 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none min-h-[56px]"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [36m<option[31m
+Step #1 - "test-generated-implementations":                   [33mvalue[31m=[32m""[31m
+Step #1 - "test-generated-implementations":                 [36m>[31m
+Step #1 - "test-generated-implementations":                   [0m-- 作業員を選択してください --[0m
+Step #1 - "test-generated-implementations":                 [36m</option>[31m
+Step #1 - "test-generated-implementations":               [36m</select>[31m
+Step #1 - "test-generated-implementations":             [36m</div>[31m
+Step #1 - "test-generated-implementations":             [36m<div[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"space-y-2"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [36m<label[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"block text-gray-700 font-bold text-lg"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [0m打刻日時 [0m
+Step #1 - "test-generated-implementations":                 [36m<span[31m
+Step #1 - "test-generated-implementations":                   [33mclass[31m=[32m"text-red-500"[31m
+Step #1 - "test-generated-implementations":                 [36m>[31m
+Step #1 - "test-generated-implementations":                   [0m*[0m
+Step #1 - "test-generated-implementations":                 [36m</span>[31m
+Step #1 - "test-generated-implementations":               [36m</label>[31m
+Step #1 - "test-generated-implementations":               [36m<input[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"w-full bg-gray-50 border border-gray-300 rounded-lg p-4 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none min-h-[56px]"[31m
+Step #1 - "test-generated-implementations":                 [33mtype[31m=[32m"datetime-local"[31m
+Step #1 - "test-generated-implementations":                 [33mvalue[31m=[32m""[31m
+Step #1 - "test-generated-implementations":               [36m/>[31m
+Step #1 - "test-generated-implementations":             [36m</div>[31m
+Step #1 - "test-generated-implementations":             [36m<div[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"space-y-2"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [36m<label[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"block text-gray-700 font-bold text-lg"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [0m打刻種別 [0m
+Step #1 - "test-generated-implementations":                 [36m<span[31m
+Step #1 - "test-generated-implementations":                   [33mclass[31m=[32m"text-red-500"[31m
+Step #1 - "test-generated-implementations":                 [36m>[31m
+Step #1 - "test-generated-implementations":                   [0m*[0m
+Step #1 - "test-generated-implementations":                 [36m</span>[31m
+Step #1 - "test-generated-implementations":               [36m</label>[31m
+Step #1 - "test-generated-implementations":               [36m<div[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"grid grid-cols-2 gap-4"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [36m<label[31m
+Step #1 - "test-generated-implementations":                   [33mclass[31m=[32m"flex items-center justify-center border-2 rounded-xl p-4 cursor-pointer text-lg font-bold transition-all min-h-[56px] border-gray-200 bg-white hover:bg-gray-50 text-gray-600"[31m
+Step #1 - "test-generated-implementations":                 [36m>[31m
+Step #1 - "test-generated-implementations":                   [36m<input[31m
+Step #1 - "test-generated-implementations":                     [33mclass[31m=[32m"sr-only"[31m
+Step #1 - "test-generated-implementations":                     [33mname[31m=[32m"punch_type"[31m
+Step #1 - "test-generated-implementations":                     [33mtype[31m=[32m"radio"[31m
+Step #1 - "test-generated-implementations":                     [33mvalue[31m=[32m"CLOCK_IN"[31m
+Step #1 - "test-generated-implementations":                   [36m/>[31m
+Step #1 - "test-generated-implementations":                   [0m出勤[0m
+Step #1 - "test-generated-implementations":                 [36m</label>[31m
+Step #1 - "test-generated-implementations":                 [36m<label[31m
+Step #1 - "test-generated-implementations":                   [33mclass[31m=[32m"flex items-center justify-center border-2 rounded-xl p-4 cursor-pointer text-lg font-bold transition-all min-h-[56px] border-gray-200 bg-white hover:bg-gray-50 text-gray-600"[31m
+Step #1 - "test-generated-implementations":                 [36m>[31m
+Step #1 - "test-generated-implementations":                   [36m<input[31m
+Step #1 - "test-generated-implementations":                     [33mclass[31m=[32m"sr-only"[31m
+Step #1 - "test-generated-implementations":                     [33mname[31m=[32m"punch_type"[31m
+Step #1 - "test-generated-implementations":                     [33mtype[31m=[32m"radio"[31m
+Step #1 - "test-generated-implementations":                     [33mvalue[31m=[32m"CLOCK_OUT"[31m
+Step #1 - "test-generated-implementations":                   [36m/>[31m
+Step #1 - "test-generated-implementations":                   [0m退勤[0m
+Step #1 - "test-generated-implementations":                 [36m</label>[31m
+Step #1 - "test-generated-implementations":               [36m</div>[31m
+Step #1 - "test-generated-implementations":             [36m</div>[31m
+Step #1 - "test-generated-implementations":             [36m<div[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"space-y-2"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [36m<label[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"block text-gray-700 font-bold text-lg"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [0m修正・手動打刻の理由 [0m
+Step #1 - "test-generated-implementations":                 [36m<span[31m
+Step #1 - "test-generated-implementations":                   [33mclass[31m=[32m"text-red-500"[31m
+Step #1 - "test-generated-implementations":                 [36m>[31m
+Step #1 - "test-generated-implementations":                   [0m*[0m
+Step #1 - "test-generated-implementations":                 [36m</span>[31m
+Step #1 - "test-generated-implementations":               [36m</label>[31m
+Step #1 - "test-generated-implementations":               [36m<textarea[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"w-full bg-gray-50 border border-gray-300 rounded-lg p-4 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none min-h-[100px]"[31m
+Step #1 - "test-generated-implementations":                 [33mplaceholder[31m=[32m"打刻漏れのため、手動で実績を追加します。"[31m
+Step #1 - "test-generated-implementations":                 [33mrows[31m=[32m"3"[31m
+Step #1 - "test-generated-implementations":               [36m/>[31m
+Step #1 - "test-generated-implementations":             [36m</div>[31m
+Step #1 - "test-generated-implementations":             [36m<div[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"flex flex-col gap-3 pt-4"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [36m<button[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg text-lg transition-colors shadow-md active:scale-95 disabled:opacity-50 min-h-[56px]"[31m
+Step #1 - "test-generated-implementations":                 [33mtype[31m=[32m"submit"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [0m送信[0m
+Step #1 - "test-generated-implementations":               [36m</button>[31m
+Step #1 - "test-generated-implementations":               [36m<button[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-4 px-6 rounded-lg text-lg transition-colors active:scale-95 disabled:opacity-50 min-h-[56px]"[31m
+Step #1 - "test-generated-implementations":                 [33mtype[31m=[32m"button"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [0mキャンセル[0m
+Step #1 - "test-generated-implementations":               [36m</button>[31m
+Step #1 - "test-generated-implementations":             [36m</div>[31m
+Step #1 - "test-generated-implementations":           [36m</form>[31m
+Step #1 - "test-generated-implementations":         [36m</div>[31m
+Step #1 - "test-generated-implementations":       [36m</main>[31m
+Step #1 - "test-generated-implementations":       [36m<footer[31m
+Step #1 - "test-generated-implementations":         [33mclass[31m=[32m"bg-white border-t border-gray-200 py-4 px-6 text-center text-xs text-gray-400"[31m
+Step #1 - "test-generated-implementations":       [36m>[31m
+Step #1 - "test-generated-implementations":         [0m© 2026 外注作業員 勤怠・配置管理システム フロントエンドプロトタイプ[0m
+Step #1 - "test-generated-implementations":       [36m</footer>[31m
+Step #1 - "test-generated-implementations":     [36m</div>[31m
+Step #1 - "test-generated-implementations":   [36m</div>[31m
+Step #1 - "test-generated-implementations": [36m</body>[31m[39m
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/PunchCorrection.test.tsx[2m > [22mPunchCorrectionPage (SCR-009)[2m > [22mTST-004: キャンセルボタンを押した際、即座にホーム画面に遷移すること
+Step #1 - "test-generated-implementations":  [31m×[39m tests/PunchCorrection.test.tsx[2m > [22mPunchCorrectionPage (SCR-009)[2m > [22mTST-003: 正常値を入力して送信した際、打刻修正が正常に完了しホーム画面へ遷移すること
+Step #1 - "test-generated-implementations": [31m   → Found a label with the text of: /打刻日時/i, however no form control was found associated to that label. Make sure you're using the "for" attribute or "aria-labelledby" attribute correctly.
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Ignored nodes: comments, script, style
+Step #1 - "test-generated-implementations": [36m<body>[31m
+Step #1 - "test-generated-implementations":   [36m<div>[31m
+Step #1 - "test-generated-implementations":     [36m<div[31m
+Step #1 - "test-generated-implementations":       [33mclass[31m=[32m"min-h-screen bg-gray-50 flex flex-col justify-between"[31m
+Step #1 - "test-generated-implementations":     [36m>[31m
+Step #1 - "test-generated-implementations":       [36m<header[31m
+Step #1 - "test-generated-implementations":         [33mclass[31m=[32m"bg-white shadow-sm border-b border-gray-200 py-4 px-6"[31m
+Step #1 - "test-generated-implementations":       [36m>[31m
+Step #1 - "test-generated-implementations":         [36m<h1[31m
+Step #1 - "test-generated-implementations":           [33mclass[31m=[32m"text-xl font-bold text-gray-800 text-center md:text-left"[31m
+Step #1 - "test-generated-implementations":         [36m>[31m
+Step #1 - "test-generated-implementations":           [0m外注先打刻修正フォーム[0m
+Step #1 - "test-generated-implementations":         [36m</h1>[31m
+Step #1 - "test-generated-implementations":       [36m</header>[31m
+Step #1 - "test-generated-implementations":       [36m<main[31m
+Step #1 - "test-generated-implementations":         [33mclass[31m=[32m"flex-1 w-full max-w-lg mx-auto p-4 md:py-8"[31m
+Step #1 - "test-generated-implementations":       [36m>[31m
+Step #1 - "test-generated-implementations":         [36m<div[31m
+Step #1 - "test-generated-implementations":           [33mclass[31m=[32m"bg-white rounded-xl shadow-md border border-gray-100 p-6 md:p-8"[31m
+Step #1 - "test-generated-implementations":         [36m>[31m
+Step #1 - "test-generated-implementations":           [36m<form[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"space-y-6"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [36m<div[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"bg-red-50 text-red-600 p-3 rounded-lg text-sm font-semibold border border-red-200"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [0mデータの読み込みに失敗しました。[0m
+Step #1 - "test-generated-implementations":             [36m</div>[31m
+Step #1 - "test-generated-implementations":             [36m<div[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"space-y-2"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [36m<label[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"block text-gray-700 font-bold text-lg"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [0m対象作業員 [0m
+Step #1 - "test-generated-implementations":                 [36m<span[31m
+Step #1 - "test-generated-implementations":                   [33mclass[31m=[32m"text-red-500"[31m
+Step #1 - "test-generated-implementations":                 [36m>[31m
+Step #1 - "test-generated-implementations":                   [0m*[0m
+Step #1 - "test-generated-implementations":                 [36m</span>[31m
+Step #1 - "test-generated-implementations":               [36m</label>[31m
+Step #1 - "test-generated-implementations":               [36m<select[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"w-full bg-gray-50 border border-gray-300 rounded-lg p-4 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none min-h-[56px]"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [36m<option[31m
+Step #1 - "test-generated-implementations":                   [33mvalue[31m=[32m""[31m
+Step #1 - "test-generated-implementations":                 [36m>[31m
+Step #1 - "test-generated-implementations":                   [0m-- 作業員を選択してください --[0m
+Step #1 - "test-generated-implementations":                 [36m</option>[31m
+Step #1 - "test-generated-implementations":               [36m</select>[31m
+Step #1 - "test-generated-implementations":             [36m</div>[31m
+Step #1 - "test-generated-implementations":             [36m<div[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"space-y-2"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [36m<label[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"block text-gray-700 font-bold text-lg"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [0m打刻日時 [0m
+Step #1 - "test-generated-implementations":                 [36m<span[31m
+Step #1 - "test-generated-implementations":                   [33mclass[31m=[32m"text-red-500"[31m
+Step #1 - "test-generated-implementations":                 [36m>[31m
+Step #1 - "test-generated-implementations":                   [0m*[0m
+Step #1 - "test-generated-implementations":                 [36m</span>[31m
+Step #1 - "test-generated-implementations":               [36m</label>[31m
+Step #1 - "test-generated-implementations":               [36m<input[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"w-full bg-gray-50 border border-gray-300 rounded-lg p-4 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none min-h-[56px]"[31m
+Step #1 - "test-generated-implementations":                 [33mtype[31m=[32m"datetime-local"[31m
+Step #1 - "test-generated-implementations":                 [33mvalue[31m=[32m""[31m
+Step #1 - "test-generated-implementations":               [36m/>[31m
+Step #1 - "test-generated-implementations":             [36m</div>[31m
+Step #1 - "test-generated-implementations":             [36m<div[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"space-y-2"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [36m<label[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"block text-gray-700 font-bold text-lg"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [0m打刻種別 [0m
+Step #1 - "test-generated-implementations":                 [36m<span[31m
+Step #1 - "test-generated-implementations":                   [33mclass[31m=[32m"text-red-500"[31m
+Step #1 - "test-generated-implementations":                 [36m>[31m
+Step #1 - "test-generated-implementations":                   [0m*[0m
+Step #1 - "test-generated-implementations":                 [36m</span>[31m
+Step #1 - "test-generated-implementations":               [36m</label>[31m
+Step #1 - "test-generated-implementations":               [36m<div[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"grid grid-cols-2 gap-4"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [36m<label[31m
+Step #1 - "test-generated-implementations":                   [33mclass[31m=[32m"flex items-center justify-center border-2 rounded-xl p-4 cursor-pointer text-lg font-bold transition-all min-h-[56px] border-gray-200 bg-white hover:bg-gray-50 text-gray-600"[31m
+Step #1 - "test-generated-implementations":                 [36m>[31m
+Step #1 - "test-generated-implementations":                   [36m<input[31m
+Step #1 - "test-generated-implementations":                     [33mclass[31m=[32m"sr-only"[31m
+Step #1 - "test-generated-implementations":                     [33mname[31m=[32m"punch_type"[31m
+Step #1 - "test-generated-implementations":                     [33mtype[31m=[32m"radio"[31m
+Step #1 - "test-generated-implementations":                     [33mvalue[31m=[32m"CLOCK_IN"[31m
+Step #1 - "test-generated-implementations":                   [36m/>[31m
+Step #1 - "test-generated-implementations":                   [0m出勤[0m
+Step #1 - "test-generated-implementations":                 [36m</label>[31m
+Step #1 - "test-generated-implementations":                 [36m<label[31m
+Step #1 - "test-generated-implementations":                   [33mclass[31m=[32m"flex items-center justify-center border-2 rounded-xl p-4 cursor-pointer text-lg font-bold transition-all min-h-[56px] border-gray-200 bg-white hover:bg-gray-50 text-gray-600"[31m
+Step #1 - "test-generated-implementations":                 [36m>[31m
+Step #1 - "test-generated-implementations":                   [36m<input[31m
+Step #1 - "test-generated-implementations":                     [33mclass[31m=[32m"sr-only"[31m
+Step #1 - "test-generated-implementations":                     [33mname[31m=[32m"punch_type"[31m
+Step #1 - "test-generated-implementations":                     [33mtype[31m=[32m"radio"[31m
+Step #1 - "test-generated-implementations":                     [33mvalue[31m=[32m"CLOCK_OUT"[31m
+Step #1 - "test-generated-implementations":                   [36m/>[31m
+Step #1 - "test-generated-implementations":                   [0m退勤[0m
+Step #1 - "test-generated-implementations":                 [36m</label>[31m
+Step #1 - "test-generated-implementations":               [36m</div>[31m
+Step #1 - "test-generated-implementations":             [36m</div>[31m
+Step #1 - "test-generated-implementations":             [36m<div[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"space-y-2"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [36m<label[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"block text-gray-700 font-bold text-lg"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [0m修正・手動打刻の理由 [0m
+Step #1 - "test-generated-implementations":                 [36m<span[31m
+Step #1 - "test-generated-implementations":                   [33mclass[31m=[32m"text-red-500"[31m
+Step #1 - "test-generated-implementations":                 [36m>[31m
+Step #1 - "test-generated-implementations":                   [0m*[0m
+Step #1 - "test-generated-implementations":                 [36m</span>[31m
+Step #1 - "test-generated-implementations":               [36m</label>[31m
+Step #1 - "test-generated-implementations":               [36m<textarea[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"w-full bg-gray-50 border border-gray-300 rounded-lg p-4 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none min-h-[100px]"[31m
+Step #1 - "test-generated-implementations":                 [33mplaceholder[31m=[32m"打刻漏れのため、手動で実績を追加します。"[31m
+Step #1 - "test-generated-implementations":                 [33mrows[31m=[32m"3"[31m
+Step #1 - "test-generated-implementations":               [36m/>[31m
+Step #1 - "test-generated-implementations":             [36m</div>[31m
+Step #1 - "test-generated-implementations":             [36m<div[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"flex flex-col gap-3 pt-4"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [36m<button[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg text-lg transition-colors shadow-md active:scale-95 disabled:opacity-50 min-h-[56px]"[31m
+Step #1 - "test-generated-implementations":                 [33mtype[31m=[32m"submit"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [0m送信[0m
+Step #1 - "test-generated-implementations":               [36m</button>[31m
+Step #1 - "test-generated-implementations":               [36m<button[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-4 px-6 rounded-lg text-lg transition-colors active:scale-95 disabled:opacity-50 min-h-[56px]"[31m
+Step #1 - "test-generated-implementations":                 [33mtype[31m=[32m"button"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [0mキャンセル[0m
+Step #1 - "test-generated-implementations":               [36m</button>[31m
+Step #1 - "test-generated-implementations":             [36m</div>[31m
+Step #1 - "test-generated-implementations":           [36m</form>[31m
+Step #1 - "test-generated-implementations":         [36m</div>[31m
+Step #1 - "test-generated-implementations":       [36m</main>[31m
+Step #1 - "test-generated-implementations":       [36m<footer[31m
+Step #1 - "test-generated-implementations":         [33mclass[31m=[32m"bg-white border-t border-gray-200 py-4 px-6 text-center text-xs text-gray-400"[31m
+Step #1 - "test-generated-implementations":       [36m>[31m
+Step #1 - "test-generated-implementations":         [0m© 2026 外注作業員 勤怠・配置管理システム フロントエンドプロトタイプ[0m
+Step #1 - "test-generated-implementations":       [36m</footer>[31m
+Step #1 - "test-generated-implementations":     [36m</div>[31m
+Step #1 - "test-generated-implementations":   [36m</div>[31m
+Step #1 - "test-generated-implementations": [36m</body>[31m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m2 passed[39m[22m[90m (4)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 09:48:12
+Step #1 - "test-generated-implementations": [2m   Duration [22m 1.14s[2m (transform 146ms, setup 111ms, collect 226ms, tests 198ms, environment 397ms, prepare 76ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": FAIL: SCR-009_contractor_punch_correction
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [10/15] Testing: SCR-010_admin_login
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯[1m[7m Failed Suites 1 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[1m[7m FAIL [27m[22m[39m tests/adminLogin.test.tsx[2m [ tests/adminLogin.test.tsx ][22m
+Step #1 - "test-generated-implementations": [31m[1mError[22m: Transform failed with 1 error:
+Step #1 - "test-generated-implementations": /tmp/SCR-010_admin_login-4bjdLO/app/(auth)/login/page.tsx:203:1: ERROR: Unterminated string literal[39m
+Step #1 - "test-generated-implementations":   Plugin: [35mvite:esbuild[39m
+Step #1 - "test-generated-implementations":   File: [36m/tmp/SCR-010_admin_login-4bjdLO/app/(auth)/login/page.tsx[39m:203:1
+Step #1 - "test-generated-implementations": [33m
+Step #1 - "test-generated-implementations":   [33mUnterminated string literal[33m
+Step #1 - "test-generated-implementations":   201|    );
+Step #1 - "test-generated-implementations":   202|  }
+Step #1 - "test-generated-implementations":   203|  "
+Step #1 - "test-generated-implementations":      |   ^
+Step #1 - "test-generated-implementations":   204|      },
+Step #1 - "test-generated-implementations":   205|      {
+Step #1 - "test-generated-implementations":   [39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m failureErrorWithLog ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m1472:15[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m755:50[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m responseCallbacks.<computed> ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m622:9[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m handleIncomingPacket ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m677:12[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m Socket.readFromStdout ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m600:7[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+Step #1 - "test-generated-implementations": [31m[1mSerialized Error:[22m[39m [90m{ __vitest_rollup_error__: { plugin: 'vite:esbuild', id: '/tmp/SCR-010_admin_login-4bjdLO/app/(auth)/login/page.tsx', loc: { column: 1, file: '/tmp/SCR-010_admin_login-4bjdLO/app/(auth)/login/page.tsx', length: +0, line: 203, lineText: '"', namespace: '', suggestion: '' }, frame: '\n\u001b[33mUnterminated string literal\u001b[39m\n201|    );\n202|  }\n203|  "\n   |   ^\n204|      },\n205|      {\n' } }[39m
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-010_admin_login-4bjdLO[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [2mno tests[22m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 09:48:14
+Step #1 - "test-generated-implementations": [2m   Duration [22m 941ms[2m (transform 115ms, setup 112ms, collect 0ms, tests 0ms, environment 408ms, prepare 79ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": FAIL: SCR-010_admin_login
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [11/15] Testing: SCR-011_admin_dashboard
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-011_admin_dashboard-f6oWuQ[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [2mno tests[22m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 09:48:15
+Step #1 - "test-generated-implementations": [2m   Duration [22m 899ms[2m (transform 112ms, setup 109ms, collect 0ms, tests 0ms, environment 406ms, prepare 79ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": FAIL: SCR-011_admin_dashboard
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯[1m[7m Failed Suites 1 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[1m[7m FAIL [27m[22m[39m tests/dashboard.test.tsx[2m [ tests/dashboard.test.tsx ][22m
+Step #1 - "test-generated-implementations": [31m[1mError[22m: Transform failed with 1 error:
+Step #1 - "test-generated-implementations": /tmp/SCR-011_admin_dashboard-f6oWuQ/app/(factory)/dashboard/page.tsx:322:1: ERROR: Unterminated string literal[39m
+Step #1 - "test-generated-implementations":   Plugin: [35mvite:esbuild[39m
+Step #1 - "test-generated-implementations":   File: [36m/tmp/SCR-011_admin_dashboard-f6oWuQ/app/(factory)/dashboard/page.tsx[39m:322:1
+Step #1 - "test-generated-implementations": [33m
+Step #1 - "test-generated-implementations":   [33mUnterminated string literal[33m
+Step #1 - "test-generated-implementations":   320|    );
+Step #1 - "test-generated-implementations":   321|  }
+Step #1 - "test-generated-implementations":   322|  "
+Step #1 - "test-generated-implementations":      |   ^
+Step #1 - "test-generated-implementations":   323|      },
+Step #1 - "test-generated-implementations":   324|      {
+Step #1 - "test-generated-implementations":   [39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m failureErrorWithLog ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m1472:15[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m755:50[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m responseCallbacks.<computed> ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m622:9[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m handleIncomingPacket ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m677:12[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m Socket.readFromStdout ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m600:7[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+Step #1 - "test-generated-implementations": [31m[1mSerialized Error:[22m[39m [90m{ __vitest_rollup_error__: { plugin: 'vite:esbuild', id: '/tmp/SCR-011_admin_dashboard-f6oWuQ/app/(factory)/dashboard/page.tsx', loc: { column: 1, file: '/tmp/SCR-011_admin_dashboard-f6oWuQ/app/(factory)/dashboard/page.tsx', length: +0, line: 322, lineText: '"', namespace: '', suggestion: '' }, frame: '\n\u001b[33mUnterminated string literal\u001b[39m\n320|    );\n321|  }\n322|  "\n   |   ^\n323|      },\n324|      {\n' } }[39m
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [12/15] Testing: SCR-012_punch_history
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-012_punch_history-jYXOLs[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [2mno tests[22m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 09:48:16
+Step #1 - "test-generated-implementations": [2m   Duration [22m 996ms[2m (transform 186ms, setup 111ms, collect 0ms, tests 0ms, environment 401ms, prepare 77ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯[1m[7m Failed Suites 1 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[1m[7m FAIL [27m[22m[39m tests/SCR-012.test.tsx[2m [ tests/SCR-012.test.tsx ][22m
+Step #1 - "test-generated-implementations": [31m[1mReferenceError[22m: Cannot access 'mockGetActiveContractors' before initialization[39m
+Step #1 - "test-generated-implementations": [36m [2m❯[22m t.<anonymous> tests/SCR-012.test.tsx:[2m6:31[22m[39m
+Step #1 - "test-generated-implementations":     [90m  4| [39m[35mimport[39m [33mAttendanceHistoryPage[39m [35mfrom[39m [32m'../app/(factory)/attendance-history[39m…
+Step #1 - "test-generated-implementations":     [90m  5| [39m
+Step #1 - "test-generated-implementations":     [90m  6| [39m[90m// Mock internal repository[39m
+Step #1 - "test-generated-implementations":     [90m   | [39m                              [31m^[39m
+Step #1 - "test-generated-implementations":     [90m  7| [39m[35mconst[39m mockGetActiveContractors [33m=[39m vi[33m.[39m[34mfn[39m()[33m.[39m[34mmockResolvedValue[39m([
+Step #1 - "test-generated-implementations":     [90m  8| [39m  { contractor_id[33m:[39m [32m'c-1'[39m[33m,[39m name[33m:[39m [32m'大都工業 (株)'[39m[33m,[39m status[33m:[39m [32m'ACTIVE'[39m }[33m,[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m app/(factory)/attendance-history/page.tsx:[2m9:20[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m tests/SCR-012.test.tsx:[2m19:25[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": FAIL: SCR-012_punch_history
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [13/15] Testing: SCR-013_labor_time_summary
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-013_labor_time_summary-gwF89Y[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [2mno tests[22m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 09:48:18
+Step #1 - "test-generated-implementations": [2m   Duration [22m 883ms[2m (transform 66ms, setup 116ms, collect 0ms, tests 0ms, environment 414ms, prepare 75ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": FAIL: SCR-013_labor_time_summary
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯[1m[7m Failed Suites 1 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[1m[7m FAIL [27m[22m[39m tests/laborSummary.test.tsx[2m [ tests/laborSummary.test.tsx ][22m
+Step #1 - "test-generated-implementations": [31m[1mError[22m: Transform failed with 1 error:
+Step #1 - "test-generated-implementations": /tmp/SCR-013_labor_time_summary-gwF89Y/app/(factory)/labor-summary/page.tsx:362:1: ERROR: Unterminated string literal[39m
+Step #1 - "test-generated-implementations":   Plugin: [35mvite:esbuild[39m
+Step #1 - "test-generated-implementations":   File: [36m/tmp/SCR-013_labor_time_summary-gwF89Y/app/(factory)/labor-summary/page.tsx[39m:362:1
+Step #1 - "test-generated-implementations": [33m
+Step #1 - "test-generated-implementations":   [33mUnterminated string literal[33m
+Step #1 - "test-generated-implementations":   360|    );
+Step #1 - "test-generated-implementations":   361|  }
+Step #1 - "test-generated-implementations":   362|  "
+Step #1 - "test-generated-implementations":      |   ^
+Step #1 - "test-generated-implementations":   363|      },
+Step #1 - "test-generated-implementations":   364|      {
+Step #1 - "test-generated-implementations":   [39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m failureErrorWithLog ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m1472:15[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m755:50[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m responseCallbacks.<computed> ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m622:9[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m handleIncomingPacket ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m677:12[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m Socket.readFromStdout ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m600:7[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+Step #1 - "test-generated-implementations": [31m[1mSerialized Error:[22m[39m [90m{ __vitest_rollup_error__: { plugin: 'vite:esbuild', id: '/tmp/SCR-013_labor_time_summary-gwF89Y/app/(factory)/labor-summary/page.tsx', loc: { column: 1, file: '/tmp/SCR-013_labor_time_summary-gwF89Y/app/(factory)/labor-summary/page.tsx', length: +0, line: 362, lineText: '"', namespace: '', suggestion: '' }, frame: '\n\u001b[33mUnterminated string literal\u001b[39m\n360|    );\n361|  }\n362|  "\n   |   ^\n363|      },\n364|      {\n' } }[39m
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [14/15] Testing: SCR-014_contractor_company_register
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-014_contractor_company_register-YJdn1i[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [2mno tests[22m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 09:48:19
+Step #1 - "test-generated-implementations": [2m   Duration [22m 910ms[2m (transform 97ms, setup 115ms, collect 0ms, tests 0ms, environment 419ms, prepare 79ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": FAIL: SCR-014_contractor_company_register
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯[1m[7m Failed Suites 1 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[1m[7m FAIL [27m[22m[39m tests/contractors.test.tsx[2m [ tests/contractors.test.tsx ][22m
+Step #1 - "test-generated-implementations": [31m[1mError[22m: Transform failed with 1 error:
+Step #1 - "test-generated-implementations": /tmp/SCR-014_contractor_company_register-YJdn1i/app/(factory)/contractors/page.tsx:316:1: ERROR: Unterminated string literal[39m
+Step #1 - "test-generated-implementations":   Plugin: [35mvite:esbuild[39m
+Step #1 - "test-generated-implementations":   File: [36m/tmp/SCR-014_contractor_company_register-YJdn1i/app/(factory)/contractors/page.tsx[39m:316:1
+Step #1 - "test-generated-implementations": [33m
+Step #1 - "test-generated-implementations":   [33mUnterminated string literal[33m
+Step #1 - "test-generated-implementations":   314|    );
+Step #1 - "test-generated-implementations":   315|  }
+Step #1 - "test-generated-implementations":   316|  "
+Step #1 - "test-generated-implementations":      |   ^
+Step #1 - "test-generated-implementations":   317|      },
+Step #1 - "test-generated-implementations":   318|      {
+Step #1 - "test-generated-implementations":   [39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m failureErrorWithLog ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m1472:15[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m755:50[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m responseCallbacks.<computed> ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m622:9[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m handleIncomingPacket ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m677:12[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m Socket.readFromStdout ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m600:7[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+Step #1 - "test-generated-implementations": [31m[1mSerialized Error:[22m[39m [90m{ __vitest_rollup_error__: { plugin: 'vite:esbuild', id: '/tmp/SCR-014_contractor_company_register-YJdn1i/app/(factory)/contractors/page.tsx', loc: { column: 1, file: '/tmp/SCR-014_contractor_company_register-YJdn1i/app/(factory)/contractors/page.tsx', length: +0, line: 316, lineText: '"', namespace: '', suggestion: '' }, frame: '\n\u001b[33mUnterminated string literal\u001b[39m\n314|    );\n315|  }\n316|  "\n   |   ^\n317|      },\n318|      {\n' } }[39m
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [15/15] Testing: SCR-015_admin_user_register
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-015_admin_user_register-h2agqy[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [2mno tests[22m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 09:48:20
+Step #1 - "test-generated-implementations": [2m   Duration [22m 738ms[2m (transform 41ms, setup 116ms, collect 0ms, tests 0ms, environment 409ms, prepare 77ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": FAIL: SCR-015_admin_user_register
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯[1m[7m Failed Suites 1 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[1m[7m FAIL [27m[22m[39m tests/adminUsers.test.tsx[2m [ tests/adminUsers.test.tsx ][22m
+Step #1 - "test-generated-implementations": [31m[1mError[22m: Transform failed with 1 error:
+Step #1 - "test-generated-implementations": /tmp/SCR-015_admin_user_register-h2agqy/tests/adminUsers.test.tsx:90:1: ERROR: Unterminated string literal[39m
+Step #1 - "test-generated-implementations":   Plugin: [35mvite:esbuild[39m
+Step #1 - "test-generated-implementations":   File: [36m/tmp/SCR-015_admin_user_register-h2agqy/tests/adminUsers.test.tsx[39m:90:1
+Step #1 - "test-generated-implementations": [33m
+Step #1 - "test-generated-implementations":   [33mUnterminated string literal[33m
+Step #1 - "test-generated-implementations":   88 |    });
+Step #1 - "test-generated-implementations":   89 |  });
+Step #1 - "test-generated-implementations":   90 |  "
+Step #1 - "test-generated-implementations":      |   ^
+Step #1 - "test-generated-implementations":   91 |      },
+Step #1 - "test-generated-implementations":   92 |      {
+Step #1 - "test-generated-implementations":   [39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m failureErrorWithLog ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m1472:15[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m755:50[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m responseCallbacks.<computed> ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m622:9[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m handleIncomingPacket ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m677:12[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m Socket.readFromStdout ../../workspace/test-runner/node_modules/esbuild/lib/main.js:[2m600:7[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+Step #1 - "test-generated-implementations": [31m[1mSerialized Error:[22m[39m [90m{ __vitest_rollup_error__: { plugin: 'vite:esbuild', id: '/tmp/SCR-015_admin_user_register-h2agqy/tests/adminUsers.test.tsx', loc: { column: 1, file: '/tmp/SCR-015_admin_user_register-h2agqy/tests/adminUsers.test.tsx', length: +0, line: 90, lineText: '"', namespace: '', suggestion: '' }, frame: '\n\u001b[33mUnterminated string literal\u001b[39m\n88 |    });\n89 |  });\n90 |  "\n   |   ^\n91 |      },\n92 |      {\n' } }[39m
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": Generated Screen Test Summary
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": Total                 : 15
+Step #1 - "test-generated-implementations": Passed                : 1
+Step #1 - "test-generated-implementations": Test failed           : 14
+Step #1 - "test-generated-implementations": Infrastructure failed : 0
+Step #1 - "test-generated-implementations": Results               : /workspace/requirements/ai/generated/test-results
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Test failures detected.
+Finished Step #1 - "test-generated-implementations"
+ERROR: step exited with non-zero status: 1
+Starting Step #2 - "upload-test-results"
+Step #2 - "upload-test-results": Pulling image: gcr.io/google.com/cloudsdktool/cloud-sdk
+Step #2 - "upload-test-results": Using default tag: latest
+Step #2 - "upload-test-results": latest: Pulling from google.com/cloudsdktool/cloud-sdk
+Step #2 - "upload-test-results": 6310eb16bf42: Pulling fs layer
+Step #2 - "upload-test-results": 488f94d8fb5f: Pulling fs layer
+Step #2 - "upload-test-results": a257e756f7a6: Pulling fs layer
+Step #2 - "upload-test-results": 60070b3b968e: Pulling fs layer
+Step #2 - "upload-test-results": 4d1f9d77cfa0: Pulling fs layer
+Step #2 - "upload-test-results": 301958339266: Pulling fs layer
+Step #2 - "upload-test-results": 4d1f9d77cfa0: Verifying Checksum
+Step #2 - "upload-test-results": 4d1f9d77cfa0: Download complete
+Step #2 - "upload-test-results": 488f94d8fb5f: Verifying Checksum
+Step #2 - "upload-test-results": 488f94d8fb5f: Download complete
+Step #2 - "upload-test-results": 301958339266: Verifying Checksum
+Step #2 - "upload-test-results": 301958339266: Download complete
+Step #2 - "upload-test-results": 6310eb16bf42: Verifying Checksum
+Step #2 - "upload-test-results": 6310eb16bf42: Download complete
+Step #2 - "upload-test-results": 60070b3b968e: Verifying Checksum
+Step #2 - "upload-test-results": 60070b3b968e: Download complete
+Step #2 - "upload-test-results": 6310eb16bf42: Pull complete
+Step #2 - "upload-test-results": 488f94d8fb5f: Pull complete
+Step #2 - "upload-test-results": a257e756f7a6: Verifying Checksum
+Step #2 - "upload-test-results": a257e756f7a6: Download complete
+Step #2 - "upload-test-results": a257e756f7a6: Pull complete
+Step #2 - "upload-test-results": 60070b3b968e: Pull complete
+Step #2 - "upload-test-results": 4d1f9d77cfa0: Pull complete
+Step #2 - "upload-test-results": 301958339266: Pull complete
+Step #2 - "upload-test-results": Digest: sha256:2e480d7977829f1534665da1fffd98170f5345d0a6322b369b0fe08a932ce574
+Step #2 - "upload-test-results": Status: Downloaded newer image for gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+Step #2 - "upload-test-results": gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/summary.json to gs://aidf-team-suda.appspot.com/ai-development/9e450daf-7d8c-4cc8-bb74-c2a81032082d/test-results/summary.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-002_contractor_home.json to gs://aidf-team-suda.appspot.com/ai-development/9e450daf-7d8c-4cc8-bb74-c2a81032082d/test-results/SCR-002_contractor_home.json
+Step #2 - "upload-test-results":
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-005_capture_and_submit.json to gs://aidf-team-suda.appspot.com/ai-development/9e450daf-7d8c-4cc8-bb74-c2a81032082d/test-results/SCR-005_capture_and_submit.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-007_worker_list.json to gs://aidf-team-suda.appspot.com/ai-development/9e450daf-7d8c-4cc8-bb74-c2a81032082d/test-results/SCR-007_worker_list.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-015_admin_user_register.json to gs://aidf-team-suda.appspot.com/ai-development/9e450daf-7d8c-4cc8-bb74-c2a81032082d/test-results/SCR-015_admin_user_register.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-009_contractor_punch_correction.json to gs://aidf-team-suda.appspot.com/ai-development/9e450daf-7d8c-4cc8-bb74-c2a81032082d/test-results/SCR-009_contractor_punch_correction.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-011_admin_dashboard.json to gs://aidf-team-suda.appspot.com/ai-development/9e450daf-7d8c-4cc8-bb74-c2a81032082d/test-results/SCR-011_admin_dashboard.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-001_contractor_login.json to gs://aidf-team-suda.appspot.com/ai-development/9e450daf-7d8c-4cc8-bb74-c2a81032082d/test-results/SCR-001_contractor_login.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-008_worker_add_edit.json to gs://aidf-team-suda.appspot.com/ai-development/9e450daf-7d8c-4cc8-bb74-c2a81032082d/test-results/SCR-008_worker_add_edit.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-014_contractor_company_register.json to gs://aidf-team-suda.appspot.com/ai-development/9e450daf-7d8c-4cc8-bb74-c2a81032082d/test-results/SCR-014_contractor_company_register.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-013_labor_time_summary.json to gs://aidf-team-suda.appspot.com/ai-development/9e450daf-7d8c-4cc8-bb74-c2a81032082d/test-results/SCR-013_labor_time_summary.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-012_punch_history.json to gs://aidf-team-suda.appspot.com/ai-development/9e450daf-7d8c-4cc8-bb74-c2a81032082d/test-results/SCR-012_punch_history.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-006_punch_complete.json to gs://aidf-team-suda.appspot.com/ai-development/9e450daf-7d8c-4cc8-bb74-c2a81032082d/test-results/SCR-006_punch_complete.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-004_worker_select.json to gs://aidf-team-suda.appspot.com/ai-development/9e450daf-7d8c-4cc8-bb74-c2a81032082d/test-results/SCR-004_worker_select.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-003_punch_mode_select.json to gs://aidf-team-suda.appspot.com/ai-development/9e450daf-7d8c-4cc8-bb74-c2a81032082d/test-results/SCR-003_punch_mode_select.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-010_admin_login.json to gs://aidf-team-suda.appspot.com/ai-development/9e450daf-7d8c-4cc8-bb74-c2a81032082d/test-results/SCR-010_admin_login.json
+Step #2 - "upload-test-results": ..............
+Step #2 - "upload-test-results":
+Step #2 - "upload-test-results": Average throughput: 97.3kiB/s
+Finished Step #2 - "upload-test-results"
+PUSH
+DONE
+--------------------------------------------------------------------------------

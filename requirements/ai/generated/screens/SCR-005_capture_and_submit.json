@@ -1,0 +1,610 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-005_capture_and_submit.md"
+  },
+  "screen": {
+    "id": "SCR-005",
+    "name": "撮影・送信画面",
+    "type": "screen_requirements",
+    "version": "1.0.0"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-005-FN-001",
+        "summary": "端末のカメラを起動して写真を撮影できる",
+        "detail": "HTML5 getUserMedia API等を利用して端末のカメラ映像ストリームを取得し、<video>要素にプレビュー表示。撮影時に<canvas>を介して画像データを取得する。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-005-FN-002",
+        "summary": "撮影した写真のプレビューを表示できる",
+        "detail": "キャプチャした静止画データをプレビュー用の<img>要素に表示し、ビデオストリームを一時停止または非表示にする。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-005-FN-003",
+        "summary": "プレビュー確認後、撮り直し（再撮影）ができる",
+        "detail": "撮り直しアクションによりプレビュー画像を破棄し、再びカメラの映像ストリームを起動して<video>要素のライブプレビューに戻す。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-005-FN-004",
+        "summary": "送信ボタン押下で打刻データ（写真・打刻モード・対象作業員・打刻日時）をサーバーに送信できる",
+        "detail": "作業員選択画面（SCR-004）から引き継いだ対象作業員ID、打刻モード（出勤/退勤）に、撮影した圧縮済み写真データ、現在日時、および位置情報（任意）を付与して打刻APIに送信（モックリポジトリ保存）する。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-005-FN-005",
+        "summary": "クライアント側で画像圧縮処理を行い送信する",
+        "detail": "回線が細い屋外環境等を考慮し、キャプチャした画像をクライアント側のcanvas等を用いて、長辺1280px以下、JPEG品質0.7、上限1MB程度に圧縮する。",
+        "priority": "High"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-005-UI-001",
+        "summary": "カメラプレビュー領域を画面中央に大きく表示する",
+        "detail": "アスペクト比を維持しつつ、モバイル・タブレット画面の中央部分に最も目立つ形でビデオ・プレビュー表示領域を確保する。"
+      },
+      {
+        "id": "SCR-005-UI-002",
+        "summary": "撮影ボタン・送信ボタン・撮り直しボタンを大きくタップしやすいサイズで配置する",
+        "detail": "屋外での手袋着用や直射日光下での操作性を考慮し、最小44x44px以上（Tailwind CSSでのpadding/size設計）の大きめかつ視認性の高いボタン配置とする。"
+      },
+      {
+        "id": "SCR-005-UI-003",
+        "summary": "選択中の打刻モード（出勤/退勤）と対象作業員数を画面上部に表示する",
+        "detail": "前画面（SCR-004）から遷移した状態である「打刻モード：出勤（または退勤）」と「対象人数：X名」をヘッダー直下に見やすく配置する。"
+      },
+      {
+        "id": "SCR-005-UI-004",
+        "summary": "レスポンシブWebデザインでPC/スマホ両対応とする",
+        "detail": "Tailwind CSSのブレークポイントを活用し、スマホ・タブレットでは縦長、PCでは中央に集約されたレイアウトで最適表示する。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-005-VL-001",
+        "summary": "写真が撮影されていない状態では送信ボタンを押下できない",
+        "detail": "プレビュー画像が存在しない（撮影前の初期状態、または撮り直しボタン押下後）時は、送信ボタンを非活性（disabled）状態にして送信処理を防ぐ。"
+      },
+      {
+        "id": "SCR-005-VL-002",
+        "summary": "ブラウザのカメラ利用権限が拒否された場合はエラーメッセージを表示し、権限許可を促す",
+        "detail": "getUserMedia APIの例外（NotAllowedError等）を捕捉し、プレビュー領域に「カメラの利用権限が拒否されています。ブラウザの設定からカメラのアクセスを許可してください。」等のエラーメッセージをトーストまたは警告領域に表示する。"
+      },
+      {
+        "id": "SCR-005-VL-003",
+        "summary": "未認証状態でアクセスした場合はログイン画面（SCR-001）へリダイレクトする",
+        "detail": "認証ガード（sessionStorageまたはContext内の認証ステート）を参照し、未認証状態（外注先管理者としてログインしていない場合）であれば、強制的に '/login'（外注先ログイン画面 SCR-001）へ遷移させる。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-005-EV-001",
+        "summary": "撮影ボタン押下時の挙動",
+        "detail": "ビデオストリームから静止画フレームをキャプチャし、圧縮処理を行った上で、画面状態を「プレビュー表示モード」へと切り替える。"
+      },
+      {
+        "id": "SCR-005-EV-002",
+        "summary": "撮り直しボタン押下時の挙動",
+        "detail": "保持しているプレビュー画像（Blob/URL）を破棄し、再度カメラストリームを開始して、画面状態を「ライブカメラ表示モード」に戻す。"
+      },
+      {
+        "id": "SCR-005-EV-003",
+        "summary": "送信ボタン押下かつ送信成功時の挙動",
+        "detail": "IndexedDB（idb）の `attendance_records` テーブルへの保存および `photo_blobs` への画像Blob保存が成功した場合、速やかに完了画面（SCR-006）へ遷移する。"
+      },
+      {
+        "id": "SCR-005-EV-004",
+        "summary": "送信ボタン押下かつ送信失敗時の挙動",
+        "detail": "IndexedDBへの書込み失敗や容量不足などのエラー時、エラー例外をErrorBoundaryまたはトーストで検知し、「送信に失敗しました。時間をおいて再度お試しください」等のメッセージを表示する。"
+      },
+      {
+        "id": "SCR-005-EV-005",
+        "summary": "戻るボタン押下時の挙動",
+        "detail": "撮影途中のデータがあっても、カメラストリームを確実に停止（track.stop()）させた上で、作業員選択画面（SCR-004）へ遷移する。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-005-DT-001",
+        "summary": "POST /api/punches（モックリポジトリ送信）",
+        "detail": "フロントエンドプロトタイプとして、IndexedDBへデータを書き込むリポジトリパターンで実装。リクエストデータ構造：{ worker_ids: string[], punch_type: 'CLOCK_IN' | 'CLOCK_OUT', photo: Blob, punched_at: string }。実際には、worker_idsの各作業員に対してそれぞれ `AttendanceRecord` を作成し、同一の `photo_object_id` を紐付ける。"
+      },
+      {
+        "id": "SCR-005-DT-002",
+        "summary": "クライアント側画像圧縮処理",
+        "detail": "canvas.toBlob(blob, 'image/jpeg', 0.7) を使用して、指定アスペクト比で長辺が1280pxを超えないようにリサイズ・圧縮し、3秒以内に処理を完了する。"
+      }
+    ],
+    "api": [
+      {
+        "name": "POST /api/punches (Mock API / Usecase)",
+        "method": "POST",
+        "path": "/api/punches",
+        "payload": {
+          "worker_ids": "string[]",
+          "punch_type": "'CLOCK_IN' | 'CLOCK_OUT'",
+          "photo": "Blob (JPEG, max 1MB)",
+          "punched_at": "string (ISO8601)"
+        },
+        "response": {
+          "success": "boolean",
+          "attendance_ids": "string[]"
+        }
+      }
+    ],
+    "state": [
+      {
+        "name": "punchMode",
+        "type": "'CLOCK_IN' | 'CLOCK_OUT'",
+        "description": "SCR-003およびSCR-004から引き継いだ、現在の打刻モード（出勤/退勤）"
+      },
+      {
+        "name": "selectedWorkerIds",
+        "type": "string[]",
+        "description": "SCR-004から引き継いだ、選択された対象作業員のID配列"
+      },
+      {
+        "name": "cameraStream",
+        "type": "MediaStream | null",
+        "description": "アクティブなカメラストリームオブジェクト"
+      },
+      {
+        "name": "capturedPhoto",
+        "type": "Blob | null",
+        "description": "撮影・圧縮された写真のBlobデータ"
+      },
+      {
+        "name": "photoUrl",
+        "type": "string | null",
+        "description": "プレビュー表示用の一時ObjectURL"
+      },
+      {
+        "name": "cameraError",
+        "type": "string | null",
+        "description": "カメラ権限拒否やハードウェア未検出時のエラー文言"
+      },
+      {
+        "name": "isSubmitting",
+        "type": "boolean",
+        "description": "打刻データ送信処理中のローディング状態"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-005"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "ACC-SCR-005-001",
+      "requirement_id": "SCR-005-FN-001",
+      "steps": [
+        "外注先管理者としてログインし、本画面にアクセスする。",
+        "ブラウザがカメラ利用の権限を要求した際、「許可」を選択する。"
+      ],
+      "expected": [
+        "端末のカメラが正常に起動し、カメラプレビュー領域（<video>）にリアルタイム映像が表示されること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-005-002",
+      "requirement_id": "SCR-005-FN-002",
+      "steps": [
+        "ライブカメラ映像が表示されている状態で、「撮影」ボタンを押下する。"
+      ],
+      "expected": [
+        "カメラのシャッター音またはキャプチャ表示が行われ、プレビュー画像（<img>）として撮影した静止画が表示されること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-005-003",
+      "requirement_id": "SCR-005-FN-003",
+      "steps": [
+        "写真撮影完了後のプレビュー表示状態で、「撮り直し」ボタンを押下する。"
+      ],
+      "expected": [
+        "プレビュー画像がクリアされ、再びリアルタイムカメラ映像（ライブストリーム）が表示されること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-005-004",
+      "requirement_id": "SCR-005-FN-004",
+      "steps": [
+        "写真を撮影し、プレビューが表示されている状態で「送信」ボタンを押下する。"
+      ],
+      "expected": [
+        "IndexedDBの `attendance_records` および `photo_blobs` にデータが保存され、自動的に完了画面（SCR-006）へ遷移すること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-005-005",
+      "requirement_id": "SCR-005-FN-005",
+      "steps": [
+        "解像度の高い（例: 3000x4000px）カメラを持つ実機またはシミュレータで写真を撮影し、送信する。"
+      ],
+      "expected": [
+        "IndexedDBに書き込まれたBlobのサイズが1MB以下であり、長辺が1280pxにリサイズされていること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-005-006",
+      "requirement_id": "SCR-005-UI-001",
+      "steps": [
+        "画面を表示し、CSSの配置を確認する。"
+      ],
+      "expected": [
+        "ビデオ表示領域が画面の横幅および中央寄せで最も目立つサイズで配置されていること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-005-007",
+      "requirement_id": "SCR-005-UI-002",
+      "steps": [
+        "モバイル端末サイズで各ボタンのサイズ（撮影、送信、撮り直し、戻る）を確認する。"
+      ],
+      "expected": [
+        "タップ領域が十分に大きく（最小44px以上）、ボタン同士の間隔が誤操作を防ぐように適切に空いていること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-005-008",
+      "requirement_id": "SCR-005-UI-003",
+      "steps": [
+        "画面最上部の表示を確認する。"
+      ],
+      "expected": [
+        "「出勤」または「退勤」の打刻モードと、前画面で選択された対象人数（例:「対象者：3名」）が表示されていること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-005-009",
+      "requirement_id": "SCR-005-UI-004",
+      "steps": [
+        "レスポンシブ表示にて、画面のビューポートをモバイル（375px等）からPC（1024px以上）に可変させる。"
+      ],
+      "expected": [
+        "どのデバイス幅でもレイアウト崩れがなく、カメラエリアやボタンが適切な配置に追従すること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-005-010",
+      "requirement_id": "SCR-005-VL-001",
+      "steps": [
+        "本画面に入った直後（写真未撮影の状態）の「送信」ボタンを確認する。",
+        "「撮り直し」ボタンを押下した直後の「送信」ボタンを確認する。"
+      ],
+      "expected": [
+        "「送信」ボタンが非活性（disabled）であり、押下できない状態になっていること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-005-011",
+      "requirement_id": "SCR-005-VL-002",
+      "steps": [
+        "ブラウザがカメラ利用権限を求めた際に「ブロック/拒否」を選択する。"
+      ],
+      "expected": [
+        "カメラ映像領域に「カメラ利用権限がありません」等のユーザー向けエラーメッセージが表示され、撮影・送信ボタンが無効化されること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-005-012",
+      "requirement_id": "SCR-005-VL-003",
+      "steps": [
+        "sessionStorage等のモックセッション情報を削除し、未ログイン状態で直接 `/contractor/capture`（本画面）にアクセスする。"
+      ],
+      "expected": [
+        "画面の表示が一瞬で中断され、自動的にログイン画面（/login または SCR-001）へリダイレクトされること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-005-013",
+      "requirement_id": "SCR-005-EV-001",
+      "steps": [
+        "ライブカメラ表示中に「撮影」ボタンを押下する。"
+      ],
+      "expected": [
+        "カメラ音がシミュレートされる、あるいは画面が一瞬フラッシュし、プレビューモードに遷移すること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-005-014",
+      "requirement_id": "SCR-005-EV-002",
+      "steps": [
+        "プレビュー表示中に「撮り直し」ボタンを押下する。"
+      ],
+      "expected": [
+        "再びカメラが起動し、以前撮影した一時的な画像ObjectURLが解放(URL.revokeObjectURL)されること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-005-015",
+      "requirement_id": "SCR-005-EV-003",
+      "steps": [
+        "写真を撮影し、「送信」ボタンを押下し、保存完了を待つ。"
+      ],
+      "expected": [
+        "ローディング完了後、打刻完了画面（SCR-006）にシームレスに遷移すること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-005-016",
+      "requirement_id": "SCR-005-EV-004",
+      "steps": [
+        "送信処理（IndexedDB書込み）中に意図的に例外を発生させる（またはモックリポジトリをエラー状態にする）。"
+      ],
+      "expected": [
+        "送信処理が中止され、画面上にエラーダイアログまたは「送信に失敗しました」のトーストが表示され、再度「送信」ボタンが押下可能になること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-005-017",
+      "requirement_id": "SCR-005-EV-005",
+      "steps": [
+        "画面左上などの「戻る」ボタンを押下する。"
+      ],
+      "expected": [
+        "カメラの映像取得ストリームが安全に停止し、作業員選択画面（SCR-004）に正しく戻ること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-005-018",
+      "requirement_id": "SCR-005-DT-001",
+      "steps": [
+        "3名の作業員を選択した状態で、本画面から送信を完了する。",
+        "IndexedDB内の `attendance_records` ストアを確認する。"
+      ],
+      "expected": [
+        "3つの異なる打刻レコードが登録され、それぞれに同一の `photo_object_id`（写真Blob）が正しく紐付けられていること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-005-019",
+      "requirement_id": "SCR-005-DT-002",
+      "steps": [
+        "撮影と圧縮を伴う送信アクションを行い、全体の所要時間を計測する。"
+      ],
+      "expected": [
+        "画像圧縮処理自体が数ミリ秒〜数百ミリ秒以内で完了し、IndexedDBへの保存完了から遷移まで、クライアント内部動作として3秒以内に完了すること。"
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "test_id": "TST-SCR-005-001",
+      "test_type": "unit",
+      "requirement_id": "SCR-005-VL-003",
+      "input": "未認証（セッション情報無し）での画面マウント",
+      "steps": [
+        "セッション情報をクリアする。",
+        "撮影・送信画面（/contractor/capture）をレンダリングする。"
+      ],
+      "expected": "画面は表示されず、直ちにログイン画面（/login）へのルーティング処理（useRouterによるpush等）が呼び出されること。"
+    },
+    {
+      "test_id": "TST-SCR-005-002",
+      "test_type": "unit",
+      "requirement_id": "SCR-005-VL-002",
+      "input": "カメラ権限拒否（NotAllowedErrorの発生）",
+      "steps": [
+        "navigator.mediaDevices.getUserMedia が NotAllowedError 例外をスローするようにモックする。",
+        "画面をマウントしてカメラ初期化を実行させる。"
+      ],
+      "expected": "「カメラ利用権限がありません」のエラーメッセージが画面上に適切に表示されること。"
+    },
+    {
+      "test_id": "TST-SCR-005-003",
+      "test_type": "unit",
+      "requirement_id": "SCR-005-VL-001",
+      "input": "初期表示状態での送信ボタンの検証",
+      "steps": [
+        "ログイン済みの状態で画面をマウントする。",
+        "撮影ボタンを押下していない初期状態で送信ボタン（Submit Button）を取得する。"
+      ],
+      "expected": "送信ボタンの disabled 属性が true であり、クリックが反応しないこと。"
+    },
+    {
+      "test_id": "TST-SCR-005-004",
+      "test_type": "unit",
+      "requirement_id": "SCR-005-FN-001",
+      "input": "正常なカメラ起動とストリーム処理",
+      "steps": [
+        "navigator.mediaDevices.getUserMedia が正常な MediaStream を返すようにモックする。",
+        "画面をマウントする。"
+      ],
+      "expected": "getUserMedia がコールされ、video 要素の srcObject に返却されたストリームがバインドされること。"
+    },
+    {
+      "test_id": "TST-SCR-005-005",
+      "test_type": "unit",
+      "requirement_id": "SCR-005-FN-005",
+      "input": "クライアント側画像圧縮処理の動作検証",
+      "steps": [
+        "サイズが 4000x3000px の仮画像Blobを用意する。",
+        "画像圧縮用のユーティリティ関数（またはキャンバスクラス）を呼び出す。"
+      ],
+      "expected": "出力される画像Blobが JPEG（image/jpeg）フォーマットであり、アスペクト比を維持しながら長辺が 1280px 以下に収まり、容量が大幅に低減（1MB未満）されていること。"
+    },
+    {
+      "test_id": "TST-SCR-005-006",
+      "test_type": "integration",
+      "requirement_id": "SCR-005-EV-003",
+      "input": "撮影から送信成功時のシームレスな完了遷移",
+      "steps": [
+        "ダミーのMediaStreamを用いて、撮影をシミュレートし画像をキャプチャする（capturedPhotoにBlobが設定される）。",
+        "送信ボタンを活性化させてクリックする。",
+        "Mock用IndexedDB（idb）への登録成功（Promise.resolve）を返す。"
+      ],
+      "expected": "ローディングスピナーが表示された後、完了画面（SCR-006）へのリダイレクトが正しくトリガーされること。"
+    },
+    {
+      "test_id": "TST-SCR-005-007",
+      "test_type": "integration",
+      "requirement_id": "SCR-005-EV-004",
+      "input": "IndexedDB保存エラー時のトーストエラー表示",
+      "steps": [
+        "ダミーのMediaStreamを用いて撮影をキャプチャする。",
+        "送信ボタンを押下する。",
+        "Mock用IndexedDBの保存処理にて、エラー（容量上限エラーや書き込み制限）をスローさせる。"
+      ],
+      "expected": "画面遷移せず、エラーメッセージ「送信に失敗しました」を伴うトースト（toast.error）が呼び出されること。"
+    },
+    {
+      "test_id": "TST-SCR-005-008",
+      "test_type": "integration",
+      "requirement_id": "SCR-005-EV-005",
+      "input": "戻るボタン押下時のカメラ解放処理",
+      "steps": [
+        "正常にカメラを起動し、MediaStreamTrack を取得しておく。",
+        "「戻る」ボタンを押下する。"
+      ],
+      "expected": "ストリームに含まれるすべての track.stop() が呼び出され、カメラ接続が正しく解放された後、作業員選択画面（SCR-004）に遷移すること。"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-001",
+      "target": "画像圧縮解像度・品質基準",
+      "reason": "画面設計（SCREEN_DESIGN_MD）では「画像圧縮の目標サイズ・解像度が未定」とあるが、システム要件（SYSTEM_REQUIREMENTS_JSON）では非機能要件として「長辺 1280px / JPEG quality 0.7 / 上限 1MB 程度に圧縮（status: assumption）」の記述がある。両者で齟齬があるため、本仕様ではシステム要件側の仕様を優先して採用しているが、最終的な本番要件ではない可能性がある。",
+      "sources": {
+        "system_requirements": "non_functional.performance[1]: 撮影画像はクライアント側で長辺 1280px / JPEG quality 0.7 / 上限 1MB 程度に圧縮。status: assumption",
+        "trace_index": "N/A",
+        "screen_design": "## 確認事項: 画像圧縮の目標サイズ・解像度が未定。"
+      },
+      "resolution": "system_requirements"
+    },
+    {
+      "id": "AMB-002",
+      "target": "複数人同時撮影時の扱い（証拠写真）",
+      "reason": "複数作業員の同時打刻の際、証拠写真は全員に紐付けて1枚保存する想定（TODO-007）だが、監査ログや将来の顔認証等を見据えた厳密な運用ポリシーが未確定。",
+      "sources": {
+        "system_requirements": "open_items: TODO-007 複数人同時撮影時の扱い（証拠写真 / 顔認識）",
+        "trace_index": "N/A",
+        "screen_design": "## 確認事項: 複数人の作業員を一度に撮影した場合の処理方法が未決事項。現時点では証拠写真として1枚を全員に紐づけて保存する想定。"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-003",
+      "target": "オフライン時の挙動",
+      "reason": "電波の届きにくい工場敷地内や地下での動作を想定した一時保存（Service Worker / IndexedDBによるバックグランド送信）を行うか、原則オンライン必須とするかが未確定。",
+      "sources": {
+        "system_requirements": "open_items: TODO-008 オフライン挙動",
+        "trace_index": "N/A",
+        "screen_design": "## 確認事項: オフライン時の挙動が未決事項。Service Worker等での一時保存を行うか原則オンライン必須とするか。"
+      },
+      "resolution": "manual_confirmation"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-005-FN-001",
+      "acceptance_id": "ACC-SCR-005-001",
+      "test_id": "TST-SCR-005-004"
+    },
+    {
+      "requirement_id": "SCR-005-FN-002",
+      "acceptance_id": "ACC-SCR-005-002",
+      "test_id": "TST-SCR-005-006"
+    },
+    {
+      "requirement_id": "SCR-005-FN-003",
+      "acceptance_id": "ACC-SCR-005-003",
+      "test_id": "TST-SCR-005-006"
+    },
+    {
+      "requirement_id": "SCR-005-FN-004",
+      "acceptance_id": "ACC-SCR-005-004",
+      "test_id": "TST-SCR-005-006"
+    },
+    {
+      "requirement_id": "SCR-005-FN-005",
+      "acceptance_id": "ACC-SCR-005-005",
+      "test_id": "TST-SCR-005-005"
+    },
+    {
+      "requirement_id": "SCR-005-UI-001",
+      "acceptance_id": "ACC-SCR-005-006",
+      "test_id": "TST-SCR-005-003"
+    },
+    {
+      "requirement_id": "SCR-005-UI-002",
+      "acceptance_id": "ACC-SCR-005-007",
+      "test_id": "TST-SCR-005-003"
+    },
+    {
+      "requirement_id": "SCR-005-UI-003",
+      "acceptance_id": "ACC-SCR-005-008",
+      "test_id": "TST-SCR-005-003"
+    },
+    {
+      "requirement_id": "SCR-005-UI-004",
+      "acceptance_id": "ACC-SCR-005-009",
+      "test_id": "TST-SCR-005-003"
+    },
+    {
+      "requirement_id": "SCR-005-VL-001",
+      "acceptance_id": "ACC-SCR-005-010",
+      "test_id": "TST-SCR-005-003"
+    },
+    {
+      "requirement_id": "SCR-005-VL-002",
+      "acceptance_id": "ACC-SCR-005-011",
+      "test_id": "TST-SCR-005-002"
+    },
+    {
+      "requirement_id": "SCR-005-VL-003",
+      "acceptance_id": "ACC-SCR-005-012",
+      "test_id": "TST-SCR-005-001"
+    },
+    {
+      "requirement_id": "SCR-005-EV-001",
+      "acceptance_id": "ACC-SCR-005-013",
+      "test_id": "TST-SCR-005-006"
+    },
+    {
+      "requirement_id": "SCR-005-EV-002",
+      "acceptance_id": "ACC-SCR-005-014",
+      "test_id": "TST-SCR-005-006"
+    },
+    {
+      "requirement_id": "SCR-005-EV-003",
+      "acceptance_id": "ACC-SCR-005-015",
+      "test_id": "TST-SCR-005-006"
+    },
+    {
+      "requirement_id": "SCR-005-EV-004",
+      "acceptance_id": "ACC-SCR-005-016",
+      "test_id": "TST-SCR-005-007"
+    },
+    {
+      "requirement_id": "SCR-005-EV-005",
+      "acceptance_id": "ACC-SCR-005-017",
+      "test_id": "TST-SCR-005-008"
+    },
+    {
+      "requirement_id": "SCR-005-DT-001",
+      "acceptance_id": "ACC-SCR-005-018",
+      "test_id": "TST-SCR-005-006"
+    },
+    {
+      "requirement_id": "SCR-005-DT-002",
+      "acceptance_id": "ACC-SCR-005-019",
+      "test_id": "TST-SCR-005-005"
+    }
+  ]
+}

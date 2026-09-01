@@ -1,0 +1,369 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-003_punch_mode_select.md"
+  },
+  "screen": {
+    "id": "SCR-003",
+    "name": "打刻モード選択画面",
+    "user": "外注先管理者",
+    "route": "app/(contractor)/punch-mode/page.tsx",
+    "description": "外注先管理者が「出勤（作業開始）」または「退勤（作業終了）」のいずれかの打刻モードを選択する画面。選択後、作業員選択画面へ遷移する。"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-003-FN-001",
+        "summary": "「出勤（作業開始）」モードを選択できる",
+        "description": "画面上に配置された「出勤（作業開始）」ボタンを選択可能とし、後続フローにて出勤処理を行うモードとして設定する。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-003-FN-002",
+        "summary": "「退勤（作業終了）」モードを選択できる",
+        "description": "画面上に配置された「退勤（作業終了）」ボタンを選択可能とし、後続フローにて退勤処理を行うモードとして設定する。",
+        "priority": "High"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-003-UI-001",
+        "summary": "「出勤」「退勤」の2つの大きな選択ボタンを配置する",
+        "description": "屋外等の作業現場におけるモバイル操作を考慮し、十分な余白とタップ領域を持たせた「出勤」ボタンおよび「退勤」ボタンを並列に配置する。"
+      },
+      {
+        "id": "SCR-003-UI-002",
+        "summary": "レスポンシブWebデザインでPC/スマホ両対応とする",
+        "description": "Tailwind CSSを使用し、PC、タブレット、スマートフォンの各画面幅に適合するレスポンシブな配置を行う。"
+      },
+      {
+        "id": "SCR-003-UI-003",
+        "summary": "現在の日時を画面上部に表示する",
+        "description": "打刻対象日時を確認するための情報として、現在の日付および時刻を画面上部に分かりやすく表示する。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-003-VL-001",
+        "summary": "未認証リダイレクト",
+        "description": "sessionStorage（キー: user_id, role）に認証情報が存在しない状態で本画面にアクセスした場合、ログイン画面（SCR-001）へリダイレクトする。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-003-EV-001",
+        "summary": "「出勤」ボタン押下",
+        "description": "「出勤」ボタンを押下した際、打刻モード状態を「出勤」として状態管理領域に保持し、作業員選択画面（SCR-004）へ遷移する。"
+      },
+      {
+        "id": "SCR-003-EV-002",
+        "summary": "「退勤」ボタン押下",
+        "description": "「退勤」ボタンを押下した際、打刻モード状態を「退勤」として状態管理領域に保持し、作業員選択画面（SCR-004）へ遷移する。"
+      },
+      {
+        "id": "SCR-003-EV-003",
+        "summary": "戻るボタン押下",
+        "description": "戻るボタンが押下された際、現在の状態を引き継がずに外注先ホーム画面（SCR-002）へ遷移する。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-003-DT-001",
+        "summary": "打刻モード状態保持",
+        "description": "選択された打刻モード（'CLOCK_IN' | 'CLOCK_OUT'）を、React ContextまたはZustandを用いてクライアント状態に一時的に保持し、後続の作業員選択画面に引き継ぐ。"
+      }
+    ],
+    "api": [],
+    "state": [
+      {
+        "id": "SCR-003-ST-001",
+        "summary": "打刻モード状態",
+        "description": "選択中の打刻モード（'CLOCK_IN' | 'CLOCK_OUT' | null）を管理する。"
+      },
+      {
+        "id": "SCR-003-ST-002",
+        "summary": "現在時刻状態",
+        "description": "画面上部に表示するための現在日時情報を動的に更新・管理する状態。"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-003"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "SCR-003-AC-001",
+      "requirement_id": "SCR-003-FN-001",
+      "description": "「出勤」と表示された大きいボタンが視覚的に認識可能であり、タップまたはクリック操作が可能であること。"
+    },
+    {
+      "id": "SCR-003-AC-002",
+      "requirement_id": "SCR-003-FN-002",
+      "description": "「退勤」と表示された大きいボタンが視覚的に認識可能であり、タップまたはクリック操作が可能であること。"
+    },
+    {
+      "id": "SCR-003-AC-003",
+      "requirement_id": "SCR-003-UI-001",
+      "description": "モバイル端末での屋外操作に耐えうるよう、各ボタンの高さが48px以上確保されており、十分な間隔（margin/gap）が保たれていること。"
+    },
+    {
+      "id": "SCR-003-AC-004",
+      "requirement_id": "SCR-003-UI-002",
+      "description": "画面幅を320pxから1200px以上に可変させた際、ボタンの配置や現在日時などのテキスト情報が画面枠をはみ出さず、適切にレスポンシブ配置されること。"
+    },
+    {
+      "id": "SCR-003-AC-005",
+      "requirement_id": "SCR-003-UI-003",
+      "description": "画面最上部付近に、現在の日付（年・月・日）および時刻（時・分）が、打刻対象日時の目安として正しい精度で表示されていること。"
+    },
+    {
+      "id": "SCR-003-AC-006",
+      "requirement_id": "SCR-003-VL-001",
+      "description": "sessionStorageにログイン情報がない（未認証の）状態で、ブラウザから直接 `/punch-mode` などのURLにアクセスした際、画面描画を停止し、即座にログイン画面 `/login` (SCR-001) にリダイレクトされること。"
+    },
+    {
+      "id": "SCR-003-AC-007",
+      "requirement_id": "SCR-003-EV-001",
+      "description": "「出勤（作業開始）」ボタンをクリックしたとき、Zustand等のクライアント内共通ストアにおける打刻モード状態が「CLOCK_IN」に書き換わり、 `/worker-select` (SCR-004) に遷移すること。"
+    },
+    {
+      "id": "SCR-003-AC-008",
+      "requirement_id": "SCR-003-EV-002",
+      "description": "「退勤（作業終了）」ボタンをクリックしたとき、Zustand等のクライアント内共通ストアにおける打刻モード状態が「CLOCK_OUT」に書き換わり、 `/worker-select` (SCR-004) に遷移すること。"
+    },
+    {
+      "id": "SCR-003-AC-009",
+      "requirement_id": "SCR-003-EV-003",
+      "description": "画面内の戻るボタン、またはヘッダー内のナビゲーション戻る処理を実行したとき、外注先ホーム画面 (SCR-002) に遷移すること。"
+    },
+    {
+      "id": "SCR-003-AC-010",
+      "requirement_id": "SCR-003-DT-001",
+      "description": "選択した打刻モード（'CLOCK_IN' / 'CLOCK_OUT'）が状態管理ストアから破棄されず、後続の画面コンポーネントから読み取り可能な状態を維持していること。"
+    }
+  ],
+  "tests": [
+    {
+      "id": "SCR-003-UT-001",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-003-UI-003"
+      ],
+      "input": "テスト実行環境のシステム時刻を設定 (例: 2026年4月13日 09時00分)",
+      "steps": [
+        "コンポーネントをレンダリングする。",
+        "画面上部の日時表示部分のテキストを取得する。"
+      ],
+      "expected": "画面上部の日時表示部に、設定したシステム時刻に対応する日付・時刻情報が含まれていること。"
+    },
+    {
+      "id": "SCR-003-UT-002",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-003-VL-001"
+      ],
+      "input": "sessionStorageが空（未ログイン）の状態",
+      "steps": [
+        "コンポーネントをレンダリングする。",
+        "ルーターのリダイレクト関数（next/navigation の push や replace 等）の呼び出し状況をアサートする。"
+      ],
+      "expected": "画面を描画せずに、ログイン画面（/login）へリダイレクトされる処理が呼び出されること。"
+    },
+    {
+      "id": "SCR-003-IT-001",
+      "type": "integration",
+      "requirement_ids": [
+        "SCR-003-FN-001",
+        "SCR-003-EV-001",
+        "SCR-003-DT-001"
+      ],
+      "input": "ログイン済みのsessionStorageを設定",
+      "steps": [
+        "画面を描画する。",
+        "「出勤（作業開始）」ボタンをクリックする。",
+        "状態管理ストア（Zustand等）の打刻モード状態値を確認する。",
+        "ルーターの遷移先パスを確認する。"
+      ],
+      "expected": "状態管理ストアの打刻モードが 'CLOCK_IN' に更新され、`/worker-select`（SCR-004）への画面遷移が要求されること。"
+    },
+    {
+      "id": "SCR-003-IT-002",
+      "type": "integration",
+      "requirement_ids": [
+        "SCR-003-FN-002",
+        "SCR-003-EV-002",
+        "SCR-003-DT-001"
+      ],
+      "input": "ログイン済みのsessionStorageを設定",
+      "steps": [
+        "画面を描画する。",
+        "「退勤（作業終了）」ボタンをクリックする。",
+        "状態管理ストア（Zustand等）の打刻モード状態値を確認する。",
+        "ルーターの遷移先パスを確認する。"
+      ],
+      "expected": "状態管理ストアの打刻モードが 'CLOCK_OUT' に更新され、`/worker-select`（SCR-004）への画面遷移が要求されること。"
+    },
+    {
+      "id": "SCR-003-IT-003",
+      "type": "integration",
+      "requirement_ids": [
+        "SCR-003-EV-003"
+      ],
+      "input": "ログイン済みのsessionStorageを設定",
+      "steps": [
+        "画面を描画する。",
+        "戻るボタン（またはキャンセルボタン）をクリックする。",
+        "ルーターの遷移先パスを確認する。"
+      ],
+      "expected": "ホーム画面（/contractor-home または /）への画面遷移が要求されること。"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-001",
+      "target": "現在日時の表示形式",
+      "reason": "日時表示の具体的なフォーマット（例: '2026/04/13 09:00' なのか '2026年4月13日(月) 09:00' なのか）が画面設計およびシステム要件に定義されていない。",
+      "sources": {
+        "system_requirements": "特になし",
+        "trace_index": "特になし",
+        "screen_design": "SCR-003-UI-003: 現在の日時を画面上部に表示する"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-002",
+      "target": "戻るボタンの画面配置・UI定義",
+      "reason": "戻るボタンの設置場所（画面内フォームパーツとしてか、あるいは共通ヘッダー等のナビゲーションとしてか）が詳細設計に明記されていない。",
+      "sources": {
+        "system_requirements": "特になし",
+        "trace_index": "特になし",
+        "screen_design": "SCR-003-EV-003: 戻るボタン押下時にホーム画面へ遷移する"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-003",
+      "target": "画面表示時の時計の動的更新",
+      "reason": "「現在の日時を表示する」要件において、画面表示した瞬間のみの静的な時間表示で良いのか、秒刻みで動的に更新する時計表示である必要があるのかが不明確。",
+      "sources": {
+        "system_requirements": "特になし",
+        "trace_index": "特になし",
+        "screen_design": "SCR-003-UI-003: 現在の日時を画面上部に表示する"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-004",
+      "target": "URLルーター定義の確定",
+      "reason": "外注先管理者向けのフォルダ・ルーティング構成が `app/(contractor)/...` とされているが、各画面の末尾ルーティングパス（例: `/punch-mode`, `/punch-mode-select`等）の確定情報がないため、推測でパスを設定せざるを得ない。",
+      "sources": {
+        "system_requirements": "directory_structure: app/(contractor)/...",
+        "trace_index": "特になし",
+        "screen_design": "depends_on: SCR-002_contractor_home.md"
+      },
+      "resolution": "manual_confirmation"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-003-FN-001",
+      "acceptance_ids": [
+        "SCR-003-AC-001"
+      ],
+      "test_ids": [
+        "SCR-003-IT-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-003-FN-002",
+      "acceptance_ids": [
+        "SCR-003-AC-002"
+      ],
+      "test_ids": [
+        "SCR-003-IT-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-003-UI-001",
+      "acceptance_ids": [
+        "SCR-003-AC-003"
+      ],
+      "test_ids": [
+        "SCR-003-IT-001",
+        "SCR-003-IT-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-003-UI-002",
+      "acceptance_ids": [
+        "SCR-003-AC-004"
+      ],
+      "test_ids": []
+    },
+    {
+      "requirement_id": "SCR-003-UI-003",
+      "acceptance_ids": [
+        "SCR-003-AC-005"
+      ],
+      "test_ids": [
+        "SCR-003-UT-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-003-VL-001",
+      "acceptance_ids": [
+        "SCR-003-AC-006"
+      ],
+      "test_ids": [
+        "SCR-003-UT-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-003-EV-001",
+      "acceptance_ids": [
+        "SCR-003-AC-007"
+      ],
+      "test_ids": [
+        "SCR-003-IT-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-003-EV-002",
+      "acceptance_ids": [
+        "SCR-003-AC-008"
+      ],
+      "test_ids": [
+        "SCR-003-IT-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-003-EV-003",
+      "acceptance_ids": [
+        "SCR-003-AC-009"
+      ],
+      "test_ids": [
+        "SCR-003-IT-003"
+      ]
+    },
+    {
+      "requirement_id": "SCR-003-DT-001",
+      "acceptance_ids": [
+        "SCR-003-AC-010"
+      ],
+      "test_ids": [
+        "SCR-003-IT-001",
+        "SCR-003-IT-002"
+      ]
+    }
+  ]
+}

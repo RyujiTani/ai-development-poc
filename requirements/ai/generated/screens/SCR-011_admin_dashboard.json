@@ -1,0 +1,341 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-011_admin_dashboard.md"
+  },
+  "screen": {
+    "id": "SCR-011",
+    "name": "総合ダッシュボード",
+    "user": "FACTORY_ADMIN",
+    "path": "/app/(factory)/dashboard/page.tsx",
+    "description": "工場側管理者がログイン後に表示されるメイン画面。本日の稼働人数サマリーや直近のアラートなどを一覧表示し、各管理画面への導線を提供する。"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-011-FN-001",
+        "summary": "本日の稼働人数サマリーを表示できる",
+        "description": "ダッシュボード上部に本日の全体稼働人数および関連サマリー情報を表示する。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-011-FN-002",
+        "summary": "直近のアラート（打刻漏れ、異常等）を表示できる",
+        "description": "システムで検知された直近のアラート情報をリスト形式で表示する。",
+        "priority": "Mid"
+      },
+      {
+        "id": "SCR-011-FN-003",
+        "summary": "各管理画面への遷移メニューを提供する",
+        "description": "打刻履歴確認、労働時間集計、外注先企業登録、管理者ユーザー登録の各画面へアクセス可能なナビゲーションを提供する。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-011-FN-004",
+        "summary": "ログアウトができる",
+        "description": "管理者セッションを破棄し、システムからログアウトする機能を提供する。",
+        "priority": "High"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-011-UI-001",
+        "summary": "サマリー情報（稼働人数等）をカード形式またはウィジェット形式で上部に表示する",
+        "description": "視認性の高いカードUIをダッシュボード上部に配置する。"
+      },
+      {
+        "id": "SCR-011-UI-002",
+        "summary": "アラート情報をリスト形式で表示する",
+        "description": "発生している警告や異常をスクロール可能なリスト形式で表示する。"
+      },
+      {
+        "id": "SCR-011-UI-003",
+        "summary": "ナビゲーションメニューから各管理画面へ遷移できるようにする",
+        "description": "サイドバーまたはヘッダー等の一貫した位置に配置されたナビゲーションメニューを提供する。"
+      },
+      {
+        "id": "SCR-011-UI-004",
+        "summary": "レスポンシブWebデザインでPC/スマホ両対応とする",
+        "description": "PCでの管理業務を想定しつつ、タブレット・スマートフォン表示時もレイアウトが崩れないTailwind CSSによる実装を行う。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-011-VL-001",
+        "summary": "認証状態および管理者権限チェック",
+        "description": "セッション（sessionStorage）を確認し、未認証またはロールが 'FACTORY_ADMIN' でない場合は管理者ログイン画面（SCR-010）へリダイレクトする。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-011-EV-001",
+        "summary": "「打刻履歴確認」メニュー選択時の遷移",
+        "description": "「打刻履歴確認」のクリックにより打刻履歴確認画面（SCR-012）へ遷移する。"
+      },
+      {
+        "id": "SCR-011-EV-002",
+        "summary": "「労働時間集計」メニュー選択時の遷移",
+        "description": "「労働時間集計」のクリックにより労働時間集計画面（SCR-013）へ遷移する。"
+      },
+      {
+        "id": "SCR-011-EV-003",
+        "summary": "「外注先企業登録」メニュー選択時の遷移",
+        "description": "「外注先企業登録」のクリックにより外注先企業登録画面（SCR-014）へ遷移する。"
+      },
+      {
+        "id": "SCR-011-EV-004",
+        "summary": "「管理者ユーザー登録」メニュー選択時の遷移",
+        "description": "「管理者ユーザー登録」のクリックにより管理者ユーザー登録画面（SCR-015）へ遷移する。"
+      },
+      {
+        "id": "SCR-011-EV-005",
+        "summary": "ログアウト操作実行時の処理と遷移",
+        "description": "ログアウト操作時、sessionStorageに保存されている認証情報を削除し、管理者ログイン画面（SCR-010）へ遷移する。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-011-DT-001",
+        "summary": "ダッシュボード表示データの取得",
+        "description": "画面初期ロード時に GET /api/admin/dashboard API（モックまたはIndexedDB経由の集計ロジック）を呼び出し、稼働人数サマリーおよび直近アラートデータを取得する。"
+      }
+    ],
+    "api": [
+      {
+        "id": "SCR-011-AP-001",
+        "method": "GET",
+        "path": "/api/admin/dashboard",
+        "description": "本日の稼働人数サマリー、直近アラート等の取得（モックAPIまたはIndexedDBからのクエリ実行によるモックデータ返却）"
+      }
+    ],
+    "state": [
+      {
+        "id": "SCR-011-ST-001",
+        "name": "dashboardData",
+        "type": "object",
+        "description": "APIから取得したサマリー情報（稼働人数等）およびアラートリストを保持する状態。"
+      },
+      {
+        "id": "SCR-011-ST-002",
+        "name": "isLoading",
+        "type": "boolean",
+        "description": "ダッシュボードデータ読み込み中のローディング状態。"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-011"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "ACT-011-001",
+      "requirement_id": "SCR-011-FN-001",
+      "description": "工場側管理者アカウントでログイン後、ダッシュボード画面上部に「本日の稼働人数サマリー」がカード形式で表示され、数値が正しく反映されていること。"
+    },
+    {
+      "id": "ACT-011-002",
+      "requirement_id": "SCR-011-FN-002",
+      "description": "「直近のアラート」領域にシステム検知されたアラートリストが表示されていること。"
+    },
+    {
+      "id": "ACT-011-003",
+      "requirement_id": "SCR-011-FN-003",
+      "description": "サイドバーまたはヘッダーのナビゲーションメニューに、打刻履歴確認、労働時間集計、外注先企業登録、管理者ユーザー登録へのリンクメニューが存在すること。"
+    },
+    {
+      "id": "ACT-011-004",
+      "requirement_id": "SCR-011-FN-004",
+      "description": "「ログアウト」ボタンをクリックした際、セッション（sessionStorage）から認証キー（user_id、role）が削除され、管理者ログイン画面へリダイレクトされること。"
+    },
+    {
+      "id": "ACT-011-005",
+      "requirement_id": "SCR-011-VL-001",
+      "description": "セッションにロールが 'FACTORY_ADMIN' として登録されていない（または未認証）状態で本画面のURLへ直接アクセスした場合、強制的に /login（またはSCR-010）へリダイレクトされること。"
+    },
+    {
+      "id": "ACT-011-006",
+      "requirement_id": "SCR-011-EV-001",
+      "description": "「打刻履歴確認」のナビゲーションメニューをクリックした際、/attendance-history などの打刻履歴確認画面（SCR-012）に遷移すること。"
+    },
+    {
+      "id": "ACT-011-007",
+      "requirement_id": "SCR-011-EV-002",
+      "description": "「労働時間集計」のナビゲーションメニューをクリックした際、労働時間集計画面（SCR-013）に遷移すること。"
+    },
+    {
+      "id": "ACT-011-008",
+      "requirement_id": "SCR-011-EV-003",
+      "description": "「外注先企業登録」のナビゲーションメニューをクリックした際、外注先企業登録画面（SCR-014）に遷移すること。"
+    },
+    {
+      "id": "ACT-011-009",
+      "requirement_id": "SCR-011-EV-004",
+      "description": "「管理者ユーザー登録」のナビゲーションメニューをクリックした際、管理者ユーザー登録画面（SCR-015）に遷移すること。"
+    },
+    {
+      "id": "ACT-011-010",
+      "requirement_id": "SCR-011-DT-001",
+      "description": "画面初期表示時、GET /api/admin/dashboard APIが発火し、モックデータまたはIndexedDBの集計結果が正しくローカル状態にロードされること。"
+    }
+  ],
+  "tests": [
+    {
+      "id": "TST-011-001",
+      "test_type": "unit",
+      "requirement_id": "SCR-011-VL-001",
+      "input": "sessionStorageが空、または role = 'CONTRACTOR_MANAGER'",
+      "steps": [
+        "1. SCR-011の画面に直接アクセスを試みる。",
+        "2. 認証ミドルウェアまたはページコンポーネント内のuseEffectガード処理が動作することを確認する。"
+      ],
+      "expected": "管理者ログイン画面（SCR-010）へリダイレクトされること。"
+    },
+    {
+      "id": "TST-011-002",
+      "test_type": "unit",
+      "requirement_id": "SCR-011-DT-001",
+      "input": "role = 'FACTORY_ADMIN' でログイン済みのセッション状態",
+      "steps": [
+        "1. ダッシュボード画面をロードする。",
+        "2. API GET /api/admin/dashboard の呼び出しを検証する。"
+      ],
+      "expected": "APIが1回呼び出され、返却されたモックデータが画面コンポーネントの状態にセットされること。"
+    },
+    {
+      "id": "TST-011-003",
+      "test_type": "integration",
+      "requirement_id": "SCR-011-FN-001",
+      "input": "APIからサマリーデータ（例：稼働人数 25名）を含むモックレスポンスが返却された状態",
+      "steps": [
+        "1. 画面をレンダリングする。",
+        "2. カードUI内の稼働人数表示領域の文言を検証する。"
+      ],
+      "expected": "画面上部カードに「25」または「25名」と正しく表示されること。"
+    },
+    {
+      "id": "TST-011-004",
+      "test_type": "integration",
+      "requirement_id": "SCR-011-FN-002",
+      "input": "APIから直近アラートリスト（例：1件の打刻漏れアラート）を含むモックレスポンスが返却された状態",
+      "steps": [
+        "1. 画面をレンダリングする。",
+        "2. アラートリスト表示領域のDOMを検証する。"
+      ],
+      "expected": "リスト形式でアラート内容が正しく描画されていること。"
+    },
+    {
+      "id": "TST-011-005",
+      "test_type": "integration",
+      "requirement_id": "SCR-011-EV-001",
+      "input": "「打刻履歴確認」メニューボタンが存在するダッシュボード画面",
+      "steps": [
+        "1. 「打刻履歴確認」ボタンをクリックする。",
+        "2. ルーターの遷移先パスを検証する。"
+      ],
+      "expected": "打刻履歴確認画面（SCR-012）へのパスに遷移すること。"
+    },
+    {
+      "id": "TST-011-006",
+      "test_type": "integration",
+      "requirement_id": "SCR-011-EV-005",
+      "input": "「ログアウト」ボタンが存在するヘッダー/メニュー",
+      "steps": [
+        "1. 「ログアウト」ボタンをクリックする。",
+        "2. sessionStorageの中身がクリアされていることを確認する。",
+        "3. ルーターの遷移先パスを検証する。"
+      ],
+      "expected": "sessionStorageから認証関連キーが削除され、管理者ログイン画面（SCR-010）へリダイレクトされること。"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-011-001",
+      "target": "アラートの具体的な条件・発生条件",
+      "reason": "ダッシュボードに表示する「直近のアラート」の具体的なトリガー条件（打刻漏れ、遅刻、写真不整合等）が画面設計Markdownおよびシステム要件定義において具体化されていません。モックAPIから固定のプレースホルダーデータを返す仕様に留める必要があります。",
+      "sources": {
+        "system_requirements": "打刻履歴等のstores定義はあるがアラート検知機能の記述なし",
+        "trace_index": "SCR-011-FN-002: 直近アラート表示のみ",
+        "screen_design": "確認事項: アラートの具体的な条件（どのような場合にアラートを出すか）が未定。"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-011-002",
+      "target": "サマリーに表示する具体的な項目・数値の仕様",
+      "reason": "稼働人数以外のサマリー項目（配置率、外注先社数、時間外労働者数など）に何を表示すべきかが未確定です。プロトタイプとして、稼働人数のみをIndexedDBの打刻履歴から簡易集計し、他はダミー値を表示する仮実装とします。",
+      "sources": {
+        "system_requirements": "勤怠・配置管理システムとしての概要記述のみ",
+        "trace_index": "SCR-011-FN-001: 稼働人数サマリー表示のみ",
+        "screen_design": "確認事項: サマリーに表示する具体的な項目・数値の仕様が未定。"
+      },
+      "resolution": "manual_confirmation"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-011-FN-001",
+      "acceptance_id": "ACT-011-001",
+      "test_id": "TST-011-003"
+    },
+    {
+      "requirement_id": "SCR-011-FN-002",
+      "acceptance_id": "ACT-011-002",
+      "test_id": "TST-011-004"
+    },
+    {
+      "requirement_id": "SCR-011-FN-003",
+      "acceptance_id": "ACT-011-003",
+      "test_id": "TST-011-005"
+    },
+    {
+      "requirement_id": "SCR-011-FN-004",
+      "acceptance_id": "ACT-011-004",
+      "test_id": "TST-011-006"
+    },
+    {
+      "requirement_id": "SCR-011-VL-001",
+      "acceptance_id": "ACT-011-005",
+      "test_id": "TST-011-001"
+    },
+    {
+      "requirement_id": "SCR-011-EV-001",
+      "acceptance_id": "ACT-011-006",
+      "test_id": "TST-011-005"
+    },
+    {
+      "requirement_id": "SCR-011-EV-002",
+      "acceptance_id": "ACT-011-007",
+      "test_id": "TST-011-005"
+    },
+    {
+      "requirement_id": "SCR-011-EV-003",
+      "acceptance_id": "ACT-011-008",
+      "test_id": "TST-011-005"
+    },
+    {
+      "requirement_id": "SCR-011-EV-004",
+      "acceptance_id": "ACT-011-009",
+      "test_id": "TST-011-005"
+    },
+    {
+      "requirement_id": "SCR-011-EV-005",
+      "acceptance_id": "ACT-011-004",
+      "test_id": "TST-011-006"
+    },
+    {
+      "requirement_id": "SCR-011-DT-001",
+      "acceptance_id": "ACT-011-010",
+      "test_id": "TST-011-002"
+    }
+  ]
+}
