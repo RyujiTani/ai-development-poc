@@ -44,10 +44,24 @@ class VertexClient:
 
         self.client = genai.Client(
             vertexai=True,
-            project=self.project,
+            project=self.project_id,
             location=self.location,
             http_options=types.HttpOptions(
-                api_version="v1",
+                retry_options=types.HttpRetryOptions(
+                    attempts=8,
+                    initial_delay=5.0,
+                    max_delay=120.0,
+                    exp_base=2.0,
+                    jitter=1.0,
+                    http_status_codes=[
+                        408,
+                        429,
+                        500,
+                        502,
+                        503,
+                        504,
+                    ],
+                )
             ),
         )
 
