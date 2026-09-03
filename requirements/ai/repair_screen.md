@@ -104,6 +104,9 @@ ERROR_LOG:
 * contract_mismatch
 * mock_error
 * react_hook_error
+* test_timeout
+* infinite_render
+* infinite_loop
 * browser_api_mock_error
 * timezone_error
 * environment_assumption
@@ -272,6 +275,46 @@ jsdomで未実装または制限されるBrowser APIを使用する場合、テ�
 
 仕様にtimezoneがなく、正解を一意に決められない場合は勝手に新仕様を追加しないでください。
 
+
+---
+
+# 13.5. Test Timeout Repair Rules
+
+`TEST_RESULT_JSON.status` が `TEST_TIMEOUT` の場合、そのタイムアウトは実装またはテストコードの修正対象として扱ってください。
+
+タイムアウトを解消するために、以下を行ってはいけません。
+
+* テストタイムアウト値を延長する
+* テストケースを削除する
+* `skip` / `todo` / `only` でテストを回避する
+* assertionを弱める
+* 対象機能を無効化する
+* エラーを握りつぶして成功扱いにする
+
+タイムアウトそのものではなく、根本原因を調査してください。
+
+特に以下を確認してください。
+
+* Reactの無限再render
+* `useEffect` のdependencyがrenderごとに変化している
+* hook mockがrenderごとに新しいobject/functionを返している
+* effect内のstate更新が同じeffectを再発火させている
+* `setState → render → effect → setState` の循環
+* 再帰的な `setTimeout` / `setInterval`
+* fake timerをadvance / restoreしていない
+* resolveされないPromiseやasync loop
+* Promiseやmicrotaskを無限に生成している
+* render中のstate更新
+* event handlerが自分自身または同等処理を再帰的に呼んでいる
+* `waitFor` / `findBy...` 等が成立しない条件を待ち続ける構造
+* Repository / Service / UseCase mockが想定外の再試行を引き起こしている
+
+mockしたReact hookがdependency array等で使用されるobject/functionを返す場合、同じ参照を返すべき値は安定した参照にしてください。
+
+Vitestのhoisting問題が関係する場合は、必要に応じて `vi.hoisted()` を使用してください。
+
+`TEST_TIMEOUT` の修正では、タイムアウト値を変更せず、タイムアウトを発生させている根本原因だけを必要最小限で修正してください。
+
 ---
 
 # 14. Error Log Handling
@@ -375,6 +418,8 @@ Markdownコードブロックで囲んではいけません。
 * 存在しない依存を追加していない
 * hook dependencyが不安定になっていない
 * infinite renderを作っていない
+* TEST_TIMEOUTの場合にタイムアウト値を延長して回避していない
+* TEST_TIMEOUTの根本原因を修正した
 * mock hoisting問題がない
 * Browser API mockが必要ならテスト側へ追加した
 * timezoneを勝手に決めていない

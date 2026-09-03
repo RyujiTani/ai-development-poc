@@ -120,6 +120,7 @@ jobs:
           FINAL_TOTAL=0
           FINAL_PASSED=0
           FINAL_TEST_FAILED=0
+          FINAL_TEST_TIMEOUT=0
           FINAL_INFRA_FAILED=0
 
           while true
@@ -244,8 +245,10 @@ jobs:
 
             TOTAL=$(jq -r '.total' "${SUMMARY_FILE}")
             PASSED=$(jq -r '.passed' "${SUMMARY_FILE}")
-            TEST_FAILED=$(jq -r '.test_failed' "${SUMMARY_FILE}")
-            INFRA_FAILED=$(jq -r '.infrastructure_failed' "${SUMMARY_FILE}")
+            TEST_FAILED=$(jq -r '.test_failed // 0' "${SUMMARY_FILE}")
+            TEST_TIMEOUT=$(jq -r '.test_timeout // 0' "${SUMMARY_FILE}")
+            INFRA_FAILED=$(jq -r '.infrastructure_failed // 0' "${SUMMARY_FILE}")
+            REPAIRABLE_FAILED=$((TEST_FAILED + TEST_TIMEOUT))
 
             echo ""
             echo "============================================================"
@@ -254,6 +257,8 @@ jobs:
             echo "Total                 : ${TOTAL}"
             echo "Passed                : ${PASSED}"
             echo "Test failed           : ${TEST_FAILED}"
+            echo "Test timeout          : ${TEST_TIMEOUT}"
+            echo "Repairable failures   : ${REPAIRABLE_FAILED}"
             echo "Infrastructure failed : ${INFRA_FAILED}"
             echo "============================================================"
             echo ""
@@ -263,6 +268,7 @@ jobs:
             FINAL_TOTAL="${TOTAL}"
             FINAL_PASSED="${PASSED}"
             FINAL_TEST_FAILED="${TEST_FAILED}"
+            FINAL_TEST_TIMEOUT="${TEST_TIMEOUT}"
             FINAL_INFRA_FAILED="${INFRA_FAILED}"
 
             # --------------------------------------------------
@@ -278,9 +284,9 @@ jobs:
             # All tests passed
             # --------------------------------------------------
 
-            if [ "${TEST_FAILED}" -eq 0 ]; then
+            if [ "${REPAIRABLE_FAILED}" -eq 0 ]; then
               echo ""
-              echo "All screen tests passed."
+              echo "All screen tests passed without failures or timeouts."
               echo "Repair loop completed successfully."
               echo ""
 
@@ -294,7 +300,8 @@ jobs:
             if [ "${REPAIR_COUNT}" -ge "${MAX_REPAIR_COUNT}" ]; then
               echo ""
               echo "Maximum repair count reached."
-              echo "Remaining TEST_FAILED: ${TEST_FAILED}"
+              echo "Remaining TEST_FAILED : ${TEST_FAILED}"
+              echo "Remaining TEST_TIMEOUT: ${TEST_TIMEOUT}"
               echo "Proceeding to PR creation."
               echo ""
 
@@ -338,6 +345,7 @@ jobs:
           echo "total=${FINAL_TOTAL}" >> "${GITHUB_OUTPUT}"
           echo "passed=${FINAL_PASSED}" >> "${GITHUB_OUTPUT}"
           echo "test_failed=${FINAL_TEST_FAILED}" >> "${GITHUB_OUTPUT}"
+          echo "test_timeout=${FINAL_TEST_TIMEOUT}" >> "${GITHUB_OUTPUT}"
           echo "infrastructure_failed=${FINAL_INFRA_FAILED}" >> "${GITHUB_OUTPUT}"
           echo "repair_count=${REPAIR_COUNT}" >> "${GITHUB_OUTPUT}"
 
@@ -363,6 +371,9 @@ jobs:
           echo ""
           echo "Test Failed:"
           echo "${{ steps.repair-loop.outputs.test_failed }}"
+          echo ""
+          echo "Test Timeout:"
+          echo "${{ steps.repair-loop.outputs.test_timeout }}"
           echo ""
           echo "Repair Count:"
           echo "${{ steps.repair-loop.outputs.repair_count }}"
@@ -433,6 +444,7 @@ jobs:
           TOTAL="${{ steps.repair-loop.outputs.total }}"
           PASSED="${{ steps.repair-loop.outputs.passed }}"
           TEST_FAILED="${{ steps.repair-loop.outputs.test_failed }}"
+          TEST_TIMEOUT="${{ steps.repair-loop.outputs.test_timeout }}"
           REPAIR_COUNT="${{ steps.repair-loop.outputs.repair_count }}"
 
           cat <<EOF > pr-body.md
@@ -445,6 +457,7 @@ jobs:
           - 対象画面数: ${TOTAL}
           - テスト成功: ${PASSED}
           - テスト失敗: ${TEST_FAILED}
+          - テストタイムアウト: ${TEST_TIMEOUT}
           - AI修正回数: ${REPAIR_COUNT}
           - 最終Cloud Build ID: \`${BUILD_ID}\`
 
@@ -457,7 +470,7 @@ jobs:
           ↓
           Cloud Build / Vitest
           ↓
-          TEST_FAILEDの場合 AI修正
+          TEST_FAILED / TEST_TIMEOUTの場合 AI修正
           ↓
           再テスト
           ↓
@@ -479,9 +492,9 @@ jobs:
 
           ### 注意
 
-          AI修正を最大回数まで実行してもテストFAILが残った場合、このPRにはその状態のコードと最終テスト結果が含まれます。
+          AI修正を最大回数まで実行してもTEST_FAILEDまたはTEST_TIMEOUTが残った場合、このPRにはその状態のコードと最終テスト結果が含まれます。
 
-          残存するテストFAILは、人によるレビューおよび仕様確認の対象としてください。
+          残存するTEST_FAILED / TEST_TIMEOUTは、人によるレビューおよび仕様確認の対象としてください。
           EOF
 
 

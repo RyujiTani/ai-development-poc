@@ -1475,7 +1475,13 @@ def repair_screen(
 
 def get_failed_screens() -> List[str]:
     """
-    summary.jsonからTEST_FAILED画面だけ取得する。
+    summary.jsonからrepair対象画面を取得する。
+
+    対象:
+        TEST_FAILED
+        TEST_TIMEOUT
+
+    INFRA_ERROR / infrastructure failureは対象外。
     """
 
     summary_file = (
@@ -1517,7 +1523,10 @@ def get_failed_screens() -> List[str]:
 
         if (
             item.get("status")
-            == "TEST_FAILED"
+            in {
+                "TEST_FAILED",
+                "TEST_TIMEOUT",
+            }
         ):
             screen_id = item.get(
                 "screen"
@@ -1539,10 +1548,14 @@ def repair_failed_screens(
     max_attempts: int = 2,
 ) -> None:
     """
-    summary.jsonでTEST_FAILEDとなった画面を順番に修正する。
+    summary.jsonでrepair対象となった画面を順番に修正する。
+
+    対象:
+        TEST_FAILED
+        TEST_TIMEOUT
 
     PASSEDは対象外。
-    INFRASTRUCTURE_FAILEDも自動修正対象外。
+    INFRA_ERROR / INFRASTRUCTURE_FAILEDも自動修正対象外。
     """
 
     failed_screens = (
@@ -1551,7 +1564,7 @@ def repair_failed_screens(
 
     if not failed_screens:
         print(
-            "No TEST_FAILED screens found."
+            "No repairable TEST_FAILED / TEST_TIMEOUT screens found."
         )
         return
 
@@ -1564,7 +1577,7 @@ def repair_failed_screens(
 
     print(
         f"Found {len(failed_screens)} "
-        "TEST_FAILED screen(s)."
+        "repairable TEST_FAILED / TEST_TIMEOUT screen(s)."
     )
 
     for index, screen_id in enumerate(

@@ -23,6 +23,9 @@ const resultsRoot = path.join(
 
 const runnerRoot = process.cwd();
 
+const SCREEN_TEST_TIMEOUT_MS = 180_000;
+const SCREEN_TEST_TIMEOUT_SECONDS = SCREEN_TEST_TIMEOUT_MS / 1000;
+
 
 function copyDir(source, destination) {
   fs.mkdirSync(
@@ -99,8 +102,9 @@ function getErrorMessage(error) {
  *
  * 1:
  *   AI生成コードまたはテストに失敗あり
+ *   → TEST_FAILED / TEST_TIMEOUT
  *   → 想定内
- *   → PR作成へ進める
+ *   → repair / PR作成へ進める
  *
  * 2:
  *   テスト基盤・runner自体のエラー
@@ -211,6 +215,7 @@ console.log(
 const summary = [];
 
 let testFailed = 0;
+let testTimeout = 0;
 let infrastructureFailed = 0;
 let infrastructureError = false;
 
@@ -380,17 +385,112 @@ for (
           '--config',
           'vitest.config.ts',
           '--reporter=verbose',
+          '--maxWorkers=1',
+          '--minWorkers=1',
         ],
         {
           cwd: workspaceDir,
           encoding: 'utf8',
+          timeout: SCREEN_TEST_TIMEOUT_MS,
 
           env: {
             ...process.env,
             CI: 'true',
+            NODE_OPTIONS: [
+              process.env.NODE_OPTIONS,
+              '--max-old-space-size=1024',
+            ]
+              .filter(Boolean)
+              .join(' '),
           },
         }
       );
+
+
+    // ========================================================
+    // Screen test timeout
+    // ========================================================
+
+    const timedOut =
+      result.error?.code === 'ETIMEDOUT';
+
+
+    if (
+      timedOut
+    ) {
+      testTimeout += 1;
+
+
+      const timeoutMessage =
+        `Vitest process exceeded ${SCREEN_TEST_TIMEOUT_SECONDS} seconds and was terminated.`;
+
+
+      const detail = {
+        screen: screenId,
+        status: 'TEST_TIMEOUT',
+        passed: false,
+        exit_code: null,
+        timeout_seconds:
+          SCREEN_TEST_TIMEOUT_SECONDS,
+        stdout:
+          result.stdout ?? '',
+        stderr: [
+          result.stderr ?? '',
+          timeoutMessage,
+        ]
+          .filter(Boolean)
+          .join('\n'),
+      };
+
+
+      writeJson(
+        path.join(
+          resultsRoot,
+          `${screenId}.json`
+        ),
+        detail
+      );
+
+
+      summary.push({
+        screen: screenId,
+        status: 'TEST_TIMEOUT',
+        passed: false,
+        exit_code: null,
+        timeout_seconds:
+          SCREEN_TEST_TIMEOUT_SECONDS,
+      });
+
+
+      if (
+        result.stdout
+      ) {
+        process.stdout.write(
+          result.stdout
+        );
+      }
+
+
+      if (
+        result.stderr
+      ) {
+        process.stderr.write(
+          result.stderr
+        );
+      }
+
+
+      console.error(
+        timeoutMessage
+      );
+
+      console.error(
+        `TIMEOUT: ${screenId}`
+      );
+
+
+      continue;
+    }
 
 
     // ========================================================
@@ -673,12 +773,16 @@ const summaryFile = {
   test_failed:
     testFailed,
 
+  test_timeout:
+    testTimeout,
+
   infrastructure_failed:
     infrastructureFailed,
 
   success:
     (
       testFailed === 0 &&
+      testTimeout === 0 &&
       infrastructureFailed === 0
     ),
 
@@ -744,6 +848,10 @@ console.log(
 );
 
 console.log(
+  `Test timeout          : ${testTimeout}`
+);
+
+console.log(
   `Infrastructure failed : ${infrastructureFailed}`
 );
 
@@ -769,11 +877,12 @@ if (
 
 
 if (
-  testFailed > 0
+  testFailed > 0 ||
+  testTimeout > 0
 ) {
   console.log('');
   console.log(
-    'Test failures detected.'
+    'Test failures or timeouts detected.'
   );
 
   process.exit(1);
