@@ -157,7 +157,6 @@ CONTENT_START_MARKER = "<<<CONTENT_START>>>"
 CONTENT_END_MARKER = "<<<CONTENT_END>>>"
 FILE_END_MARKER = "<<<FILE_END>>>"
 
-
 def parse_generated_files(
     response_text: str,
 ) -> Dict[str, str]:
@@ -172,6 +171,8 @@ def parse_generated_files(
     ... raw source code ...
     <<<CONTENT_END>>>
     <<<FILE_END>>>
+
+    FILEブロック間の空行は許可する。
     """
 
     if not response_text:
@@ -181,27 +182,30 @@ def parse_generated_files(
 
     text = response_text.strip()
 
-    if not text.startswith(FILE_START_MARKER):
+    if not text.startswith(
+        FILE_START_MARKER
+    ):
         raise ValueError(
             "Generated response must start with "
             f"{FILE_START_MARKER}."
         )
 
-    if not text.endswith(FILE_END_MARKER):
+    if not text.endswith(
+        FILE_END_MARKER
+    ):
         raise ValueError(
             "Generated response must end with "
             f"{FILE_END_MARKER}."
         )
 
     pattern = re.compile(
-        r"^<<<FILE_START>>>\r?\n"
+        r"<<<FILE_START>>>\r?\n"
         r"PATH:[ \t]*(?P<path>[^\r\n]+)\r?\n"
         r"<<<CONTENT_START>>>\r?\n"
         r"(?P<content>.*?)"
         r"\r?\n<<<CONTENT_END>>>\r?\n"
-        r"<<<FILE_END>>>"
-        r"(?=\r?\n<<<FILE_START>>>|\Z)",
-        flags=re.DOTALL | re.MULTILINE,
+        r"<<<FILE_END>>>",
+        flags=re.DOTALL,
     )
 
     matches = list(
@@ -214,6 +218,7 @@ def parse_generated_files(
             "Vertex AI response."
         )
 
+    # FILEブロック間は空白・改行のみ許可
     cursor = 0
 
     for match in matches:
@@ -229,7 +234,9 @@ def parse_generated_files(
 
         cursor = match.end()
 
-    if text[cursor:].strip():
+    trailing = text[cursor:]
+
+    if trailing.strip():
         raise ValueError(
             "Unexpected trailing text exists "
             "outside FILE blocks."
@@ -238,7 +245,8 @@ def parse_generated_files(
     result: Dict[str, str] = {}
 
     for index, match in enumerate(
-        matches
+        matches,
+        start=1,
     ):
         relative_path = (
             match.group("path")
@@ -251,7 +259,7 @@ def parse_generated_files(
 
         if not relative_path:
             raise ValueError(
-                f"FILE block {index + 1} has "
+                f"FILE block {index} has "
                 "an empty PATH."
             )
 
@@ -277,7 +285,8 @@ def parse_generated_files(
                 raise ValueError(
                     "Generated source contains "
                     "reserved parser marker "
-                    f"{marker}: {relative_path}"
+                    f"{marker}: "
+                    f"{relative_path}"
                 )
 
         result[
@@ -285,7 +294,6 @@ def parse_generated_files(
         ] = content
 
     return result
-
 
 def generate_implementation_files(
     vertex_client,
