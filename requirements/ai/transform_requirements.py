@@ -2,7 +2,8 @@ from pathlib import Path
 import argparse
 import json
 import re
-from typing import Any, Dict, List, Tuple
+import shutil
+from typing import Any, Dict, List, Optional, Tuple
 
 
 # ============================================================
@@ -53,6 +54,11 @@ SCREEN_PROMPT = (
 
 IMPLEMENT_SCREEN_PROMPT = (
     PROMPTS_DIR / "implement_screen.md"
+)
+
+
+REPAIR_SCREEN_PROMPT = (
+    PROMPTS_DIR / "repair_screen.md"
 )
 
 
@@ -141,78 +147,31 @@ def extract_json(text: str) -> Any:
         ) from exc
 
 
-def normalize_generated_files(
-    files: Any,
-) -> Dict[str, str]:
-    """
-    files配列を {path: content} に変換する。
-    """
-
-    if not isinstance(files, list):
-        raise ValueError(
-            "Generated files must be a list."
-        )
-
-    result: Dict[str, str] = {}
-
-    for item in files:
-        if not isinstance(item, dict):
-            continue
-
-        path = item.get("path")
-        content = item.get("content", "")
-
-        if not isinstance(path, str):
-            continue
-
-        if content is None:
-            content = ""
-
-        result[path.strip()] = str(content)
-
-    if not result:
-        raise ValueError(
-            "Generated files list does not contain valid files."
-        )
-
-    return result
-
 
 # ============================================================
-# Generated files parser
+# Generated implementation FILE parser
 # ============================================================
+
+FILE_START_MARKER = "<<<FILE_START>>>"
+CONTENT_START_MARKER = "<<<CONTENT_START>>>"
+CONTENT_END_MARKER = "<<<CONTENT_END>>>"
+FILE_END_MARKER = "<<<FILE_END>>>"
+
 
 def parse_generated_files(
     response_text: str,
 ) -> Dict[str, str]:
     """
-    Vertex AIのレスポンスから生成ファイルを取得する。
+    Vertex AIの実装レスポンスからFILEブロックを取得する。
 
     対応形式:
 
-    1. files配列形式
-
-    {
-      "files": [
-        {
-          "path": "app/page.tsx",
-          "content": "..."
-        }
-      ]
-    }
-
-    2. ファイルパスをキーにした辞書形式
-
-    {
-      "app/page.tsx": "...",
-      "components/Button.tsx": "..."
-    }
-
-    Vertex AIがJSONとして返した場合は、
-    まずJSONとして解析する。
-
-    JSONとして解析できない場合のみ、
-    壊れたJSONからの復旧を試みる。
+    <<<FILE_START>>>
+    PATH: app/page.tsx
+    <<<CONTENT_START>>>
+    ... raw source code ...
+    <<<CONTENT_END>>>
+    <<<FILE_END>>>
     """
 
     if not response_text:
@@ -222,232 +181,194 @@ def parse_generated_files(
 
     text = response_text.strip()
 
-    # --------------------------------------------------------
-    # 1. 正常なJSON
-    # --------------------------------------------------------
+    if not text.startswith(FILE_START_MARKER):
+        raise ValueError(
+            "Generated response must start with "
+            f"{FILE_START_MARKER}."
+        )
 
-    try:
-        parsed = extract_json(text)
+    if not text.endswith(FILE_END_MARKER):
+        raise ValueError(
+            "Generated response must end with "
+            f"{FILE_END_MARKER}."
+        )
 
-        # ----------------------------------------------------
-        # 1-1. files配列形式
-        # ----------------------------------------------------
-
-        if isinstance(parsed, dict):
-            files = parsed.get("files")
-
-            if isinstance(files, list):
-                return normalize_generated_files(files)
-
-            # ------------------------------------------------
-            # 1-2. ファイルパスをキーにした辞書形式
-            # ------------------------------------------------
-
-            if parsed:
-                result: Dict[str, str] = {}
-
-                for path, content in parsed.items():
-
-                    if not isinstance(path, str):
-                        continue
-
-                    if content is None:
-                        content = ""
-
-                    if not isinstance(content, str):
-                        content = str(content)
-
-                    result[path.strip()] = content
-
-                if result:
-                    return result
-
-        # ----------------------------------------------------
-        # 1-3. files配列そのもの
-        # ----------------------------------------------------
-
-        if isinstance(parsed, list):
-            return normalize_generated_files(parsed)
-
-    except ValueError:
-        pass
-
-    # --------------------------------------------------------
-    # 2. 壊れたJSONから files を復旧
-    # --------------------------------------------------------
-
-    recovered = recover_generated_files(text)
-
-    if recovered:
-        return recovered
-
-    raise ValueError(
-        "No generated files found in Vertex AI response."
+    pattern = re.compile(
+        r"^<<<FILE_START>>>\r?\n"
+        r"PATH:[ \t]*(?P<path>[^\r\n]+)\r?\n"
+        r"<<<CONTENT_START>>>\r?\n"
+        r"(?P<content>.*?)"
+        r"\r?\n<<<CONTENT_END>>>\r?\n"
+        r"<<<FILE_END>>>"
+        r"(?=\r?\n<<<FILE_START>>>|\Z)",
+        flags=re.DOTALL | re.MULTILINE,
     )
 
-def recover_generated_files(
-    text: str,
-) -> Dict[str, str]:
-    """
-    Vertex AIがJSONとしては不正なレスポンスを返した場合に、
-    path/content単位で生成ファイルを復旧する。
+    matches = list(
+        pattern.finditer(text)
+    )
 
-    JSON全体を修復するのではなく、
-    各ファイルのcontentだけを個別に復元する。
-    """
+    if not matches:
+        raise ValueError(
+            "No valid FILE blocks found in "
+            "Vertex AI response."
+        )
+
+    cursor = 0
+
+    for match in matches:
+        between = text[
+            cursor:match.start()
+        ]
+
+        if between.strip():
+            raise ValueError(
+                "Unexpected text exists outside "
+                "FILE blocks."
+            )
+
+        cursor = match.end()
+
+    if text[cursor:].strip():
+        raise ValueError(
+            "Unexpected trailing text exists "
+            "outside FILE blocks."
+        )
 
     result: Dict[str, str] = {}
 
-    pattern = re.compile(
-        r'"path"\s*:\s*"(?P<path>[^"]+)"'
-        r'\s*,\s*'
-        r'"content"\s*:\s*"',
-        flags=re.DOTALL,
-    )
-
-    matches = list(pattern.finditer(text))
-
-    if not matches:
-        return result
-
-    for index, match in enumerate(matches):
-        path = match.group("path").strip()
-
-        content_start = match.end()
-
-        if index + 1 < len(matches):
-            next_match = matches[index + 1]
-
-            raw_content = text[
-                content_start:next_match.start()
-            ]
-
-            raw_content = remove_file_object_tail(
-                raw_content
-            )
-        else:
-            raw_content = text[content_start:]
-            raw_content = remove_final_json_tail(
-                raw_content
-            )
-
-        content = decode_generated_content(
-            raw_content
+    for index, match in enumerate(
+        matches
+    ):
+        relative_path = (
+            match.group("path")
+            .strip()
         )
 
-        result[path] = content
+        content = match.group(
+            "content"
+        )
+
+        if not relative_path:
+            raise ValueError(
+                f"FILE block {index + 1} has "
+                "an empty PATH."
+            )
+
+        if not content.strip():
+            raise ValueError(
+                f"Generated file is empty: "
+                f"{relative_path}"
+            )
+
+        if relative_path in result:
+            raise ValueError(
+                "Duplicate generated file path: "
+                f"{relative_path}"
+            )
+
+        for marker in (
+            FILE_START_MARKER,
+            CONTENT_START_MARKER,
+            CONTENT_END_MARKER,
+            FILE_END_MARKER,
+        ):
+            if marker in content:
+                raise ValueError(
+                    "Generated source contains "
+                    "reserved parser marker "
+                    f"{marker}: {relative_path}"
+                )
+
+        result[
+            relative_path
+        ] = content
 
     return result
 
 
-def remove_file_object_tail(
-    content: str,
-) -> str:
+def generate_implementation_files(
+    vertex_client,
+    prompt: str,
+    max_attempts: int = 3,
+) -> Dict[str, str]:
     """
-    次のpathの直前にあるJSONオブジェクト終了部分を削除する。
-    """
+    Vertex AIへ実装生成を依頼する。
 
-    content = content.rstrip()
-
-    if content.endswith("}"):
-        content = content[:-1].rstrip()
-
-    if content.endswith(","):
-        content = content[:-1].rstrip()
-
-    if content.endswith('"'):
-        content = content[:-1]
-
-    return content
-
-
-def remove_final_json_tail(
-    content: str,
-) -> str:
-    """
-    最後のcontentからJSON全体の終了部分を削除する。
+    FILE形式を解析できない場合は、
+    不完全な生成物を保存せず再生成する。
     """
 
-    content = content.rstrip()
-
-    # 典型的な:
-    #
-    # "
-    #     }
-    #   ]
-    # }
-    #
-    # を除去する。
-
-    match = re.search(
-        r'"?\s*}\s*]\s*}\s*$',
-        content,
-        flags=re.DOTALL,
-    )
-
-    if match:
-        content = content[:match.start()]
-
-    return content
-
-
-def decode_generated_content(
-    raw_content: str,
-) -> str:
-    """
-    JSON contentとして返されたコードを復元する。
-
-    正常なJSONエスケープは維持し、
-    Vertex AIがコード中の未エスケープの
-    ダブルクォートを返した場合だけ補正する。
-    """
-
-    raw_content = raw_content.rstrip()
-
-    if raw_content.endswith('"'):
-        raw_content = raw_content[:-1]
-
-    result: List[str] = []
-
-    escaped = False
-
-    for char in raw_content:
-        if escaped:
-            result.append("\\")
-            result.append(char)
-            escaped = False
-            continue
-
-        if char == "\\":
-            escaped = True
-            continue
-
-        if char == '"':
-            result.append('\\"')
-        elif char == "\n":
-            result.append("\\n")
-        elif char == "\r":
-            result.append("\\r")
-        elif char == "\t":
-            result.append("\\t")
-        else:
-            result.append(char)
-
-    if escaped:
-        result.append("\\")
-
-    encoded = "".join(result)
-
-    try:
-        return json.loads(
-            '"' + encoded + '"'
+    if max_attempts < 1:
+        raise ValueError(
+            "max_attempts must be greater than "
+            "or equal to 1."
         )
-    except json.JSONDecodeError:
-        # 最終的にはコードとしてそのまま扱う
-        return (
-            raw_content
-            .replace('\\"', '"')
+
+    last_error: Optional[Exception] = None
+
+    for attempt in range(
+        1,
+        max_attempts + 1,
+    ):
+        print(
+            f"Generation attempt "
+            f"{attempt}/{max_attempts}"
         )
+
+        response = (
+            vertex_client.generate(
+                prompt
+            )
+        )
+
+        try:
+            generated_files = (
+                parse_generated_files(
+                    response
+                )
+            )
+
+            validate_generated_files_content(
+                generated_files
+            )
+
+            print(
+                "Generated FILE format "
+                "validation passed."
+            )
+
+            return generated_files
+
+        except ValueError as exc:
+            last_error = exc
+
+            print(
+                "Invalid implementation response: "
+                f"{exc}"
+            )
+
+            print()
+            print("-" * 60)
+            print(
+                f"Vertex AI raw response "
+                f"(attempt {attempt}/{max_attempts}):"
+            )
+            print(response)
+            print("-" * 60)
+            print()
+
+            if attempt < max_attempts:
+                print(
+                    "Retrying implementation "
+                    "generation..."
+                )
+
+    raise RuntimeError(
+        "Failed to generate a valid "
+        "implementation after "
+        f"{max_attempts} attempts."
+    ) from last_error
 
 
 # ============================================================
@@ -880,20 +801,84 @@ def validate_generated_file_path(
     return path
 
 
+def validate_generated_content(
+    relative_path: str,
+    content: str,
+) -> None:
+    """
+    生成ファイル内容の最低限のValidationを行う。
+    """
+
+    if not content.strip():
+        raise ValueError(
+            "Generated file content is empty: "
+            f"{relative_path}"
+        )
+
+    for marker in (
+        FILE_START_MARKER,
+        CONTENT_START_MARKER,
+        CONTENT_END_MARKER,
+        FILE_END_MARKER,
+    ):
+        if marker in content:
+            raise ValueError(
+                "Generated source contains reserved "
+                f"parser marker {marker}: "
+                f"{relative_path}"
+            )
+
+
+def validate_generated_files_content(
+
+    files: Dict[str, str],
+) -> None:
+    """
+    保存前に全生成ファイルの内容をValidationする。
+    """
+
+    if not files:
+        raise ValueError(
+            "No generated files to validate."
+        )
+
+    for relative_path, content in files.items():
+        validate_generated_file_path(
+            relative_path
+        )
+
+        validate_generated_content(
+            relative_path,
+            content,
+        )
+
+
 def save_generated_files(
     files: Dict[str, str],
     output_dir: Path,
 ) -> List[str]:
 
-    output_dir.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
-
     if not files:
         raise ValueError(
             "No generated files to save."
         )
+
+    validate_generated_files_content(
+        files
+    )
+
+    # 同じ画面を再生成した際に過去のファイルが残ると、
+    # 重複実装や古いテストが混在するため、
+    # 保存直前に画面単位の出力ディレクトリを作り直す。
+    if output_dir.exists():
+        shutil.rmtree(
+            output_dir
+        )
+
+    output_dir.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
     output_root = output_dir.resolve()
 
@@ -1010,19 +995,10 @@ def implement_screen(
         "Generating implementation..."
     )
 
-    response = vertex_client.generate(
-        prompt
-    )
-
-    print()
-    print("-" * 60)
-    print("Vertex AI raw response:")
-    print(response)
-    print("-" * 60)
-    print()
-
-    generated_files = parse_generated_files(
-        response
+    generated_files = generate_implementation_files(
+        vertex_client,
+        prompt,
+        max_attempts=3,
     )
 
     output_dir = (
@@ -1121,6 +1097,493 @@ def implement_all_screens(
 
 
 # ============================================================
+# Repair
+# ============================================================
+
+from pathlib import Path
+import json
+from typing import Dict, List, Optional
+
+
+def serialize_generated_files(
+    screen_dir: Path,
+) -> str:
+    """
+    現在生成済みの画面ファイルをrepair promptへ渡すため、
+    読み取り専用の専用形式へ変換する。
+    """
+
+    if not screen_dir.exists():
+        raise FileNotFoundError(
+            f"Implementation directory not found: {screen_dir}"
+        )
+
+    blocks: List[str] = []
+
+    files = sorted(
+        path
+        for path in screen_dir.rglob("*")
+        if path.is_file()
+        and path.name != ".ai-repair-unresolved.txt"
+    )
+
+    if not files:
+        raise FileNotFoundError(
+            f"No implementation files found: {screen_dir}"
+        )
+
+    for file_path in files:
+        relative_path = (
+            file_path
+            .relative_to(screen_dir)
+            .as_posix()
+        )
+
+        content = file_path.read_text(
+            encoding="utf-8"
+        )
+
+        blocks.append(
+            "\n".join(
+                [
+                    "<<<EXISTING_FILE_START>>>",
+                    f"PATH: {relative_path}",
+                    "<<<EXISTING_CONTENT_START>>>",
+                    content,
+                    "<<<EXISTING_CONTENT_END>>>",
+                    "<<<EXISTING_FILE_END>>>",
+                ]
+            )
+        )
+
+    return "\n\n".join(blocks)
+
+
+def load_test_result(
+    screen_id: str,
+) -> Dict:
+    """
+    generated/test-results/<screen_id>.json を取得する。
+    """
+
+    result_file = (
+        GENERATED_DIR
+        / "test-results"
+        / f"{screen_id}.json"
+    )
+
+    if not result_file.exists():
+        raise FileNotFoundError(
+            f"Test result not found: {result_file}"
+        )
+
+    try:
+        return json.loads(
+            result_file.read_text(
+                encoding="utf-8"
+            )
+        )
+    except json.JSONDecodeError as exc:
+        raise ValueError(
+            f"Test result is not valid JSON: {result_file}"
+        ) from exc
+
+
+def build_error_log(
+    test_result: Dict,
+    max_chars: int = 60000,
+) -> str:
+    """
+    stdout / stderrをrepair prompt用のエラーログへまとめる。
+
+    ログが極端に大きい場合は末尾を優先して制限する。
+    VitestのFailed Testsやstack traceは末尾に出ることが多いため。
+    """
+
+    stdout = test_result.get(
+        "stdout",
+        "",
+    )
+
+    stderr = test_result.get(
+        "stderr",
+        "",
+    )
+
+    text = (
+        "=== STDOUT ===\n"
+        f"{stdout}\n\n"
+        "=== STDERR ===\n"
+        f"{stderr}"
+    )
+
+    if len(text) <= max_chars:
+        return text
+
+    return (
+        "[ERROR LOG TRUNCATED: LAST "
+        f"{max_chars} CHARACTERS]\n"
+        + text[-max_chars:]
+    )
+
+
+def apply_repaired_files(
+    files: Dict[str, str],
+    output_dir: Path,
+) -> List[str]:
+    """
+    repair結果を既存実装へ上書きする。
+
+    初回生成とは異なりoutput_dir全体は削除しない。
+    AIが返した修正対象ファイルだけを置換する。
+    """
+
+    if not files:
+        raise ValueError(
+            "No repaired files to apply."
+        )
+
+    validate_generated_files_content(
+        files
+    )
+
+    output_dir.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    output_root = output_dir.resolve()
+
+    saved_files: List[str] = []
+
+    for relative_path, content in files.items():
+        relative = validate_generated_file_path(
+            relative_path
+        )
+
+        file_path = (
+            output_dir / relative
+        )
+
+        resolved_file = (
+            file_path.resolve()
+        )
+
+        try:
+            resolved_file.relative_to(
+                output_root
+            )
+        except ValueError as exc:
+            raise ValueError(
+                "Repaired file path escapes "
+                f"output directory: {relative_path}"
+            ) from exc
+
+        file_path.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        file_path.write_text(
+            content,
+            encoding="utf-8",
+        )
+
+        saved_files.append(
+            str(file_path)
+        )
+
+    return saved_files
+
+
+def repair_screen(
+    vertex_client,
+    screen: str,
+    max_attempts: int = 2,
+) -> None:
+    """
+    1画面のテスト失敗をAIへ返し、既存生成物を最小修正する。
+
+    Inputs:
+        system_requirements.json
+        trace_index.json
+        screen requirement json
+        current generated files
+        test result json
+        stdout / stderr
+
+    Output:
+        修正が必要なファイルのみ既存implementationへ上書き
+    """
+
+    system_requirements_file = (
+        GENERATED_REQUIREMENTS_DIR
+        / "system_requirements.json"
+    )
+
+    trace_index_file = (
+        GENERATED_REQUIREMENTS_DIR
+        / "trace_index.json"
+    )
+
+    screen_requirement_file = (
+        find_screen_requirement_file(
+            screen
+        )
+    )
+
+    validate_required_files(
+        [
+            system_requirements_file,
+            trace_index_file,
+            screen_requirement_file,
+            REPAIR_SCREEN_PROMPT,
+        ]
+    )
+
+    screen_id = (
+        screen_requirement_file.stem
+    )
+
+    implementation_dir = (
+        IMPLEMENTED_SCREEN_DIR
+        / screen_id
+    )
+
+    generated_files_text = (
+        serialize_generated_files(
+            implementation_dir
+        )
+    )
+
+    test_result = load_test_result(
+        screen_id
+    )
+
+    if test_result.get("status") == "PASSED":
+        print(
+            f"Skip repair because screen already passed: "
+            f"{screen_id}"
+        )
+        return
+
+    test_result_json = json.dumps(
+        test_result,
+        ensure_ascii=False,
+        indent=2,
+    )
+
+    error_log = build_error_log(
+        test_result
+    )
+
+    prompt = inject_prompt(
+        load_prompt(
+            REPAIR_SCREEN_PROMPT
+        ),
+        {
+            "{{SYSTEM_REQUIREMENTS_JSON}}":
+                read_text(
+                    system_requirements_file
+                ),
+
+            "{{TRACE_INDEX_JSON}}":
+                read_text(
+                    trace_index_file
+                ),
+
+            "{{SCREEN_REQUIREMENT_JSON}}":
+                read_text(
+                    screen_requirement_file
+                ),
+
+            "{{GENERATED_FILES}}":
+                generated_files_text,
+
+            "{{TEST_RESULT_JSON}}":
+                test_result_json,
+
+            "{{ERROR_LOG}}":
+                error_log,
+        },
+    )
+
+    print()
+    print("=" * 60)
+    print(
+        f"Repairing screen: {screen_id}"
+    )
+    print("=" * 60)
+
+    repaired_files = (
+        generate_implementation_files(
+            vertex_client,
+            prompt,
+            max_attempts=max_attempts,
+        )
+    )
+
+    # specification gapの場合
+    if (
+        ".ai-repair-unresolved.txt"
+        in repaired_files
+    ):
+        message = repaired_files[
+            ".ai-repair-unresolved.txt"
+        ].strip()
+
+        if message == "SPECIFICATION_GAP":
+            unresolved_file = (
+                implementation_dir
+                / ".ai-repair-unresolved.txt"
+            )
+
+            unresolved_file.write_text(
+                message + "\n",
+                encoding="utf-8",
+            )
+
+            print(
+                "Repair stopped because "
+                "specification gap was detected."
+            )
+            return
+
+    saved_files = apply_repaired_files(
+        repaired_files,
+        implementation_dir,
+    )
+
+    print()
+    print(
+        f"Repaired {len(saved_files)} file(s):"
+    )
+
+    for file_path in saved_files:
+        print(
+            f"  {file_path}"
+        )
+
+
+def get_failed_screens() -> List[str]:
+    """
+    summary.jsonからTEST_FAILED画面だけ取得する。
+    """
+
+    summary_file = (
+        GENERATED_DIR
+        / "test-results"
+        / "summary.json"
+    )
+
+    if not summary_file.exists():
+        raise FileNotFoundError(
+            f"Test summary not found: {summary_file}"
+        )
+
+    try:
+        summary = json.loads(
+            summary_file.read_text(
+                encoding="utf-8"
+            )
+        )
+    except json.JSONDecodeError as exc:
+        raise ValueError(
+            f"Test summary is not valid JSON: "
+            f"{summary_file}"
+        ) from exc
+
+    screens = summary.get(
+        "screens",
+        []
+    )
+
+    result: List[str] = []
+
+    for item in screens:
+        if not isinstance(
+            item,
+            dict,
+        ):
+            continue
+
+        if (
+            item.get("status")
+            == "TEST_FAILED"
+        ):
+            screen_id = item.get(
+                "screen"
+            )
+
+            if isinstance(
+                screen_id,
+                str,
+            ) and screen_id:
+                result.append(
+                    screen_id
+                )
+
+    return result
+
+
+def repair_failed_screens(
+    vertex_client,
+    max_attempts: int = 2,
+) -> None:
+    """
+    summary.jsonでTEST_FAILEDとなった画面を順番に修正する。
+
+    PASSEDは対象外。
+    INFRASTRUCTURE_FAILEDも自動修正対象外。
+    """
+
+    failed_screens = (
+        get_failed_screens()
+    )
+
+    if not failed_screens:
+        print(
+            "No TEST_FAILED screens found."
+        )
+        return
+
+    print()
+    print("=" * 60)
+    print(
+        "Starting repair of failed screens"
+    )
+    print("=" * 60)
+
+    print(
+        f"Found {len(failed_screens)} "
+        "TEST_FAILED screen(s)."
+    )
+
+    for index, screen_id in enumerate(
+        failed_screens,
+        start=1,
+    ):
+        print()
+        print(
+            f"[{index}/{len(failed_screens)}] "
+            f"Repairing: {screen_id}"
+        )
+
+        repair_screen(
+            vertex_client,
+            screen_id,
+            max_attempts=max_attempts,
+        )
+
+    print()
+    print("=" * 60)
+    print(
+        "Failed screen repair completed."
+    )
+    print("=" * 60)
+
+
+# ============================================================
 # CLI
 # ============================================================
 
@@ -1144,6 +1607,8 @@ def parse_args() -> argparse.Namespace:
             "all",
             "implement",
             "implement-all",
+            "repair",
+            "repair-all",
         ],
         default="all",
         help="Execution target. default: all",
@@ -1179,6 +1644,8 @@ def main(
         all
         implement
         implement-all
+        repair
+        repair-all
     """
 
     # --------------------------------------------------------
@@ -1243,6 +1710,35 @@ def main(
     if args.target == "implement-all":
         implement_all_screens(
             vertex_client
+        )
+        return
+
+    # --------------------------------------------------------
+    # repair
+    # --------------------------------------------------------
+
+    if args.target == "repair":
+        if not args.screen:
+            raise ValueError(
+                "--screen is required when "
+                "--target repair is specified."
+            )
+
+        repair_screen(
+            vertex_client,
+            args.screen,
+            max_attempts=2,
+        )
+        return
+
+    # --------------------------------------------------------
+    # repair-all
+    # --------------------------------------------------------
+
+    if args.target == "repair-all":
+        repair_failed_screens(
+            vertex_client,
+            max_attempts=2,
         )
         return
 

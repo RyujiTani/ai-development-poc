@@ -224,71 +224,99 @@ seedデータが指定されている場合は、それと整合するように�
 
 # 15. Output Format
 
-実装に必要なファイルを、必ず以下のJSON形式で出力してください。
+実装に必要なファイルは、必ず以下の専用FILE形式で出力してください。
 
-```json
-{
-  "files": [
-    {
-      "path": "app/contractor/login/page.tsx",
-      "content": "ファイルの完全な内容"
-    },
-    {
-      "path": "features/auth/domain/auth.ts",
-      "content": "ファイルの完全な内容"
-    },
-    {
-      "path": "tests/contractorLogin.test.tsx",
-      "content": "ファイルの完全な内容"
-    }
-  ]
+出力例:
+
+```text
+<<<FILE_START>>>
+PATH: app/contractor/login/page.tsx
+<<<CONTENT_START>>>
+'use client';
+
+import React from 'react';
+
+export default function LoginPage() {
+  return <main>Login</main>;
 }
+<<<CONTENT_END>>>
+<<<FILE_END>>>
+
+<<<FILE_START>>>
+PATH: features/auth/domain/auth.ts
+<<<CONTENT_START>>>
+export interface AuthUser {
+  userId: string;
+}
+<<<CONTENT_END>>>
+<<<FILE_END>>>
+
+<<<FILE_START>>>
+PATH: tests/contractorLogin.test.tsx
+<<<CONTENT_START>>>
+import { describe, expect, it } from 'vitest';
+
+describe('contractor login', () => {
+  it('renders', () => {
+    expect(true).toBe(true);
+  });
+});
+<<<CONTENT_END>>>
+<<<FILE_END>>>
 ```
 
-`files` は必ず配列としてください。
+各ファイルは、必ず以下の順序で出力してください。
 
-各要素は必ず以下の2項目を持ってください。
+1. `<<<FILE_START>>>`
+2. `PATH: <プロジェクトルートからの相対パス>`
+3. `<<<CONTENT_START>>>`
+4. ファイルの完全な内容
+5. `<<<CONTENT_END>>>`
+6. `<<<FILE_END>>>`
 
-* `path`
+`PATH:` は必ず1行で記載してください。
 
-  * プロジェクトルートからの相対パス
-  * 実装対象ファイルの保存先を表す
+ファイル内容はJSON文字列へ変換せず、そのままのソースコードとして出力してください。
 
-* `content`
+TypeScript / TSX内の以下の文字は、そのまま出力して構いません。
 
-  * そのファイルの完全な内容
-  * 省略せず、保存可能な完全なソースコードを格納する
+* ダブルクォート `"`
+* シングルクォート `'`
+* バックスラッシュ `\`
+* テンプレートリテラル
+* `${...}`
+* 改行
+* タブ
 
-出力全体は、Pythonの `json.loads()` で解析可能な有効なJSONでなければなりません。
-
-JSON以外の文章、説明、コメント、Markdown、コードブロックは出力してはいけません。
+これらをJSON用にエスケープしてはいけません。
 
 ---
 
-# 16. JSON Encoding Rules
+# 16. FILE Encoding Rules
 
-`content` はJSON文字列として正しくエンコードしてください。
+以下を厳守してください。
 
-特に以下を厳守してください。
+* JSON形式を使用しない
+* JSON配列・JSONオブジェクトでファイルを包まない
+* `content` プロパティを作らない
+* ファイル内容をJSONエスケープしない
+* ファイル内容をMarkdownコードブロックで囲まない
+* 各ファイルは必ず `<<<FILE_START>>>` から開始する
+* 各ファイルは必ず `<<<FILE_END>>>` で終了する
+* `PATH:` は `<<<FILE_START>>>` の直後に置く
+* `<<<CONTENT_START>>>` と `<<<CONTENT_END>>>` の間には、そのファイルの完全な内容だけを書く
+* ソースコード内に専用マーカーを出力しない
 
-* 改行はJSON文字列として正しくエスケープする
-* ダブルクォートはJSON文字列として正しくエスケープする
-* バックスラッシュはJSON文字列として正しくエスケープする
-* タブ等の制御文字はJSONとして有効な形式にする
-* JSON文字列の途中に未エスケープのダブルクォートを含めない
-* JSON全体を壊す文字列を出力しない
-
-TypeScript / TSXコード内に以下のような文字列が存在する場合も、JSONとして有効になるよう適切にエスケープしてください。
-
-例となるTypeScriptコード:
+以下の文字列はファイル内容に含めてはいけません。
 
 ```text
-const message = "ログインしてください";
+<<<FILE_START>>>
+<<<CONTENT_START>>>
+<<<CONTENT_END>>>
+<<<FILE_END>>>
 ```
 
-これは `content` 内ではJSON文字列として有効になるようエスケープしてください。
-
-出力結果そのものにMarkdownコードブロックを付けてはいけません。
+これらはPython側のパーサー専用マーカーです。
 
 ---
 
@@ -296,28 +324,25 @@ const message = "ログインしてください";
 
 以下を厳守してください。
 
-* 出力全体は有効なJSONであること
-* 最上位はJSONオブジェクトであること
-* 最上位オブジェクトは `files` を持つこと
-* `files` は配列であること
-* `files` を省略しないこと
-* 各ファイルは `path` と `content` を持つこと
-* `path` は文字列であること
-* `content` は文字列であること
+* 出力の先頭は `<<<FILE_START>>>` とする
+* 出力の末尾は `<<<FILE_END>>>` とする
+* FILEブロック以外の文章を出力しない
+* 説明文を出力しない
+* Markdownコードブロックを出力しない
+* JSONを出力しない
 * ファイルパスはプロジェクトルートからの相対パスとする
 * 絶対パスは禁止
 * `..` を含むパスは禁止
-* 説明文を出力しない
-* JSONの前後に文章を出力しない
-* Markdownコードブロックを出力しない
-* `FILE:` 形式を使用しない
+* `PATH:` を省略しない
+* 空ファイルを生成しない
 * 実装コードを省略しない
 * `...` でコードを省略しない
 * `TODO` をコード省略の代わりに使用しない
 * 変更対象ファイルは完全な内容を出力する
 * 実装に必要なファイルはすべて出力する
-* 空の `files` 配列を返さない
-* 同一の `path` を重複して出力しない
+* 同一の `PATH:` を重複して出力しない
+* 同じ役割の画面ファイルを複数パスに重複生成しない
+* 同一画面に対して複数の実装案を同時に出力しない
 
 ---
 
@@ -344,6 +369,17 @@ const message = "ログインしてください";
 
 既に存在すると仕様上判断できる共通機能を、理由なく重複実装してはいけません。
 
+同じ機能を実現するための別実装を複数作成してはいけません。
+
+例えば、同じ画面に対して以下のような重複を作成してはいけません。
+
+```text
+app/contractor/home/page.tsx
+app/(contractor)/contractor/home/page.tsx
+```
+
+どちらか1つだけを選択し、システム要件のdirectory_structureおよびconventionsに従ってください。
+
 ---
 
 # 19. Test Implementation
@@ -361,7 +397,115 @@ const message = "ログインしてください";
 
 ただし、対象画面要件に存在しないテストケースを過剰に追加する必要はありません。
 
-テストコードについても、他の生成ファイルと同じく `files` 配列内の1ファイルとして出力してください。
+テストコードは、同じ出力内で生成した実装コードと整合していなければなりません。
+
+特に以下を内部確認してください。
+
+* import先が実際に生成したファイルと一致している
+* Repositoryのinterfaceとmockのメソッド名が一致している
+* async関数の戻り値とmockの戻り値が一致している
+* React componentが利用しているProviderをテスト側でも正しく設定している
+* `vi.mock()` のhoistingで初期化前の変数を参照しない
+* Testing Libraryで同一テキストが複数存在する場合に曖昧な `getByText()` を使用しない
+* 実装に存在しない `data-testid` をテストで参照しない
+* 実装コードと異なるRepositoryやUseCaseをテスト用に新規定義しない
+
+## Test Mock Consistency
+
+テスト用mockは、実装コードが実際に利用する契約と完全に一致させてください。
+
+特に以下を厳守してください。
+
+* Repository / Service / UseCaseのmockには、実装が呼び出すすべてのmethodを定義する
+* method名、引数、戻り値、Promiseか同期値かを実装側interfaceと一致させる
+* 実装が呼び出さない架空のmethodをテスト都合で追加しない
+* mock作成前に、同じ出力内で生成したinterfaceと利用箇所を内部的に照合する
+* テストだけ別のRepository契約を仮定しない
+* `vi.fn()` の戻り値は実装側が期待する型と一致させる
+* async methodには必要に応じて `mockResolvedValue` / `mockRejectedValue` を使用する
+* 同じmock instanceを利用すべき箇所で、renderごとに新しいobjectを生成しない
+
+## React Hook / Mock Stability
+
+React hookのdependencyに含まれる可能性がある値をmockする場合、参照の安定性を維持してください。
+
+特に `useEffect`、`useMemo`、`useCallback` のdependencyとして利用されるobject/functionを、renderごとに新規生成してはいけません。
+
+禁止例:
+
+```text
+const mockPush = vi.fn();
+
+vi.mock('next/navigation', () => ({
+  useRouter() {
+    return {
+      push: mockPush,
+    };
+  },
+}));
+```
+
+上記は `useRouter()` が呼ばれるたびに新しいobjectを返します。
+
+実装側で以下のように `router` をdependencyへ含めた場合、
+
+```text
+const router = useRouter();
+
+useEffect(() => {
+  setSession(...);
+}, [router]);
+```
+
+再renderのたびに `router` の参照が変化し、effect内のstate更新と組み合わさって無限renderやメモリ枯渇を発生させる可能性があります。
+
+推奨例:
+
+```text
+const { mockPush, mockRouter } = vi.hoisted(() => {
+  const mockPush = vi.fn();
+
+  return {
+    mockPush,
+    mockRouter: {
+      push: mockPush,
+    },
+  };
+});
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => mockRouter,
+}));
+```
+
+以下も同じ考え方で参照を安定させてください。
+
+* `useRouter`
+* `useSearchParams`
+* `usePathname`
+* Context value
+* Zustand selectorのmock
+* Repository instance
+* Service instance
+* callback
+* hookが返すobject
+
+ただし、実際の仕様として値の変化をテストする必要がある場合は、テストケース内で明示的に値を変更してください。
+
+## Infinite Loop Prevention
+
+実装コードとテストコードの両方について、出力前に以下を内部確認してください。
+
+* `useEffect` が自分自身のdependencyを毎回更新していない
+* effect内のstate更新によってdependency object/functionが毎render再生成されない
+* hook mockが毎render新しいobject/functionを返していない
+* `setState` → render → effect → `setState` の無限ループが発生しない
+* timerを再帰的・無制限に生成していない
+* mock implementationが自分自身を再帰呼び出ししていない
+* render中に直接state更新を行っていない
+* テスト終了を妨げる未解放timerや永続的な非同期処理を作成していない
+
+テストコードも他のファイルと同じ専用FILE形式で出力してください。
 
 ---
 
@@ -384,21 +528,54 @@ const message = "ログインしてください";
 * 対象画面以外の機能を勝手に実装していない
 * 必要な補完は既存仕様と矛盾していない
 * 必要なテストコードを生成している
-* すべての生成ファイルに `path` と `content` がある
-* ファイル内容を省略していない
+* 実装とテストのinterface / mock / importが一致している
+* Repository / Service / UseCaseのmockが実装側のmethod契約と一致している
+* hook mockがrenderごとに不要な新規object/functionを返していない
+* `useEffect` 等のdependency参照が不安定になっていない
+* state更新とeffectが循環して無限renderを起こさない
+* timer、非同期処理、mock再帰による無限実行がない
+* 同一機能の重複実装がない
 * 同一ファイルパスを重複していない
-* 出力全体が有効なJSONである
-* JSONの前後に説明文が存在しない
-* Markdownコードブロックが存在しない
-* `FILE:` 形式を使用していない
+* すべての生成ファイルに `PATH:` がある
+* すべての生成ファイルに完全な内容がある
+* すべてのFILEブロックが正しく閉じている
+* JSON形式を使用していない
+* JSON用エスケープを行っていない
+* FILEブロック以外の説明文が存在しない
 
-すべて確認した後、以下の構造を持つ有効なJSONのみを出力してください。
+---
 
-{
-"files": [
-{
-"path": "relative/path/to/file.ts",
-"content": "complete file content"
-}
-]
-}
+# 21. Critical Output Constraint
+
+最終出力はPythonプログラムによって機械的に解析されます。
+
+以下の形式以外は使用してはいけません。
+
+```text
+<<<FILE_START>>>
+PATH: relative/path/to/file.ts
+<<<CONTENT_START>>>
+complete file content
+<<<CONTENT_END>>>
+<<<FILE_END>>>
+```
+
+複数ファイルの場合は、このFILEブロックを連続して出力してください。
+
+絶対に以下を行わないでください。
+
+* JSONへ変換する
+* JSON文字列としてコードをエスケープする
+* FILEブロックの前後に説明を書く
+* FILEブロックを途中で終了する
+* マーカーを省略する
+* ソースコード中に専用マーカーを書く
+* 同じPATHを2回以上出力する
+
+出力前に、各FILEブロックが
+
+`FILE_START → PATH → CONTENT_START → content → CONTENT_END → FILE_END`
+
+の順序になっていることを内部確認してください。
+
+確認後、FILEブロックのみを出力してください。
