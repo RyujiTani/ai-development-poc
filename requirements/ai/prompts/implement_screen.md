@@ -284,32 +284,34 @@ EXISTING_APPLICATION:
 
 # 13. Dependency Constraints
 
-既存Applicationまたは実行環境に存在しないnpm packageを勝手に追加してはいけません。
+依存ライブラリは `SYSTEM_REQUIREMENTS_JSON` と既存Applicationの `package.json` を根拠に判断してください。
 
-原則として以下の既存依存関係の範囲で実装してください。
+原則として、仕様または既存Applicationに存在しないnpm packageを勝手に追加してはいけません。
 
-Production:
+既存Applicationの `package.json` に存在する依存関係は、その既存バージョンおよび用途を尊重してください。
 
-- next
-- react
-- react-dom
-- react-hook-form
-- @hookform/resolvers
-- zod
-- zustand
+`SYSTEM_REQUIREMENTS_JSON` に特定ライブラリの利用が明示されている場合、そのライブラリは実装に使用して構いません。
 
-Test / Development:
+特に `idb` については次のルールを厳守してください。
 
-- vitest
-- @testing-library/react
-- @testing-library/jest-dom
-- fake-indexeddb
-- jsdom
-- typescript
+- `SYSTEM_REQUIREMENTS_JSON` に `idb` 利用が明示されている場合、IndexedDBアクセスに `idb` を使用してよい
+- その場合、Applicationの `package.json` に `idb` が存在しなければ、今回の変更ファイルとして `package.json` を完全内容で出力し、依存関係へ追加する
+- `SYSTEM_REQUIREMENTS_JSON` に `idb` が記載されていない場合、実装都合だけで `idb` を追加してはいけない
+- `idb` が仕様で要求されているにもかかわらず、native IndexedDBへ勝手に置き換えて仕様を変更してはいけない
 
-IndexedDB実装のためだけに `idb` 等の追加ライブラリを勝手にimportしてはいけません。
+同じ考え方を他の依存ライブラリにも適用してください。
 
-追加依存が仕様上本当に必要な場合でも、既存package.jsonに存在しないpackageを暗黙に利用してはいけません。
+つまり、仕様上必要な依存関係を禁止してはいけません。一方で、仕様にも既存Applicationにも存在しないライブラリを便利だからという理由だけで追加してはいけません。
+
+依存ライブラリを新規追加する場合は、以下をすべて満たしてください。
+
+1. `SYSTEM_REQUIREMENTS_JSON` に利用根拠が存在する
+2. 既存依存関係だけでは仕様を満たせない、または仕様がそのライブラリを明示している
+3. `package.json` を同時に更新する
+4. 実装コードのimport名と `package.json` のpackage名が一致する
+5. テスト環境でも解決可能な構成にする
+
+依存関係をコードから暗黙に要求してはいけません。
 
 ---
 
@@ -697,7 +699,9 @@ complete source code
 ## Dependencies
 
 - 存在しないnpm packageをimportしていない
-- idb等を勝手に追加していない
+- 依存ライブラリの追加がSYSTEM_REQUIREMENTS_JSONまたは既存package.jsonに基づいている
+- 仕様でidbが要求される場合、package.jsonと実装が整合している
+- 仕様にない依存ライブラリを勝手に追加していない
 
 ## Output
 
