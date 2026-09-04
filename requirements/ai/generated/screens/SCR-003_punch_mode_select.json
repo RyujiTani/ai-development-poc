@@ -1,0 +1,377 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-003_punch_mode_select.md"
+  },
+  "screen": {
+    "id": "SCR-003",
+    "name": "打刻モード選択画面",
+    "user": "外注先管理者",
+    "route": "/(contractor)/punch-mode"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-003-FN-001",
+        "summary": "「出勤（作業開始）」モードを選択できる",
+        "priority": "High",
+        "details": "出勤ボタンを選択することで、打刻モード状態を「出勤」に設定できる。"
+      },
+      {
+        "id": "SCR-003-FN-002",
+        "summary": "「退勤（作業終了）」モードを選択できる",
+        "priority": "High",
+        "details": "退勤ボタンを選択することで、打刻モード状態を「退勤」に設定できる。"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-003-UI-001",
+        "summary": "「出勤」「退勤」の2つの大きな選択ボタンを配置する",
+        "details": "屋外操作を考慮し、スマートフォンやタブレットのタッチパネルでもタップしやすい大きめのボタンUIとして中央領域に並べて配置する。"
+      },
+      {
+        "id": "SCR-003-UI-002",
+        "summary": "レスポンシブWebデザインでPC/スマホ両対応とする",
+        "details": "Tailwind CSSによる実装を前提とし、PC、タブレット、スマートフォンの各画面サイズに対応する。"
+      },
+      {
+        "id": "SCR-003-UI-003",
+        "summary": "現在の日時を画面上部に表示する",
+        "details": "打刻対象日時を確認しやすくするため、画面上部に現在日付・時間を表示する領域を配置する。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-003-VL-001",
+        "summary": "未認証リダイレクト",
+        "details": "未認証状態（sessionStorage内の user_id と role が不足している状態）で本画面へ直接アクセスした場合、ログイン画面（SCR-001）へ強制リダイレクトする。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-003-EV-001",
+        "summary": "「出勤」ボタン押下",
+        "details": "「出勤」ボタン押下時に、打刻モード「出勤」をクライアント状態（Zustand等）に保持した状態で、作業員選択画面（SCR-004）へ遷移する。"
+      },
+      {
+        "id": "SCR-003-EV-002",
+        "summary": "「退勤」ボタン押下",
+        "details": "「退勤」ボタン押下時に、打刻モード「退勤」をクライアント状態（Zustand等）に保持した状態で、作業員選択画面（SCR-004）へ遷移する。"
+      },
+      {
+        "id": "SCR-003-EV-003",
+        "summary": "戻るボタン押下",
+        "details": "戻るボタンが押下された場合、前画面である外注先ホーム画面（SCR-002）に画面遷移する。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-003-DT-001",
+        "summary": "打刻モード状態保持",
+        "details": "選択された打刻モード（出勤=CLOCK_IN、退勤=CLOCK_OUT）を後続の画面（SCR-004、SCR-005）へ引き継ぐため、Zustand等のクライアントサイドステートに保持する。"
+      }
+    ],
+    "api": [],
+    "state": []
+  },
+  "implementation": {
+    "scope": [
+      "SCR-003"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "AC-003-001",
+      "requirement_id": "SCR-003-FN-001",
+      "scenario": "出勤モード選択と遷移の正常動作",
+      "input": "「出勤」ボタンのクリック/タップ",
+      "steps": [
+        "外注先管理者としてシステムにログインする。",
+        "打刻モード選択画面を表示する。",
+        "「出勤」ボタン（大きなタップボタンUI）をクリックする。"
+      ],
+      "expected": [
+        "クライアント側状態の打刻モード（punch_type等）が「CLOCK_IN」に設定されていること。",
+        "作業員選択画面（SCR-004）へ自動で遷移すること。"
+      ]
+    },
+    {
+      "id": "AC-003-002",
+      "requirement_id": "SCR-003-FN-002",
+      "scenario": "退勤モード選択と遷移の正常動作",
+      "input": "「退勤」ボタンのクリック/タップ",
+      "steps": [
+        "外注先管理者としてシステムにログインする。",
+        "打刻モード選択画面を表示する。",
+        "「退勤」ボタン（大きなタップボタンUI）をクリックする。"
+      ],
+      "expected": [
+        "クライアント側状態の打刻モード（punch_type等）が「CLOCK_OUT」に設定されていること。",
+        "作業員選択画面（SCR-004）へ自動で遷移すること。"
+      ]
+    },
+    {
+      "id": "AC-003-003",
+      "requirement_id": "SCR-003-UI-002",
+      "scenario": "レスポンシブ表示検証",
+      "input": "異なるブラウザサイズでのアクセス",
+      "steps": [
+        "PCサイズ（1280px以上）のブラウザ幅で画面を表示する。",
+        "スマホサイズ（375px程度）のブラウザ幅に縮小して画面を表示する。"
+      ],
+      "expected": [
+        "レイアウトに崩れがなく、「出勤」「退勤」ボタンが中央付近でタップしやすい適切な大きさに自動調整されて表示されていること。"
+      ]
+    },
+    {
+      "id": "AC-003-004",
+      "requirement_id": "SCR-003-UI-003",
+      "scenario": "現在日時の表示検証",
+      "input": "画面へのアクセス",
+      "steps": [
+        "打刻モード選択画面にアクセスする。"
+      ],
+      "expected": [
+        "画面上部領域に、現在の日付（例: 2026/04/13等）および時刻が正しく表示されていること。"
+      ]
+    },
+    {
+      "id": "AC-003-005",
+      "requirement_id": "SCR-003-VL-001",
+      "scenario": "未認証状態での直接アクセスの拒否",
+      "input": "未ログイン状態でのURL直アクセス",
+      "steps": [
+        "sessionStorage からログイン情報（user_id、role等）を取り除く。",
+        "打刻モード選択画面のURLに直接ブラウザでアクセスする。"
+      ],
+      "expected": [
+        "打刻モード選択画面のコンテンツが表示されず、自動的にログイン画面（SCR-001）へリダイレクトされること。"
+      ]
+    },
+    {
+      "id": "AC-003-006",
+      "requirement_id": "SCR-003-EV-003",
+      "scenario": "戻るボタン押下時のホーム遷移",
+      "input": "「戻る」ボタンのクリック",
+      "steps": [
+        "打刻モード選択画面にアクセスする。",
+        "画面内の「戻る」ボタンをクリックする。"
+      ],
+      "expected": [
+        "外注先ホーム画面（SCR-002）に正しく遷移すること。"
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "id": "TS-003-001",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-003-FN-001",
+        "SCR-003-UI-001",
+        "SCR-003-EV-001",
+        "SCR-003-DT-001"
+      ],
+      "input": "「出勤」ボタンのクリックイベント",
+      "steps": [
+        "PunchModeSelect コンポーネントをNext.jsのモックルーター、状態管理ストア（Zustandモック）とともにテスト環境でレンダリングする。",
+        "出勤ボタンを選択し、クリックイベントを発生させる。"
+      ],
+      "expected": [
+        "モックストアの打刻モード更新関数が引数 'CLOCK_IN'（またはそれを示す定義値）で呼び出されること。",
+        "ルーターの push メソッドが SCR-004 に相当するパスを対象に呼び出されること。"
+      ]
+    },
+    {
+      "id": "TS-003-002",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-003-FN-002",
+        "SCR-003-UI-001",
+        "SCR-003-EV-002",
+        "SCR-003-DT-001"
+      ],
+      "input": "「退勤」ボタンのクリックイベント",
+      "steps": [
+        "PunchModeSelect コンポーネントをテスト環境でレンダリングする。",
+        "退勤ボタンを選択し、クリックイベントを発生させる。"
+      ],
+      "expected": [
+        "モックストアの打刻モード更新関数が引数 'CLOCK_OUT' で呼び出されること。",
+        "ルーターの push メソッドが SCR-004 に相当するパスを対象に呼び出されること。"
+      ]
+    },
+    {
+      "id": "TS-003-003",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-003-UI-003"
+      ],
+      "input": "コンポーネントマウント",
+      "steps": [
+        "グローバルのシステム日時を特定の日時にモック固定する。",
+        "PunchModeSelect コンポーネントをマウントする。"
+      ],
+      "expected": [
+        "マウントされた DOM 上部の現在日時表示領域に、モック固定した日付文字列が含まれていること。"
+      ]
+    },
+    {
+      "id": "TS-003-004",
+      "type": "integration",
+      "requirement_ids": [
+        "SCR-003-VL-001"
+      ],
+      "input": "未ログイン状態でのコンポーネントレンダリング",
+      "steps": [
+        "sessionStorage を空に設定し、認証状態を「未ログイン」にする。",
+        "PunchModeSelect コンポーネントをマウントする。"
+      ],
+      "expected": [
+        "コンポーネント内でログインチェック処理が走り、router.replace 等で SCR-001（ログイン画面）へのリダイレクトが試行されること。"
+      ]
+    },
+    {
+      "id": "TS-003-005",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-003-EV-003"
+      ],
+      "input": "「戻る」ボタンのクリックイベント",
+      "steps": [
+        "PunchModeSelect コンポーネントをマウントする。",
+        "画面内の「戻る」ボタンを選択し、クリックイベントをシミュレートする。"
+      ],
+      "expected": [
+        "ルーターの push メソッドが SCR-002（外注先ホーム画面）に相当するパスを指定して呼び出されること。"
+      ]
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-001",
+      "target": "現在日時の更新頻度と正確な表示形式",
+      "reason": "「現在の日時を画面上部に表示する」という要件（SCR-003-UI-003）において、ミリ秒、秒、分、どの粒度で時計をリアルタイムに動的更新すべきか、あるいはマウント時の静的表示で足りるのか、フォーマット指定（例：2026年4月13日 00:00:00 等）の明確な要件が記述されていないため。",
+      "sources": {
+        "system_requirements": "特に言及なし",
+        "trace_index": "特に言及なし",
+        "screen_design": "「現在の日時を画面上部に表示する」とのみ記載"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-002",
+      "target": "画面の正確なパス名称",
+      "reason": "システム要件には「app/(contractor)/ - 外注先管理者ルート」と「kebab-case」に準拠することしか定義されておらず、本画面の具体的なURLパス名（例: /contractor/punch-mode や /contractor/punch-select 等）が仕様上確定していないため。",
+      "sources": {
+        "system_requirements": "命名規則で route_segments は kebab-case と規定",
+        "trace_index": "特に言及なし",
+        "screen_design": "depends_on: SCR-002_contractor_home.md とのみ記載"
+      },
+      "resolution": "manual_confirmation"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-003-FN-001",
+      "acceptance_criteria": [
+        "AC-003-001"
+      ],
+      "tests": [
+        "TS-003-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-003-FN-002",
+      "acceptance_criteria": [
+        "AC-003-002"
+      ],
+      "tests": [
+        "TS-003-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-003-UI-001",
+      "acceptance_criteria": [
+        "AC-003-001",
+        "AC-003-002"
+      ],
+      "tests": [
+        "TS-003-001",
+        "TS-003-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-003-UI-002",
+      "acceptance_criteria": [
+        "AC-003-003"
+      ],
+      "tests": []
+    },
+    {
+      "requirement_id": "SCR-003-UI-003",
+      "acceptance_criteria": [
+        "AC-003-004"
+      ],
+      "tests": [
+        "TS-003-003"
+      ]
+    },
+    {
+      "requirement_id": "SCR-003-VL-001",
+      "acceptance_criteria": [
+        "AC-003-005"
+      ],
+      "tests": [
+        "TS-003-004"
+      ]
+    },
+    {
+      "requirement_id": "SCR-003-EV-001",
+      "acceptance_criteria": [
+        "AC-003-001"
+      ],
+      "tests": [
+        "TS-003-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-003-EV-002",
+      "acceptance_criteria": [
+        "AC-003-002"
+      ],
+      "tests": [
+        "TS-003-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-003-EV-003",
+      "acceptance_criteria": [
+        "AC-003-006"
+      ],
+      "tests": [
+        "TS-003-005"
+      ]
+    },
+    {
+      "requirement_id": "SCR-003-DT-001",
+      "acceptance_criteria": [
+        "AC-003-001",
+        "AC-003-002"
+      ],
+      "tests": [
+        "TS-003-001",
+        "TS-003-002"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,452 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-007_worker_list.md"
+  },
+  "screen": {
+    "id": "SCR-007",
+    "name": "作業員一覧画面",
+    "user": "外注先管理者",
+    "route": "/app/(contractor)/workers/page.tsx",
+    "layout_group": "(contractor)"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-007-FN-001",
+        "summary": "自社所属作業員一覧表示",
+        "description": "ログイン中の外注先管理者の所属企業（contractor_id）に紐づく作業員一覧を表示する。表示項目は、氏名、連絡先、資格情報、講習受講履歴。"
+      },
+      {
+        "id": "SCR-007-FN-002",
+        "summary": "新規追加画面遷移導線",
+        "description": "作業員の新規追加画面へ遷移するためのUIを提供する。"
+      },
+      {
+        "id": "SCR-007-FN-003",
+        "summary": "編集画面遷移導線",
+        "description": "各作業員の編集画面へ遷移するためのUIを提供する。"
+      },
+      {
+        "id": "SCR-007-FN-004",
+        "summary": "作業員削除機能",
+        "description": "既存の作業員データを削除する機能を提供する（物理削除か論理削除かは未確定）。"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-007-UI-001",
+        "summary": "リスト形式レイアウト",
+        "description": "作業員データをテーブルまたはリスト形式で表示し、氏名、資格、講習受講履歴などの主要項目を確認しやすく配置する。"
+      },
+      {
+        "id": "SCR-007-UI-002",
+        "summary": "ページネーション/無限スクロール",
+        "description": "データ件数が多い場合に備え、分割読み込みまたはページ切り替えUIを実装する。"
+      },
+      {
+        "id": "SCR-007-UI-003",
+        "summary": "新規追加ボタン上部配置",
+        "description": "「新規追加」ボタンをリストの上部などの目立つ位置に配置する。"
+      },
+      {
+        "id": "SCR-007-UI-004",
+        "summary": "操作ボタン配置",
+        "description": "各作業員の行内に「編集」ボタンと「削除」ボタンを配置する。"
+      },
+      {
+        "id": "SCR-007-UI-005",
+        "summary": "レスポンシブWebデザイン",
+        "description": "PC・スマホ双方で適切なレイアウトとなるようTailwind CSSを利用して構築する。"
+      },
+      {
+        "id": "SCR-007-UI-006",
+        "summary": "スマホ向け大きいタップUI",
+        "description": "スマホ表示時に操作ボタンやリストのタップ可能エリアを拡大する（タップ対象は最小44px）。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-007-VL-001",
+        "summary": "削除確認",
+        "description": "削除ボタンが押下された際、誤操作を防ぐための確認ダイアログを表示する。"
+      },
+      {
+        "id": "SCR-007-VL-002",
+        "summary": "未認証リダイレクト",
+        "description": "セッションが存在しない状態でアクセスされた場合、自動的にログイン画面（SCR-001）へリダイレクトする。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-007-EV-001",
+        "trigger": "「新規追加」ボタン押下",
+        "action": "作業員追加・編集画面（SCR-008）へ新規追加モードで遷移する。"
+      },
+      {
+        "id": "SCR-007-EV-002",
+        "trigger": "作業員行の「編集」ボタン押下",
+        "action": "作業員追加・編集画面（SCR-008）へ編集モード（worker_idを付与）で遷移する。"
+      },
+      {
+        "id": "SCR-007-EV-003",
+        "trigger": "「削除」ボタン押下かつ確認ダイアログOK",
+        "action": "削除API（IndexedDBリポジトリ）を実行し、成功時に一覧を再読み込みする。結果をトースト表示する。"
+      },
+      {
+        "id": "SCR-007-EV-004",
+        "trigger": "「戻る」ボタン押下",
+        "action": "外注先ホーム画面（SCR-002）へ遷移する。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-007-DT-001",
+        "type": "GET",
+        "path": "/api/workers",
+        "description": "ログイン中の外注先管理者の所属企業ID（contractor_id）に紐づく作業員一覧を取得する。IndexedDBのworkersストアからcontractor_idインデックスでクエリする。"
+      },
+      {
+        "id": "SCR-007-DT-002",
+        "type": "DELETE",
+        "path": "/api/workers/{worker_id}",
+        "description": "指定されたworker_idの作業員データを削除する（IndexedDBから削除または論理削除状態の変更）。"
+      }
+    ],
+    "api": [
+      {
+        "id": "API-SCR-007-001",
+        "method": "GET",
+        "endpoint": "/api/workers",
+        "request": {
+          "headers": {
+            "Authorization": "Bearer token (Mock/SessionStorage)"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": "Worker[]"
+        }
+      },
+      {
+        "id": "API-SCR-007-002",
+        "method": "DELETE",
+        "endpoint": "/api/workers/{worker_id}",
+        "request": {
+          "params": {
+            "worker_id": "string (UUID)"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": "{ \"success\": true }"
+        }
+      }
+    ],
+    "state": [
+      {
+        "id": "SCR-007-ST-001",
+        "name": "workersList",
+        "type": "Worker[]",
+        "initial": "[]",
+        "description": "現在表示されている作業員データの配列。"
+      },
+      {
+        "id": "SCR-007-ST-002",
+        "name": "isLoading",
+        "type": "boolean",
+        "initial": "true",
+        "description": "データロード中の表示制御用フラグ。"
+      },
+      {
+        "id": "SCR-007-ST-003",
+        "name": "deleteConfirmWorkerId",
+        "type": "string | null",
+        "initial": "null",
+        "description": "現在削除確認ダイアログが表示されている作業員のID。nullの場合は非表示。"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-007"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "ACC-SCR-007-001",
+      "requirement_ids": [
+        "SCR-007-FN-001",
+        "SCR-007-DT-001",
+        "SCR-007-UI-001"
+      ],
+      "input": "ログインした状態での画面アクセス",
+      "operation": "作業員一覧画面を開く",
+      "expected": "IndexedDBに登録されているログインユーザーと同一のcontractor_idを持つ作業員のみが表示され、氏名、連絡先、資格、講習受講履歴が正しく表示されていること。"
+    },
+    {
+      "id": "ACC-SCR-007-002",
+      "requirement_ids": [
+        "SCR-007-FN-002",
+        "SCR-007-UI-003",
+        "SCR-007-EV-001"
+      ],
+      "input": "「新規追加」ボタン押下",
+      "operation": "画面上部の「新規追加」ボタンをクリックする",
+      "expected": "作業員追加・編集画面（SCR-008）へ遷移すること。"
+    },
+    {
+      "id": "ACC-SCR-007-003",
+      "requirement_ids": [
+        "SCR-007-FN-003",
+        "SCR-007-UI-004",
+        "SCR-007-EV-002"
+      ],
+      "input": "「編集」ボタン押下",
+      "operation": "特定の作業員行にある「編集」ボタンをクリックする",
+      "expected": "該当作業員のworker_idを伴って、作業員追加・編集画面（SCR-008）へ遷移すること。"
+    },
+    {
+      "id": "ACC-SCR-007-004",
+      "requirement_ids": [
+        "SCR-007-FN-004",
+        "SCR-007-VL-001",
+        "SCR-007-EV-003",
+        "SCR-007-DT-002"
+      ],
+      "input": "「削除」ボタン押下および確認",
+      "operation": "作業員行の「削除」ボタンをクリックし、表示された確認ダイアログで「削除する」を選択する",
+      "expected": "削除処理（IndexedDB）が実行され、完了トースト通知が表示され、該当作業員がリストから消失し、再読み込みが行われること。"
+    },
+    {
+      "id": "ACC-SCR-007-005",
+      "requirement_ids": [
+        "SCR-007-UI-002"
+      ],
+      "input": "多数の作業員データの表示",
+      "operation": "一覧をスクロールまたはページネーション操作する",
+      "expected": "大量データがある場合にページネーション、あるいは無限スクロールによって適切に分割表示されること。"
+    },
+    {
+      "id": "ACC-SCR-007-006",
+      "requirement_ids": [
+        "SCR-007-UI-005",
+        "SCR-007-UI-006"
+      ],
+      "input": "スマホ画面幅での表示",
+      "operation": "開発者ツールで画面幅をモバイルサイズに変更する",
+      "expected": "レスポンシブデザインが適用され、表示が崩れず、ボタンがタップしやすい大きさ（44px以上）で表示されること。"
+    },
+    {
+      "id": "ACC-SCR-007-007",
+      "requirement_ids": [
+        "SCR-007-VL-002"
+      ],
+      "input": "未ログイン状態でのアクセス",
+      "operation": "sessionStorageが空の状態で本画面URLに直接アクセスする",
+      "expected": "自動的に外注先ログイン画面（SCR-001）へリダイレクトされること。"
+    },
+    {
+      "id": "ACC-SCR-007-008",
+      "requirement_ids": [
+        "SCR-007-EV-004"
+      ],
+      "input": "「戻る」ボタン押下",
+      "operation": "「戻る」ボタンをクリックする",
+      "expected": "外注先ホーム画面（SCR-002）へ遷移すること。"
+    }
+  ],
+  "tests": [
+    {
+      "id": "TST-SCR-007-001",
+      "type": "unit",
+      "requirement_id": "SCR-007-FN-001",
+      "input": "ログイン中セッション情報 (contractor_id: 'CON-001'), IndexedDB内モックデータ",
+      "steps": [
+        "1. mock SessionStorageに contractor_id: 'CON-001'、role: 'CONTRACTOR_MANAGER' をセットする",
+        "2. render() で作業員一覧画面を表示する",
+        "3. IndexedDBから自社に所属する作業員データがロードされるのを待つ"
+      ],
+      "expected": "contractor_idが'CON-001'に所属する作業員データのみが表示され、他社所属のデータが含まれていないこと。各項目のデータ（氏名、資格等）がレンダリングされていること。"
+    },
+    {
+      "id": "TST-SCR-007-002",
+      "type": "unit",
+      "requirement_id": "SCR-007-VL-002",
+      "input": "未ログイン状態 (SessionStorage: 空)",
+      "steps": [
+        "1. mock SessionStorageをクリアする",
+        "2. render() で作業員一覧画面を表示する"
+      ],
+      "expected": "Next.js の useRouter リダイレクト、またはログイン画面（SCR-001）へのリダイレクト関数が呼ばれていること。"
+    },
+    {
+      "id": "TST-SCR-007-003",
+      "type": "unit",
+      "requirement_id": "SCR-007-EV-001",
+      "input": "「新規追加」ボタンへのクリックイベント",
+      "steps": [
+        "1. 画面表示後、「新規追加」ボタンを特定する",
+        "2. クリックイベントを発生させる"
+      ],
+      "expected": "SCR-008（新規追加モード）のパスに遷移するアクションまたは router.push が呼ばれていること。"
+    },
+    {
+      "id": "TST-SCR-007-004",
+      "type": "unit",
+      "requirement_id": "SCR-007-EV-002",
+      "input": "作業員行の「編集」ボタンへのクリックイベント",
+      "steps": [
+        "1. ロードされた作業員行のうち、任意の1行の「編集」ボタンを特定する",
+        "2. クリックイベントを発生させる"
+      ],
+      "expected": "SCR-008（編集モード / 該当作業員IDを含む）のパスに遷移する router.push が呼ばれていること。"
+    },
+    {
+      "id": "TST-SCR-007-005",
+      "type": "unit",
+      "requirement_id": "SCR-007-EV-003",
+      "input": "作業員行の「削除」ボタン押下、ダイアログ確認OK",
+      "steps": [
+        "1. ロードされた作業員行のうち、任意の1行の「削除」ボタンをクリックする",
+        "2. 確認ダイアログ（モック）が表示されることを検証する",
+        "3. ダイアログの「OK/削除」ボタンをクリックする"
+      ],
+      "expected": "DELETE APIに相当する IndexedDB 削除処理が呼び出され、該当行が一覧から除外され、成功トーストが表示されること。"
+    },
+    {
+      "id": "TST-SCR-007-006",
+      "type": "unit",
+      "requirement_id": "SCR-007-EV-004",
+      "input": "「戻る」ボタンへのクリックイベント",
+      "steps": [
+        "1. 画面内の「戻る」ボタンを特定する",
+        "2. クリックイベントを発生させる"
+      ],
+      "expected": "SCR-002（外注先ホーム画面）のパスに遷移する router.push が呼ばれていること。"
+    },
+    {
+      "id": "TST-SCR-007-007",
+      "type": "unit",
+      "requirement_id": "SCR-007-UI-001",
+      "input": "レスポンシブ・UI表示チェック",
+      "steps": [
+        "1. 画面表示後、全体の構造を確認する"
+      ],
+      "expected": "「新規追加」ボタンが上部に配置され、リストが表示されていること。PC/スマホ表示時、それぞれTailwind CSSによって適切な余白と配置が保持されていること。"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-001",
+      "target": "作業員削除処理の仕様（物理削除か論理削除か）",
+      "reason": "確認事項にて『削除は物理削除か論理削除か未定。データ保持期間（5年）の要件との整合性を確認する必要あり。』と言及されており、現在の要件定義のみではデータベースレベルの実装（物理削除か、statusの変更等の論理削除か）を確定できないため。",
+      "sources": {
+        "system_requirements": "data_model.types.Worker に status: Extract<Status, 'ACTIVE' | 'RETIRED'> が定義されており、退職等による無効化を表現することは可能であるが、削除処理自体の挙動は明記されていない。",
+        "trace_index": "SCR-007-FN-004 の説明に『作業員削除』とあるのみ。",
+        "screen_design": "## 確認事項 「削除は物理削除か論理削除か未定。データ保持期間（5年）の要件との整合性を確認する必要あり。」"
+      },
+      "resolution": "manual_confirmation"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-007-FN-001",
+      "acceptance_id": "ACC-SCR-007-001",
+      "test_id": "TST-SCR-007-001"
+    },
+    {
+      "requirement_id": "SCR-007-FN-002",
+      "acceptance_id": "ACC-SCR-007-002",
+      "test_id": "TST-SCR-007-003"
+    },
+    {
+      "requirement_id": "SCR-007-FN-003",
+      "acceptance_id": "ACC-SCR-007-003",
+      "test_id": "TST-SCR-007-004"
+    },
+    {
+      "requirement_id": "SCR-007-FN-004",
+      "acceptance_id": "ACC-SCR-007-004",
+      "test_id": "TST-SCR-007-005"
+    },
+    {
+      "requirement_id": "SCR-007-UI-001",
+      "acceptance_id": "ACC-SCR-007-001",
+      "test_id": "TST-SCR-007-007"
+    },
+    {
+      "requirement_id": "SCR-007-UI-002",
+      "acceptance_id": "ACC-SCR-007-005",
+      "test_id": "TST-SCR-007-007"
+    },
+    {
+      "requirement_id": "SCR-007-UI-003",
+      "acceptance_id": "ACC-SCR-007-002",
+      "test_id": "TST-SCR-007-007"
+    },
+    {
+      "requirement_id": "SCR-007-UI-004",
+      "acceptance_id": "ACC-SCR-007-003",
+      "test_id": "TST-SCR-007-007"
+    },
+    {
+      "requirement_id": "SCR-007-UI-005",
+      "acceptance_id": "ACC-SCR-007-006",
+      "test_id": "TST-SCR-007-007"
+    },
+    {
+      "requirement_id": "SCR-007-UI-006",
+      "acceptance_id": "ACC-SCR-007-006",
+      "test_id": "TST-SCR-007-007"
+    },
+    {
+      "requirement_id": "SCR-007-VL-001",
+      "acceptance_id": "ACC-SCR-007-004",
+      "test_id": "TST-SCR-007-005"
+    },
+    {
+      "requirement_id": "SCR-007-VL-002",
+      "acceptance_id": "ACC-SCR-007-007",
+      "test_id": "TST-SCR-007-002"
+    },
+    {
+      "requirement_id": "SCR-007-EV-001",
+      "acceptance_id": "ACC-SCR-007-002",
+      "test_id": "TST-SCR-007-003"
+    },
+    {
+      "requirement_id": "SCR-007-EV-002",
+      "acceptance_id": "ACC-SCR-007-003",
+      "test_id": "TST-SCR-007-004"
+    },
+    {
+      "requirement_id": "SCR-007-EV-003",
+      "acceptance_id": "ACC-SCR-007-004",
+      "test_id": "TST-SCR-007-005"
+    },
+    {
+      "requirement_id": "SCR-007-EV-004",
+      "acceptance_id": "ACC-SCR-007-008",
+      "test_id": "TST-SCR-007-006"
+    },
+    {
+      "requirement_id": "SCR-007-DT-001",
+      "acceptance_id": "ACC-SCR-007-001",
+      "test_id": "TST-SCR-007-001"
+    },
+    {
+      "requirement_id": "SCR-007-DT-002",
+      "acceptance_id": "ACC-SCR-007-004",
+      "test_id": "TST-SCR-007-005"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "screen": "SCR-013_labor_time_summary",
+  "status": "TEST_TIMEOUT",
+  "passed": false,
+  "exit_code": null,
+  "timeout_seconds": 180,
+  "stdout": "\n\u001b[1m\u001b[7m\u001b[36m RUN \u001b[39m\u001b[27m\u001b[22m \u001b[36mv2.1.9 \u001b[39m\u001b[90m/tmp/SCR-013_labor_time_summary-uPgBmS\u001b[39m\n\n",
+  "stderr": "\u001b[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.\u001b[39m\n\nVitest process exceeded 180 seconds and was terminated."
+}

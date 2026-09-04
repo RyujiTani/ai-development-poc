@@ -1,0 +1,423 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-008_worker_add_edit.md"
+  },
+  "screen": {
+    "id": "SCR-008",
+    "name": "作業員追加・編集画面",
+    "user": "外注先管理者",
+    "path": "/app/(contractor)/workers/new または /app/(contractor)/workers/[worker_id]/edit",
+    "description": "外注先管理者が作業員の情報（氏名、連絡先、資格の有無、講習受講履歴など）を新規登録または編集する画面。新規追加モードと編集モードの2つの表示モードを持つ。"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-008-FN-001",
+        "summary": "作業員の氏名入力・登録",
+        "description": "新規登録または編集時、作業員の氏名（name）を入力し、データベースに保存できる。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-008-FN-002",
+        "summary": "作業員の連絡先入力・登録",
+        "description": "新規登録または編集時、作業員の連絡先（contact）を入力し、データベースに保存できる。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-008-FN-003",
+        "summary": "作業員の資格有無入力・登録",
+        "description": "作業員が保有する資格コード（qualifications）を選択・入力し、データベースに保存できる。資格情報は配列形式で保持する。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-008-FN-004",
+        "summary": "作業員の講習受講履歴入力・登録",
+        "description": "作業員の講習受講履歴（trainings: 講習コードと受講日）を入力・追加し、データベースに保存できる。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-008-FN-005",
+        "summary": "編集モード時の既存情報ロード・更新",
+        "description": "編集モード時、指定された worker_id に基づき、既存の作業員情報をフォームの初期値として取得・表示し、変更内容を更新保存できる。",
+        "priority": "High"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-008-UI-001",
+        "summary": "フォームの縦並び配置",
+        "description": "スマートフォンでの片手入力を考慮し、フォームの入力項目（氏名、連絡先、資格、講習履歴）を垂直方向に並べて配置する。"
+      },
+      {
+        "id": "SCR-008-UI-002",
+        "summary": "「保存」および「キャンセル」ボタン配置",
+        "description": "画面下部または適切な位置に、送信を実行する「保存」ボタンと、入力を破棄して遷移する「キャンセル」ボタンを分かりやすく配置する。"
+      },
+      {
+        "id": "SCR-008-UI-003",
+        "summary": "レスポンシブWebデザイン",
+        "description": "Tailwind CSSを使用し、PC、タブレット、スマートフォンの各画面サイズに最適化したレスポンシブ表示を行う。"
+      },
+      {
+        "id": "SCR-008-UI-004",
+        "summary": "スマホ向け大きいタップUI",
+        "description": "屋外での操作や手袋をした状態での操作を考慮し、スマートフォンの表示幅では入力フィールド、チェックボックス、ボタンの高さおよびタップ領域を通常より大きく（最小44x44px以上）確保する。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-008-VL-001",
+        "summary": "氏名の必須入力バリデーション",
+        "description": "氏名が入力されていない、または空文字の場合に「氏名は必須入力です」等のエラーメッセージを表示し、送信をブロックする。"
+      },
+      {
+        "id": "SCR-008-VL-002",
+        "summary": "連絡先の必須・形式バリデーション",
+        "description": "連絡先（contact）が未入力の場合にエラーメッセージを表示して送信をブロックする。また、入力値が適切な形式であることを簡易的にバリデーションする（[ASSUMPTION] 電話番号またはメールアドレスなどの基本フォーマットを想定）。"
+      },
+      {
+        "id": "SCR-008-VL-003",
+        "summary": "未認証リダイレクト",
+        "description": "ログインセッションが存在しない（未認証）状態で本画面のURLに直接アクセスした場合、自動的にログイン画面（SCR-001）へリダイレクトする。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-008-EV-001",
+        "summary": "「保存」ボタン押下（新規追加モード）",
+        "description": "新規追加モードにおいて、「保存」ボタンが押下され、バリデーションが全て成功した際、作業員を新規登録（POST）し、トースト通知で成功メッセージを表示したのち、作業員一覧画面（SCR-007）へ自動遷移する。"
+      },
+      {
+        "id": "SCR-008-EV-002",
+        "summary": "「保存」ボタン押下（編集モード）",
+        "description": "編集モードにおいて、「保存」ボタンが押下され、バリデーションが全て成功した際、既存作業員情報を更新（PUT）し、トースト通知で成功メッセージを表示したのち、作業員一覧画面（SCR-007）へ自動遷移する。"
+      },
+      {
+        "id": "SCR-008-EV-003",
+        "summary": "「キャンセル」ボタン押下",
+        "description": "「キャンセル」ボタンが押下された際、変更内容を保存せずに破棄し、直接作業員一覧画面（SCR-007）へ遷移する。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-008-DT-001",
+        "summary": "既存作業員情報の取得API呼出",
+        "description": "編集モード遷移時に、パスパラメータの worker_id を用いて `GET /api/workers/{worker_id}` を実行し、マスタデータを取得する。"
+      },
+      {
+        "id": "SCR-008-DT-002",
+        "summary": "新規作業員の登録API呼出",
+        "description": "新規登録時、フォーム値にログイン中ユーザーの `contractor_id` を自動付与した上で、`POST /api/workers` を実行し、IndexedDB（workersストア）へ保存する。"
+      },
+      {
+        "id": "SCR-008-DT-003",
+        "summary": "既存作業員の更新API呼出",
+        "description": "編集保存時、`PUT /api/workers/{worker_id}` を実行し、IndexedDB（workersストア）の対象レコードを更新する。"
+      }
+    ],
+    "api": [
+      {
+        "method": "GET",
+        "path": "/api/workers/{worker_id}",
+        "description": "編集モード時に既存の作業員情報を取得するAPI（IndexedDB worker_id キーの検索モック）"
+      },
+      {
+        "method": "POST",
+        "path": "/api/workers",
+        "description": "新規作業員を登録するAPI（IndexedDB への insert モック）。ペイロード: { contractor_id, name, contact, qualifications[], trainings[] }"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/workers/{worker_id}",
+        "description": "既存の作業員情報を更新するAPI（IndexedDB への update モック）。ペイロード: { name, contact, qualifications[], trainings[], status }"
+      }
+    ],
+    "state": [
+      {
+        "name": "mode",
+        "type": "string",
+        "description": "画面の表示モード。'new' (新規登録) または 'edit' (編集) のいずれか。"
+      },
+      {
+        "name": "isLoading",
+        "type": "boolean",
+        "description": "編集モード時、API（GET）から既存情報を取得するまでの読み込み中状態（ローディングスピナー等の表示に使用）。"
+      },
+      {
+        "name": "isSubmitting",
+        "type": "boolean",
+        "description": "保存ボタン押下後、IndexedDB への書き込み処理が完了するまでの送信中状態（二重送信防止用）。"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-008"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "AC-SCR-008-001",
+      "requirement_id": "SCR-008-FN-001",
+      "scenario": "新規追加モードで有効な氏名を入力して保存できること",
+      "steps": "1. ログイン済みの状態で作業員追加画面（新規）を開く。\n2. 「氏名」入力欄に 'テスト作業員A' と入力する。\n3. 「保存」ボタンをクリックする。\n4. データが保存され、一覧画面（SCR-007）へ遷移することを確認する。"
+    },
+    {
+      "id": "AC-SCR-008-002",
+      "requirement_id": "SCR-008-FN-002",
+      "scenario": "新規追加モードで有効な連絡先を入力して保存できること",
+      "steps": "1. ログイン済みの状態で作業員追加画面を開く。\n2. 「連絡先」入力欄に '090-1234-5678' と入力する。\n3. 必須となる氏名とともに入力し、「保存」ボタンをクリックする。\n4. 正しく保存されて一覧画面へ戻ることを確認する。"
+    },
+    {
+      "id": "AC-SCR-008-003",
+      "requirement_id": "SCR-008-FN-003",
+      "scenario": "資格の複数選択および保存ができること",
+      "steps": "1. 新規追加画面で「資格情報」セクションを確認する。\n2. チェックボックスやプルダウンから複数の資格コード（例: 'Q01', 'Q02'）を選択状態にする。\n3. 保存を実行し、保存された作業員レコードの `qualifications` フィールドに選択したコード配列が含まれることを確認する。"
+    },
+    {
+      "id": "AC-SCR-008-004",
+      "requirement_id": "SCR-008-FN-004",
+      "scenario": "講習受講履歴の入力・追加および保存ができること",
+      "steps": "1. 新規追加画面で「講習受講履歴」セクションを確認する。\n2. 講習コードと受講日（例: 'T01', '2026-04-01'）を入力し、追加ボタンを押下する。\n3. 画面上に受講履歴が追加表示されることを確認する。\n4. 保存を実行し、保存されたレコードの `trainings` 配列に該当データが含まれることを確認する。"
+    },
+    {
+      "id": "AC-SCR-008-005",
+      "requirement_id": "SCR-008-FN-005",
+      "scenario": "編集モードで既存データが初期表示され、更新保存できること",
+      "steps": "1. 既存の作業員（worker_id: 'w-001'、氏名: '既存太郎'）の編集画面を開く。\n2. 画面読み込み後、フォームの氏名欄に '既存太郎'、連絡先欄に既存情報が初期表示されていることを確認する。\n3. 氏名を '更新太郎' に書き換えて「保存」をクリックする。\n4. データベース上のレコードが更新され、一覧へ戻ることを確認する。"
+    },
+    {
+      "id": "AC-SCR-008-006",
+      "requirement_id": "SCR-008-UI-001",
+      "scenario": "モバイル表示における入力項目の縦並び配置の確認",
+      "steps": "1. ブラウザの開発者ツールで表示幅をスマートフォンサイズ（375px）に変更する。\n2. 氏名、連絡先、資格、講習履歴、保存・キャンセルボタンが水平に並ぶことなく、垂直一列に配置されていることを確認する。"
+    },
+    {
+      "id": "AC-SCR-008-007",
+      "requirement_id": "SCR-008-UI-004",
+      "scenario": "モバイル表示時にタップ領域が拡大されていることの確認",
+      "steps": "1. スマートフォンサイズ（375px）において、入力フィールド、チェックボックス、および「保存」「キャンセル」ボタンの高さが44px以上確保されていることを確認する。"
+    },
+    {
+      "id": "AC-SCR-008-008",
+      "requirement_id": "SCR-008-VL-001",
+      "scenario": "氏名未入力時のバリデーションエラーの確認",
+      "steps": "1. 氏名入力欄を空にした状態で「保存」をクリックする。\n2. 送信が実行されず、氏名入力欄の下に「氏名は必須入力です」等のエラーメッセージが表示されることを確認する。"
+    },
+    {
+      "id": "AC-SCR-008-009",
+      "requirement_id": "SCR-008-VL-002",
+      "scenario": "連絡先未入力時のバリデーションエラーの確認",
+      "steps": "1. 連絡先入力欄を空にした状態で「保存」をクリックする。\n2. 送信が実行されず、連絡先入力欄の下に必須エラーメッセージが表示されることを確認する。"
+    },
+    {
+      "id": "AC-SCR-008-010",
+      "requirement_id": "SCR-008-VL-003",
+      "scenario": "未認証状態でアクセスした際のリダイレクト確認",
+      "steps": "1. ログアウトした状態（セッションクリア）で、直接 '/workers/new' URLにブラウザからアクセスする。\n2. 画面が一瞬読み込まれるか、または直接ログイン画面（SCR-001）へリダイレクトされることを確認する。"
+    },
+    {
+      "id": "AC-SCR-008-011",
+      "requirement_id": "SCR-008-EV-003",
+      "scenario": "キャンセルボタン押下による遷移確認",
+      "steps": "1. フォームに適当なデータを入力する。\n2. 「キャンセル」ボタンをクリックする。\n3. データの保存処理は走らず、そのまま作業員一覧画面（SCR-007）へ遷移することを確認する。"
+    }
+  ],
+  "tests": [
+    {
+      "id": "TS-SCR-008-001",
+      "type": "unit",
+      "requirement_id": "SCR-008-VL-001",
+      "input": "氏名 = '' (空文字)",
+      "steps": [
+        "1. 新規追加モードで画面をレンダーする。",
+        "2. 氏名入力欄を空欄のまま、連絡先等に必要な情報を入力する。",
+        "3. 保存ボタンをトリガーする（フォームを送信）。"
+      ],
+      "expected": "送信が処理されず、画面に氏名の必須入力エラーメッセージ（Zod等によるバリデーションメッセージ）が表示されること。"
+    },
+    {
+      "id": "TS-SCR-008-002",
+      "type": "unit",
+      "requirement_id": "SCR-008-VL-002",
+      "input": "連絡先 = '' (空文字)",
+      "steps": [
+        "1. 新規追加モードで画面をレンダーする。",
+        "2. 氏名を入力し、連絡先入力欄を空欄にする。",
+        "3. 保存ボタンをトリガーする。"
+      ],
+      "expected": "送信がブロックされ、連絡先の必須入力エラーメッセージが表示されること。"
+    },
+    {
+      "id": "TS-SCR-008-003",
+      "type": "unit",
+      "requirement_id": "SCR-008-FN-005",
+      "input": "worker_id = 'w-123'",
+      "steps": [
+        "1. `GET /api/workers/w-123` をシミュレート（モックリポジトリから対応データを返却）。",
+        "2. 編集モードで worker_id = 'w-123' として画面をレンダーする。",
+        "3. データの読み込み完了（isLoading = false）を待つ。"
+      ],
+      "expected": "取得した作業員の氏名、連絡先、資格、講習受講履歴がそれぞれのフォーム要素に正しく初期値としてセットされていること。"
+    },
+    {
+      "id": "TS-SCR-008-004",
+      "type": "e2e",
+      "requirement_id": "SCR-008-EV-001",
+      "input": "氏名 = '新規作業員', 連絡先 = '090-0000-0000', 資格 = ['Q01'], 講習 = []",
+      "steps": [
+        "1. ログイン後、作業員追加画面を開く。",
+        "2. 氏名、連絡先を入力し、資格 'Q01' を選択する。",
+        "3. 「保存」ボタンをクリックする。"
+      ],
+      "expected": "API（POST /api/workers）が一度だけ呼ばれ、成功トーストが表示された後に '/workers' (SCR-007) に遷移すること。"
+    },
+    {
+      "id": "TS-SCR-008-005",
+      "type": "e2e",
+      "requirement_id": "SCR-008-EV-003",
+      "input": "特になし",
+      "steps": [
+        "1. 作業員追加画面を開く。",
+        "2. フォームに何かしらを入力する。",
+        "3. 「キャンセル」ボタンをクリックする。"
+      ],
+      "expected": "IndexedDBにレコードが追加されることなく、作業員一覧画面へ戻ること。"
+    },
+    {
+      "id": "TS-SCR-008-006",
+      "type": "e2e",
+      "requirement_id": "SCR-008-VL-003",
+      "input": "セッションなし",
+      "steps": [
+        "1. ログアウト状態で '/app/workers/new' に直接ナビゲートする。"
+      ],
+      "expected": "画面が表示されず、自動的にログイン画面 '/login' (SCR-001) にリダイレクトされること。"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-001",
+      "target": "資格・講習受講履歴の入力形式",
+      "reason": "具体的な入力UI形式（マスタから選択するプルダウン、チェックボックスリスト、もしくは自由記述など）や、一度に複数件登録する場合の詳細仕様が画面設計で確定していない。",
+      "sources": {
+        "system_requirements": "qualificationsは資格コード配列 string[]、trainingsは受講履歴オブジェクトの配列。具体的なUI表示形式の定義はなし。",
+        "trace_index": "なし",
+        "screen_design": "「資格・講習受講履歴の具体的な入力形式（自由記述 / マスタからの選択 / 複数件登録可否）が未定」との確認事項あり。"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-002",
+      "target": "連絡先の入力バリデーション規則",
+      "reason": "「連絡先」という項目の具体的な属性（電話番号なのか、メールアドレスなのか、双方を許容する文字列なのか、桁数制限等）が未確定である。",
+      "sources": {
+        "system_requirements": "Worker型の定義で contact?: string となっているのみ。",
+        "trace_index": "なし",
+        "screen_design": "「連絡先の具体的な項目（電話番号、メールアドレス等）が未定」との確認事項あり。"
+      },
+      "resolution": "manual_confirmation"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-008-FN-001",
+      "acceptance_id": "AC-SCR-008-001",
+      "test_id": "TS-SCR-008-004"
+    },
+    {
+      "requirement_id": "SCR-008-FN-002",
+      "acceptance_id": "AC-SCR-008-002",
+      "test_id": "TS-SCR-008-004"
+    },
+    {
+      "requirement_id": "SCR-008-FN-003",
+      "acceptance_id": "AC-SCR-008-003",
+      "test_id": "TS-SCR-008-004"
+    },
+    {
+      "requirement_id": "SCR-008-FN-004",
+      "acceptance_id": "AC-SCR-008-004",
+      "test_id": "TS-SCR-008-004"
+    },
+    {
+      "requirement_id": "SCR-008-FN-005",
+      "acceptance_id": "AC-SCR-008-005",
+      "test_id": "TS-SCR-008-003"
+    },
+    {
+      "requirement_id": "SCR-008-UI-001",
+      "acceptance_id": "AC-SCR-008-006",
+      "test_id": null
+    },
+    {
+      "requirement_id": "SCR-008-UI-002",
+      "acceptance_id": "AC-SCR-008-011",
+      "test_id": "TS-SCR-008-005"
+    },
+    {
+      "requirement_id": "SCR-008-UI-003",
+      "acceptance_id": "AC-SCR-008-006",
+      "test_id": null
+    },
+    {
+      "requirement_id": "SCR-008-UI-004",
+      "acceptance_id": "AC-SCR-008-007",
+      "test_id": null
+    },
+    {
+      "requirement_id": "SCR-008-VL-001",
+      "acceptance_id": "AC-SCR-008-008",
+      "test_id": "TS-SCR-008-001"
+    },
+    {
+      "requirement_id": "SCR-008-VL-002",
+      "acceptance_id": "AC-SCR-008-009",
+      "test_id": "TS-SCR-008-002"
+    },
+    {
+      "requirement_id": "SCR-008-VL-003",
+      "acceptance_id": "AC-SCR-008-010",
+      "test_id": "TS-SCR-008-006"
+    },
+    {
+      "requirement_id": "SCR-008-EV-001",
+      "acceptance_id": "AC-SCR-008-001",
+      "test_id": "TS-SCR-008-004"
+    },
+    {
+      "requirement_id": "SCR-008-EV-002",
+      "acceptance_id": "AC-SCR-008-005",
+      "test_id": "TS-SCR-008-003"
+    },
+    {
+      "requirement_id": "SCR-008-EV-003",
+      "acceptance_id": "AC-SCR-008-011",
+      "test_id": "TS-SCR-008-005"
+    },
+    {
+      "requirement_id": "SCR-008-DT-001",
+      "acceptance_id": "AC-SCR-008-005",
+      "test_id": "TS-SCR-008-003"
+    },
+    {
+      "requirement_id": "SCR-008-DT-002",
+      "acceptance_id": "AC-SCR-008-001",
+      "test_id": "TS-SCR-008-004"
+    },
+    {
+      "requirement_id": "SCR-008-DT-003",
+      "acceptance_id": "AC-SCR-008-005",
+      "test_id": "TS-SCR-008-003"
+    }
+  ]
+}
