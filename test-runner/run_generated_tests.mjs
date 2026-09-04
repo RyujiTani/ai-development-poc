@@ -2,8 +2,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
-const repoRoot = path.resolve(process.cwd(), '..');
+const scriptFile = fileURLToPath(import.meta.url);
+const runnerRoot = path.dirname(scriptFile);
+const repoRoot = path.resolve(runnerRoot, '..');
 
 const applicationRoot = path.join(
   repoRoot,
@@ -29,10 +32,22 @@ const resultsRoot = path.join(
   'test-results'
 );
 
-const runnerRoot = process.cwd();
-
 const SCREEN_TEST_TIMEOUT_MS = 180_000;
 const SCREEN_TEST_TIMEOUT_SECONDS = SCREEN_TEST_TIMEOUT_MS / 1000;
+
+const args = process.argv.slice(2);
+
+function getArgValue(name) {
+  const index = args.indexOf(name);
+
+  if (index === -1) {
+    return null;
+  }
+
+  return args[index + 1] ?? null;
+}
+
+const throughScreen = getArgValue('--through');
 
 function copyDir(source, destination) {
   fs.mkdirSync(destination, { recursive: true });
@@ -97,6 +112,18 @@ if (screenIds.length === 0) {
   process.exit(2);
 }
 
+if (throughScreen) {
+  const throughIndex = screenIds.indexOf(throughScreen);
+
+  if (throughIndex === -1) {
+    console.error(`Unknown --through screen: ${throughScreen}`);
+    console.error(`Known screens: ${screenIds.join(', ')}`);
+    process.exit(2);
+  }
+
+  screenIds = screenIds.slice(0, throughIndex + 1);
+}
+
 try {
   fs.rmSync(resultsRoot, { recursive: true, force: true });
   fs.mkdirSync(resultsRoot, { recursive: true });
@@ -106,8 +133,11 @@ try {
   process.exit(2);
 }
 
-console.log(`Found ${screenIds.length} generated screen requirement(s).`);
+console.log(`Found ${screenIds.length} screen(s) to test.`);
 console.log(`Integrated application: ${applicationRoot}`);
+if (throughScreen) {
+  console.log(`Regression range: first screen through ${throughScreen}`);
+}
 
 const summary = [];
 let testFailed = 0;

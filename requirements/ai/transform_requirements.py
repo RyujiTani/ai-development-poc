@@ -3,6 +3,7 @@ import argparse
 import json
 import re
 import shutil
+import subprocess
 from typing import Any, Dict, List, Optional, Tuple
 
 
@@ -986,6 +987,106 @@ def serialize_existing_application(
     return "\n\n".join(blocks)
 
 
+def run_post_implementation_check(
+    screen_id: str,
+) -> None:
+    """
+    1画面をApplicationへ反映した直後に、
+    Application全体の静的検証と、現在までに生成済みの
+    全画面テストを実行する。
+
+    目的:
+        - 存在しないimportやTypeScriptエラーを早期検知する
+        - 後続画面追加による既存画面の回帰を、その場で検知する
+        - どの画面追加時点でApplicationが壊れたかを特定しやすくする
+
+    注意:
+        この処理はGitHub Actions上でNode.jsと
+        test-runner/node_modulesが準備済みであることを前提とする。
+    """
+
+    static_validator = (
+        PROJECT_ROOT
+        / "test-runner"
+        / "validate_generated_application.mjs"
+    )
+
+    test_runner = (
+        PROJECT_ROOT
+        / "test-runner"
+        / "run_generated_tests.mjs"
+    )
+
+    validate_required_files(
+        [
+            static_validator,
+            test_runner,
+        ]
+    )
+
+    print()
+    print("=" * 60)
+    print(f"Post implementation check: {screen_id}")
+    print("=" * 60)
+
+    print("Running static validation...")
+
+    static_result = subprocess.run(
+        [
+            "node",
+            str(static_validator),
+        ],
+        cwd=PROJECT_ROOT,
+        text=True,
+        check=False,
+    )
+
+    if static_result.returncode != 0:
+        raise RuntimeError(
+            "Static validation failed immediately after "
+            f"implementing {screen_id}. "
+            "The generated application was not allowed to "
+            "proceed to the next screen."
+        )
+
+    print("Static validation passed.")
+    print()
+    print(
+        "Running regression tests through "
+        f"{screen_id}..."
+    )
+
+    test_result = subprocess.run(
+        [
+            "node",
+            str(test_runner),
+            "--through",
+            screen_id,
+        ],
+        cwd=PROJECT_ROOT,
+        text=True,
+        check=False,
+    )
+
+    if test_result.returncode == 2:
+        raise RuntimeError(
+            "Test infrastructure failed immediately after "
+            f"implementing {screen_id}."
+        )
+
+    if test_result.returncode != 0:
+        raise RuntimeError(
+            "Regression test failed immediately after "
+            f"implementing {screen_id}. "
+            "The generated application was not allowed to "
+            "proceed to the next screen."
+        )
+
+    print(
+        f"Post implementation check passed: {screen_id}"
+    )
+
+
 def implement_screen(
     vertex_client,
     screen: str,
@@ -1174,6 +1275,10 @@ def implement_all_screens(
 
         implement_screen(
             vertex_client,
+            screen_id,
+        )
+
+        run_post_implementation_check(
             screen_id,
         )
 

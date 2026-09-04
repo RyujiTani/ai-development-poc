@@ -50,6 +50,22 @@ jobs:
 
 
       # ======================================================
+      # 2.5 Node / Vitest for post-generation validation
+      # ======================================================
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+
+      - name: Install test runner dependencies
+        working-directory: test-runner
+        run: |
+          npm install --no-audit --no-fund
+
+
+      # ======================================================
       # 3. Authenticate to GCP
       # ======================================================
 
