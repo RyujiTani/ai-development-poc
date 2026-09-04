@@ -1,0 +1,8 @@
+{
+  "screen": "SCR-013_labor_time_summary",
+  "status": "PASSED",
+  "passed": true,
+  "exit_code": 0,
+  "stdout": "\n\u001b[1m\u001b[7m\u001b[36m RUN \u001b[39m\u001b[27m\u001b[22m \u001b[36mv2.1.9 \u001b[39m\u001b[90m/tmp/SCR-013_labor_time_summary-LVRI1i\u001b[39m\n\n \u001b[32m✓\u001b[39m tests/laborTimeSummary.test.tsx\u001b[2m > \u001b[22mLaborTimeSummaryPage\u001b[2m > \u001b[22m非ログイン状態でアクセスしたときにログイン画面へリダイレクトすること\n \u001b[32m✓\u001b[39m tests/laborTimeSummary.test.tsx\u001b[2m > \u001b[22mLaborTimeSummaryPage\u001b[2m > \u001b[22mFACTORY_ADMINロールでログイン済みのとき、正しく労働時間集計画面が描画されること\n \u001b[32m✓\u001b[39m tests/laborTimeSummary.test.tsx\u001b[2m > \u001b[22mLaborTimeSummaryPage\u001b[2m > \u001b[22m開始日・終了日を未入力の状態で集計を押下した際、バリデーションエラーが表示されること\n \u001b[32m✓\u001b[39m tests/laborTimeSummary.test.tsx\u001b[2m > \u001b[22mLaborTimeSummaryPage\u001b[2m > \u001b[22m終了日が開始日より過去の日付に設定された場合、バリデーションエラーが表示されること\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m4 passed\u001b[39m\u001b[22m\u001b[90m (4)\u001b[39m\n\u001b[2m   Start at \u001b[22m 00:40:15\n\u001b[2m   Duration \u001b[22m 1.24s\u001b[2m (transform 204ms, setup 137ms, collect 264ms, tests 136ms, environment 449ms, prepare 84ms)\u001b[22m\n\n",
+  "stderr": "\u001b[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.\u001b[39m\n"
+}

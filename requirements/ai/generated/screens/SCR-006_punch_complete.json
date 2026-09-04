@@ -1,0 +1,263 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-006_punch_complete.md"
+  },
+  "screen": {
+    "id": "SCR-006",
+    "name": "打刻完了画面",
+    "user": "外注先管理者",
+    "route": "app/(contractor)/punch-complete/page.tsx",
+    "description": "打刻データの送信が正常に完了したことを外注先管理者に通知する画面。送信完了メッセージを表示し、ホーム画面に戻る導線を提供する。"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-006-FN-001",
+        "summary": "打刻送信完了メッセージを表示する",
+        "priority": "High",
+        "details": "打刻が正常に送信されたことを知らせる完了メッセージを画面に表示する。"
+      },
+      {
+        "id": "SCR-006-FN-002",
+        "summary": "ホーム画面へ戻るボタンを提供する",
+        "priority": "High",
+        "details": "外注先ホーム画面（SCR-002）へ容易に戻ることができるナビゲーション用のボタンを配置する。"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-006-UI-001",
+        "summary": "送信完了メッセージを画面中央に大きく表示する",
+        "details": "屋外作業やスマートフォンの小さな画面でも、成功したことが一目でわかるように中央に大きく配置する。"
+      },
+      {
+        "id": "SCR-006-UI-002",
+        "summary": "「ホームへ戻る」ボタンを大きくタップしやすいサイズで配置する",
+        "details": "ボタンサイズを大きくし、屋外での操作性を考慮したタップしやすいマージン・パディングを確保する（Tailwind CSS仕様）。"
+      },
+      {
+        "id": "SCR-006-UI-003",
+        "summary": "レスポンシブWebデザインでPC/スマホ両対応とする",
+        "details": "Tailwind CSSを用いてPC、タブレット、スマホのすべての端末サイズで崩れずに表示する。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-006-VL-001",
+        "summary": "未認証リダイレクト",
+        "details": "未認証状態でアクセスした場合はログイン画面（SCR-001）へリダイレクトする。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-006-EV-001",
+        "summary": "「ホームへ戻る」ボタン押下",
+        "details": "「ホームへ戻る」ボタンをクリックまたはタップした際、外注先ホーム画面（SCR-002）へ遷移する。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-006-DT-001",
+        "summary": "前画面（SCR-005）からの送信成功情報の引き継ぎ表示",
+        "details": "前画面（SCR-005）から送信成功レスポンスの情報（打刻モード、対象人数等）を受け取り表示する。"
+      }
+    ],
+    "api": [],
+    "state": [
+      {
+        "id": "SCR-006-ST-001",
+        "summary": "完了データ状態の保持",
+        "details": "引き継がれた打刻完了情報の状態（打刻モード、対象人数）を保持する。"
+      },
+      {
+        "id": "SCR-006-ST-002",
+        "summary": "認証セッション状態",
+        "details": "sessionStorage の保持するログインユーザー情報を確認する。"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-006"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "AC-006-001",
+      "requirement_id": "SCR-006-FN-001",
+      "input": "打刻送信完了画面を表示",
+      "operation": "前画面（SCR-005）より打刻モード='出勤'、対象人数=3名 のデータを引き継いで表示する",
+      "expected": "画面中央に、送信完了の旨と「出勤」および「3名」という情報が一目でわかるサイズで表示されること。"
+    },
+    {
+      "id": "AC-006-002",
+      "requirement_id": "SCR-006-FN-002",
+      "input": "「ホームへ戻る」ボタンをクリック、またはタップする",
+      "operation": "表示されている「ホームへ戻る」ボタンを押下する",
+      "expected": "外注先ホーム画面（SCR-002）へ即座に遷移すること。ボタン領域はタップしやすいよう十分な大きさが確保されていること（UI要件 SCR-006-UI-002）。"
+    },
+    {
+      "id": "AC-006-003",
+      "requirement_id": "SCR-006-VL-001",
+      "input": "未認証状態で SCR-006 のURLに直接アクセスする",
+      "operation": "sessionStorageがクリアされた状態で画面を開く",
+      "expected": "ログイン画面（SCR-001）へ即座にリダイレクトされること。"
+    },
+    {
+      "id": "AC-006-004",
+      "requirement_id": "SCR-006-UI-003",
+      "input": "様々なデバイス（PC、タブレット、スマホ）で画面を表示する",
+      "operation": "ブラウザの検証ツールで画面幅を変更する",
+      "expected": "レイアウトが崩れず、中央表示やボタンの大きさが適切にレスポンシブ対応されること。"
+    },
+    {
+      "id": "AC-006-005",
+      "requirement_id": "SCR-006-DT-001",
+      "input": "送信成功データがない状態でアクセスする",
+      "operation": "前画面からの情報が全く無い状態で画面を開く",
+      "expected": "エラー表示になるか、または安全なデフォルト表示（例：「打刻が完了しました」のみなど）になること。"
+    }
+  ],
+  "tests": [
+    {
+      "id": "TST-006-001",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-006-FN-001",
+        "SCR-006-UI-001",
+        "SCR-006-DT-001"
+      ],
+      "input": "モック送信データ（打刻モード='CLOCK_IN', 対象人数=2）",
+      "steps": [
+        "テスト環境で前画面からの情報を模擬（ZustandストアまたはURLパラメータ等）に設定する。",
+        "SCR-006コンポーネントをレンダリングする。"
+      ],
+      "expected": "テキスト「打刻の送信が完了しました」と「出勤」および「2名」という情報が画面中央に大きく描画されていることを確認する。"
+    },
+    {
+      "id": "TST-006-002",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-006-FN-002",
+        "SCR-006-UI-002",
+        "SCR-006-EV-001"
+      ],
+      "input": "「ホームへ戻る」ボタンのクリックアクション",
+      "steps": [
+        "SCR-006コンポーネントをレンダリングする。",
+        "「ホームへ戻る」ボタン要素を取得し、クリックイベントをシミュレートする。"
+      ],
+      "expected": "Next.jsのrouter.push が '/contractor/home'（またはSCR-002に対応するルートパス）を引数として呼ばれていることを確認する。"
+    },
+    {
+      "id": "TST-006-003",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-006-VL-001"
+      ],
+      "input": "未認証セッション状態",
+      "steps": [
+        "sessionStorage からログインセッションのモックを削除する。",
+        "SCR-006コンポーネントをレンダリングする、またはサーバーコンポーネントの認証ガードを実行する。"
+      ],
+      "expected": "ログイン画面（/login または SCR-001 に対応するルート）へのリダイレクト処理（router.push または redirect()）が発生することを確認する。"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-001",
+      "target": "前画面（SCR-005）から送信成功レスポンスの情報を受け取る手段",
+      "reason": "画面設計書では「前画面から送信成功レスポンスの情報を受け取り表示する」とあるが、受け渡しの具体的な実装パターン（Zustandストア、React Context、またはURLクエリパラメータ）がシステム要件および画面設計に明記されていない。",
+      "sources": {
+        "system_requirements": "Zustandを状態管理に採用、sessionStorageにログイン状態を保持する記述があるが、画面間データ移動については未記載。",
+        "trace_index": "SCR-006-DT-001: 前画面からの送信成功情報表示",
+        "screen_design": "SCR-006-DT-001: 前画面（SCR-005）から送信成功レスポンスの情報を受け取り表示する [ASSUMPTION]"
+      },
+      "resolution": "manual_confirmation"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-006-FN-001",
+      "acceptance_ids": [
+        "AC-006-001"
+      ],
+      "test_ids": [
+        "TST-006-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-006-FN-002",
+      "acceptance_ids": [
+        "AC-006-002"
+      ],
+      "test_ids": [
+        "TST-006-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-006-UI-001",
+      "acceptance_ids": [
+        "AC-006-001"
+      ],
+      "test_ids": [
+        "TST-006-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-006-UI-002",
+      "acceptance_ids": [
+        "AC-006-002"
+      ],
+      "test_ids": [
+        "TST-006-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-006-UI-003",
+      "acceptance_ids": [
+        "AC-006-004"
+      ],
+      "test_ids": [
+        "TST-006-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-006-VL-001",
+      "acceptance_ids": [
+        "AC-006-003"
+      ],
+      "test_ids": [
+        "TST-006-003"
+      ]
+    },
+    {
+      "requirement_id": "SCR-006-EV-001",
+      "acceptance_ids": [
+        "AC-006-002"
+      ],
+      "test_ids": [
+        "TST-006-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-006-DT-001",
+      "acceptance_ids": [
+        "AC-006-001",
+        "AC-006-005"
+      ],
+      "test_ids": [
+        "TST-006-001"
+      ]
+    }
+  ]
+}

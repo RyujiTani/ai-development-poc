@@ -1,0 +1,8 @@
+{
+  "screen": "SCR-009_contractor_punch_correction",
+  "status": "PASSED",
+  "passed": true,
+  "exit_code": 0,
+  "stdout": "\n\u001b[1m\u001b[7m\u001b[36m RUN \u001b[39m\u001b[27m\u001b[22m \u001b[36mv2.1.9 \u001b[39m\u001b[90m/tmp/SCR-009_contractor_punch_correction-Khfyoi\u001b[39m\n\n \u001b[32m✓\u001b[39m tests/PunchCorrection.test.tsx\u001b[2m > \u001b[22mPunchCorrectionForm\u001b[2m > \u001b[22m作業員が未選択の場合、バリデーションエラーが表示され送信されないこと\n \u001b[32m✓\u001b[39m tests/PunchCorrection.test.tsx\u001b[2m > \u001b[22mPunchCorrectionForm\u001b[2m > \u001b[22m修正理由が空（スペースのみ等）の場合、バリデーションエラーが表示されること\n \u001b[32m✓\u001b[39m tests/PunchCorrection.test.tsx\u001b[2m > \u001b[22mPunchCorrectionForm\u001b[2m > \u001b[22m自社(contractor-A)に所属する作業員のみが選択肢に表示されていること\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m3 passed\u001b[39m\u001b[22m\u001b[90m (3)\u001b[39m\n\u001b[2m   Start at \u001b[22m 00:40:07\n\u001b[2m   Duration \u001b[22m 1.30s\u001b[2m (transform 208ms, setup 130ms, collect 256ms, tests 245ms, environment 433ms, prepare 83ms)\u001b[22m\n\n",
+  "stderr": "\u001b[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.\u001b[39m\n"
+}

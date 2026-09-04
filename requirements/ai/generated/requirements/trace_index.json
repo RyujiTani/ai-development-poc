@@ -1,0 +1,1516 @@
+{
+  "version": "1.0",
+  "source": {
+    "doc_type": "trace_index",
+    "source_file": "requirements/ai/original/requirements/_trace_index.md",
+    "source_version": "1.0.0"
+  },
+  "summary": {
+    "total_screens": 15,
+    "total_trace_ids": 236
+  },
+  "screens": [
+    {
+      "id": "SCR-001",
+      "name": "外注先ログイン画面",
+      "user": "外注先管理者",
+      "trace_count": 11
+    },
+    {
+      "id": "SCR-002",
+      "name": "外注先ホーム画面",
+      "user": "外注先管理者",
+      "trace_count": 11
+    },
+    {
+      "id": "SCR-003",
+      "name": "打刻モード選択画面",
+      "user": "外注先管理者",
+      "trace_count": 10
+    },
+    {
+      "id": "SCR-004",
+      "name": "作業員選択画面",
+      "user": "外注先管理者",
+      "trace_count": 15
+    },
+    {
+      "id": "SCR-005",
+      "name": "撮影・送信画面",
+      "user": "外注先管理者",
+      "trace_count": 19
+    },
+    {
+      "id": "SCR-006",
+      "name": "打刻完了画面",
+      "user": "外注先管理者",
+      "trace_count": 8
+    },
+    {
+      "id": "SCR-007",
+      "name": "作業員一覧画面",
+      "user": "外注先管理者",
+      "trace_count": 18
+    },
+    {
+      "id": "SCR-008",
+      "name": "作業員追加・編集画面",
+      "user": "外注先管理者",
+      "trace_count": 18
+    },
+    {
+      "id": "SCR-009",
+      "name": "外注先打刻修正画面",
+      "user": "外注先管理者",
+      "trace_count": 14
+    },
+    {
+      "id": "SCR-010",
+      "name": "管理者ログイン画面",
+      "user": "工場側管理者",
+      "trace_count": 10
+    },
+    {
+      "id": "SCR-011",
+      "name": "総合ダッシュボード",
+      "user": "工場側管理者",
+      "trace_count": 16
+    },
+    {
+      "id": "SCR-012",
+      "name": "打刻履歴確認画面",
+      "user": "工場側管理者",
+      "trace_count": 22
+    },
+    {
+      "id": "SCR-013",
+      "name": "労働時間集計画面",
+      "user": "工場側管理者",
+      "trace_count": 16
+    },
+    {
+      "id": "SCR-014",
+      "name": "外注先企業登録画面",
+      "user": "工場側管理者",
+      "trace_count": 21
+    },
+    {
+      "id": "SCR-015",
+      "name": "管理者ユーザー登録画面",
+      "user": "工場側管理者",
+      "trace_count": 27
+    }
+  ],
+  "traces": [
+    {
+      "id": "SCR-001-FN-001",
+      "screen_id": "SCR-001",
+      "type": "functional",
+      "summary": "ID/パスワードによるログイン認証"
+    },
+    {
+      "id": "SCR-001-UI-001",
+      "screen_id": "SCR-001",
+      "type": "ui",
+      "summary": "入力欄・ボタンを画面中央に配置"
+    },
+    {
+      "id": "SCR-001-UI-002",
+      "screen_id": "SCR-001",
+      "type": "ui",
+      "summary": "レスポンシブWebデザイン"
+    },
+    {
+      "id": "SCR-001-UI-003",
+      "screen_id": "SCR-001",
+      "type": "ui",
+      "summary": "スマホ向け大きいタップUIui"
+    },
+    {
+      "id": "SCR-001-VL-001",
+      "screen_id": "SCR-001",
+      "type": "validation",
+      "summary": "ID必須入力"
+    },
+    {
+      "id": "SCR-001-VL-002",
+      "screen_id": "SCR-001",
+      "type": "validation",
+      "summary": "パスワード必須入力"
+    },
+    {
+      "id": "SCR-001-VL-003",
+      "screen_id": "SCR-001",
+      "type": "validation",
+      "summary": "認証エラー表示"
+    },
+    {
+      "id": "SCR-001-EV-001",
+      "screen_id": "SCR-001",
+      "type": "event",
+      "summary": "認証成功→ホーム画面遷移"
+    },
+    {
+      "id": "SCR-001-EV-002",
+      "screen_id": "SCR-001",
+      "type": "event",
+      "summary": "認証失敗→エラーメッセージ表示"
+    },
+    {
+      "id": "SCR-001-DT-001",
+      "screen_id": "SCR-001",
+      "type": "data",
+      "summary": "POST /api/auth/login"
+    },
+    {
+      "id": "SCR-001-DT-002",
+      "screen_id": "SCR-001",
+      "type": "data",
+      "summary": "認証トークン保持"
+    },
+    {
+      "id": "SCR-002-FN-001",
+      "screen_id": "SCR-002",
+      "type": "functional",
+      "summary": "打刻メニュー選択"
+    },
+    {
+      "id": "SCR-002-FN-002",
+      "screen_id": "SCR-002",
+      "type": "functional",
+      "summary": "作業員管理メニュー選択"
+    },
+    {
+      "id": "SCR-002-FN-003",
+      "screen_id": "SCR-002",
+      "type": "functional",
+      "summary": "ログアウト"
+    },
+    {
+      "id": "SCR-002-UI-001",
+      "screen_id": "SCR-002",
+      "type": "ui",
+      "summary": "大きなメニューボタン配置"
+    },
+    {
+      "id": "SCR-002-UI-002",
+      "screen_id": "SCR-002",
+      "type": "ui",
+      "summary": "レスポンシブWebデザイン"
+    },
+    {
+      "id": "SCR-002-UI-003",
+      "screen_id": "SCR-002",
+      "type": "ui",
+      "summary": "ログインユーザー名表示"
+    },
+    {
+      "id": "SCR-002-VL-001",
+      "screen_id": "SCR-002",
+      "type": "validation",
+      "summary": "未認証リダイレクト"
+    },
+    {
+      "id": "SCR-002-EV-001",
+      "screen_id": "SCR-002",
+      "type": "event",
+      "summary": "打刻ボタン→打刻モード選択画面遷移"
+    },
+    {
+      "id": "SCR-002-EV-002",
+      "screen_id": "SCR-002",
+      "type": "event",
+      "summary": "作業員管理ボタン→作業員一覧画面遷移"
+    },
+    {
+      "id": "SCR-002-EV-003",
+      "screen_id": "SCR-002",
+      "type": "event",
+      "summary": "ログアウト→ログイン画面遷移"
+    },
+    {
+      "id": "SCR-002-DT-001",
+      "screen_id": "SCR-002",
+      "type": "data",
+      "summary": "GET /api/user/me"
+    },
+    {
+      "id": "SCR-003-FN-001",
+      "screen_id": "SCR-003",
+      "type": "functional",
+      "summary": "出勤モード選択"
+    },
+    {
+      "id": "SCR-003-FN-002",
+      "screen_id": "SCR-003",
+      "type": "functional",
+      "summary": "退勤モード選択"
+    },
+    {
+      "id": "SCR-003-UI-001",
+      "screen_id": "SCR-003",
+      "type": "ui",
+      "summary": "大きな選択ボタン配置"
+    },
+    {
+      "id": "SCR-003-UI-002",
+      "screen_id": "SCR-003",
+      "type": "ui",
+      "summary": "レスポンシブWebデザイン"
+    },
+    {
+      "id": "SCR-003-UI-003",
+      "screen_id": "SCR-003",
+      "type": "ui",
+      "summary": "現在日時表示"
+    },
+    {
+      "id": "SCR-003-VL-001",
+      "screen_id": "SCR-003",
+      "type": "validation",
+      "summary": "未認証リダイレクト"
+    },
+    {
+      "id": "SCR-003-EV-001",
+      "screen_id": "SCR-003",
+      "type": "event",
+      "summary": "出勤ボタン→作業員選択画面遷移"
+    },
+    {
+      "id": "SCR-003-EV-002",
+      "screen_id": "SCR-003",
+      "type": "event",
+      "summary": "退勤ボタン→作業員選択画面遷移"
+    },
+    {
+      "id": "SCR-003-EV-003",
+      "screen_id": "SCR-003",
+      "type": "event",
+      "summary": "戻る→ホーム画面遷移"
+    },
+    {
+      "id": "SCR-003-DT-001",
+      "screen_id": "SCR-003",
+      "type": "data",
+      "summary": "打刻モード状態保持"
+    },
+    {
+      "id": "SCR-004-FN-001",
+      "screen_id": "SCR-004",
+      "type": "functional",
+      "summary": "作業員一覧表示"
+    },
+    {
+      "id": "SCR-004-FN-002",
+      "screen_id": "SCR-004",
+      "type": "functional",
+      "summary": "個別チェックボックス選択"
+    },
+    {
+      "id": "SCR-004-FN-003",
+      "screen_id": "SCR-004",
+      "type": "functional",
+      "summary": "一括選択/一括解除"
+    },
+    {
+      "id": "SCR-004-UI-001",
+      "screen_id": "SCR-004",
+      "type": "ui",
+      "summary": "チェックボックス付きリスト表示"
+    },
+    {
+      "id": "SCR-004-UI-002",
+      "screen_id": "SCR-004",
+      "type": "ui",
+      "summary": "全選択/全解除チェックボックス"
+    },
+    {
+      "id": "SCR-004-UI-003",
+      "screen_id": "SCR-004",
+      "type": "ui",
+      "summary": "打刻モード表示"
+    },
+    {
+      "id": "SCR-004-UI-004",
+      "screen_id": "SCR-004",
+      "type": "ui",
+      "summary": "レスポンシブWebデザイン"
+    },
+    {
+      "id": "SCR-004-UI-005",
+      "screen_id": "SCR-004",
+      "type": "ui",
+      "summary": "スマホ向け大きいタップUI"
+    },
+    {
+      "id": "SCR-004-UI-006",
+      "screen_id": "SCR-004",
+      "type": "ui",
+      "summary": "ページネーション/無限スクロール"
+    },
+    {
+      "id": "SCR-004-VL-001",
+      "screen_id": "SCR-004",
+      "type": "validation",
+      "summary": "1名以上選択必須"
+    },
+    {
+      "id": "SCR-004-VL-002",
+      "screen_id": "SCR-004",
+      "type": "validation",
+      "summary": "未認証リダイレクト"
+    },
+    {
+      "id": "SCR-004-EV-001",
+      "screen_id": "SCR-004",
+      "type": "event",
+      "summary": "次へ→撮影・送信画面遷移"
+    },
+    {
+      "id": "SCR-004-EV-002",
+      "screen_id": "SCR-004",
+      "type": "event",
+      "summary": "戻る→打刻モード選択画面遷移"
+    },
+    {
+      "id": "SCR-004-DT-001",
+      "screen_id": "SCR-004",
+      "type": "data",
+      "summary": "GET /api/workers"
+    },
+    {
+      "id": "SCR-004-DT-002",
+      "screen_id": "SCR-004",
+      "type": "data",
+      "summary": "選択状態保持"
+    },
+    {
+      "id": "SCR-005-FN-001",
+      "screen_id": "SCR-005",
+      "type": "functional",
+      "summary": "カメラ起動・写真撮影"
+    },
+    {
+      "id": "SCR-005-FN-002",
+      "screen_id": "SCR-005",
+      "type": "functional",
+      "summary": "写真プレビュー表示"
+    },
+    {
+      "id": "SCR-005-FN-003",
+      "screen_id": "SCR-005",
+      "type": "functional",
+      "summary": "撮り直し"
+    },
+    {
+      "id": "SCR-005-FN-004",
+      "screen_id": "SCR-005",
+      "type": "functional",
+      "summary": "打刻データ送信"
+    },
+    {
+      "id": "SCR-005-FN-005",
+      "screen_id": "SCR-005",
+      "type": "functional",
+      "summary": "クライアント側画像圧縮"
+    },
+    {
+      "id": "SCR-005-UI-001",
+      "screen_id": "SCR-005",
+      "type": "ui",
+      "summary": "カメラプレビュー領域"
+    },
+    {
+      "id": "SCR-005-UI-002",
+      "screen_id": "SCR-005",
+      "type": "ui",
+      "summary": "大きいタップボタン"
+    },
+    {
+      "id": "SCR-005-UI-003",
+      "screen_id": "SCR-005",
+      "type": "ui",
+      "summary": "打刻モード・対象人数表示"
+    },
+    {
+      "id": "SCR-005-UI-004",
+      "screen_id": "SCR-005",
+      "type": "ui",
+      "summary": "レスポンシブWebデザイン"
+    },
+    {
+      "id": "SCR-005-VL-001",
+      "screen_id": "SCR-005",
+      "type": "validation",
+      "summary": "写真未撮影時送信不可"
+    },
+    {
+      "id": "SCR-005-VL-002",
+      "screen_id": "SCR-005",
+      "type": "validation",
+      "summary": "カメラ権限エラー表示"
+    },
+    {
+      "id": "SCR-005-VL-003",
+      "screen_id": "SCR-005",
+      "type": "validation",
+      "summary": "未認証リダイレクト"
+    },
+    {
+      "id": "SCR-005-EV-001",
+      "screen_id": "SCR-005",
+      "type": "event",
+      "summary": "撮影ボタン→写真撮影・プレビュー表示"
+    },
+    {
+      "id": "SCR-005-EV-002",
+      "screen_id": "SCR-005",
+      "type": "event",
+      "summary": "撮り直しボタン→カメラ再起動"
+    },
+    {
+      "id": "SCR-005-EV-003",
+      "screen_id": "SCR-005",
+      "type": "event",
+      "summary": "送信成功→完了画面遷移"
+    },
+    {
+      "id": "SCR-005-EV-004",
+      "screen_id": "SCR-005",
+      "type": "event",
+      "summary": "送信失敗→エラーメッセージ表示"
+    },
+    {
+      "id": "SCR-005-EV-005",
+      "screen_id": "SCR-005",
+      "type": "event",
+      "summary": "戻る→作業員選択画面遷移"
+    },
+    {
+      "id": "SCR-005-DT-001",
+      "screen_id": "SCR-005",
+      "type": "data",
+      "summary": "POST /api/punches"
+    },
+    {
+      "id": "SCR-005-DT-002",
+      "screen_id": "SCR-005",
+      "type": "data",
+      "summary": "クライアント側画像圧縮処理"
+    },
+    {
+      "id": "SCR-006-FN-001",
+      "screen_id": "SCR-006",
+      "type": "functional",
+      "summary": "送信完了メッセージ表示"
+    },
+    {
+      "id": "SCR-006-FN-002",
+      "screen_id": "SCR-006",
+      "type": "functional",
+      "summary": "ホームへ戻るボタン"
+    },
+    {
+      "id": "SCR-006-UI-001",
+      "screen_id": "SCR-006",
+      "type": "ui",
+      "summary": "完了メッセージ中央表示"
+    },
+    {
+      "id": "SCR-006-UI-002",
+      "screen_id": "SCR-006",
+      "type": "ui",
+      "summary": "大きいタップボタン"
+    },
+    {
+      "id": "SCR-006-UI-003",
+      "screen_id": "SCR-006",
+      "type": "ui",
+      "summary": "レスポンシブWebデザイン"
+    },
+    {
+      "id": "SCR-006-VL-001",
+      "screen_id": "SCR-006",
+      "type": "validation",
+      "summary": "未認証リダイレクト"
+    },
+    {
+      "id": "SCR-006-EV-001",
+      "screen_id": "SCR-006",
+      "type": "event",
+      "summary": "ホームへ戻る→外注先ホーム画面遷移"
+    },
+    {
+      "id": "SCR-006-DT-001",
+      "screen_id": "SCR-006",
+      "type": "data",
+      "summary": "前画面からの送信成功情報表示"
+    },
+    {
+      "id": "SCR-007-FN-001",
+      "screen_id": "SCR-007",
+      "type": "functional",
+      "summary": "作業員一覧表示"
+    },
+    {
+      "id": "SCR-007-FN-002",
+      "screen_id": "SCR-007",
+      "type": "functional",
+      "summary": "新規追加画面遷移"
+    },
+    {
+      "id": "SCR-007-FN-003",
+      "screen_id": "SCR-007",
+      "type": "functional",
+      "summary": "編集画面遷移"
+    },
+    {
+      "id": "SCR-007-FN-004",
+      "screen_id": "SCR-007",
+      "type": "functional",
+      "summary": "作業員削除"
+    },
+    {
+      "id": "SCR-007-UI-001",
+      "screen_id": "SCR-007",
+      "type": "ui",
+      "summary": "リスト形式表示"
+    },
+    {
+      "id": "SCR-007-UI-002",
+      "screen_id": "SCR-007",
+      "type": "ui",
+      "summary": "ページネーション/無限スクロール"
+    },
+    {
+      "id": "SCR-007-UI-003",
+      "screen_id": "SCR-007",
+      "type": "ui",
+      "summary": "新規追加ボタン配置"
+    },
+    {
+      "id": "SCR-007-UI-004",
+      "screen_id": "SCR-007",
+      "type": "ui",
+      "summary": "編集・削除ボタン配置"
+    },
+    {
+      "id": "SCR-007-UI-005",
+      "screen_id": "SCR-007",
+      "type": "ui",
+      "summary": "レスポンシブWebデザイン"
+    },
+    {
+      "id": "SCR-007-UI-006",
+      "screen_id": "SCR-007",
+      "type": "ui",
+      "summary": "スマホ向け大きいタップUI"
+    },
+    {
+      "id": "SCR-007-VL-001",
+      "screen_id": "SCR-007",
+      "type": "validation",
+      "summary": "削除確認ダイアログ"
+    },
+    {
+      "id": "SCR-007-VL-002",
+      "screen_id": "SCR-007",
+      "type": "validation",
+      "summary": "未認証リダイレクト"
+    },
+    {
+      "id": "SCR-007-EV-001",
+      "screen_id": "SCR-007",
+      "type": "event",
+      "summary": "新規追加→追加・編集画面（新規モード）"
+    },
+    {
+      "id": "SCR-007-EV-002",
+      "screen_id": "SCR-007",
+      "type": "event",
+      "summary": "編集→追加・編集画面（編集モード）"
+    },
+    {
+      "id": "SCR-007-EV-003",
+      "screen_id": "SCR-007",
+      "type": "event",
+      "summary": "削除確認OK→作業員削除"
+    },
+    {
+      "id": "SCR-007-EV-004",
+      "screen_id": "SCR-007",
+      "type": "event",
+      "summary": "戻る→ホーム画面遷移"
+    },
+    {
+      "id": "SCR-007-DT-001",
+      "screen_id": "SCR-007",
+      "type": "data",
+      "summary": "GET /api/workers"
+    },
+    {
+      "id": "SCR-007-DT-002",
+      "screen_id": "SCR-007",
+      "type": "data",
+      "summary": "DELETE /api/workers/{worker_id}"
+    },
+    {
+      "id": "SCR-008-FN-001",
+      "screen_id": "SCR-008",
+      "type": "functional",
+      "summary": "氏名入力・登録"
+    },
+    {
+      "id": "SCR-008-FN-002",
+      "screen_id": "SCR-008",
+      "type": "functional",
+      "summary": "連絡先入力・登録"
+    },
+    {
+      "id": "SCR-008-FN-003",
+      "screen_id": "SCR-008",
+      "type": "functional",
+      "summary": "資格有無入力・登録"
+    },
+    {
+      "id": "SCR-008-FN-004",
+      "screen_id": "SCR-008",
+      "type": "functional",
+      "summary": "講習受講履歴入力・登録"
+    },
+    {
+      "id": "SCR-008-FN-005",
+      "screen_id": "SCR-008",
+      "type": "functional",
+      "summary": "編集モード既存情報ロード・更新"
+    },
+    {
+      "id": "SCR-008-UI-001",
+      "screen_id": "SCR-008",
+      "type": "ui",
+      "summary": "フォーム縦並び配置"
+    },
+    {
+      "id": "SCR-008-UI-002",
+      "screen_id": "SCR-008",
+      "type": "ui",
+      "summary": "保存・キャンセルボタン配置"
+    },
+    {
+      "id": "SCR-008-UI-003",
+      "screen_id": "SCR-008",
+      "type": "ui",
+      "summary": "レスポンシブWebデザイン"
+    },
+    {
+      "id": "SCR-008-UI-004",
+      "screen_id": "SCR-008",
+      "type": "ui",
+      "summary": "スマホ向け大きいタップUI"
+    },
+    {
+      "id": "SCR-008-VL-001",
+      "screen_id": "SCR-008",
+      "type": "validation",
+      "summary": "氏名必須入力"
+    },
+    {
+      "id": "SCR-008-VL-002",
+      "screen_id": "SCR-008",
+      "type": "validation",
+      "summary": "連絡先必須入力"
+    },
+    {
+      "id": "SCR-008-VL-003",
+      "screen_id": "SCR-008",
+      "type": "validation",
+      "summary": "未認証リダイレクト"
+    },
+    {
+      "id": "SCR-008-EV-001",
+      "screen_id": "SCR-008",
+      "type": "event",
+      "summary": "保存（新規）→作業員一覧画面遷移"
+    },
+    {
+      "id": "SCR-008-EV-002",
+      "screen_id": "SCR-008",
+      "type": "event",
+      "summary": "保存（編集）→作業員一覧画面遷移"
+    },
+    {
+      "id": "SCR-008-EV-003",
+      "screen_id": "SCR-008",
+      "type": "event",
+      "summary": "キャンセル→作業員一覧画面遷移"
+    },
+    {
+      "id": "SCR-008-DT-001",
+      "screen_id": "SCR-008",
+      "type": "data",
+      "summary": "GET /api/workers/{worker_id}"
+    },
+    {
+      "id": "SCR-008-DT-002",
+      "screen_id": "SCR-008",
+      "type": "data",
+      "summary": "POST /api/workers"
+    },
+    {
+      "id": "SCR-008-DT-003",
+      "screen_id": "SCR-008",
+      "type": "data",
+      "summary": "PUT /api/workers/{worker_id}"
+    },
+    {
+      "id": "SCR-009-FN-001",
+      "screen_id": "SCR-009",
+      "type": "functional",
+      "summary": "手動打刻登録"
+    },
+    {
+      "id": "SCR-009-FN-002",
+      "screen_id": "SCR-009",
+      "type": "functional",
+      "summary": "既存打刻修正"
+    },
+    {
+      "id": "SCR-009-FN-003",
+      "screen_id": "SCR-009",
+      "type": "functional",
+      "summary": "修正理由入力"
+    },
+    {
+      "id": "SCR-009-UI-001",
+      "screen_id": "SCR-009",
+      "type": "ui",
+      "summary": "作業員選択・日時・種別・理由入力欄配置"
+    },
+    {
+      "id": "SCR-009-UI-002",
+      "screen_id": "SCR-009",
+      "type": "ui",
+      "summary": "レスポンシブWebデザイン"
+    },
+    {
+      "id": "SCR-009-UI-003",
+      "screen_id": "SCR-009",
+      "type": "ui",
+      "summary": "スマホ向け大きいタップUI"
+    },
+    {
+      "id": "SCR-009-VL-001",
+      "screen_id": "SCR-009",
+      "type": "validation",
+      "summary": "対象作業員必須選択"
+    },
+    {
+      "id": "SCR-009-VL-002",
+      "screen_id": "SCR-009",
+      "type": "validation",
+      "summary": "打刻日時必須・有効形式"
+    },
+    {
+      "id": "SCR-009-VL-003",
+      "screen_id": "SCR-009",
+      "type": "validation",
+      "summary": "打刻種別必須選択"
+    },
+    {
+      "id": "SCR-009-VL-004",
+      "screen_id": "SCR-009",
+      "type": "validation",
+      "summary": "修正理由必須入力"
+    },
+    {
+      "id": "SCR-009-VL-005",
+      "screen_id": "SCR-009",
+      "type": "validation",
+      "summary": "未認証リダイレクト"
+    },
+    {
+      "id": "SCR-009-EV-001",
+      "screen_id": "SCR-009",
+      "type": "event",
+      "summary": "送信成功→ホーム画面遷移"
+    },
+    {
+      "id": "SCR-009-EV-002",
+      "screen_id": "SCR-009",
+      "type": "event",
+      "summary": "キャンセル→ホーム画面遷移"
+    },
+    {
+      "id": "SCR-009-DT-001",
+      "screen_id": "SCR-009",
+      "type": "data",
+      "summary": "POST /api/punches/correction"
+    },
+    {
+      "id": "SCR-010-FN-001",
+      "screen_id": "SCR-010",
+      "type": "functional",
+      "summary": "ID/パスワードによるログイン認証"
+    },
+    {
+      "id": "SCR-010-UI-001",
+      "screen_id": "SCR-010",
+      "type": "ui",
+      "summary": "入力欄・ボタン中央配置"
+    },
+    {
+      "id": "SCR-010-UI-002",
+      "screen_id": "SCR-010",
+      "type": "ui",
+      "summary": "レスポンシブWebデザイン"
+    },
+    {
+      "id": "SCR-010-VL-001",
+      "screen_id": "SCR-010",
+      "type": "validation",
+      "summary": "ID必須入力"
+    },
+    {
+      "id": "SCR-010-VL-002",
+      "screen_id": "SCR-010",
+      "type": "validation",
+      "summary": "パスワード必須入力"
+    },
+    {
+      "id": "SCR-010-VL-003",
+      "screen_id": "SCR-010",
+      "type": "validation",
+      "summary": "認証エラー表示"
+    },
+    {
+      "id": "SCR-010-EV-001",
+      "screen_id": "SCR-010",
+      "type": "event",
+      "summary": "認証成功→ダッシュボード遷移"
+    },
+    {
+      "id": "SCR-010-EV-002",
+      "screen_id": "SCR-010",
+      "type": "event",
+      "summary": "認証失敗→エラーメッセージ表示"
+    },
+    {
+      "id": "SCR-010-DT-001",
+      "screen_id": "SCR-010",
+      "type": "data",
+      "summary": "POST /api/admin/auth/login"
+    },
+    {
+      "id": "SCR-010-DT-002",
+      "screen_id": "SCR-010",
+      "type": "data",
+      "summary": "認証トークン保持"
+    },
+    {
+      "id": "SCR-011-FN-001",
+      "screen_id": "SCR-011",
+      "type": "functional",
+      "summary": "本日の稼働人数サマリー表示"
+    },
+    {
+      "id": "SCR-011-FN-002",
+      "screen_id": "SCR-011",
+      "type": "functional",
+      "summary": "直近アラート表示"
+    },
+    {
+      "id": "SCR-011-FN-003",
+      "screen_id": "SCR-011",
+      "type": "functional",
+      "summary": "各管理画面への遷移メニュー"
+    },
+    {
+      "id": "SCR-011-FN-004",
+      "screen_id": "SCR-011",
+      "type": "functional",
+      "summary": "ログアウト"
+    },
+    {
+      "id": "SCR-011-UI-001",
+      "screen_id": "SCR-011",
+      "type": "ui",
+      "summary": "サマリーカード/ウィジェット表示"
+    },
+    {
+      "id": "SCR-011-UI-002",
+      "screen_id": "SCR-011",
+      "type": "ui",
+      "summary": "アラートリスト表示"
+    },
+    {
+      "id": "SCR-011-UI-003",
+      "screen_id": "SCR-011",
+      "type": "ui",
+      "summary": "ナビゲーションメニュー"
+    },
+    {
+      "id": "SCR-011-UI-004",
+      "screen_id": "SCR-011",
+      "type": "ui",
+      "summary": "レスポンシブWebデザイン"
+    },
+    {
+      "id": "SCR-011-VL-001",
+      "screen_id": "SCR-011",
+      "type": "validation",
+      "summary": "未認証・権限なしリダイレクト"
+    },
+    {
+      "id": "SCR-011-EV-001",
+      "screen_id": "SCR-011",
+      "type": "event",
+      "summary": "打刻履歴確認メニュー→打刻履歴確認画面遷移"
+    },
+    {
+      "id": "SCR-011-EV-002",
+      "screen_id": "SCR-011",
+      "type": "event",
+      "summary": "労働時間集計メニュー→労働時間集計画面遷移"
+    },
+    {
+      "id": "SCR-011-EV-003",
+      "screen_id": "SCR-011",
+      "type": "event",
+      "summary": "外注先企業登録メニュー→外注先企業登録画面遷移"
+    },
+    {
+      "id": "SCR-011-EV-004",
+      "screen_id": "SCR-011",
+      "type": "event",
+      "summary": "管理者ユーザー登録メニュー→管理者ユーザー登録画面遷移"
+    },
+    {
+      "id": "SCR-011-EV-005",
+      "screen_id": "SCR-011",
+      "type": "event",
+      "summary": "ログアウト→管理者ログイン画面遷移"
+    },
+    {
+      "id": "SCR-011-DT-001",
+      "screen_id": "SCR-011",
+      "type": "data",
+      "summary": "GET /api/admin/dashboard"
+    },
+    {
+      "id": "SCR-012-FN-001",
+      "screen_id": "SCR-012",
+      "type": "functional",
+      "summary": "日別・外注先別打刻履歴一覧表示"
+    },
+    {
+      "id": "SCR-012-FN-002",
+      "screen_id": "SCR-012",
+      "type": "functional",
+      "summary": "日付フィルタ絞り込み"
+    },
+    {
+      "id": "SCR-012-FN-003",
+      "screen_id": "SCR-012",
+      "type": "functional",
+      "summary": "外注先フィルタ絞り込み"
+    },
+    {
+      "id": "SCR-012-FN-004",
+      "screen_id": "SCR-012",
+      "type": "functional",
+      "summary": "写真サムネイル表示"
+    },
+    {
+      "id": "SCR-012-FN-005",
+      "screen_id": "SCR-012",
+      "type": "functional",
+      "summary": "写真拡大表示"
+    },
+    {
+      "id": "SCR-012-FN-006",
+      "screen_id": "SCR-012",
+      "type": "functional",
+      "summary": "打刻修正（工場側管理者）"
+    },
+    {
+      "id": "SCR-012-UI-001",
+      "screen_id": "SCR-012",
+      "type": "ui",
+      "summary": "フィルタ条件配置"
+    },
+    {
+      "id": "SCR-012-UI-002",
+      "screen_id": "SCR-012",
+      "type": "ui",
+      "summary": "テーブル形式表示"
+    },
+    {
+      "id": "SCR-012-UI-003",
+      "screen_id": "SCR-012",
+      "type": "ui",
+      "summary": "写真サムネイルリスト内表示"
+    },
+    {
+      "id": "SCR-012-UI-004",
+      "screen_id": "SCR-012",
+      "type": "ui",
+      "summary": "ページネーション/無限スクロール"
+    },
+    {
+      "id": "SCR-012-UI-005",
+      "screen_id": "SCR-012",
+      "type": "ui",
+      "summary": "レスポンシブWebデザイン"
+    },
+    {
+      "id": "SCR-012-VL-001",
+      "screen_id": "SCR-012",
+      "type": "validation",
+      "summary": "日付フィルタ有効形式"
+    },
+    {
+      "id": "SCR-012-VL-002",
+      "screen_id": "SCR-012",
+      "type": "validation",
+      "summary": "打刻修正時の修正理由必須"
+    },
+    {
+      "id": "SCR-012-VL-003",
+      "screen_id": "SCR-012",
+      "type": "validation",
+      "summary": "未認証・権限なしリダイレクト"
+    },
+    {
+      "id": "SCR-012-EV-001",
+      "screen_id": "SCR-012",
+      "type": "event",
+      "summary": "フィルタ変更→履歴再取得"
+    },
+    {
+      "id": "SCR-012-EV-002",
+      "screen_id": "SCR-012",
+      "type": "event",
+      "summary": "サムネイルクリック→写真拡大"
+    },
+    {
+      "id": "SCR-012-EV-003",
+      "screen_id": "SCR-012",
+      "type": "event",
+      "summary": "打刻修正ボタン→修正フォーム表示"
+    },
+    {
+      "id": "SCR-012-EV-004",
+      "screen_id": "SCR-012",
+      "type": "event",
+      "summary": "打刻修正保存→一覧更新"
+    },
+    {
+      "id": "SCR-012-DT-001",
+      "screen_id": "SCR-012",
+      "type": "data",
+      "summary": "GET /api/admin/punches"
+    },
+    {
+      "id": "SCR-012-DT-002",
+      "screen_id": "SCR-012",
+      "type": "data",
+      "summary": "GET /api/admin/punches/{id}/photo"
+    },
+    {
+      "id": "SCR-012-DT-003",
+      "screen_id": "SCR-012",
+      "type": "data",
+      "summary": "PUT /api/admin/punches/{id}"
+    },
+    {
+      "id": "SCR-012-DT-004",
+      "screen_id": "SCR-012",
+      "type": "data",
+      "summary": "GET /api/admin/contractors"
+    },
+    {
+      "id": "SCR-013-FN-001",
+      "screen_id": "SCR-013",
+      "type": "functional",
+      "summary": "日次集計表示"
+    },
+    {
+      "id": "SCR-013-FN-002",
+      "screen_id": "SCR-013",
+      "type": "functional",
+      "summary": "月次集計表示"
+    },
+    {
+      "id": "SCR-013-FN-003",
+      "screen_id": "SCR-013",
+      "type": "functional",
+      "summary": "期間指定"
+    },
+    {
+      "id": "SCR-013-FN-004",
+      "screen_id": "SCR-013",
+      "type": "functional",
+      "summary": "CSVダウンロード"
+    },
+    {
+      "id": "SCR-013-UI-001",
+      "screen_id": "SCR-013",
+      "type": "ui",
+      "summary": "期間指定・集計単位選択欄"
+    },
+    {
+      "id": "SCR-013-UI-002",
+      "screen_id": "SCR-013",
+      "type": "ui",
+      "summary": "テーブル形式表示"
+    },
+    {
+      "id": "SCR-013-UI-003",
+      "screen_id": "SCR-013",
+      "type": "ui",
+      "summary": "CSVダウンロードボタン"
+    },
+    {
+      "id": "SCR-013-UI-004",
+      "screen_id": "SCR-013",
+      "type": "ui",
+      "summary": "ページネーション/無限スクロール"
+    },
+    {
+      "id": "SCR-013-UI-005",
+      "screen_id": "SCR-013",
+      "type": "ui",
+      "summary": "レスポンシブWebデザイン"
+    },
+    {
+      "id": "SCR-013-VL-001",
+      "screen_id": "SCR-013",
+      "type": "validation",
+      "summary": "開始日必須・有効形式"
+    },
+    {
+      "id": "SCR-013-VL-002",
+      "screen_id": "SCR-013",
+      "type": "validation",
+      "summary": "終了日必須・有効形式・開始日以降"
+    },
+    {
+      "id": "SCR-013-VL-003",
+      "screen_id": "SCR-013",
+      "type": "validation",
+      "summary": "未認証・権限なしリダイレクト"
+    },
+    {
+      "id": "SCR-013-EV-001",
+      "screen_id": "SCR-013",
+      "type": "event",
+      "summary": "集計ボタン→集計結果表示"
+    },
+    {
+      "id": "SCR-013-EV-002",
+      "screen_id": "SCR-013",
+      "type": "event",
+      "summary": "CSVダウンロードボタン→ファイルDL"
+    },
+    {
+      "id": "SCR-013-DT-001",
+      "screen_id": "SCR-013",
+      "type": "data",
+      "summary": "GET /api/admin/labor-summary"
+    },
+    {
+      "id": "SCR-013-DT-002",
+      "screen_id": "SCR-013",
+      "type": "data",
+      "summary": "GET /api/admin/labor-summary/csv"
+    },
+    {
+      "id": "SCR-014-FN-001",
+      "screen_id": "SCR-014",
+      "type": "functional",
+      "summary": "外注先企業一覧表示"
+    },
+    {
+      "id": "SCR-014-FN-002",
+      "screen_id": "SCR-014",
+      "type": "functional",
+      "summary": "新規登録"
+    },
+    {
+      "id": "SCR-014-FN-003",
+      "screen_id": "SCR-014",
+      "type": "functional",
+      "summary": "編集"
+    },
+    {
+      "id": "SCR-014-FN-004",
+      "screen_id": "SCR-014",
+      "type": "functional",
+      "summary": "削除"
+    },
+    {
+      "id": "SCR-014-UI-001",
+      "screen_id": "SCR-014",
+      "type": "ui",
+      "summary": "リスト/テーブル形式表示"
+    },
+    {
+      "id": "SCR-014-UI-002",
+      "screen_id": "SCR-014",
+      "type": "ui",
+      "summary": "新規登録ボタン配置"
+    },
+    {
+      "id": "SCR-014-UI-003",
+      "screen_id": "SCR-014",
+      "type": "ui",
+      "summary": "編集・削除ボタン配置"
+    },
+    {
+      "id": "SCR-014-UI-004",
+      "screen_id": "SCR-014",
+      "type": "ui",
+      "summary": "モーダル/インラインフォーム"
+    },
+    {
+      "id": "SCR-014-UI-005",
+      "screen_id": "SCR-014",
+      "type": "ui",
+      "summary": "ページネーション/無限スクロール"
+    },
+    {
+      "id": "SCR-014-UI-006",
+      "screen_id": "SCR-014",
+      "type": "ui",
+      "summary": "レスポンシブWebデザイン"
+    },
+    {
+      "id": "SCR-014-VL-001",
+      "screen_id": "SCR-014",
+      "type": "validation",
+      "summary": "企業名必須入力"
+    },
+    {
+      "id": "SCR-014-VL-002",
+      "screen_id": "SCR-014",
+      "type": "validation",
+      "summary": "削除確認ダイアログ"
+    },
+    {
+      "id": "SCR-014-VL-003",
+      "screen_id": "SCR-014",
+      "type": "validation",
+      "summary": "未認証・権限なしリダイレクト"
+    },
+    {
+      "id": "SCR-014-EV-001",
+      "screen_id": "SCR-014",
+      "type": "event",
+      "summary": "新規登録ボタン→入力フォーム表示"
+    },
+    {
+      "id": "SCR-014-EV-002",
+      "screen_id": "SCR-014",
+      "type": "event",
+      "summary": "保存ボタン→登録/更新・一覧更新"
+    },
+    {
+      "id": "SCR-014-EV-003",
+      "screen_id": "SCR-014",
+      "type": "event",
+      "summary": "編集ボタン→情報ロード・フォーム表示"
+    },
+    {
+      "id": "SCR-014-EV-004",
+      "screen_id": "SCR-014",
+      "type": "event",
+      "summary": "削除確認OK→削除・一覧更新"
+    },
+    {
+      "id": "SCR-014-DT-001",
+      "screen_id": "SCR-014",
+      "type": "data",
+      "summary": "GET /api/admin/contractors"
+    },
+    {
+      "id": "SCR-014-DT-002",
+      "screen_id": "SCR-014",
+      "type": "data",
+      "summary": "POST /api/admin/contractors"
+    },
+    {
+      "id": "SCR-014-DT-003",
+      "screen_id": "SCR-014",
+      "type": "data",
+      "summary": "PUT /api/admin/contractors/{id}"
+    },
+    {
+      "id": "SCR-014-DT-004",
+      "screen_id": "SCR-014",
+      "type": "data",
+      "summary": "DELETE /api/admin/contractors/{id}"
+    },
+    {
+      "id": "SCR-015-FN-001",
+      "screen_id": "SCR-015",
+      "type": "functional",
+      "summary": "ユーザーアカウント一覧表示"
+    },
+    {
+      "id": "SCR-015-FN-002",
+      "screen_id": "SCR-015",
+      "type": "functional",
+      "summary": "工場側管理者アカウント新規登録"
+    },
+    {
+      "id": "SCR-015-FN-003",
+      "screen_id": "SCR-015",
+      "type": "functional",
+      "summary": "外注先管理者アカウント新規発行"
+    },
+    {
+      "id": "SCR-015-FN-004",
+      "screen_id": "SCR-015",
+      "type": "functional",
+      "summary": "アカウント編集"
+    },
+    {
+      "id": "SCR-015-FN-005",
+      "screen_id": "SCR-015",
+      "type": "functional",
+      "summary": "アカウント削除（無効化）"
+    },
+    {
+      "id": "SCR-015-UI-001",
+      "screen_id": "SCR-015",
+      "type": "ui",
+      "summary": "リスト/テーブル形式表示"
+    },
+    {
+      "id": "SCR-015-UI-002",
+      "screen_id": "SCR-015",
+      "type": "ui",
+      "summary": "新規登録ボタン配置"
+    },
+    {
+      "id": "SCR-015-UI-003",
+      "screen_id": "SCR-015",
+      "type": "ui",
+      "summary": "編集・削除ボタン配置"
+    },
+    {
+      "id": "SCR-015-UI-004",
+      "screen_id": "SCR-015",
+      "type": "ui",
+      "summary": "モーダル/インラインフォーム"
+    },
+    {
+      "id": "SCR-015-UI-005",
+      "screen_id": "SCR-015",
+      "type": "ui",
+      "summary": "ページネーション/無限スクロール"
+    },
+    {
+      "id": "SCR-015-UI-006",
+      "screen_id": "SCR-015",
+      "type": "ui",
+      "summary": "レスポンシブWebデザイン"
+    },
+    {
+      "id": "SCR-015-VL-001",
+      "screen_id": "SCR-015",
+      "type": "validation",
+      "summary": "ユーザーID必須・重複不可"
+    },
+    {
+      "id": "SCR-015-VL-002",
+      "screen_id": "SCR-015",
+      "type": "validation",
+      "summary": "パスワード必須（新規時）"
+    },
+    {
+      "id": "SCR-015-VL-003",
+      "screen_id": "SCR-015",
+      "type": "validation",
+      "summary": "権限種別必須選択"
+    },
+    {
+      "id": "SCR-015-VL-004",
+      "screen_id": "SCR-015",
+      "type": "validation",
+      "summary": "外注先管理者時の所属企業必須"
+    },
+    {
+      "id": "SCR-015-VL-005",
+      "screen_id": "SCR-015",
+      "type": "validation",
+      "summary": "削除確認ダイアログ"
+    },
+    {
+      "id": "SCR-015-VL-006",
+      "screen_id": "SCR-015",
+      "type": "validation",
+      "summary": "未認証・権限なしリダイレクト"
+    },
+    {
+      "id": "SCR-015-EV-001",
+      "screen_id": "SCR-015",
+      "type": "event",
+      "summary": "新規登録ボタン→入力フォーム表示"
+    },
+    {
+      "id": "SCR-015-EV-002",
+      "screen_id": "SCR-015",
+      "type": "event",
+      "summary": "保存ボタン→登録/更新・一覧更新"
+    },
+    {
+      "id": "SCR-015-EV-003",
+      "screen_id": "SCR-015",
+      "type": "event",
+      "summary": "編集ボタン→情報ロード・フォーム表示"
+    },
+    {
+      "id": "SCR-015-EV-004",
+      "screen_id": "SCR-015",
+      "type": "event",
+      "summary": "削除確認OK→削除・一覧更新"
+    },
+    {
+      "id": "SCR-015-EV-005",
+      "screen_id": "SCR-015",
+      "type": "event",
+      "summary": "外注先管理者選択→所属企業選択欄表示"
+    },
+    {
+      "id": "SCR-015-DT-001",
+      "screen_id": "SCR-015",
+      "type": "data",
+      "summary": "GET /api/admin/users"
+    },
+    {
+      "id": "SCR-015-DT-002",
+      "screen_id": "SCR-015",
+      "type": "data",
+      "summary": "POST /api/admin/users"
+    },
+    {
+      "id": "SCR-015-DT-003",
+      "screen_id": "SCR-015",
+      "type": "data",
+      "summary": "PUT /api/admin/users/{id}"
+    },
+    {
+      "id": "SCR-015-DT-004",
+      "screen_id": "SCR-015",
+      "type": "data",
+      "summary": "DELETE /api/admin/users/{id}"
+    },
+    {
+      "id": "SCR-015-DT-005",
+      "screen_id": "SCR-015",
+      "type": "data",
+      "summary": "GET /api/admin/contractors（プルダウン用）"
+    }
+  ]
+}
