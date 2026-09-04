@@ -15,6 +15,9 @@ env:
   GCP_REGION: asia-northeast1
   GCS_RESULT_BUCKET: aidf-team-suda.appspot.com
 
+  # 初回テスト + 修正2回
+  MAX_REPAIR_COUNT: 2
+
 jobs:
   ai-development:
     runs-on: ubuntu-latest
@@ -65,191 +68,353 @@ jobs:
 
 
       # ======================================================
-      # 4. Generate requirements / implementation
-      # ======================================================
-
-      - name: Run AI development pipeline
-        run: |
-          python requirements/ai/transform_requirements.py --target all
-
-
-      # ======================================================
-      # 5. Start Cloud Build
+      # 4. Initial generation
       #
-      # --async にして、自分で起動したBUILD_IDを保持する
+      # MD
+      # ↓
+      # JSON
+      # ↓
+      # Validation
+      # ↓
+      # Implementation
       # ======================================================
 
-      - name: Start Cloud Build
-        id: cloud-build
+      - name: Run initial AI development pipeline
         shell: bash
         run: |
-          BUILD_ID=$(
-            gcloud builds submit \
-              --project="${GCP_PROJECT_ID}" \
-              --config=cloudbuild.yaml \
-              --async \
-              --format="value(id)" \
-              .
-          )
+          set -euo pipefail
 
-          if [ -z "$BUILD_ID" ]; then
-            echo "Failed to get Cloud Build ID."
-            exit 1
-          fi
-
-          echo "Cloud Build ID: $BUILD_ID"
-
-          echo "build_id=$BUILD_ID" >> "$GITHUB_OUTPUT"
+          python requirements/ai/transform_requirements.py \
+            --target all
 
 
       # ======================================================
-      # 6. Wait Cloud Build
+      # 5. Cloud Build / Repair loop
+      #
+      # Round 0:
+      #   Initial implementation
+      #
+      # Round 1:
+      #   Repair #1
+      #
+      # Round 2:
+      #   Repair #2
+      #
+      # 最大:
+      #   Cloud Build 3回
+      #   Repair 2回
       # ======================================================
 
-      - name: Wait for Cloud Build
-        id: wait-cloud-build
+      - name: Run test and repair loop
+        id: repair-loop
         shell: bash
         run: |
-          BUILD_ID="${{ steps.cloud-build.outputs.build_id }}"
+          set -euo pipefail
+
+          MAX_REPAIR_COUNT="${MAX_REPAIR_COUNT}"
+
+          ROUND=0
+          REPAIR_COUNT=0
+
+          FINAL_BUILD_ID=""
+          FINAL_TOTAL=0
+          FINAL_PASSED=0
+          FINAL_TEST_FAILED=0
+          FINAL_TEST_TIMEOUT=0
+          FINAL_INFRA_FAILED=0
 
           while true
           do
-            STATUS=$(
-              gcloud builds describe "$BUILD_ID" \
+            echo ""
+            echo "============================================================"
+            echo "Cloud Build Test Round: ${ROUND}"
+            echo "Repair Count: ${REPAIR_COUNT}/${MAX_REPAIR_COUNT}"
+            echo "============================================================"
+            echo ""
+
+            # --------------------------------------------------
+            # Cloud Build start
+            # --------------------------------------------------
+
+            BUILD_ID=$(
+              gcloud builds submit \
                 --project="${GCP_PROJECT_ID}" \
-                --format="value(status)"
+                --config=cloudbuild.yaml \
+                --async \
+                --format="value(id)" \
+                .
             )
 
-            echo "Cloud Build status: $STATUS"
+            if [ -z "${BUILD_ID}" ]; then
+              echo "Failed to get Cloud Build ID."
+              exit 1
+            fi
 
-            case "$STATUS" in
+            echo "Cloud Build ID: ${BUILD_ID}"
 
-              SUCCESS)
-                echo "Cloud Build completed successfully."
-                break
-                ;;
+            # --------------------------------------------------
+            # Wait Cloud Build
+            # --------------------------------------------------
 
-              FAILURE|INTERNAL_ERROR|TIMEOUT|CANCELLED|EXPIRED)
-                echo "Cloud Build infrastructure failed."
-                exit 1
-                ;;
+            while true
+            do
+              STATUS=$(
+                gcloud builds describe "${BUILD_ID}" \
+                  --project="${GCP_PROJECT_ID}" \
+                  --format="value(status)"
+              )
 
-              QUEUED|WORKING|PENDING)
-                sleep 10
-                ;;
+              echo "Cloud Build status: ${STATUS}"
 
-              *)
-                echo "Unknown Cloud Build status: $STATUS"
-                sleep 10
-                ;;
+              case "${STATUS}" in
 
-            esac
+                SUCCESS)
+                  echo "Cloud Build completed successfully."
+                  break
+                  ;;
+
+                FAILURE|INTERNAL_ERROR|TIMEOUT|CANCELLED|EXPIRED)
+                  echo "Cloud Build infrastructure failed."
+
+                  mkdir -p requirements/ai/generated/test-results
+
+                  gcloud builds log "${BUILD_ID}" \
+                    --project="${GCP_PROJECT_ID}" \
+                    > requirements/ai/generated/test-results/cloudbuild.log \
+                    2>&1 || true
+
+                  exit 1
+                  ;;
+
+                QUEUED|WORKING|PENDING)
+                  sleep 10
+                  ;;
+
+                *)
+                  echo "Unknown Cloud Build status: ${STATUS}"
+                  sleep 10
+                  ;;
+
+              esac
+            done
+
+            # --------------------------------------------------
+            # Download test results
+            # --------------------------------------------------
+
+            echo ""
+            echo "Downloading test results..."
+            echo ""
+
+            rm -rf requirements/ai/generated/test-results
+
+            mkdir -p requirements/ai/generated/test-results
+
+            gcloud storage cp \
+              --recursive \
+              "gs://${GCS_RESULT_BUCKET}/ai-development/${BUILD_ID}/test-results/*" \
+              "requirements/ai/generated/test-results/"
+
+            echo ""
+            echo "Downloaded test results:"
+            echo ""
+
+            find requirements/ai/generated/test-results \
+              -type f \
+              -print
+
+            # --------------------------------------------------
+            # Save Cloud Build log
+            # --------------------------------------------------
+
+            gcloud builds log "${BUILD_ID}" \
+              --project="${GCP_PROJECT_ID}" \
+              > requirements/ai/generated/test-results/cloudbuild.log \
+              2>&1 || true
+
+            # --------------------------------------------------
+            # Read summary.json
+            # --------------------------------------------------
+
+            SUMMARY_FILE="requirements/ai/generated/test-results/summary.json"
+
+            if [ ! -f "${SUMMARY_FILE}" ]; then
+              echo "summary.json was not generated."
+              exit 1
+            fi
+
+            TOTAL=$(jq -r '.total' "${SUMMARY_FILE}")
+            PASSED=$(jq -r '.passed' "${SUMMARY_FILE}")
+            TEST_FAILED=$(jq -r '.test_failed // 0' "${SUMMARY_FILE}")
+            TEST_TIMEOUT=$(jq -r '.test_timeout // 0' "${SUMMARY_FILE}")
+            INFRA_FAILED=$(jq -r '.infrastructure_failed // 0' "${SUMMARY_FILE}")
+            REPAIRABLE_FAILED=$((TEST_FAILED + TEST_TIMEOUT))
+
+            echo ""
+            echo "============================================================"
+            echo "Test Result Round ${ROUND}"
+            echo "============================================================"
+            echo "Total                 : ${TOTAL}"
+            echo "Passed                : ${PASSED}"
+            echo "Test failed           : ${TEST_FAILED}"
+            echo "Test timeout          : ${TEST_TIMEOUT}"
+            echo "Repairable failures   : ${REPAIRABLE_FAILED}"
+            echo "Infrastructure failed : ${INFRA_FAILED}"
+            echo "============================================================"
+            echo ""
+
+            # 最終結果候補として保持
+            FINAL_BUILD_ID="${BUILD_ID}"
+            FINAL_TOTAL="${TOTAL}"
+            FINAL_PASSED="${PASSED}"
+            FINAL_TEST_FAILED="${TEST_FAILED}"
+            FINAL_TEST_TIMEOUT="${TEST_TIMEOUT}"
+            FINAL_INFRA_FAILED="${INFRA_FAILED}"
+
+            # --------------------------------------------------
+            # Infrastructure failure
+            # --------------------------------------------------
+
+            if [ "${INFRA_FAILED}" -ne 0 ]; then
+              echo "Test infrastructure error detected."
+              exit 1
+            fi
+
+            # --------------------------------------------------
+            # All tests passed
+            # --------------------------------------------------
+
+            if [ "${REPAIRABLE_FAILED}" -eq 0 ]; then
+              echo ""
+              echo "All screen tests passed without failures or timeouts."
+              echo "Repair loop completed successfully."
+              echo ""
+
+              break
+            fi
+
+            # --------------------------------------------------
+            # Repair limit reached
+            # --------------------------------------------------
+
+            if [ "${REPAIR_COUNT}" -ge "${MAX_REPAIR_COUNT}" ]; then
+              echo ""
+              echo "Maximum repair count reached."
+              echo "Remaining TEST_FAILED : ${TEST_FAILED}"
+              echo "Remaining TEST_TIMEOUT: ${TEST_TIMEOUT}"
+              echo "Proceeding to PR creation."
+              echo ""
+
+              break
+            fi
+
+            # --------------------------------------------------
+            # AI repair
+            #
+            # test-results/
+            #   ↓
+            # summary.json
+            # individual screen results
+            #   ↓
+            # repair-all
+            # --------------------------------------------------
+
+            REPAIR_COUNT=$((REPAIR_COUNT + 1))
+
+            echo ""
+            echo "============================================================"
+            echo "Starting AI Repair #${REPAIR_COUNT}"
+            echo "============================================================"
+            echo ""
+
+            python requirements/ai/transform_requirements.py \
+              --target repair-all
+
+            echo ""
+            echo "AI Repair #${REPAIR_COUNT} completed."
+            echo ""
+
+            ROUND=$((ROUND + 1))
           done
 
+          # ====================================================
+          # GitHub Actions outputs
+          # ====================================================
+
+          echo "build_id=${FINAL_BUILD_ID}" >> "${GITHUB_OUTPUT}"
+          echo "total=${FINAL_TOTAL}" >> "${GITHUB_OUTPUT}"
+          echo "passed=${FINAL_PASSED}" >> "${GITHUB_OUTPUT}"
+          echo "test_failed=${FINAL_TEST_FAILED}" >> "${GITHUB_OUTPUT}"
+          echo "test_timeout=${FINAL_TEST_TIMEOUT}" >> "${GITHUB_OUTPUT}"
+          echo "infrastructure_failed=${FINAL_INFRA_FAILED}" >> "${GITHUB_OUTPUT}"
+          echo "repair_count=${REPAIR_COUNT}" >> "${GITHUB_OUTPUT}"
+
 
       # ======================================================
-      # 7. Download test results from GCS
+      # 6. Final result
       # ======================================================
 
-      - name: Download Cloud Build test results
+      - name: Show final result
         shell: bash
         run: |
-          BUILD_ID="${{ steps.cloud-build.outputs.build_id }}"
-
-          echo "Downloading test results for Cloud Build: $BUILD_ID"
-
-          rm -rf requirements/ai/generated/test-results
-
-          mkdir -p requirements/ai/generated/test-results
-
-          gcloud storage cp \
-            --recursive \
-            "gs://${GCS_RESULT_BUCKET}/ai-development/${BUILD_ID}/test-results/*" \
-            "requirements/ai/generated/test-results/"
-
-          echo "Downloaded test results:"
-
-          find requirements/ai/generated/test-results \
-            -type f \
-            -print
-
-
-      # ======================================================
-      # 8. Save Cloud Build log
-      # ======================================================
-
-      - name: Save Cloud Build log
-        shell: bash
-        run: |
-          BUILD_ID="${{ steps.cloud-build.outputs.build_id }}"
-
-          gcloud builds log "$BUILD_ID" \
-            --project="${GCP_PROJECT_ID}" \
-            > requirements/ai/generated/test-results/cloudbuild.log \
-            2>&1 || true
+          echo "=============================================="
+          echo "AI Development Final Result"
+          echo "=============================================="
+          echo "Cloud Build ID:"
+          echo "${{ steps.repair-loop.outputs.build_id }}"
+          echo ""
+          echo "Total:"
+          echo "${{ steps.repair-loop.outputs.total }}"
+          echo ""
+          echo "Passed:"
+          echo "${{ steps.repair-loop.outputs.passed }}"
+          echo ""
+          echo "Test Failed:"
+          echo "${{ steps.repair-loop.outputs.test_failed }}"
+          echo ""
+          echo "Test Timeout:"
+          echo "${{ steps.repair-loop.outputs.test_timeout }}"
+          echo ""
+          echo "Repair Count:"
+          echo "${{ steps.repair-loop.outputs.repair_count }}"
+          echo "=============================================="
 
 
       # ======================================================
-      # 9. Check generated test summary
-      # ======================================================
-
-      - name: Check test result summary
-        id: test-summary
-        shell: bash
-        run: |
-          SUMMARY_FILE="requirements/ai/generated/test-results/summary.json"
-
-          if [ ! -f "$SUMMARY_FILE" ]; then
-            echo "summary.json was not generated."
-            exit 1
-          fi
-
-          TOTAL=$(jq -r '.total' "$SUMMARY_FILE")
-          PASSED=$(jq -r '.passed' "$SUMMARY_FILE")
-          TEST_FAILED=$(jq -r '.test_failed' "$SUMMARY_FILE")
-          INFRA_FAILED=$(jq -r '.infrastructure_failed' "$SUMMARY_FILE")
-
-          echo "Total: $TOTAL"
-          echo "Passed: $PASSED"
-          echo "Test failed: $TEST_FAILED"
-          echo "Infrastructure failed: $INFRA_FAILED"
-
-          if [ "$INFRA_FAILED" -ne 0 ]; then
-            echo "Test infrastructure error detected."
-            exit 1
-          fi
-
-          echo "total=$TOTAL" >> "$GITHUB_OUTPUT"
-          echo "passed=$PASSED" >> "$GITHUB_OUTPUT"
-          echo "test_failed=$TEST_FAILED" >> "$GITHUB_OUTPUT"
-
-
-      # ======================================================
-      # 10. Create AI generated branch
+      # 7. Create AI generated branch
       # ======================================================
 
       - name: Create generated branch
         id: branch
         shell: bash
         run: |
+          set -euo pipefail
+
           BRANCH_NAME="ai-generated/run-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
 
-          echo "Generated branch: $BRANCH_NAME"
+          echo "Generated branch: ${BRANCH_NAME}"
 
-          git checkout -b "$BRANCH_NAME"
+          git checkout -b "${BRANCH_NAME}"
 
-          echo "branch_name=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
+          echo "branch_name=${BRANCH_NAME}" >> "${GITHUB_OUTPUT}"
 
 
       # ======================================================
-      # 11. Commit generated artifacts
+      # 8. Commit generated artifacts
       # ======================================================
 
       - name: Commit generated artifacts
         shell: bash
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          set -euo pipefail
+
+          git config \
+            user.name \
+            "github-actions[bot]"
+
+          git config \
+            user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add requirements/ai/generated
 
@@ -267,50 +432,74 @@ jobs:
 
 
       # ======================================================
-      # 12. Create PR body
+      # 9. Create PR body
       # ======================================================
 
       - name: Create PR body
         shell: bash
         run: |
-          BUILD_ID="${{ steps.cloud-build.outputs.build_id }}"
-          TOTAL="${{ steps.test-summary.outputs.total }}"
-          PASSED="${{ steps.test-summary.outputs.passed }}"
-          TEST_FAILED="${{ steps.test-summary.outputs.test_failed }}"
+          set -euo pipefail
+
+          BUILD_ID="${{ steps.repair-loop.outputs.build_id }}"
+          TOTAL="${{ steps.repair-loop.outputs.total }}"
+          PASSED="${{ steps.repair-loop.outputs.passed }}"
+          TEST_FAILED="${{ steps.repair-loop.outputs.test_failed }}"
+          TEST_TIMEOUT="${{ steps.repair-loop.outputs.test_timeout }}"
+          REPAIR_COUNT="${{ steps.repair-loop.outputs.repair_count }}"
 
           cat <<EOF > pr-body.md
           ## AI自動実装結果
 
-          要件Pushをトリガーに、AIによる実装とGCP上での自動テストを実行しました。
+          要件Pushをトリガーに、AIによる実装・GCP上での自動テスト・テスト失敗時のAI自動修正を実行しました。
 
-          ### 実行結果
+          ### 最終結果
 
           - 対象画面数: ${TOTAL}
           - テスト成功: ${PASSED}
           - テスト失敗: ${TEST_FAILED}
-          - Cloud Build ID: \`${BUILD_ID}\`
+          - テストタイムアウト: ${TEST_TIMEOUT}
+          - AI修正回数: ${REPAIR_COUNT}
+          - 最終Cloud Build ID: \`${BUILD_ID}\`
+
+          ### 実行フロー
+
+          \`\`\`text
+          要件Push
+          ↓
+          AI初回実装
+          ↓
+          Cloud Build / Vitest
+          ↓
+          TEST_FAILED / TEST_TIMEOUTの場合 AI修正
+          ↓
+          再テスト
+          ↓
+          最大2回までAI修正
+          ↓
+          PR作成
+          \`\`\`
 
           ### 生成物
 
           - AI生成コード
             - \`requirements/ai/generated/implementation/\`
 
-          - テスト結果
+          - 最終テスト結果
             - \`requirements/ai/generated/test-results/\`
 
-          - Cloud Buildログ
+          - 最終Cloud Buildログ
             - \`requirements/ai/generated/test-results/cloudbuild.log\`
 
           ### 注意
 
-          テストFAILが存在する場合でも、このPRはレビュー用成果物として作成されています。
+          AI修正を最大回数まで実行してもTEST_FAILEDまたはTEST_TIMEOUTが残った場合、このPRにはその状態のコードと最終テスト結果が含まれます。
 
-          AI生成コードを確認し、必要に応じて修正・統合してください。
+          残存するTEST_FAILED / TEST_TIMEOUTは、人によるレビューおよび仕様確認の対象としてください。
           EOF
 
 
       # ======================================================
-      # 13. Create Pull Request
+      # 10. Create Pull Request
       # ======================================================
 
       - name: Create Pull Request
@@ -318,6 +507,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
+          set -euo pipefail
+
           gh pr create \
             --base "${GITHUB_REF_NAME}" \
             --head "${{ steps.branch.outputs.branch_name }}" \

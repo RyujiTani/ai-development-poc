@@ -10,11 +10,6 @@ python requirements\ai\transform_requirements.py --target all
 
 
 # GCP Generated Screen Test Runner
-gcloud auth login
-gcloud config set project aidf-team-suda
-gcloud builds submit --config cloudbuild.yaml .
-
-gcloud builds log 7ea821a1-8726-4b85-a237-c38ff3369154 --project=aidf-team-suda > build.log
 
 配置先はリポジトリルートを想定しています。
 
@@ -38,7 +33,13 @@ gcloud builds log 7ea821a1-8726-4b85-a237-c38ff3369154 --project=aidf-team-suda 
 Cloud Build 実行:
 
 ```bash
+gcloud auth login
+gcloud config set project aidf-team-suda
+Remove-Item Env:GOOGLE_APPLICATION_CREDENTIALS
+gcloud auth application-default login
 gcloud builds submit --config cloudbuild.yaml .
+
+gcloud builds log 7ea821a1-8726-4b85-a237-c38ff3369154 --project=aidf-team-suda > build.log
 ```
 
 各画面は一時ワークスペースへコピーして独立テストされます。
