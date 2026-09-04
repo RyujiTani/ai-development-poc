@@ -35,9 +35,9 @@ GENERATED_SCREEN_DIR = (
     GENERATED_DIR / "screens"
 )
 
-# 実装コードの出力先
-IMPLEMENTED_SCREEN_DIR = (
-    GENERATED_DIR / "implementation"
+# 統合Applicationの出力先
+APPLICATION_DIR = (
+    GENERATED_DIR / "application"
 )
 
 SYSTEM_PROMPT = (
@@ -933,12 +933,65 @@ def save_generated_files(
     return saved_files
 
 
+def serialize_existing_application(
+    application_dir: Path,
+) -> str:
+    """
+    現在の統合Applicationを追加実装プロンプトへ渡すため、
+    読み取り専用の専用形式へ変換する。
+
+    初回実装でApplicationがまだ存在しない場合は、
+    空状態を明示する。
+    """
+
+    if not application_dir.exists():
+        return "(NO_EXISTING_APPLICATION)"
+
+    files = sorted(
+        path
+        for path in application_dir.rglob("*")
+        if path.is_file()
+        and path.name != ".ai-repair-unresolved.txt"
+    )
+
+    if not files:
+        return "(NO_EXISTING_APPLICATION)"
+
+    blocks: List[str] = []
+
+    for file_path in files:
+        relative_path = (
+            file_path
+            .relative_to(application_dir)
+            .as_posix()
+        )
+
+        content = file_path.read_text(
+            encoding="utf-8"
+        )
+
+        blocks.append(
+            "\n".join(
+                [
+                    "<<<EXISTING_FILE_START>>>",
+                    f"PATH: {relative_path}",
+                    "<<<EXISTING_CONTENT_START>>>",
+                    content,
+                    "<<<EXISTING_CONTENT_END>>>",
+                    "<<<EXISTING_FILE_END>>>",
+                ]
+            )
+        )
+
+    return "\n\n".join(blocks)
+
+
 def implement_screen(
     vertex_client,
     screen: str,
 ) -> None:
     """
-    生成済みJSONから1画面を実装する。
+    生成済みJSONから対象画面を統合Applicationへ追加実装する。
 
     system_requirements.json
     +
@@ -946,9 +999,13 @@ def implement_screen(
     +
     SCR-xxx.json
     +
+    現在のApplicationコード
+    +
     implement_screen.md
     ↓
-    Next.jsコード
+    変更が必要なファイルだけを生成
+    ↓
+    generated/application/ へ追加・上書き
     """
 
     system_requirements_file = (
@@ -974,6 +1031,12 @@ def implement_screen(
         ]
     )
 
+    existing_application = (
+        serialize_existing_application(
+            APPLICATION_DIR
+        )
+    )
+
     prompt = inject_prompt(
         load_prompt(IMPLEMENT_SCREEN_PROMPT),
         {
@@ -985,6 +1048,9 @@ def implement_screen(
 
             "{{SCREEN_REQUIREMENT_JSON}}":
                 read_text(screen_requirement_file),
+
+            "{{EXISTING_APPLICATION}}":
+                existing_application,
         },
     )
 
@@ -995,12 +1061,17 @@ def implement_screen(
     print()
     print("=" * 60)
     print(
-        f"Implementing screen: {screen_id}"
+        f"Implementing screen into application: {screen_id}"
     )
     print("=" * 60)
 
+    if existing_application == "(NO_EXISTING_APPLICATION)":
+        print("Existing application: none (initial screen)")
+    else:
+        print("Existing application: loaded")
+
     print(
-        "Generating implementation..."
+        "Generating incremental implementation..."
     )
 
     generated_files = generate_implementation_files(
@@ -1009,19 +1080,16 @@ def implement_screen(
         max_attempts=3,
     )
 
-    output_dir = (
-        IMPLEMENTED_SCREEN_DIR
-        / screen_id
-    )
-
-    saved_files = save_generated_files(
+    # 初回生成でも追加実装でも、返却されたファイルだけを
+    # 統合Applicationへ追加・上書きする。
+    saved_files = apply_repaired_files(
         generated_files,
-        output_dir,
+        APPLICATION_DIR,
     )
 
     print()
     print(
-        f"Generated {len(saved_files)} file(s):"
+        f"Applied {len(saved_files)} file(s):"
     )
 
     for path in saved_files:
@@ -1031,7 +1099,7 @@ def implement_screen(
 
     print()
     print(
-        f"Implementation output: {output_dir}"
+        f"Application output: {APPLICATION_DIR}"
     )
 
 
@@ -1039,14 +1107,13 @@ def implement_all_screens(
     vertex_client,
 ) -> None:
     """
-    生成済みの全画面要件JSONから
-    すべての画面を実装する。
+    生成済みの全画面要件JSONを1件ずつ処理し、
+    1つの統合Applicationを順次育てる。
 
-    generated/screens/*.json
-    ↓
-    1画面ずつ実装
-    ↓
-    generated/implementation/<screen_id>/
+    SCR-001 → applicationへ実装
+    SCR-002 → 既存applicationを入力として追加実装
+    ...
+    SCR-015 → 同様
     """
 
     validate_required_files(
@@ -1071,6 +1138,18 @@ def implement_all_screens(
             f"{GENERATED_SCREEN_DIR}"
         )
 
+    # --target implement-all / all は毎回クリーンなApplicationから開始する。
+    # 個別 --target implement は既存Applicationへ追記するため削除しない。
+    if APPLICATION_DIR.exists():
+        shutil.rmtree(
+            APPLICATION_DIR
+        )
+
+    APPLICATION_DIR.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
     print(
         f"Found {len(screen_requirement_files)} "
         f"screen requirement files."
@@ -1078,7 +1157,7 @@ def implement_all_screens(
 
     print()
     print("=" * 60)
-    print("Starting implementation of all screens")
+    print("Starting incremental application implementation")
     print("=" * 60)
 
     for index, screen_requirement_file in enumerate(
@@ -1090,7 +1169,7 @@ def implement_all_screens(
         print()
         print(
             f"[{index}/{len(screen_requirement_files)}] "
-            f"Implementing: {screen_id}"
+            f"Implementing into application: {screen_id}"
         )
 
         implement_screen(
@@ -1100,7 +1179,8 @@ def implement_all_screens(
 
     print()
     print("=" * 60)
-    print("All screen implementations completed.")
+    print("Integrated application implementation completed.")
+    print(f"Application output: {APPLICATION_DIR}")
     print("=" * 60)
 
 
@@ -1112,59 +1192,6 @@ from pathlib import Path
 import json
 from typing import Dict, List, Optional
 
-
-def serialize_generated_files(
-    screen_dir: Path,
-) -> str:
-    """
-    現在生成済みの画面ファイルをrepair promptへ渡すため、
-    読み取り専用の専用形式へ変換する。
-    """
-
-    if not screen_dir.exists():
-        raise FileNotFoundError(
-            f"Implementation directory not found: {screen_dir}"
-        )
-
-    blocks: List[str] = []
-
-    files = sorted(
-        path
-        for path in screen_dir.rglob("*")
-        if path.is_file()
-        and path.name != ".ai-repair-unresolved.txt"
-    )
-
-    if not files:
-        raise FileNotFoundError(
-            f"No implementation files found: {screen_dir}"
-        )
-
-    for file_path in files:
-        relative_path = (
-            file_path
-            .relative_to(screen_dir)
-            .as_posix()
-        )
-
-        content = file_path.read_text(
-            encoding="utf-8"
-        )
-
-        blocks.append(
-            "\n".join(
-                [
-                    "<<<EXISTING_FILE_START>>>",
-                    f"PATH: {relative_path}",
-                    "<<<EXISTING_CONTENT_START>>>",
-                    content,
-                    "<<<EXISTING_CONTENT_END>>>",
-                    "<<<EXISTING_FILE_END>>>",
-                ]
-            )
-        )
-
-    return "\n\n".join(blocks)
 
 
 def load_test_result(
@@ -1321,7 +1348,7 @@ def repair_screen(
         stdout / stderr
 
     Output:
-        修正が必要なファイルのみ既存implementationへ上書き
+        修正が必要なファイルのみ統合Applicationへ上書き
     """
 
     system_requirements_file = (
@@ -1354,12 +1381,11 @@ def repair_screen(
     )
 
     implementation_dir = (
-        IMPLEMENTED_SCREEN_DIR
-        / screen_id
+        APPLICATION_DIR
     )
 
     generated_files_text = (
-        serialize_generated_files(
+        serialize_existing_application(
             implementation_dir
         )
     )

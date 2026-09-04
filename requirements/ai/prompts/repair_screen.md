@@ -52,11 +52,11 @@ ERROR_LOG:
 
 今回の修正対象は `SCREEN_REQUIREMENT_JSON` に記載された1画面のみです。
 
-`GENERATED_FILES` は、その画面について現在生成済みの実装・テストコードです。
+`GENERATED_FILES` は、全画面を統合した現在のApplicationコードです。対象画面の実装だけでなく共有Domain / Repository / Service / route等を含む場合があります。
 
 `TEST_RESULT_JSON` および `ERROR_LOG` は、その生成物を実際に検証した結果です。
 
-対象画面と無関係な機能や他画面を変更してはいけません。
+対象画面と無関係な機能や他画面を変更してはいけません。ただし、対象画面の失敗原因が共有コードにある場合は、その根本原因を解消するために必要な共有ファイルのみ最小修正して構いません。
 
 ---
 
@@ -339,6 +339,20 @@ Vitestのhoisting問題が関係する場合は、必要に応じて `vi.hoisted
 派生的な失敗ではなく、最初の根本原因を優先してください。
 
 1つの原因によって複数テストが失敗している場合、個別テストを1件ずつ場当たり的に修正してはいけません。
+
+---
+
+# 14.5. Integrated Application Repair Rules
+
+現在の生成物は画面ごとの独立コードではなく、1つの統合Applicationです。
+
+* `TEST_RESULT_JSON` の `screen` を今回のrepair対象画面として扱う
+* 原則として `tests/<screen_id>/` と、その画面が直接利用する実装を優先して調査する
+* 共有Domain / Repository / Service / Utilityを修正する場合は他画面への影響を最小化する
+* 他画面専用テストをFAIL回避目的で変更してはいけない
+* 対象画面と無関係な既存routeやUIを変更してはいけない
+* 統合Application全体を再出力してはいけない
+* 修正が必要なファイルだけを完全なFILE形式で返す
 
 ---
 

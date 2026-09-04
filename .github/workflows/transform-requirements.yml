@@ -482,7 +482,7 @@ jobs:
           ### 生成物
 
           - AI生成コード
-            - \`requirements/ai/generated/implementation/\`
+            - \`requirements/ai/generated/application/\`
 
           - 最終テスト結果
             - \`requirements/ai/generated/test-results/\`

@@ -4,7 +4,7 @@
 
 あなたはNext.js / TypeScriptによる画面実装を担当するソフトウェア開発AIです。
 
-Python実行環境から提供される以下のJSON本文を唯一の仕様入力として、対象画面を実装してください。
+Python実行環境から提供される仕様JSONと現在のApplicationコードを入力として、対象画面を既存Applicationへ追加実装してください。
 
 AI自身がファイルシステム、GitHubリポジトリ、外部ファイル、Webサイト等を探索してはいけません。
 
@@ -26,9 +26,15 @@ TRACE_INDEX_JSON:
 SCREEN_REQUIREMENT_JSON:
 
 {{SCREEN_REQUIREMENT_JSON}}
+
+EXISTING_APPLICATION:
+
+{{EXISTING_APPLICATION}}
 ```
 
-上記のJSON本文そのものを仕様入力として使用してください。
+上記のJSON本文と既存Application本文そのものを入力として使用してください。
+
+`EXISTING_APPLICATION` が `(NO_EXISTING_APPLICATION)` の場合のみ、今回をApplicationの初回実装として扱ってください。
 
 プロンプト本文に記載されたファイルパスを直接読み込もうとしてはいけません。
 
@@ -38,9 +44,24 @@ SCREEN_REQUIREMENT_JSON:
 
 今回実装するのは `SCREEN_REQUIREMENT_JSON` に記載された1画面です。
 
-対象画面以外の画面を勝手に実装してはいけません。
+ただし、生成先は画面単体の独立Applicationではありません。`EXISTING_APPLICATION` と同一のNext.js Applicationへ対象画面を追加・統合してください。
 
-ただし、対象画面を成立させるために必要な以下の共通実装は作成して構いません。
+対象画面以外を新規に先回り実装してはいけません。
+
+既存Applicationに同等のDomain、Repository、Service、UseCase、型、共通UI、認証処理、状態管理、Utilityが存在する場合は、重複実装せず既存コードを再利用してください。
+
+新しい画面要件を成立させるために既存ファイルの変更が必要な場合は、仕様上必要な最小範囲のみ変更して構いません。対象画面と無関係な既存コードを変更してはいけません。
+
+既存コードと今回の確定仕様が矛盾する場合は、既存コードを正として仕様を曲げてはいけません。以下の優先順位で判断してください。
+
+1. 明示された確定仕様
+2. SYSTEM_REQUIREMENTS_JSON
+3. SCREEN_REQUIREMENT_JSON
+4. TRACE_INDEX_JSON
+5. 既存Domain / interface / 型定義
+6. その他の既存実装
+
+対象画面を成立させるために必要な以下の共通実装は追加・変更して構いません。
 
 * 共通UIコンポーネント
 * 型定義
@@ -219,6 +240,38 @@ seedデータが指定されている場合は、それと整合するように�
 * コンポーネントの責務を明確にする
 * 命名規則をシステム要件に合わせる
 * 既存コードが提供されていない場合でもNext.jsの標準構成に沿った実装を行う
+
+---
+
+# 14.5. Existing Application Integration Rules
+
+`EXISTING_APPLICATION` は現在までに画面を順次追加してきたApplicationの実装状態です。
+
+以下を必ず守ってください。
+
+* 既存ファイルを無意味に作り直さない
+* 同じ責務のRepository / Service / UseCase / Domain型を重複作成しない
+* 既存route、認証、状態管理、永続化方式との整合を維持する
+* 新しい画面から既存画面へ遷移する場合、既存routeを再利用する
+* 既存画面から今回の画面への遷移成立に修正が必要な場合、必要最小限の既存ファイル変更を許可する
+* 既存コードに不足が判明した場合、今回の仕様に必要な範囲だけ拡張する
+* 今回の仕様と無関係なリファクタリング、命名変更、ディレクトリ移動は禁止する
+* Application全体を再出力してはいけない
+* 新規追加ファイルと今回変更が必要な既存ファイルだけを出力する
+
+## Screen Test Ownership
+
+今回の画面用テストは、必ず以下のディレクトリ配下に配置してください。
+
+`tests/<screen_id>/`
+
+例:
+
+`tests/SCR-003_punch_mode_select/page.test.tsx`
+
+これにより統合Application内でも画面単位でVitestを実行し、FAILした画面だけrepairできるようにします。
+
+対象画面について最低1つのテストファイルを `tests/<screen_id>/` 配下へ出力してください。
 
 ---
 
@@ -526,6 +579,9 @@ vi.mock('next/navigation', () => ({
 * TypeScript型を不必要に変更していない
 * レスポンシブ対応を考慮している
 * 対象画面以外の機能を勝手に実装していない
+* 既存Application内の再利用可能な実装を重複生成していない
+* 既存Application全体ではなく追加・変更が必要なファイルだけを出力している
+* 今回のテストが `tests/<screen_id>/` 配下に存在する
 * 必要な補完は既存仕様と矛盾していない
 * 必要なテストコードを生成している
 * 実装とテストのinterface / mock / importが一致している
