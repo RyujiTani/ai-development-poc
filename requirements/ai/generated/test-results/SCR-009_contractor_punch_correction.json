@@ -1,0 +1,8 @@
+{
+  "screen": "SCR-009_contractor_punch_correction",
+  "status": "PASSED",
+  "passed": true,
+  "exit_code": 0,
+  "stdout": "\n\u001b[1m\u001b[7m\u001b[36m RUN \u001b[39m\u001b[27m\u001b[22m \u001b[36mv2.1.9 \u001b[39m\u001b[90m/tmp/SCR-009_contractor_punch_correction-Br4GSx\u001b[39m\n\n \u001b[32m✓\u001b[39m tests/punchCorrection.test.tsx\u001b[2m > \u001b[22mPunchCorrectionUseCase\u001b[2m > \u001b[22m新規手動登録を実行した際に、attendance_records と attendance_corrections を正常に保存すること\n \u001b[32m✓\u001b[39m tests/punchCorrection.test.tsx\u001b[2m > \u001b[22mPunchCorrectionUseCase\u001b[2m > \u001b[22m既存打刻修正を実行した際に、元の打刻内容を before 履歴に含め、更新保存すること\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m2 passed\u001b[39m\u001b[22m\u001b[90m (2)\u001b[39m\n\u001b[2m   Start at \u001b[22m 01:48:58\n\u001b[2m   Duration \u001b[22m 1.53s\u001b[2m (transform 213ms, setup 192ms, collect 170ms, tests 38ms, environment 727ms, prepare 131ms)\u001b[22m\n\n",
+  "stderr": "\u001b[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.\u001b[39m\n"
+}

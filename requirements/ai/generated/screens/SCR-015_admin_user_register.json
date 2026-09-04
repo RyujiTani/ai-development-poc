@@ -1,0 +1,918 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-015_admin_user_register.md"
+  },
+  "screen": {
+    "id": "SCR-015",
+    "name": "管理者ユーザー登録画面",
+    "description": "工場側管理者がシステムのユーザーアカウント（工場側管理者アカウント、外注先管理者アカウント）を登録・管理する画面。外注先管理者アカウントの発行もこの画面から行う。",
+    "user_role": "FACTORY_ADMIN",
+    "device": "PC（Chrome）"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-015-FN-001",
+        "summary": "登録済みのユーザーアカウント一覧を表示できる",
+        "detail": "システムに登録されているすべてのユーザー（工場側管理者、外注先管理者）を一覧で取得し表示する。表示項目にはユーザー名、権限種別、所属外注先企業等が含まれる。"
+      },
+      {
+        "id": "SCR-015-FN-002",
+        "summary": "工場側管理者アカウントを新規登録できる",
+        "detail": "権限種別に「工場側管理者」を選択し、ユーザーID、パスワードを入力して新規に管理者ユーザーを登録できる。工場側管理者の場合、所属外注先企業は指定不可（またはnull）となる。"
+      },
+      {
+        "id": "SCR-015-FN-003",
+        "summary": "外注先管理者アカウントを新規発行できる",
+        "detail": "権限種別に「外注先管理者」を選択し、ユーザーID、パスワード、および必須項目として所属外注先企業を選択してアカウントを発行できる。"
+      },
+      {
+        "id": "SCR-015-FN-004",
+        "summary": "既存のユーザーアカウント情報を編集できる",
+        "detail": "一覧から選択した既存ユーザーの登録情報（表示名、権限、所属企業等）を編集し更新できる。パスワードの変更可否や強度規則はシステム全体の仮定に従う。"
+      },
+      {
+        "id": "SCR-015-FN-005",
+        "summary": "ユーザーアカウントを削除（無効化）できる",
+        "detail": "一覧上の操作によって、指定したユーザーアカウントをシステムから削除または無効化状態（status: 'DISABLED' または物理削除）にできる。"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-015-UI-001",
+        "summary": "ユーザーアカウントをリスト/テーブル形式で表示する（ユーザー名、権限種別、所属外注先企業等）",
+        "detail": "登録済みのユーザーアカウントの情報を視認性の高いテーブル形式で一覧表示する。"
+      },
+      {
+        "id": "SCR-015-UI-002",
+        "summary": "「新規登録」ボタンをリスト上部に配置する",
+        "detail": "新規登録フォームを呼び出すためのボタンを、一覧テーブルの上部（アクセスしやすい位置）に配置する。"
+      },
+      {
+        "id": "SCR-015-UI-003",
+        "summary": "各ユーザー行に「編集」「削除」の操作ボタンを配置する",
+        "detail": "一覧の各ユーザーデータ行の右端などに、対象ユーザーを編集・削除するための独立したアクションボタンを配置する。"
+      },
+      {
+        "id": "SCR-015-UI-004",
+        "summary": "新規登録・編集時はモーダルまたはインラインフォームで入力欄を表示する",
+        "detail": "新規登録または編集ボタンを押下した際、画面遷移を伴わずにユーザー情報を入力・編集できるモーダルウィンドウ、または一覧と同画面内でのインラインフォームを展開する。"
+      },
+      {
+        "id": "SCR-015-UI-005",
+        "summary": "一覧はページネーションまたは無限スクロールで表示する",
+        "detail": "データ件数が多い場合に備え、一定件数（例: 20件）ごとにページを分割するページネーションUI、またはスクロールに応じた追加ロードUIを実装する。"
+      },
+      {
+        "id": "SCR-015-UI-006",
+        "summary": "レスポンシブWebデザインでPC/スマホ両対応とする",
+        "detail": "PC・タブレット・スマートフォンの各種画面幅に適応するレスポンシブUIを、Tailwind CSS等を用いて実装する。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-015-VL-001",
+        "summary": "ユーザーID：必須入力。空文字の場合はエラーメッセージを表示。既存IDとの重複不可",
+        "detail": "入力されたユーザーID（login_id/user_id）が空の場合、または既存の有効ユーザーIDと重複している場合、保存処理を中断して画面上にエラーメッセージを表示する。"
+      },
+      {
+        "id": "SCR-015-VL-002",
+        "summary": "パスワード：必須入力（新規登録時）。セキュリティ要件に準拠した強度であること",
+        "detail": "新規登録フォームの保存時にパスワード入力を必須とする。強度の具体的なチェック基準が未定義のため、仮の文字数制限（例：8文字以上）等の簡易バリデーションを適用する。"
+      },
+      {
+        "id": "SCR-015-VL-003",
+        "summary": "権限種別：必須選択（工場側管理者/外注先管理者のいずれか）",
+        "detail": "ユーザーの権限（role）の選択を必須とし、未選択の状態での保存を抑止する。"
+      },
+      {
+        "id": "SCR-015-VL-004",
+        "summary": "所属外注先企業：外注先管理者の場合は必須選択。紐づく外注先企業を選択すること",
+        "detail": "権限種別で「外注先管理者」を選択した際、所属外注先企業（contractor_id）の選択を必須とする。未選択のまま保存を試みた場合は警告を表示する。"
+      },
+      {
+        "id": "SCR-015-VL-005",
+        "summary": "削除操作：削除前に確認ダイアログを表示する",
+        "detail": "ユーザーアカウントの削除ボタン押下時、即時削除せずに「本当に削除しますか？」等の確認ダイアログ（Confirm Modal）を挟むことで誤操作を防止する。"
+      },
+      {
+        "id": "SCR-015-VL-006",
+        "summary": "認証状態：未認証状態または管理者権限がない状態でアクセスした場合は管理者ログイン画面（SCR-010）へリダイレクトする",
+        "detail": "セッション（sessionStorage）から認証情報およびロールを取得し、認証されていないか、ロールが 'FACTORY_ADMIN' 以外の場合は、直ちに管理者ログイン画面へリダイレクト処理を行う。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-015-EV-001",
+        "summary": "「新規登録」ボタン押下：ユーザーアカウント情報の入力フォームを表示する",
+        "detail": "ボタン押下により、新規登録モードでフォームモーダルまたはインラインフォームを開き、入力フィールドを初期状態で表示する。"
+      },
+      {
+        "id": "SCR-015-EV-002",
+        "summary": "登録/更新フォームの「保存」ボタン押下かつバリデーション成功：ユーザーアカウントを登録/更新し、一覧を更新する",
+        "detail": "保存ボタン押下時にフォーム全体のバリデーションを実行。成功した場合は登録（POST）または更新（PUT）のAPIを呼び出し、処理完了後に一覧データを再取得・再描画してフォームを閉じる。トーストで成功メッセージを表示する。"
+      },
+      {
+        "id": "SCR-015-EV-003",
+        "summary": "「編集」ボタン押下：該当ユーザーの情報を入力フォームにロードして表示する",
+        "detail": "対象ユーザーのデータをフォーム内の各入力フィールド（ユーザーID、表示名、権限、所属企業等）にロードし、編集モードとしてフォームを開く。"
+      },
+      {
+        "id": "SCR-015-EV-004",
+        "summary": "「削除」ボタン押下かつ確認OK：該当ユーザーアカウントを削除（無効化）し、一覧を更新する",
+        "detail": "確認ダイアログで肯定的な操作（OK / 削除）が行われた場合にDELETE APIを呼び出し、一覧データから除外（または無効表示に更新）し、完了トーストを表示する。"
+      },
+      {
+        "id": "SCR-015-EV-005",
+        "summary": "権限種別で「外注先管理者」を選択：所属外注先企業の選択欄を表示する",
+        "detail": "フォーム内の権限選択フィールドで 'CONTRACTOR_MANAGER'（外注先管理者）が選ばれた場合にのみ、動的に所属外注先企業のセレクトボックスを表示する。'FACTORY_ADMIN' 選択時は非表示とする。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-015-DT-001",
+        "summary": "GET /api/admin/users — ユーザーアカウント一覧を取得する",
+        "detail": "IndexedDB（usersストア）から登録されている全ユーザー情報を取得する。モック実装では、システム要件に準拠して初期シードからロードしたデータを返却する。"
+      },
+      {
+        "id": "SCR-015-DT-002",
+        "summary": "POST /api/admin/users — ユーザーアカウントを新規登録する",
+        "detail": "入力されたデータをもとに、IndexedDB の users ストアに新規レコードを追加する。パスワードは平文保存せず、簡易ハッシュ化した password_hash として永続化する。監査ログ（audit_logs）に 'CREATE_USER' アクションを記録する。"
+      },
+      {
+        "id": "SCR-015-DT-003",
+        "summary": "PUT /api/admin/users/{user_id} — ユーザーアカウント情報を更新する",
+        "detail": "指定された user_id に対応する IndexedDB 内のレコードを更新する。パスワードの入力があった場合はハッシュ値を再計算して更新する。監査ログを記録する。"
+      },
+      {
+        "id": "SCR-015-DT-004",
+        "summary": "DELETE /api/admin/users/{user_id} — ユーザーアカウントを削除する",
+        "detail": "指定された user_id に対応するユーザーレコードを IndexedDB から物理削除するか、status を 'DISABLED' に更新する。監査ログを記録する。"
+      },
+      {
+        "id": "SCR-015-DT-005",
+        "summary": "GET /api/admin/contractors — 外注先企業選択用のプルダウンデータを取得する",
+        "detail": "フォームで外注先企業を選択するために、IndexedDB（contractorsストア）から有効状態（status: 'ACTIVE'）の外注先企業一覧を取得する。"
+      }
+    ],
+    "api": [
+      {
+        "method": "GET",
+        "path": "/api/admin/users",
+        "description": "ユーザーアカウント一覧の取得（モック）",
+        "response": {
+          "status": 200,
+          "body_type": "User[]"
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/admin/users",
+        "description": "新規ユーザー登録（モック）",
+        "request": {
+          "body": {
+            "user_id": "string",
+            "password": "string(optional)",
+            "role": "Role",
+            "display_name": "string",
+            "contractor_id": "string | null"
+          }
+        },
+        "response": {
+          "status": 201,
+          "body_type": "User"
+        }
+      },
+      {
+        "method": "PUT",
+        "path": "/api/admin/users/{user_id}",
+        "description": "ユーザーアカウントの更新（モック）",
+        "request": {
+          "body": {
+            "role": "Role",
+            "display_name": "string",
+            "contractor_id": "string | null",
+            "password": "string(optional)"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body_type": "User"
+        }
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/admin/users/{user_id}",
+        "description": "ユーザーアカウントの削除/無効化（モック）",
+        "response": {
+          "status": 200,
+          "body": {
+            "success": true
+          }
+        }
+      },
+      {
+        "method": "GET",
+        "path": "/api/admin/contractors",
+        "description": "有効な外注先企業一覧の取得（モック、セレクトボックス用）",
+        "response": {
+          "status": 200,
+          "body_type": "Contractor[]"
+        }
+      }
+    ],
+    "state": [
+      {
+        "name": "usersList",
+        "type": "User[]",
+        "description": "画面に一覧表示するためのユーザーリスト状態。"
+      },
+      {
+        "name": "contractorsList",
+        "type": "Contractor[]",
+        "description": "プルダウン選択肢として保持する外注先企業リスト。"
+      },
+      {
+        "name": "isLoading",
+        "type": "boolean",
+        "description": "APIからデータ取得中、または保存/削除処理中のローディング状態。"
+      },
+      {
+        "name": "formModalState",
+        "type": "object",
+        "description": "編集または新規登録フォームの表示状態。 { isOpen: boolean, mode: 'CREATE' | 'EDIT', initialData: User | null }"
+      },
+      {
+        "name": "isDeleteConfirmOpen",
+        "type": "boolean",
+        "description": "削除確認用モーダルダイアログの開閉状態。"
+      },
+      {
+        "name": "targetDeleteUserId",
+        "type": "string | null",
+        "description": "現在削除対象としてダイアログに指定されているユーザーID。"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-015"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "AC-SCR-015-FN-001",
+      "requirement_id": "SCR-015-FN-001",
+      "scenario": "ユーザーアカウント一覧の正常表示",
+      "steps": [
+        "管理者権限（FACTORY_ADMIN）でログイン後、本画面（SCR-015）にアクセスする。",
+        "ローディング完了後、登録されているユーザー一覧がテーブル形式で表示されることを確認する。"
+      ],
+      "expected": "各ユーザー行に「ユーザーID（ログインID）」「表示名」「権限種別」「所属外注先企業」が正しくマップされて表示されていること。"
+    },
+    {
+      "id": "AC-SCR-015-FN-002",
+      "requirement_id": "SCR-015-FN-002",
+      "scenario": "工場側管理者アカウントの正常登録",
+      "steps": [
+        "「新規登録」ボタンを押下してフォームを開く。",
+        "権限種別で「工場側管理者」を選択する。",
+        "有効な新規ユーザーID、表示名、初期パスワードを入力する。",
+        "「保存」ボタンを押下する。"
+      ],
+      "expected": "バリデーションが通り、一覧テーブルに新たに登録した工場側管理者ユーザーが表示されること（所属企業は空または「-」等で表示されること）。"
+    },
+    {
+      "id": "AC-SCR-015-FN-003",
+      "requirement_id": "SCR-015-FN-003",
+      "scenario": "外注先管理者アカウントの正常登録",
+      "steps": [
+        "「新規登録」ボタンを押下してフォームを開く。",
+        "権限種別で「外注先管理者」を選択する。",
+        "所属外注先企業セレクトボックスから、任意の企業を選択する。",
+        "新規ユーザーID、表示名、初期パスワードを入力して「保存」ボタンを押下する。"
+      ],
+      "expected": "バリデーションが通り、一覧テーブルに新たに所属企業付きで外注先管理者ユーザーが追加表示されること。"
+    },
+    {
+      "id": "AC-SCR-015-FN-004",
+      "requirement_id": "SCR-015-FN-004",
+      "scenario": "既存ユーザーアカウント情報の編集",
+      "steps": [
+        "任意のアカウント行の「編集」ボタンを押下する。",
+        "編集用に入力項目がロードされたフォームが開くことを確認する。",
+        "表示名および所属外注先企業を変更し、「保存」ボタンを押下する。"
+      ],
+      "expected": "保存完了後、一覧テーブル上の該当ユーザー行が変更後の情報に更新されていること。"
+    },
+    {
+      "id": "AC-SCR-015-FN-005",
+      "requirement_id": "SCR-015-FN-005",
+      "scenario": "ユーザーアカウントの削除（無効化）実行",
+      "steps": [
+        "任意のアカウント行の「削除」ボタンを押下する。",
+        "確認ダイアログが表示されるので、「OK」または「削除する」ボタンを押下する。"
+      ],
+      "expected": "削除処理が走り、該当ユーザーが一覧から除外、もしくは非アクティブ表示（削除済み状態）に更新されること。"
+    },
+    {
+      "id": "AC-SCR-015-UI-001",
+      "requirement_id": "SCR-015-UI-001",
+      "scenario": "テーブル構造の検証",
+      "steps": [
+        "ユーザー一覧の各列ヘッダーを確認する。"
+      ],
+      "expected": "ユーザーID（ログインID）、表示名、権限、所属企業が明確なグリッドまたはテーブルカラムで表示されていること。"
+    },
+    {
+      "id": "AC-SCR-015-UI-002",
+      "requirement_id": "SCR-015-UI-002",
+      "scenario": "新規登録ボタンの配置位置検証",
+      "steps": [
+        "画面ヘッダー部、またはテーブル一覧の上部エリアを目視確認する。"
+      ],
+      "expected": "一覧リストの上部に見やすく「新規登録」または「ユーザー追加」ボタンが配置されていること。"
+    },
+    {
+      "id": "AC-SCR-015-UI-003",
+      "requirement_id": "SCR-015-UI-003",
+      "scenario": "行内操作ボタンの配置検証",
+      "steps": [
+        "一覧テーブルの各行の末尾に、個別のアイコンまたはボタンがあるか確認する。"
+      ],
+      "expected": "「編集」ボタンおよび「削除」ボタンが各データ行ごとに識別可能な形で設置されていること。"
+    },
+    {
+      "id": "AC-SCR-015-UI-004",
+      "requirement_id": "SCR-015-UI-004",
+      "scenario": "モーダル/インラインフォーム形式の表示検証",
+      "steps": [
+        "「新規登録」または「編集」ボタンを押下する。"
+      ],
+      "expected": "画面全体の遷移（別URLへのリダイレクト等）が起きず、ダイアログ（モーダル）が画面中央にオーバーレイ表示される、またはインラインでフォーム領域が展開されること。"
+    },
+    {
+      "id": "AC-SCR-015-UI-005",
+      "requirement_id": "SCR-015-UI-005",
+      "scenario": "大量データ時のページネーションUI検証",
+      "steps": [
+        "シードデータなどでユーザーアカウントが制限値（例：20件）以上存在する場合に画面下部を確認する。"
+      ],
+      "expected": "ページネーションコントロール（前へ、次へ、ページ番号等）が表示され、ページ切り替え操作が正常に行えること。"
+    },
+    {
+      "id": "AC-SCR-015-UI-006",
+      "requirement_id": "SCR-015-UI-006",
+      "scenario": "レスポンシブ表示検証",
+      "steps": [
+        "ブラウザの開発者ツールで表示幅をスマートフォンサイズ（375px等）に変更する。"
+      ],
+      "expected": "テーブルが横スクロール可能になるか、またはカード型レイアウト等に折りたたまれ、画面外へのはみ出しや操作不可能な崩れが発生しないこと。"
+    },
+    {
+      "id": "AC-SCR-015-VL-001",
+      "requirement_id": "SCR-015-VL-001",
+      "scenario": "ユーザーIDバリデーション（必須・重複エラー）",
+      "steps": [
+        "新規登録フォームを開き、ユーザーIDを空欄にしたまま「保存」を押下する。",
+        "次に、すでに登録済みのユーザーID（例: 'admin1' 等）を入力して「保存」を押下する。"
+      ],
+      "expected": "空欄時は「ユーザーIDは必須項目です」、重複時は「このユーザーIDは既に登録されています」等のバリデーションエラーメッセージが表示され、処理が失敗すること。"
+    },
+    {
+      "id": "AC-SCR-015-VL-002",
+      "requirement_id": "SCR-015-VL-002",
+      "scenario": "新規時パスワード必須バリデーション",
+      "steps": [
+        "新規登録フォームを開き、ユーザーIDと権限を入力し、パスワード欄を空欄にしたまま「保存」ボタンを押下する。"
+      ],
+      "expected": "「パスワードを入力してください」等の必須エラーメッセージが表示され、新規追加APIが呼ばれないこと。"
+    },
+    {
+      "id": "AC-SCR-015-VL-003",
+      "requirement_id": "SCR-015-VL-003",
+      "scenario": "権限種別の未選択防止",
+      "steps": [
+        "新規登録フォームを開き、権限の初期選択状態（未選択/プレースホルダー）のまま他の項目を埋めて「保存」ボタンを押下する。"
+      ],
+      "expected": "「権限種別を選択してください」等のバリデーションエラーが発生すること。"
+    },
+    {
+      "id": "AC-SCR-015-VL-004",
+      "requirement_id": "SCR-015-VL-004",
+      "scenario": "外注先管理者時の所属外注先未選択エラー",
+      "steps": [
+        "登録フォームで権限「外注先管理者」を選択する。",
+        "所属企業プルダウンを未選択（「選択してください」等）にしたまま「保存」を押下する。"
+      ],
+      "expected": "「外注先管理者の場合は、所属企業を選択してください」等のエラーメッセージが表示され、保存処理が防がれること。"
+    },
+    {
+      "id": "AC-SCR-015-VL-005",
+      "requirement_id": "SCR-015-VL-005",
+      "scenario": "削除ダイアログでのキャンセル挙動",
+      "steps": [
+        "あるユーザーの「削除」ボタンを押下し、表示される確認ダイアログで「キャンセル」を押下する。"
+      ],
+      "expected": "ダイアログが閉じ、該当ユーザーは削除されずに一覧に残り続けること。"
+    },
+    {
+      "id": "AC-SCR-015-VL-006",
+      "requirement_id": "SCR-015-VL-006",
+      "scenario": "未認証ユーザーアクセス制御",
+      "steps": [
+        "sessionStorageの認証データを消去（または非管理者ロールを設定）した状態で、URL `/(factory)/admin-user-register` に直接アクセスする。"
+      ],
+      "expected": "画面が表示されず、自動的に管理者ログイン画面 `/(auth)/login` もしくは `/login`（SCR-010）へ即座にリダイレクトされること。"
+    },
+    {
+      "id": "AC-SCR-015-EV-001",
+      "requirement_id": "SCR-015-EV-001",
+      "scenario": "新規ボタン押下によるフォーム起動",
+      "steps": [
+        "「新規登録」ボタンを押下する。"
+      ],
+      "expected": "フォーム画面が開き、各フィールドが空白（または初期値）になっており、ユーザーIDの入力欄が編集可能（活性化）であることを確認する。"
+    },
+    {
+      "id": "AC-SCR-015-EV-002",
+      "requirement_id": "SCR-015-EV-002",
+      "scenario": "保存成功時の一覧データ再描画",
+      "steps": [
+        "入力フォームで必要事項を正しく入力し、「保存」を押下する。"
+      ],
+      "expected": "IndexedDBに保存され、一覧を更新するためのAPIが再コールされ、モーダルが自動で閉じ、トーストで「保存が完了しました」と通知されること。"
+    },
+    {
+      "id": "AC-SCR-015-EV-003",
+      "requirement_id": "SCR-015-EV-003",
+      "scenario": "編集フォームのデータ初期ロード",
+      "steps": [
+        "ユーザーID 'user-test-01' の「編集」ボタンを押下する。"
+      ],
+      "expected": "フォームが開き、ユーザーID入力欄に 'user-test-01' が自動設定されていること。新規登録とは異なり、ユーザーID（キー情報）が編集不可能（非活性化）に制御されていること。"
+    },
+    {
+      "id": "AC-SCR-015-EV-004",
+      "requirement_id": "SCR-015-EV-004",
+      "scenario": "削除確認承認による一覧即時更新",
+      "steps": [
+        "ユーザーID 'user-delete-target' の「削除」ボタンを押し、確認ダイアログで削除を許可（OK）する。"
+      ],
+      "expected": "トースト表示とともにダイアログが閉じ、一覧から 'user-delete-target' の行が消滅していること。"
+    },
+    {
+      "id": "AC-SCR-015-EV-005",
+      "requirement_id": "SCR-015-EV-005",
+      "scenario": "権限種別選択による動的UI切り替え",
+      "steps": [
+        "フォームを開いた状態で、権限種別プルダウンを「工場側管理者」に設定する（確認1）。",
+        "次に、「外注先管理者」に変更する（確認2）。"
+      ],
+      "expected": "確認1では「所属外注先企業」の選択項目が非表示（または選択不可）になること。確認2では「所属外注先企業」の選択項目が動的に表示（または選択必須）になること。"
+    },
+    {
+      "id": "AC-SCR-015-DT-001",
+      "requirement_id": "SCR-015-DT-001",
+      "scenario": "APIからのデータ取得とマスタ結合",
+      "steps": [
+        "画面の初期レンダリング時、IndexedDB 内の users 情報を取得するAPIリクエストを模倣したロード関数が動くことを確認する。"
+      ],
+      "expected": "返却される users データ内に `contractor_id` が含まれている場合、事前に取得した contractors リストから名称を検索し、「株式会社〇〇」のように企業名に読み替えて一覧に表示されること。"
+    },
+    {
+      "id": "AC-SCR-015-DT-002",
+      "requirement_id": "SCR-015-DT-002",
+      "scenario": "ユーザー新規登録時のIndexedDB永続化確認",
+      "steps": [
+        "新規登録フォームからデータを送信する。"
+      ],
+      "expected": "IndexedDB（idb ラッパ）を介して users ストア内に新しいオブジェクトが追加されていること。また、監査ログ（audit_logs）に記録が発生していること。"
+    },
+    {
+      "id": "AC-SCR-015-DT-003",
+      "requirement_id": "SCR-015-DT-003",
+      "scenario": "ユーザー更新時の永続化確認",
+      "steps": [
+        "編集フォームから、既存の特定ユーザーの表示名を変更して保存を完了させる。"
+      ],
+      "expected": "IndexedDB内の対象ユーザーレコードの `display_name` が変更後の値に上書きされ、`updated_at` が現在のシステム日時に更新されていること。"
+    },
+    {
+      "id": "AC-SCR-015-DT-004",
+      "requirement_id": "SCR-015-DT-004",
+      "scenario": "削除APIトリガー時のIndexedDB永続化確認",
+      "steps": [
+        "特定ユーザーの削除を完了させる。"
+      ],
+      "expected": "IndexedDBの users ストアから対象レコードが削除されていること（もしくは status: 'DISABLED' 等への更新が行われていること）。"
+    },
+    {
+      "id": "AC-SCR-015-DT-005",
+      "requirement_id": "SCR-015-DT-005",
+      "scenario": "プルダウン用外注先企業のデータ取得確認",
+      "steps": [
+        "新規登録または編集用フォームを立ち上げた際、プルダウンに格納されているリスト情報を確認する。"
+      ],
+      "expected": "IndexedDBの contractors ストアから取得した有効（ACTIVE）な企業名が正しく選択肢としてリストアップされていること。"
+    }
+  ],
+  "tests": [
+    {
+      "id": "TS-SCR-015-001",
+      "type": "unit",
+      "requirement_id": "SCR-015-FN-001",
+      "input": "モックDBに登録されているテスト用の管理者ユーザー一覧データ",
+      "steps": [
+        "対象画面コンポーネントをレンダリングする。",
+        "GET /api/admin/users のモックAPIを解決させる。",
+        "一覧テーブルの行数を取得し、モックデータの件数と一致するか確認する。"
+      ],
+      "expected": "画面上にテーブル行としてモックデータの内容が完全にレンダリングされていること。"
+    },
+    {
+      "id": "TS-SCR-015-002",
+      "type": "unit",
+      "requirement_id": "SCR-015-FN-002",
+      "input": "新規登録フォーム用入力データ（role: FACTORY_ADMIN, user_id: 'new-admin-99', display_name: '工場テスト管理者', password: 'password123'）",
+      "steps": [
+        "新規登録フォームを開き、各テストデータをフォーム項目に入力する。",
+        "所属企業選択UIが非表示（または選択不可）であることをアサーションする。",
+        "「保存」ボタンのクリックイベントを発火する。"
+      ],
+      "expected": "POST /api/admin/users にリクエストが送信され、エラーなく終了し、一覧再取得が走ること。"
+    },
+    {
+      "id": "TS-SCR-015-003",
+      "type": "unit",
+      "requirement_id": "SCR-015-FN-003",
+      "input": "新規登録フォーム用入力データ（role: CONTRACTOR_MANAGER, user_id: 'con-mgr-99', display_name: '外注先テスト管理者', contractor_id: 'test-contractor-uuid', password: 'password123'）",
+      "steps": [
+        "新規登録フォームを開き、権限を外注先管理者に選択する。",
+        "表示された所属外注先企業セレクトボックスから指定のUUIDを選択する。",
+        "各情報を入力し、「保存」ボタンを押下する。"
+      ],
+      "expected": "リクエストパラメータに `contractor_id` が含まれた状態で、POST /api/admin/users APIが正常に呼び出されること。"
+    },
+    {
+      "id": "TS-SCR-015-004",
+      "type": "unit",
+      "requirement_id": "SCR-015-FN-004",
+      "input": "既存ユーザーデータ（user_id: 'existing-id'）と編集後の変更データ",
+      "steps": [
+        "該当ユーザー行の「編集」ボタンをクリックする。",
+        "フォームが表示され、既存値が初期設定されていることをアサーションする。",
+        "表示名フィールドの値を変更し、「保存」を押下する。"
+      ],
+      "expected": "PUT /api/admin/users/existing-id に変更後のデータが正しく送信されること。"
+    },
+    {
+      "id": "TS-SCR-015-005",
+      "type": "unit",
+      "requirement_id": "SCR-015-FN-005",
+      "input": "削除対象ユーザーデータ（user_id: 'delete-id'）",
+      "steps": [
+        "該当行の「削除」ボタンをクリックする。",
+        "確認メッセージのダイアログに対し、OKアクションを実行する。"
+      ],
+      "expected": "DELETE /api/admin/users/delete-id が呼び出され、正常ステータスが返ること。"
+    },
+    {
+      "id": "TS-SCR-015-006",
+      "type": "unit",
+      "requirement_id": "SCR-015-VL-001",
+      "input": "重複するユーザーID 'existing-admin'",
+      "steps": [
+        "新規登録フォームのユーザーID欄に 'existing-admin' を入力する。",
+        "他の必要項目を埋め、保存を押下する。"
+      ],
+      "expected": "エラー表示領域に、IDが重複している旨のエラー文言が表示され、APIのPOST送信処理がブロックされること。"
+    },
+    {
+      "id": "TS-SCR-015-007",
+      "type": "unit",
+      "requirement_id": "SCR-015-VL-002",
+      "input": "新規登録フォームでパスワードを空欄にしたデータ",
+      "steps": [
+        "新規登録用のフォームを起動する。",
+        "パスワード入力を意図的にスキップし、保存を押下する。"
+      ],
+      "expected": "フォーム検証により「パスワードは必須」というエラーメッセージが画面にレンダリングされること。"
+    },
+    {
+      "id": "TS-SCR-015-008",
+      "type": "unit",
+      "requirement_id": "SCR-015-VL-004",
+      "input": "外注先管理者選択かつ所属企業未指定",
+      "steps": [
+        "フォームにて role に 'CONTRACTOR_MANAGER' を指定する。",
+        "所属企業（contractor_id）を空欄（未選択）のまま保存をクリックする。"
+      ],
+      "expected": "企業選択が必須である旨のバリデーションエラーが発生し、処理が中断されること。"
+    },
+    {
+      "id": "TS-SCR-015-009",
+      "type": "unit",
+      "requirement_id": "SCR-015-VL-006",
+      "input": "非ログイン状態、またはロールが 'CONTRACTOR_MANAGER'（対象外権限）のセッション情報",
+      "steps": [
+        "sessionStorageに不正なセッションを注入する。",
+        "コンポーネントを初期化またはマウントする。"
+      ],
+      "expected": "リダイレクトを処理するルーター関数（mockRouter.push等）が呼び出され、`/login` もしくは `/` へ遷移がトリガーされること。"
+    },
+    {
+      "id": "TS-SCR-015-010",
+      "type": "unit",
+      "requirement_id": "SCR-015-EV-005",
+      "input": "権限種別のトグル操作",
+      "steps": [
+        "フォームを初期表示する。",
+        "権限種別のセレクトボックスの値を 'FACTORY_ADMIN' に設定する（確認1）。",
+        "値を 'CONTRACTOR_MANAGER' に変更する（確認2）。"
+      ],
+      "expected": "確認1の時点では所属企業のDOM要素が存在しない（または非表示である）こと。確認2の時点で所属企業のDOM要素が表示され、インタラクティブに入力可能になること。"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-001",
+      "target": "初期パスワードの発行・設定フローおよびパスワード強度要件",
+      "reason": "画面設計において「初期パスワードの発行方法（自動生成、管理者が手動設定、メール通知等）が未定」とある。また「セキュリティ要件に準拠した強度」の具体的な要件（桁数、英数字・記号の必須混在ルール等）の指定がない。",
+      "sources": {
+        "system_requirements": "non_functional.security に『パスワードを平文表示しない』程度の記述があるのみで強度の詳細は未定義。",
+        "trace_index": "N/A",
+        "screen_design": "「確認事項：初期パスワードの発行方法が未定」および「バリデーション要件：セキュリティ要件に準拠した強度であること」"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-002",
+      "target": "ログインユーザー自身の削除・無効化の抑止仕様",
+      "reason": "画面設計に「自分自身のアカウントを削除できないようにする制御の要否が未定」とあり、ログイン中のセッションユーザーが自身に対して削除（DELETE）処理をリクエストした際の制御ルールが確定していない。",
+      "sources": {
+        "system_requirements": "N/A",
+        "trace_index": "N/A",
+        "screen_design": "「確認事項：自分自身のアカウントを削除できないようにする制御の要否が未定。」"
+      },
+      "resolution": "manual_confirmation"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-015-FN-001",
+      "acceptance_ids": [
+        "AC-SCR-015-FN-001",
+        "AC-SCR-015-UI-001"
+      ],
+      "test_ids": [
+        "TS-SCR-015-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-FN-002",
+      "acceptance_ids": [
+        "AC-SCR-015-FN-002"
+      ],
+      "test_ids": [
+        "TS-SCR-015-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-FN-003",
+      "acceptance_ids": [
+        "AC-SCR-015-FN-003"
+      ],
+      "test_ids": [
+        "TS-SCR-015-003"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-FN-004",
+      "acceptance_ids": [
+        "AC-SCR-015-FN-004"
+      ],
+      "test_ids": [
+        "TS-SCR-015-004"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-FN-005",
+      "acceptance_ids": [
+        "AC-SCR-015-FN-005"
+      ],
+      "test_ids": [
+        "TS-SCR-015-005"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-UI-001",
+      "acceptance_ids": [
+        "AC-SCR-015-UI-001"
+      ],
+      "test_ids": [
+        "TS-SCR-015-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-UI-002",
+      "acceptance_ids": [
+        "AC-SCR-015-UI-002"
+      ],
+      "test_ids": [
+        "TS-SCR-015-002",
+        "TS-SCR-015-003"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-UI-003",
+      "acceptance_ids": [
+        "AC-SCR-015-UI-003"
+      ],
+      "test_ids": [
+        "TS-SCR-015-004",
+        "TS-SCR-015-005"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-UI-004",
+      "acceptance_ids": [
+        "AC-SCR-015-UI-004"
+      ],
+      "test_ids": [
+        "TS-SCR-015-002",
+        "TS-SCR-015-003",
+        "TS-SCR-015-004"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-UI-005",
+      "acceptance_ids": [
+        "AC-SCR-015-UI-005"
+      ],
+      "test_ids": [
+        "TS-SCR-015-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-UI-006",
+      "acceptance_ids": [
+        "AC-SCR-015-UI-006"
+      ],
+      "test_ids": []
+    },
+    {
+      "requirement_id": "SCR-015-VL-001",
+      "acceptance_ids": [
+        "AC-SCR-015-VL-001"
+      ],
+      "test_ids": [
+        "TS-SCR-015-006"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-VL-002",
+      "acceptance_ids": [
+        "AC-SCR-015-VL-002"
+      ],
+      "test_ids": [
+        "TS-SCR-015-007"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-VL-003",
+      "acceptance_ids": [
+        "AC-SCR-015-VL-003"
+      ],
+      "test_ids": [
+        "TS-SCR-015-008"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-VL-004",
+      "acceptance_ids": [
+        "AC-SCR-015-VL-004"
+      ],
+      "test_ids": [
+        "TS-SCR-015-008"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-VL-005",
+      "acceptance_ids": [
+        "AC-SCR-015-VL-005"
+      ],
+      "test_ids": [
+        "TS-SCR-015-005"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-VL-006",
+      "acceptance_ids": [
+        "AC-SCR-015-VL-006"
+      ],
+      "test_ids": [
+        "TS-SCR-015-009"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-EV-001",
+      "acceptance_ids": [
+        "AC-SCR-015-EV-001"
+      ],
+      "test_ids": []
+    },
+    {
+      "requirement_id": "SCR-015-EV-002",
+      "acceptance_ids": [
+        "AC-SCR-015-EV-002"
+      ],
+      "test_ids": [
+        "TS-SCR-015-002",
+        "TS-SCR-015-003"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-EV-003",
+      "acceptance_ids": [
+        "AC-SCR-015-EV-003"
+      ],
+      "test_ids": [
+        "TS-SCR-015-004"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-EV-004",
+      "acceptance_ids": [
+        "AC-SCR-015-EV-004"
+      ],
+      "test_ids": [
+        "TS-SCR-015-005"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-EV-005",
+      "acceptance_ids": [
+        "AC-SCR-015-EV-005"
+      ],
+      "test_ids": [
+        "TS-SCR-015-010"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-DT-001",
+      "acceptance_ids": [
+        "AC-SCR-015-DT-001"
+      ],
+      "test_ids": [
+        "TS-SCR-015-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-DT-002",
+      "acceptance_ids": [
+        "AC-SCR-015-DT-002"
+      ],
+      "test_ids": [
+        "TS-SCR-015-002",
+        "TS-SCR-015-003"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-DT-003",
+      "acceptance_ids": [
+        "AC-SCR-015-DT-003"
+      ],
+      "test_ids": [
+        "TS-SCR-015-004"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-DT-004",
+      "acceptance_ids": [
+        "AC-SCR-015-DT-004"
+      ],
+      "test_ids": [
+        "TS-SCR-015-005"
+      ]
+    },
+    {
+      "requirement_id": "SCR-015-DT-005",
+      "acceptance_ids": [
+        "AC-SCR-015-DT-005"
+      ],
+      "test_ids": [
+        "TS-SCR-015-010"
+      ]
+    }
+  ]
+}

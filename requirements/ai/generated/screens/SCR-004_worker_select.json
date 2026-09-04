@@ -1,0 +1,753 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-004_worker_select.md"
+  },
+  "screen": {
+    "id": "SCR-004",
+    "name": "作業員選択画面",
+    "user_role": "CONTRACTOR_MANAGER",
+    "route": "app/(contractor)/worker-select/page.tsx",
+    "description": "外注先管理者が打刻対象の作業員を一覧から選択する画面。チェックボックスによる一括選択が可能。選択された打刻モード（出勤/退勤）が画面上部に表示される。"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-004-FN-001",
+        "summary": "自社所属作業員の表示",
+        "description": "ログイン中の外注先管理者の所属企業（contractor_id）に紐づく作業員一覧を表示できる。"
+      },
+      {
+        "id": "SCR-004-FN-002",
+        "summary": "個別の作業員選択",
+        "description": "作業員をチェックボックスで個別に選択できる。"
+      },
+      {
+        "id": "SCR-004-FN-003",
+        "summary": "一括選択・一括解除",
+        "description": "一覧に表示されている全作業員を一括して選択、または選択解除できる。"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-004-UI-001",
+        "summary": "チェックボックス付きリスト",
+        "description": "作業員をチェックボックス付きのリスト形式で表示する。"
+      },
+      {
+        "id": "SCR-004-UI-002",
+        "summary": "一括操作用UIの配置",
+        "description": "全選択/全解除用のチェックボックスを作業員リストの上部に配置する。"
+      },
+      {
+        "id": "SCR-004-UI-003",
+        "summary": "打刻モードの明示",
+        "description": "前画面（SCR-003）で選択された打刻モード（出勤/退勤）を画面上部に分かりやすく表示する。"
+      },
+      {
+        "id": "SCR-004-UI-004",
+        "summary": "レスポンシブWebデザイン",
+        "description": "Tailwind CSSを使用し、PC（デスクトップ）およびスマホ・タブレットの両画面サイズに最適化されたレイアウトを提供する。"
+      },
+      {
+        "id": "SCR-004-UI-005",
+        "summary": "大きめのタップ領域",
+        "description": "スマートフォンなどのモバイル端末での屋外操作を考慮し、チェックボックスやボタンなどのタップ領域を大きく（44x44px以上推奨）実装する。"
+      },
+      {
+        "id": "SCR-004-UI-006",
+        "summary": "一覧の表示制御",
+        "description": "作業員数が多数の場合を想定し、ページネーションまたは無限スクロールを使用して表示する。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-004-VL-001",
+        "summary": "作業員の選択バリデーション",
+        "description": "「次へ」ボタン押下時に、作業員が1名以上選択されていない場合は、画面にエラーメッセージを表示し、遷移をブロックする。"
+      },
+      {
+        "id": "SCR-004-VL-002",
+        "summary": "未認証時の強制リダイレクト",
+        "description": "ログインセッションが存在しない状態でアクセスした場合、ログイン画面（SCR-001）へリダイレクトする。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-004-EV-001",
+        "summary": "「次へ」ボタン押下イベント",
+        "description": "1名以上の作業員が選択されている状態で「次へ」ボタンを押下した際、選択された作業員情報および打刻モードを状態管理（Zustand等）に保持したまま、撮影・送信画面（SCR-005）へ遷移する。"
+      },
+      {
+        "id": "SCR-004-EV-002",
+        "summary": "戻るボタン押下イベント",
+        "description": "戻るボタンが押下された際、打刻モード選択画面（SCR-003）へ遷移する。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-004-DT-001",
+        "summary": "作業員データのロード",
+        "description": "ログイン中のユーザーの `contractor_id` を用いて、リポジトリ（IndexedDB）から紐づく作業員一覧を取得する。"
+      },
+      {
+        "id": "SCR-004-DT-002",
+        "summary": "選択パラメータの保持",
+        "description": "選択された作業員の `worker_id` の配列、および引き継いだ `punch_type`（'CLOCK_IN' | 'CLOCK_OUT'）を、画面遷移時に引き渡すために一時保持する。"
+      }
+    ],
+    "api": [
+      {
+        "id": "SCR-004-AP-001",
+        "summary": "作業員一覧取得API(モック)",
+        "description": "GET /api/workers を用いて、ログインユーザーの所属企業に紐づく作業員一覧をIndexedDBから取得する。"
+      }
+    ],
+    "state": [
+      {
+        "id": "SCR-004-ST-001",
+        "summary": "選択中作業員IDリスト",
+        "description": "現在チェックボックスで選択されている作業員のID（string[]）を保持するコンポーネント内またはグローバルな状態。"
+      },
+      {
+        "id": "SCR-004-ST-002",
+        "summary": "引き継がれた打刻モード",
+        "description": "前画面（SCR-003）から引き継いだ打刻モードの値（'CLOCK_IN' | 'CLOCK_OUT'）を保持する状態。"
+      },
+      {
+        "id": "SCR-004-ST-003",
+        "summary": "データロード状態",
+        "description": "IndexedDBからの作業員データ読み込み処理が進行中（loading）か、完了したかを管理する状態。"
+      },
+      {
+        "id": "SCR-004-ST-004",
+        "summary": "エラーメッセージ状態",
+        "description": "バリデーションエラー（未選択など）や読み込みエラーが発生した際のメッセージ（string | null）を管理する状態。"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-004"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "SCR-004-AC-001",
+      "requirement_id": "SCR-004-FN-001",
+      "input": "自社の「contractor_id: cont-abc」を持つ外注先管理者アカウントでログインする。",
+      "operation": "作業員選択画面（SCR-004）を表示する。",
+      "expected": "画面上に「contractor_id: cont-abc」に紐づく作業員のみが表示され、他社の作業員が表示されないこと。"
+    },
+    {
+      "id": "SCR-004-AC-002",
+      "requirement_id": "SCR-004-FN-002",
+      "input": "表示されている作業員リスト。",
+      "operation": "特定の作業員の行またはチェックボックスをタップ・クリックする。",
+      "expected": "対象作業員のチェックボックスがチェック済みの状態に変化し、再度タップすると未チェックに戻ること。"
+    },
+    {
+      "id": "SCR-004-AC-003",
+      "requirement_id": "SCR-004-FN-003",
+      "input": "作業員リスト上部の一括チェックボックス。",
+      "operation": "一括チェックボックスをONにする。再度OFFにする。",
+      "expected": "ONにした際は全作業員が選択状態になり、OFFにした際は全作業員が未選択状態になること。"
+    },
+    {
+      "id": "SCR-004-AC-004",
+      "requirement_id": "SCR-004-UI-001",
+      "input": "画面表示要求。",
+      "operation": "画面を表示する。",
+      "expected": "作業員の一覧が、氏名などの情報とともに左側にチェックボックスを配置したリスト形式で正しく並んでいること。"
+    },
+    {
+      "id": "SCR-004-AC-005",
+      "requirement_id": "SCR-004-UI-002",
+      "input": "画面レイアウトの確認。",
+      "operation": "作業員リストの上部エリアを確認する。",
+      "expected": "全選択/全解除を行えるマスタチェックボックス、あるいはそれに該当するラベルボタンがリストの上部に配置されていること。"
+    },
+    {
+      "id": "SCR-004-AC-006",
+      "requirement_id": "SCR-004-UI-003",
+      "input": "前画面で「出勤」を選択して遷移。",
+      "operation": "画面ヘッダーまたは上部カード領域を確認する。",
+      "expected": "「出勤モード」または「出勤の打刻作業」といった文字列が明瞭に表示されていること。"
+    },
+    {
+      "id": "SCR-004-AC-007",
+      "requirement_id": "SCR-004-UI-004",
+      "input": "ブラウザ解像度の変更（PCサイズおよびスマホサイズ：375px等）。",
+      "operation": "レスポンシブなビューポート幅で画面を表示する。",
+      "expected": "スマホ幅ではリストやボタンが画面に収まるよう縦並びに縮小・調整され、横スクロールが発生しないこと。"
+    },
+    {
+      "id": "SCR-004-AC-008",
+      "requirement_id": "SCR-004-UI-005",
+      "input": "スマホ表示でのチェックボックス領域および「次へ」ボタン。",
+      "operation": "各要素のタップ領域をインスペクターで確認、または実機で操作する。",
+      "expected": "容易にタップできるよう、余白が十分に確保されている（タップターゲットが十分なピクセルサイズである）こと。"
+    },
+    {
+      "id": "SCR-004-AC-009",
+      "requirement_id": "SCR-004-UI-006",
+      "input": "テストデータに100人の作業員が存在する状態。",
+      "operation": "作業員一覧をスクロールまたはページめくり操作をする。",
+      "expected": "ページネーションまたは無限スクロールにより、一画面でパフォーマンスを損なわずに全データにアクセス可能であること。"
+    },
+    {
+      "id": "SCR-004-AC-010",
+      "requirement_id": "SCR-004-VL-001",
+      "input": "誰も選択していない状態の画面。",
+      "operation": "「次へ」ボタンを押下する。",
+      "expected": "画面の適切な位置、あるいはトースト通知等で「作業員を1名以上選択してください」という警告メッセージが表示され、画面遷移が阻止されること。"
+    },
+    {
+      "id": "SCR-004-AC-011",
+      "requirement_id": "SCR-004-VL-002",
+      "input": "sessionStorageに認証情報が存在しない（未ログイン）状態。",
+      "operation": "直接URL `app/(contractor)/worker-select/page.tsx` にアクセスする。",
+      "expected": "画面は表示されず、即座にログイン画面（SCR-001）へ強制リダイレクトされること。"
+    },
+    {
+      "id": "SCR-004-AC-012",
+      "requirement_id": "SCR-004-EV-001",
+      "input": "作業員AとBのチェックボックスを選択した状態。",
+      "operation": "「次へ」ボタンを押下する。",
+      "expected": "選択情報が状態保存され、画面が「SCR-005（撮影・送信画面）」に遷移すること。"
+    },
+    {
+      "id": "SCR-004-AC-013",
+      "requirement_id": "SCR-004-EV-002",
+      "input": "作業員選択画面。",
+      "operation": "「戻る」ボタンを押下する。",
+      "expected": "打刻モード選択画面（SCR-003）へ遷移すること。"
+    },
+    {
+      "id": "SCR-004-AC-014",
+      "requirement_id": "SCR-004-DT-001",
+      "input": "IndexedDBに保存された作業員データ。ログインユーザーのcontractor_idは「cont-abc」。",
+      "operation": "画面を読み込む。",
+      "expected": "IndexedDBの `workers` ストアより、`contractor_id` が「cont-abc」かつ `status` が「ACTIVE」の作業員一覧が正常にクエリされ取得されていること。"
+    },
+    {
+      "id": "SCR-004-AC-015",
+      "requirement_id": "SCR-004-DT-002",
+      "input": "選択された複数のworker_idと打刻モード。",
+      "operation": "次画面へ遷移するイベントを惹起させる。",
+      "expected": "セッション、Context、またはZustandなどの適切な状態保持コンテナに、遷移直前に入力されていたデータ（打刻モードおよび選択済みID）が格納されること。"
+    },
+    {
+      "id": "SCR-004-AC-016",
+      "requirement_id": "SCR-004-AP-001",
+      "input": "リクエスト GET /api/workers の模擬シミュレーション。",
+      "operation": "APIハンドラ（またはモックリポ関数）を実行する。",
+      "expected": "セッション上の認証情報に対応する `contractor_id` のみが検索条件に適用され、漏れなく該当企業用の作業員一覧JSONが返却されること。"
+    },
+    {
+      "id": "SCR-004-AC-017",
+      "requirement_id": "SCR-004-ST-001",
+      "input": "UI上のチェック操作。",
+      "operation": "作業員リストで複数人を選択する。",
+      "expected": "React stateとしての `selectedWorkerIds` 配列に、選択した作業員のUUIDが即座に追加され、表示に反映されること。"
+    },
+    {
+      "id": "SCR-004-AC-018",
+      "requirement_id": "SCR-004-ST-002",
+      "input": "Zustand等に保持された前画面の打刻モード（CLOCK_OUT）。",
+      "operation": "画面にアクセスする。",
+      "expected": "画面表示初期化時に `punchMode` 状態が 'CLOCK_OUT' に設定され、画面上の表示も「退勤」となること。"
+    },
+    {
+      "id": "SCR-004-AC-019",
+      "requirement_id": "SCR-004-ST-003",
+      "input": "データ取得の遅延再現。",
+      "operation": "データ取得中の瞬間を確認する。",
+      "expected": "画面にスケルトンや「読み込み中...」のスピナー等、非同期ロード中のUI（loading === true）が表示され、データ取得後に非表示になること。"
+    },
+    {
+      "id": "SCR-004-AC-020",
+      "requirement_id": "SCR-004-ST-004",
+      "input": "バリデーションエラーの発生。",
+      "operation": "未選択で次へを押下し、エラー状態をアクティブにする。",
+      "expected": "エラー状態（errorMessage）に適切なテキストが格納され、画面上のエラーアラートが表示されること。"
+    }
+  ],
+  "tests": [
+    {
+      "id": "SCR-004-T-001",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-004-FN-001",
+        "SCR-004-DT-001",
+        "SCR-004-AP-001"
+      ],
+      "input": "mockWorkers = [{ worker_id: 'w-1', contractor_id: 'cont-1', name: '作業員A', status: 'ACTIVE' }, { worker_id: 'w-2', contractor_id: 'cont-2', name: '他社作業員', status: 'ACTIVE' }]",
+      "steps": [
+        "sessionStorageにログインユーザー（contractor_id: 'cont-1'）のモックセッションを設定する。",
+        "IndexedDB（モック）に上記作業員データを登録する。",
+        "SCR-004コンポーネントをレンダリングし、データをロードする。"
+      ],
+      "expected": "画面に「作業員A」は表示され、「他社作業員」が表示されないことをアサーションする。"
+    },
+    {
+      "id": "SCR-004-T-002",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-004-FN-002",
+        "SCR-004-ST-001"
+      ],
+      "input": "ロードされた作業員リスト。",
+      "steps": [
+        "作業員A（w-1）のチェックボックスに該当する要素を取得する。",
+        "要素をシミュレートクリック（fireEvent.click）する。"
+      ],
+      "expected": "チェックボックスが checked となり、内部状態の選択中リストに 'w-1' が含まれることを検証する。"
+    },
+    {
+      "id": "SCR-004-T-003",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-004-FN-003",
+        "SCR-004-UI-002"
+      ],
+      "input": "リスト表示された複数名（w-1, w-3, w-4）の作業員データ。",
+      "steps": [
+        "リスト上部にある「一括選択」チェックボックスをシミュレートクリック（fireEvent.click）する。"
+      ],
+      "expected": "全作業員（w-1, w-3, w-4）のチェックボックスがすべて checked になり、内部状態に全てのIDが格納されることを検証する。"
+    },
+    {
+      "id": "SCR-004-T-004",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-004-UI-001"
+      ],
+      "input": "作業員リスト表示。",
+      "steps": [
+        "作業員一覧をレンダリングする。"
+      ],
+      "expected": "チェックボックス input 要素（type='checkbox'）がリスト内の作業員の数だけ存在することを検証する。"
+    },
+    {
+      "id": "SCR-004-T-005",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-004-UI-002"
+      ],
+      "input": "ヘッダーレイアウトレンダリング。",
+      "steps": [
+        "画面のDOM構造を確認する。"
+      ],
+      "expected": "テーブルやリストのthead、あるいは最上部付近にマスタ用のチェックボックス要素が単一で存在することをアサーションする。"
+    },
+    {
+      "id": "SCR-004-T-006",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-004-UI-003",
+        "SCR-004-ST-002"
+      ],
+      "input": "グローバルステートの `punchMode` が 'CLOCK_IN' または 'CLOCK_OUT' の状態。",
+      "steps": [
+        "Zustand状態を CLOCK_IN に設定して画面をロードする。",
+        "Zustand状態を CLOCK_OUT に再設定して画面をロードする。"
+      ],
+      "expected": "前者の場合は「出勤」というテキストが、後者の場合は「退勤」というテキストがそれぞれ画面に表示されていることを確認する。"
+    },
+    {
+      "id": "SCR-004-T-007",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-004-UI-004"
+      ],
+      "input": "画面全体のレイアウトコンポーネント。",
+      "steps": [
+        "コンポーネントが Tailwind CSS のグリッド、フレックス、あるいはメディアクエリ用クラス（md: や lg: など）を含んでいるかをDOMチェックする。"
+      ],
+      "expected": "レスポンシブデザインに必須なクラス（w-full, flex, grid 等）が適用されていることを確認する。"
+    },
+    {
+      "id": "SCR-004-T-008",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-004-UI-005"
+      ],
+      "input": "チェックボックス等のボタン領域。",
+      "steps": [
+        "チェックボックスやトグルボタン要素に付与されているクラス（p-3, h-11, w-11 などタップサイズを拡大するためのスタイル）を検証する。"
+      ],
+      "expected": "十分なサイズ特性（スマホ利用時にタップ領域が狭すぎない設定）になっていることを静的に検証する。"
+    },
+    {
+      "id": "SCR-004-T-009",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-004-UI-006"
+      ],
+      "input": "多数のモックデータ取得完了状態。",
+      "steps": [
+        "画面上に1度に表示する最大上限数が制限されているか、あるいはスクロール/ページ変更ボタンが表示されているかを確認する。"
+      ],
+      "expected": "大量データが一度に出力されてブラウザがハングアップしないよう制限されるUI構造（ページネーションコントロール、もしくはスクロール監視フック）が実装されていることを検証する。"
+    },
+    {
+      "id": "SCR-004-T-010",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-004-VL-001",
+        "SCR-004-ST-004"
+      ],
+      "input": "selectedWorkerIds = [] の空状態。",
+      "steps": [
+        "「次へ」ボタン（Submit）をシミュレートクリックする。"
+      ],
+      "expected": "遷移処理（router.push）は呼び出されず、errorMessage 状態に「1名以上の作業員が選択されていません」といった主旨のエラーテキストが表示されること。"
+    },
+    {
+      "id": "SCR-004-T-011",
+      "type": "integration",
+      "requirement_ids": [
+        "SCR-004-VL-002"
+      ],
+      "input": "セッション情報が完全に null（未ログイン状態）。",
+      "steps": [
+        "認証ガードコンポーネント（または対象ページコンポーネント）をレンダーし、マウントさせる。"
+      ],
+      "expected": "セッションチェックが走り、Next.js の router.push または redirect が '/login' に対して実行されることをモック router を使ってアサーションする。"
+    },
+    {
+      "id": "SCR-004-T-012",
+      "type": "integration",
+      "requirement_ids": [
+        "SCR-004-EV-001",
+        "SCR-004-DT-002"
+      ],
+      "input": "作業員が1名以上チェックされており、打刻モード（例: 'CLOCK_IN'）が決定されている状態。",
+      "steps": [
+        "作業員w-1を選択する。",
+        "「次へ」ボタンをクリックする。"
+      ],
+      "expected": "Zustand等の引き継ぎデータ領域に、選択データ（{ workers: ['w-1'], punch_type: 'CLOCK_IN' }）が正しく保存され、'/worker-select/photo' （SCR-005に相当するパス）へ遷移しようとするルーティングが発生することを検証する。"
+    },
+    {
+      "id": "SCR-004-T-013",
+      "type": "integration",
+      "requirement_ids": [
+        "SCR-004-EV-002"
+      ],
+      "input": "作業員選択画面表示状態。",
+      "steps": [
+        "「戻る」ボタンをクリックする。"
+      ],
+      "expected": "前の画面に相当するパス '/punch-mode' （SCR-003に相当するパス）へ遷移すること。"
+    },
+    {
+      "id": "SCR-004-T-014",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-004-DT-001"
+      ],
+      "input": "IndexedDBリポジトリ接続。",
+      "steps": [
+        "リポジトリ経由での getWorkersByContractor('cont-1') メソッドを直接実行する。"
+      ],
+      "expected": "自社所属の非退職作業員（ACTIVE）のデータ配列が返されること。"
+    },
+    {
+      "id": "SCR-004-T-015",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-004-DT-002",
+        "SCR-004-ST-001"
+      ],
+      "input": "作業員複数選択操作。",
+      "steps": [
+        "w-1, w-2 を選択する。"
+      ],
+      "expected": "内部Stateに該当する worker_id が順番に格納され、データの引き継ぎ用に準備されたオブジェクトが最新化されていることをアサーションする。"
+    },
+    {
+      "id": "SCR-004-T-016",
+      "type": "integration",
+      "requirement_ids": [
+        "SCR-004-AP-001"
+      ],
+      "input": "APIリクエスト GET /api/workers の模擬コール。",
+      "steps": [
+        "ログイン済みの外注先管理者セッションでモックAPIを呼び出す。"
+      ],
+      "expected": "HTTPステータス200とともに、自社の作業員一覧を表すJSONスキーマ適合データがレスポンスされること。"
+    },
+    {
+      "id": "SCR-004-T-017",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-004-ST-001"
+      ],
+      "input": "作業員の選択切り替え（ON -> OFF）。",
+      "steps": [
+        "w-1のチェックボックスをクリックしてON（選択）にする。",
+        "再度w-1のチェックボックスをクリックしてOFF（解除）にする。"
+      ],
+      "expected": "1回目のクリックで state の `selectedWorkerIds` に w-1 が追加され、2回目のクリックで除外され空の配列に戻ることを確認する。"
+    },
+    {
+      "id": "SCR-004-T-018",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-004-ST-002"
+      ],
+      "input": "前画面での打刻モード選択によるマウントテスト。",
+      "steps": [
+        "打刻モード 'CLOCK_OUT' に設定したグローバル状態を用意してコンポーネントをマウントする。"
+      ],
+      "expected": "コンポーネントマウント直後に、打刻モード状態が正しく 'CLOCK_OUT' として読み取られていることを確認する。"
+    },
+    {
+      "id": "SCR-004-T-019",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-004-ST-003"
+      ],
+      "input": "データのロード処理が開始され、まだIndexedDBから応答がない瞬間。",
+      "steps": [
+        "データのフェッチPromiseを保留状態にしたままコンポーネントをレンダリングする。"
+      ],
+      "expected": "ローディング中のインジケーター（スピナー等）が画面に表示されていることを検証する。"
+    },
+    {
+      "id": "SCR-004-T-020",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-004-ST-004"
+      ],
+      "input": "バリデーション失敗時。",
+      "steps": [
+        "誰も選択していない状態で「次へ」を実行する。",
+        "DOMに表示される警告エラーメッセージの内容を抽出する。"
+      ],
+      "expected": "エラー状態がセットされ、画面上に「1名以上の作業員が選択されていません」など、ユーザー向けの正しいメッセージが出力されていることを検証する。"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-001",
+      "target": "作業員リストのソート順",
+      "reason": "作業員リストを表示する際の並び順（氏名五十音順、登録日時順、あるいはその他の優先順位）が仕様として定義されていないため。",
+      "sources": {
+        "screen_design": "作業員リストの表示順（氏名五十音順、登録順など）の仕様が未定。"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-002",
+      "target": "当日出勤打刻済み作業員の表示制御",
+      "reason": "既に当日中に出勤打刻が完了している作業員について、リスト上での扱い（非活性化してグレーアウトさせるか、あるいはチェックは可能にしたまま打刻済みバッジを表示する等のUI表現）が決まっていないため。",
+      "sources": {
+        "screen_design": "既に当日の出勤打刻済みの作業員をリスト上でどう表示するか（グレーアウト、打刻済みマーク等）が未定。"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-003",
+      "target": "ページネーションまたは無限スクロールの採用方式",
+      "reason": "UI要件（SCR-004-UI-006）およびTrace Indexにおいて「ページネーション/無限スクロール」と記載されているが、プロトタイプとしてどちらの制御形式を優先的に採用・実装すべきかが確定していないため。",
+      "sources": {
+        "screen_design": "一覧はページネーションまたは無限スクロールで表示する",
+        "trace_index": "ページネーション/無限スクロール"
+      },
+      "resolution": "manual_confirmation"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-004-FN-001",
+      "acceptance_ids": [
+        "SCR-004-AC-001"
+      ],
+      "test_ids": [
+        "SCR-004-T-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-FN-002",
+      "acceptance_ids": [
+        "SCR-004-AC-002"
+      ],
+      "test_ids": [
+        "SCR-004-T-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-FN-003",
+      "acceptance_ids": [
+        "SCR-004-AC-003"
+      ],
+      "test_ids": [
+        "SCR-004-T-003"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-UI-001",
+      "acceptance_ids": [
+        "SCR-004-AC-004"
+      ],
+      "test_ids": [
+        "SCR-004-T-004"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-UI-002",
+      "acceptance_ids": [
+        "SCR-004-AC-005"
+      ],
+      "test_ids": [
+        "SCR-004-T-005"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-UI-003",
+      "acceptance_ids": [
+        "SCR-004-AC-006"
+      ],
+      "test_ids": [
+        "SCR-004-T-006"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-UI-004",
+      "acceptance_ids": [
+        "SCR-004-AC-007"
+      ],
+      "test_ids": [
+        "SCR-004-T-007"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-UI-005",
+      "acceptance_ids": [
+        "SCR-004-AC-008"
+      ],
+      "test_ids": [
+        "SCR-004-T-008"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-UI-006",
+      "acceptance_ids": [
+        "SCR-004-AC-009"
+      ],
+      "test_ids": [
+        "SCR-004-T-009"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-VL-001",
+      "acceptance_ids": [
+        "SCR-004-AC-010"
+      ],
+      "test_ids": [
+        "SCR-004-T-010"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-VL-002",
+      "acceptance_ids": [
+        "SCR-004-AC-011"
+      ],
+      "test_ids": [
+        "SCR-004-T-011"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-EV-001",
+      "acceptance_ids": [
+        "SCR-004-AC-012"
+      ],
+      "test_ids": [
+        "SCR-004-T-012"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-EV-002",
+      "acceptance_ids": [
+        "SCR-004-AC-013"
+      ],
+      "test_ids": [
+        "SCR-004-T-013"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-DT-001",
+      "acceptance_ids": [
+        "SCR-004-AC-014"
+      ],
+      "test_ids": [
+        "SCR-004-T-014"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-DT-002",
+      "acceptance_ids": [
+        "SCR-004-AC-015"
+      ],
+      "test_ids": [
+        "SCR-004-T-015"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-AP-001",
+      "acceptance_ids": [
+        "SCR-004-AC-016"
+      ],
+      "test_ids": [
+        "SCR-004-T-016"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-ST-001",
+      "acceptance_ids": [
+        "SCR-004-AC-017"
+      ],
+      "test_ids": [
+        "SCR-004-T-017"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-ST-002",
+      "acceptance_ids": [
+        "SCR-004-AC-018"
+      ],
+      "test_ids": [
+        "SCR-004-T-018"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-ST-003",
+      "acceptance_ids": [
+        "SCR-004-AC-019"
+      ],
+      "test_ids": [
+        "SCR-004-T-019"
+      ]
+    },
+    {
+      "requirement_id": "SCR-004-ST-004",
+      "acceptance_ids": [
+        "SCR-004-AC-020"
+      ],
+      "test_ids": [
+        "SCR-004-T-020"
+      ]
+    }
+  ]
+}

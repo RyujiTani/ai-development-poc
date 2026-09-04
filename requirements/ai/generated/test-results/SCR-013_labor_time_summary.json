@@ -1,0 +1,8 @@
+{
+  "screen": "SCR-013_labor_time_summary",
+  "status": "PASSED",
+  "passed": true,
+  "exit_code": 0,
+  "stdout": "\n\u001b[1m\u001b[7m\u001b[36m RUN \u001b[39m\u001b[27m\u001b[22m \u001b[36mv2.1.9 \u001b[39m\u001b[90m/tmp/SCR-013_labor_time_summary-jAkUUn\u001b[39m\n\n \u001b[32m✓\u001b[39m tests/laborTimeSummary.test.tsx\u001b[2m > \u001b[22mLaborTimeSummaryPage\u001b[2m > \u001b[22mTST-SCR-013-006: 未ログインの場合、ログイン画面にリダイレクトされること\n \u001b[32m✓\u001b[39m tests/laborTimeSummary.test.tsx\u001b[2m > \u001b[22mLaborTimeSummaryPage\u001b[2m > \u001b[22mTST-SCR-013-001: 開始日未入力時にバリデーションエラーを表示すること\n \u001b[32m✓\u001b[39m tests/laborTimeSummary.test.tsx\u001b[2m > \u001b[22mLaborTimeSummaryPage\u001b[2m > \u001b[22mTST-SCR-013-002: 終了日が開始日より前の日付の場合にバリデーションエラーを表示すること\n \u001b[32m✓\u001b[39m tests/laborTimeSummary.test.tsx\u001b[2m > \u001b[22mLaborTimeSummaryPage\u001b[2m > \u001b[22mTST-SCR-013-003: 日次で正しく実労働時間が計算されること（UseCase）\n \u001b[32m✓\u001b[39m tests/laborTimeSummary.test.tsx\u001b[2m > \u001b[22mLaborTimeSummaryPage\u001b[2m > \u001b[22mTST-SCR-013-004: 月次で正しく実労働時間が集計されること（UseCase）\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m5 passed\u001b[39m\u001b[22m\u001b[90m (5)\u001b[39m\n\u001b[2m   Start at \u001b[22m 01:49:19\n\u001b[2m   Duration \u001b[22m 2.22s\u001b[2m (transform 416ms, setup 208ms, collect 524ms, tests 306ms, environment 698ms, prepare 123ms)\u001b[22m\n\n",
+  "stderr": "\u001b[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.\u001b[39m\n"
+}

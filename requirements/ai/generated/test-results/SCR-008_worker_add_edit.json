@@ -1,0 +1,8 @@
+{
+  "screen": "SCR-008_worker_add_edit",
+  "status": "PASSED",
+  "passed": true,
+  "exit_code": 0,
+  "stdout": "\n\u001b[1m\u001b[7m\u001b[36m RUN \u001b[39m\u001b[27m\u001b[22m \u001b[36mv2.1.9 \u001b[39m\u001b[90m/tmp/SCR-008_worker_add_edit-Ysl7hK\u001b[39m\n\n \u001b[32m✓\u001b[39m tests/workerForm.test.tsx\u001b[2m > \u001b[22mWorkerForm Component\u001b[2m > \u001b[22mrenders form with empty fields in new mode\n \u001b[32m✓\u001b[39m tests/workerForm.test.tsx\u001b[2m > \u001b[22mWorkerForm Component\u001b[2m > \u001b[22mshows error messages for required fields on empty submit\n \u001b[32m✓\u001b[39m tests/workerForm.test.tsx\u001b[2m > \u001b[22mWorkerForm Component\u001b[2m > \u001b[22msubmits valid data when all fields are correctly filled\n \u001b[32m✓\u001b[39m tests/workerForm.test.tsx\u001b[2m > \u001b[22mWorkerForm Component\u001b[2m > \u001b[22mcalls cancel function when cancel button is clicked\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m4 passed\u001b[39m\u001b[22m\u001b[90m (4)\u001b[39m\n\u001b[2m   Start at \u001b[22m 01:48:55\n\u001b[2m   Duration \u001b[22m 2.22s\u001b[2m (transform 273ms, setup 233ms, collect 394ms, tests 398ms, environment 717ms, prepare 138ms)\u001b[22m\n\n",
+  "stderr": "\u001b[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.\u001b[39m\n"
+}

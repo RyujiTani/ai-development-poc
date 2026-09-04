@@ -1,0 +1,404 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-009_contractor_punch_correction.md"
+  },
+  "screen": {
+    "id": "SCR-009",
+    "name": "外注先打刻修正画面",
+    "user": "CONTRACTOR_MANAGER",
+    "path": "app/(contractor)/punch-correction/page.tsx",
+    "description": "外注先管理者が打刻漏れ時に手動で打刻データの登録・修正を行う画面。修正時には修正理由の入力が必須となる。"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-009-FN-001",
+        "summary": "打刻漏れ時の手動打刻登録ができる",
+        "description": "打刻記録が存在しない状態から、新規に対象作業員、打刻日時、打刻種別、修正理由を入力して手動で打刻データを新規登録できる。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-009-FN-002",
+        "summary": "既存の打刻記録を修正できる",
+        "description": "既存の打刻データを指定して、その日時や種別を変更する修正登録ができる。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-009-FN-003",
+        "summary": "修正理由を入力できる",
+        "description": "手動打刻の登録または既存データの修正を行う際、必須項目として修正理由のテキストを入力できる。",
+        "priority": "High"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-009-UI-001",
+        "summary": "対象作業員選択欄、打刻日時入力欄、打刻種別（出勤/退勤）選択欄、修正理由入力欄を配置する",
+        "description": "画面内に作業員を選択するセレクトコントロール、打刻日時を指定する日付・時刻入力フィールド、打刻種別を切り替える選択コンポーネント、理由を記述する複数行テキストエリア、および「送信」「キャンセル」ボタンを配置する。"
+      },
+      {
+        "id": "SCR-009-UI-002",
+        "summary": "レスポンシブWebデザインでPC/スマホ両対応とする",
+        "description": "Tailwind CSSを用いて、デバイスの画面幅に合わせた流動的なレイアウトを実現する。"
+      },
+      {
+        "id": "SCR-009-UI-003",
+        "summary": "スマホ利用時は入力欄・ボタンを大きくタップしやすいUIとする",
+        "description": "スマートフォンの画面幅で表示される際、屋外操作や手袋をした状態などでの誤操作を防ぐため、タップターゲット（最小44px）やパディング、フォントサイズを大きめに確保する。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-009-VL-001",
+        "summary": "対象作業員：必須選択。未選択の場合はエラーメッセージを表示する",
+        "description": "作業員が未選択の状態で送信ボタンが押下された場合、エラーを表示して処理を止める。"
+      },
+      {
+        "id": "SCR-009-VL-002",
+        "summary": "打刻日時：必須入力。有効な日時形式であること",
+        "description": "日時入力が空、または不正な形式（未来日時などの制限含む）の場合、エラーを表示して処理を止める。"
+      },
+      {
+        "id": "SCR-009-VL-003",
+        "summary": "打刻種別：必須選択（出勤/退勤のいずれか）",
+        "description": "打刻種別が選択されていない状態で送信ボタンが押下された場合、エラーを表示して処理を止める。"
+      },
+      {
+        "id": "SCR-009-VL-004",
+        "summary": "修正理由：必須入力。空文字の場合はエラーメッセージを表示する",
+        "description": "修正理由が空、またはスペースのみの場合、エラーを表示して処理を止める。"
+      },
+      {
+        "id": "SCR-009-VL-005",
+        "summary": "認証状態：未認証状態でアクセスした場合はログイン画面（SCR-001）へリダイレクトする",
+        "description": "セッションからユーザー情報を読み込めない、または外注先管理者ロールを持っていないユーザーによるアクセス時に自動でログイン画面に遷移させる。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-009-EV-001",
+        "summary": "「送信」ボタン押下かつバリデーション成功時の挙動",
+        "description": "送信処理完了後、モックAPIにデータをポストし、成功のトースト通知（toast）を表示して、外注先ホーム画面（SCR-002）に自動遷移する。"
+      },
+      {
+        "id": "SCR-009-EV-002",
+        "summary": "「キャンセル」ボタン押下時の挙動",
+        "description": "変更内容を保存せず、即座に外注先ホーム画面（SCR-002）に自動遷移する。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-009-DT-001",
+        "summary": "API（送信）: POST /api/punches/correction",
+        "description": "打刻修正のリクエストデータ { worker_id, punch_type, punched_at, reason } を送信し、 IndexedDB の 'attendance_corrections' および 'attendance_records' に追加・更新を反映させる。"
+      }
+    ],
+    "api": [
+      {
+        "path": "/api/punches/correction",
+        "method": "POST",
+        "request_body": {
+          "worker_id": "string",
+          "punch_type": "CLOCK_IN | CLOCK_OUT",
+          "punched_at": "string",
+          "reason": "string",
+          "attendance_id": "string (optional)"
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "success": "boolean",
+            "correction_id": "string"
+          }
+        }
+      }
+    ],
+    "state": [
+      {
+        "id": "SCR-009-ST-001",
+        "summary": "入力フォームの状態",
+        "description": "React Hook Form を利用し、各入力要素（作業員、打刻日時、打刻種別、修正理由）の入力状態およびエラー状態を動的に保持・管理する。"
+      },
+      {
+        "id": "SCR-009-ST-002",
+        "summary": "選択可能な作業員データのフィルタリング状態",
+        "description": "ログイン中のユーザーが所属する外注先企業（contractor_id）に属するアクティブな作業員のみを IndexedDB（workers）から読み出して一覧選択肢にセットする。"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-009"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "SCR-009-AC-001",
+      "requirement_id": "SCR-009-FN-001",
+      "description": "作業員を未選択から1名選び、有効な打刻日時と種別（出勤）、及び修正理由を入力して「送信」ボタンを押下した際、新規の打刻レコードとしてIndexedDBに保存され、外注先ホーム画面（SCR-002）にリダイレクトされること。"
+    },
+    {
+      "id": "SCR-009-AC-002",
+      "requirement_id": "SCR-009-FN-002",
+      "description": "既存打刻レコードの修正モードとして本画面が呼び出された際、元の打刻内容が初期値として各フィールドにロードされ、一部変更の上、修正理由を入力して「送信」を押下した際、修正記録履歴（attendance_corrections）の追加と元レコードの変更内容がIndexedDBに上書き保存されること。"
+    },
+    {
+      "id": "SCR-009-AC-003",
+      "requirement_id": "SCR-009-FN-003",
+      "description": "画面上に「修正理由」を入力するテキストエリアが表示され、文字入力が可能であること。"
+    },
+    {
+      "id": "SCR-009-AC-004",
+      "requirement_id": "SCR-009-UI-001",
+      "description": "作業員セレクトボックス、日付/時刻フィールド、出勤/退勤のトグルまたはラジオボタン、修正理由テキストエリア、送信ボタン、キャンセルボタンが要件定義に沿って正しく配置されていること。"
+    },
+    {
+      "id": "SCR-009-AC-005",
+      "requirement_id": "SCR-009-UI-002",
+      "description": "スマートフォンのポートレート表示、及びPCのブラウザサイズ変更時に、レイアウトが崩れず画面の幅にフィットした状態で全項目が視認可能であること。"
+    },
+    {
+      "id": "SCR-009-AC-006",
+      "requirement_id": "SCR-009-UI-003",
+      "description": "スマートフォン幅での表示時、入力項目やボタンなどの対話型UI要素が十分な大きさ（最小高さ44px以上）を保って表示され、指によるタップ操作が容易であること。"
+    },
+    {
+      "id": "SCR-009-AC-007",
+      "requirement_id": "SCR-009-VL-001",
+      "description": "作業員を選択せずに「送信」ボタンを押下した時、「作業員を選択してください」等のエラーテキストが対象項目の直下に表示されること。"
+    },
+    {
+      "id": "SCR-009-AC-008",
+      "requirement_id": "SCR-009-VL-002",
+      "description": "打刻日時が空欄のまま、または不正な値の状態で「送信」ボタンを押下した時、「打刻日時を正しく入力してください」等のエラーテキストが対象項目の直下に表示されること。"
+    },
+    {
+      "id": "SCR-009-AC-009",
+      "requirement_id": "SCR-009-VL-003",
+      "description": "打刻種別（出勤/退勤）のいずれも選択されていない状態で「送信」ボタンを押下した時、エラーテキストが対象項目付近に表示されること。"
+    },
+    {
+      "id": "SCR-009-AC-010",
+      "requirement_id": "SCR-009-VL-004",
+      "description": "修正理由が空白、または空白文字（スペース）のみの状態で「送信」ボタンを押下した時、「修正理由を入力してください」等のエラーテキストが対象項目の直下に表示されること。"
+    },
+    {
+      "id": "SCR-009-AC-011",
+      "requirement_id": "SCR-009-VL-005",
+      "description": "認証情報（セッションデータ）が保持されていない、または無効なユーザーアカウント状態で本画面のURLへ直接アクセスした場合、本画面の描画をスキップして即座に外注先ログイン画面（SCR-001）へリダイレクトされること。"
+    },
+    {
+      "id": "SCR-009-AC-012",
+      "requirement_id": "SCR-009-EV-001",
+      "description": "バリデーションを通過したデータを送信した際、IndexedDBへの保存が完了すると同時に画面上部に「打刻修正を送信しました」等のトースト通知（toast）が表示され、外注先ホーム画面（SCR-002）に自動的に遷移すること。"
+    },
+    {
+      "id": "SCR-009-AC-013",
+      "requirement_id": "SCR-009-EV-002",
+      "description": "「キャンセル」ボタンを押下した際、入力済みの内容を全て破棄し、IndexedDBへのアクセスや送信処理を行わずに、即時に外注先ホーム画面（SCR-002）に自動遷移すること。"
+    },
+    {
+      "id": "SCR-009-AC-014",
+      "requirement_id": "SCR-009-DT-001",
+      "description": "送信時、モック用のエンドポイント `POST /api/punches/correction` に対し正しいリクエストデータ（worker_id, punch_type, punched_at, reason等）がペイロードとして渡されること。"
+    },
+    {
+      "id": "SCR-009-AC-015",
+      "requirement_id": "SCR-009-ST-002",
+      "description": "画面表示時、作業員セレクトボックスの選択肢に、ログインしている外注先管理者の `contractor_id` と一致する作業員のみがリストアップされること。"
+    }
+  ],
+  "tests": [
+    {
+      "id": "SCR-009-UT-001",
+      "type": "unit",
+      "requirement_id": "SCR-009-VL-001",
+      "input": "作業員を未選択の状態でフォームをサブミットする",
+      "steps": [
+        "打刻修正画面（SCR-009）コンポーネントをレンダリングする",
+        "作業員を未選択のまま、他の必須項目（日時、種別、修正理由）を入力する",
+        "送信ボタンをクリックする"
+      ],
+      "expected": "作業員選択欄に対応するバリデーションエラーメッセージが表示され、送信処理（API呼び出し）が実行されないこと。"
+    },
+    {
+      "id": "SCR-009-UT-002",
+      "type": "unit",
+      "requirement_id": "SCR-009-VL-002",
+      "input": "日時を空欄の状態でフォームをサブミットする",
+      "steps": [
+        "打刻修正画面（SCR-009）コンポーネントをレンダリングする",
+        "作業員、種別、修正理由を入力し、日時入力欄を空欄にする",
+        "送信ボタンをクリックする"
+      ],
+      "expected": "日時入力欄に対応するバリデーションエラーメッセージが表示され、送信処理が実行されないこと。"
+    },
+    {
+      "id": "SCR-009-UT-003",
+      "type": "unit",
+      "requirement_id": "SCR-009-VL-004",
+      "input": "修正理由を空欄（または空白のみ）の状態でフォームをサブミットする",
+      "steps": [
+        "打刻修正画面（SCR-009）コンポーネントをレンダリングする",
+        "作業員、日時、種別を正常に入力し、修正理由に空白スペースのみを入力する",
+        "送信ボタンをクリックする"
+      ],
+      "expected": "修正理由入力欄に対応するバリデーションエラーメッセージが表示され、送信処理が実行されないこと。"
+    },
+    {
+      "id": "SCR-009-UT-004",
+      "type": "unit",
+      "requirement_id": "SCR-009-ST-002",
+      "input": "ログインユーザーのセッション（contractor_id = 'CON-ABC'）を設定した状態",
+      "steps": [
+        "打刻修正画面コンポーネントをマウントする",
+        "IndexedDBからテスト用作業員データを初期ロードする"
+      ],
+      "expected": "作業員の選択肢として取得・表示されたリストの全作業員データの `contractor_id` が 'CON-ABC' であること。"
+    },
+    {
+      "id": "SCR-009-E2E-001",
+      "type": "e2e",
+      "requirement_id": "SCR-009-EV-001",
+      "input": "外注先管理者アカウントでログイン、すべての入力項目に適切なダミー値を指定",
+      "steps": [
+        "ログインセッションを確立して /contractor/punch-correction へブラウザ遷移する",
+        "作業員（例: 'テスト作業員'）、打刻日時（例: '2026-04-13 09:00'）、打刻種別（出勤）、修正理由（例: '打刻漏れ修正のため'）をそれぞれ入力する",
+        "送信ボタンをクリックする"
+      ],
+      "expected": "送信完了のトースト通知が画面に表示され、自動的に外注先ホーム画面（/contractor/home等）に切り替わること。IndexedDBの打刻履歴テーブルに該当データが正常に追記されていること。"
+    },
+    {
+      "id": "SCR-009-E2E-002",
+      "type": "e2e",
+      "requirement_id": "SCR-009-VL-005",
+      "input": "セッションを持たない未ログインの匿名状態でアクセス",
+      "steps": [
+        "ブラウザのセッションストレージ（sessionStorage）をクリアする",
+        "/contractor/punch-correction のパスへ直接URLを入力してアクセスを試みる"
+      ],
+      "expected": "本画面の入力フォームは描画されず、即座にログイン画面（/login等）のパスへ自動的に遷移すること。"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-001",
+      "target": "打刻修正の承認フローの有無",
+      "reason": "外注先管理者による打刻修正操作の際、工場側管理者による何らかの「承認アクション」が必要であるのか、それとも外注先管理者の送信のみで即時に正式データとしてシステム（IndexedDB）に反映して良いのかがシステム要件定義と画面要件上で未確定である。",
+      "sources": {
+        "system_requirements": "打刻修正の承認フロー [TODO: 要確認] (TODO-005)",
+        "trace_index": "N/A",
+        "screen_design": "確認事項：外注先管理者による打刻修正に工場側管理者の承認フローが必要か（要件定義書 3章に「シンプルに工場側管理者が修正・確認可能」とあるが、承認ステータスの管理要否が未確定）。"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-002",
+      "target": "打刻修正画面（SCR-009）への画面遷移導線",
+      "reason": "既存打刻修正を呼び出す際の画面導線（ホーム画面の特定のボタン、あるいは打刻履歴などの別画面内の行アクションなど）の詳細なトリガーがシステム要件・画面要件の双方で明記されていない。",
+      "sources": {
+        "system_requirements": "N/A",
+        "trace_index": "N/A",
+        "screen_design": "確認事項：打刻修正画面への導線（ホーム画面のメニューに含めるか、打刻フロー中に配置するか）が要件定義書に未記載。[ASSUMPTION] ホーム画面から遷移可能とする。"
+      },
+      "resolution": "screen_design"
+    },
+    {
+      "id": "AMB-003",
+      "target": "既存打刻修正時のAPIパラメーター",
+      "reason": "既存の打刻記録を修正できる（SCR-009-FN-002）とあるが、データ要件（SCR-009-DT-001）に示されているAPIスキーマ（worker_id, punch_type, punched_at, reason）には修正対象となる元の打刻を識別するためのID（attendance_id等）の指定仕様が明記されていない。",
+      "sources": {
+        "system_requirements": "データモデル定義に `AttendanceCorrection` 型（`attendance_id?` を持つ）が規定されているが、SCR-009のデータ要件には定義がない。",
+        "trace_index": "N/A",
+        "screen_design": "API（送信） | POST /api/punches/correction — リクエスト: { worker_id, punch_type, punched_at, reason }"
+      },
+      "resolution": "manual_confirmation"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-009-FN-001",
+      "acceptance_id": "SCR-009-AC-001",
+      "test_id": "SCR-009-E2E-001"
+    },
+    {
+      "requirement_id": "SCR-009-FN-002",
+      "acceptance_id": "SCR-009-AC-002",
+      "test_id": "SCR-009-E2E-001"
+    },
+    {
+      "requirement_id": "SCR-009-FN-003",
+      "acceptance_id": "SCR-009-AC-003",
+      "test_id": "SCR-009-UT-003"
+    },
+    {
+      "requirement_id": "SCR-009-UI-001",
+      "acceptance_id": "SCR-009-AC-004",
+      "test_id": "SCR-009-UT-001"
+    },
+    {
+      "requirement_id": "SCR-009-UI-002",
+      "acceptance_id": "SCR-009-AC-005",
+      "test_id": "SCR-009-E2E-001"
+    },
+    {
+      "requirement_id": "SCR-009-UI-003",
+      "acceptance_id": "SCR-009-AC-006",
+      "test_id": "SCR-009-E2E-001"
+    },
+    {
+      "requirement_id": "SCR-009-VL-001",
+      "acceptance_id": "SCR-009-AC-007",
+      "test_id": "SCR-009-UT-001"
+    },
+    {
+      "requirement_id": "SCR-009-VL-002",
+      "acceptance_id": "SCR-009-AC-008",
+      "test_id": "SCR-009-UT-002"
+    },
+    {
+      "requirement_id": "SCR-009-VL-003",
+      "acceptance_id": "SCR-009-AC-009",
+      "test_id": "SCR-009-UT-001"
+    },
+    {
+      "requirement_id": "SCR-009-VL-004",
+      "acceptance_id": "SCR-009-AC-010",
+      "test_id": "SCR-009-UT-003"
+    },
+    {
+      "requirement_id": "SCR-009-VL-005",
+      "acceptance_id": "SCR-009-AC-011",
+      "test_id": "SCR-009-E2E-002"
+    },
+    {
+      "requirement_id": "SCR-009-EV-001",
+      "acceptance_id": "SCR-009-AC-012",
+      "test_id": "SCR-009-E2E-001"
+    },
+    {
+      "requirement_id": "SCR-009-EV-002",
+      "acceptance_id": "SCR-009-AC-013",
+      "test_id": "SCR-009-E2E-001"
+    },
+    {
+      "requirement_id": "SCR-009-DT-001",
+      "acceptance_id": "SCR-009-AC-014",
+      "test_id": "SCR-009-E2E-001"
+    },
+    {
+      "requirement_id": "SCR-009-ST-002",
+      "acceptance_id": "SCR-009-AC-015",
+      "test_id": "SCR-009-UT-004"
+    }
+  ]
+}

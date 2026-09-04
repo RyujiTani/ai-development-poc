@@ -1,0 +1,371 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-014_contractor_company_register.md"
+  },
+  "screen": {
+    "id": "SCR-014",
+    "name": "外注先企業登録画面",
+    "user_role": "FACTORY_ADMIN",
+    "description": "工場側管理者が外注先企業の情報を登録・管理する画面。外注先企業の一覧表示、新規登録、編集、削除を行う。"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-014-FN-001",
+        "summary": "登録済みの外注先企業一覧を表示できる",
+        "detail": "IndexedDBから取得した外注先企業（名前、ステータスなど）の一覧画面を表示する。"
+      },
+      {
+        "id": "SCR-014-FN-002",
+        "summary": "外注先企業を新規登録できる",
+        "detail": "新規登録フォームに企業名を入力し、保存することでIndexedDBに新規外注先企業（デフォルトステータス: ACTIVE）を追加する。"
+      },
+      {
+        "id": "SCR-014-FN-003",
+        "summary": "既存の外注先企業情報を編集できる",
+        "detail": "選択した企業の情報をフォームにロードし、変更内容を保存してIndexedDBを更新する。"
+      },
+      {
+        "id": "SCR-014-FN-004",
+        "summary": "外注先企業を削除できる",
+        "detail": "選択した企業を削除ボタンからIndexedDB上で削除（またはステータス変更）する。※現時点では物理削除を想定。"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-014-UI-001",
+        "summary": "外注先企業をリスト/テーブル形式で表示する",
+        "detail": "PC/タブレット表示時はテーブル、スマートフォン表示時はリスト形式など、適切に配置する。"
+      },
+      {
+        "id": "SCR-014-UI-002",
+        "summary": "「新規登録」ボタンをリスト上部に配置する",
+        "detail": "画面右上などの目立つ位置に配置し、タップしやすいサイズ（最小 44x44px）を確保する。"
+      },
+      {
+        "id": "SCR-014-UI-003",
+        "summary": "各企業行に「編集」「削除」の操作ボタンを配置する",
+        "detail": "操作しやすい適切な余白と配置で、編集・削除アクション用のUIを提供する。"
+      },
+      {
+        "id": "SCR-014-UI-004",
+        "summary": "新規登録・編集時はモーダルまたはインラインフォームで入力欄を表示する",
+        "detail": "モーダルダイアログまたはアコーディオン等のインライン入力欄にて、企業名とステータスの入力/編集を行う。"
+      },
+      {
+        "id": "SCR-014-UI-005",
+        "summary": "一覧はページネーションまたは無限スクロールで表示する",
+        "detail": "データ量増加時のパフォーマンス維持のため、ページ分割コントロールを実装する。"
+      },
+      {
+        "id": "SCR-014-UI-006",
+        "summary": "レスポンシブWebデザインでPC/スマホ両対応とする",
+        "detail": "Tailwind CSSを使用し、PC（Chrome）およびタブレット・スマホで崩れないレイアウトにする。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-014-VL-001",
+        "summary": "企業名必須入力",
+        "detail": "保存時に企業名が空（または半角スペースのみ）の場合、「企業名は必須入力です」等のエラーメッセージをフォーム上に表示する。"
+      },
+      {
+        "id": "SCR-014-VL-002",
+        "summary": "削除操作前の確認ダイアログ表示",
+        "detail": "削除ボタン押下時にブラウザの標準confirmまたはカスタムダイアログを表示し、ユーザーの誤操作を防止する。"
+      },
+      {
+        "id": "SCR-014-VL-003",
+        "summary": "認証状態および管理者権限チェック",
+        "detail": "未認証状態またはロールが 'FACTORY_ADMIN' 以外でアクセスした場合は、管理者ログイン画面（SCR-010）へリダイレクトする。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-014-EV-001",
+        "summary": "「新規登録」ボタン押下",
+        "detail": "フォーム（モーダルまたはインラインフォーム）を新規追加モードで初期化して表示する。"
+      },
+      {
+        "id": "SCR-014-EV-002",
+        "summary": "登録/更新フォームの「保存」ボタン押下かつバリデーション成功",
+        "detail": "入力データをAPI/リポジトリ層経由で保存し、成功後にトースト通知（「登録しました」「更新しました」）を表示し、一覧を再ロードしてフォームを閉じる。"
+      },
+      {
+        "id": "SCR-014-EV-003",
+        "summary": "「編集」ボタン押下",
+        "detail": "選択された企業のデータを取得し、フォームを編集モードで開いて初期値を設定する。"
+      },
+      {
+        "id": "SCR-014-EV-004",
+        "summary": "「削除」ボタン押下かつ確認OK",
+        "detail": "該当企業を削除API/リポジトリ層で削除し、成功後にトースト通知（「削除しました」）を表示し、一覧を再ロードする。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-014-DT-001",
+        "summary": "GET /api/admin/contractors",
+        "detail": "IndexedDBの contractors ストアから全外注先企業一覧データを取得する。"
+      },
+      {
+        "id": "SCR-014-DT-002",
+        "summary": "POST /api/admin/contractors",
+        "detail": "新規外注先企業を登録する。送信スキーマ: { name: string, status: 'ACTIVE' }"
+      },
+      {
+        "id": "SCR-014-DT-003",
+        "summary": "PUT /api/admin/contractors/{contractor_id}",
+        "detail": "指定されたIDの外注先企業情報を更新する。送信スキーマ: { name: string, status: 'ACTIVE' | 'INACTIVE' }"
+      },
+      {
+        "id": "SCR-014-DT-004",
+        "summary": "DELETE /api/admin/contractors/{contractor_id}",
+        "detail": "指定されたIDの外注先企業を削除する。"
+      }
+    ],
+    "api": [
+      {
+        "id": "SCR-014-AP-001",
+        "path": "/api/admin/contractors",
+        "method": "GET",
+        "description": "外注先企業一覧の取得（IndexedDB/モックリポジトリ経由）"
+      },
+      {
+        "id": "SCR-014-AP-002",
+        "path": "/api/admin/contractors",
+        "method": "POST",
+        "description": "新規外注先企業の登録"
+      },
+      {
+        "id": "SCR-014-AP-003",
+        "path": "/api/admin/contractors/{id}",
+        "method": "PUT",
+        "description": "外注先企業情報の更新"
+      },
+      {
+        "id": "SCR-014-AP-004",
+        "path": "/api/admin/contractors/{id}",
+        "method": "DELETE",
+        "description": "外注先企業の削除"
+      }
+    ],
+    "state": [
+      {
+        "id": "SCR-014-ST-001",
+        "summary": "企業一覧状態",
+        "detail": "取得した企業データの配列、ローディング中、エラー状態の管理。"
+      },
+      {
+        "id": "SCR-014-ST-002",
+        "summary": "フォーム編集状態",
+        "detail": "フォームの開閉フラグ、対象企業ID（新規時はnull）、バリデーションエラー情報の管理。"
+      },
+      {
+        "id": "SCR-014-ST-003",
+        "summary": "ページネーション状態",
+        "detail": "現在のページ番号、1ページあたりの件数の管理。"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-014"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "AC-SCR-014-001",
+      "requirement_id": "SCR-014-FN-001",
+      "input": "管理者としてログインし、外注先企業登録画面（/admin/contractors 等）にアクセスする。",
+      "steps": [
+        "sessionStorageにロールが 'FACTORY_ADMIN' のモックユーザー情報が存在することを確認する。",
+        "画面遷移時のローディングが終了するのを待つ。"
+      ],
+      "expected": "IndexedDBにシードされている外注先企業の一覧（名前、ステータスなど）がテーブル/リスト形式で表示されること。"
+    },
+    {
+      "id": "AC-SCR-014-002",
+      "requirement_id": "SCR-014-FN-002",
+      "input": "「新規登録」ボタンを押下し、フォームに有効な企業名を入力して保存する。",
+      "steps": [
+        "画面上部の「新規登録」ボタンをタップする。",
+        "モーダルまたはインラインフォームが表示されることを確認する。",
+        "企業名フィールドに '新規テスト外注先' と入力する。",
+        "「保存」ボタンをタップする。"
+      ],
+      "expected": "画面に「登録しました」とトースト通知が表示され、フォームが閉じ、一覧に '新規テスト外注先' が追加されていること。"
+    },
+    {
+      "id": "AC-SCR-014-003",
+      "requirement_id": "SCR-014-FN-003",
+      "input": "既存の企業行の「編集」ボタンを押下し、名前を変更して保存する。",
+      "steps": [
+        "一覧の中の1社の「編集」ボタンをタップする。",
+        "編集用に入力項目がロードされていることを確認する。",
+        "企業名を '編集後テスト外注先' に変更する。",
+        "「保存」ボタンをタップする。"
+      ],
+      "expected": "画面に「更新しました」とトースト表示され、フォームが閉じ、一覧の当該企業名が '編集後テスト外注先' に更新されていること。"
+    },
+    {
+      "id": "AC-SCR-014-004",
+      "requirement_id": "SCR-014-FN-004",
+      "input": "既存の企業行の「削除」ボタンを押下する。",
+      "steps": [
+        "一覧の中の任意の「削除」ボタンをタップする。",
+        "削除確認のダイアログが表示されることを確認する。",
+        "ダイアログで「OK（はい）」を選択する。"
+      ],
+      "expected": "画面に「削除しました」とトースト表示され、一覧から該当企業が消去されていること。"
+    },
+    {
+      "id": "AC-SCR-014-005",
+      "requirement_id": "SCR-014-VL-001",
+      "input": "新規登録フォームで企業名を空欄にして保存する。",
+      "steps": [
+        "「新規登録」ボタンをタップする。",
+        "企業名を入力せずに「保存」ボタンをタップする。"
+      ],
+      "expected": "フォームが閉じず、企業名の入力欄近くに「企業名は必須入力です」等のエラーメッセージが表示されること。"
+    },
+    {
+      "id": "AC-SCR-014-006",
+      "requirement_id": "SCR-014-VL-003",
+      "input": "未ログイン、または一般外注先管理者アカウントでSCR-014のURLに直接アクセスする。",
+      "steps": [
+        "sessionStorageを空（または CONTRACTOR_MANAGER ロールを設定）にする。",
+        "ブラウザで /admin/contractors 相当のパスに直接ナビゲートする。"
+      ],
+      "expected": "画面が表示されず、自動的に /admin/login などの管理者ログイン画面（SCR-010）へリダイレクトされること。"
+    }
+  ],
+  "tests": [
+    {
+      "id": "TST-SCR-014-001",
+      "type": "unit",
+      "requirement_id": "SCR-014-FN-001",
+      "input": "IndexedDBにモック企業が2件登録されている状態",
+      "steps": [
+        "SCR-014 コンポーネントをモック認証状態でレンダリングする。",
+        "モックAPI（GET /api/admin/contractors）が2件のデータを返却する。",
+        "画面のDOMを走査する。"
+      ],
+      "expected": "表示されたテーブル内、またはリスト内にその2つの企業名テキストが含まれていること。"
+    },
+    {
+      "id": "TST-SCR-014-002",
+      "type": "unit",
+      "requirement_id": "SCR-014-VL-001",
+      "input": "フォーム入力値が不正（企業名が空）",
+      "steps": [
+        "新規登録フォームを開く。",
+        "企業名入力欄を空にする。",
+        "フォームを送信（Submit）する。"
+      ],
+      "expected": "エラー表示用のDOMノードが出現し、API呼び出し関数（POST /api/admin/contractors）が実行されないこと。"
+    },
+    {
+      "id": "TST-SCR-014-003",
+      "type": "integration",
+      "requirement_id": "SCR-014-EV-002",
+      "input": "フォーム入力値が正常（企業名に 'テスト株式会社' を入力）",
+      "steps": [
+        "新規登録フォームを開く。",
+        "企業名入力欄に 'テスト株式会社' と入力する。",
+        "フォームを送信し、IndexedDBの格納処理（POSTモック）を呼び出す。",
+        "APIレスポンス成功を受け取る。"
+      ],
+      "expected": "トースト表示用関数が適切なメッセージで呼び出され、一覧が再取得され、フォームがクローズされること。"
+    },
+    {
+      "id": "TST-SCR-014-004",
+      "type": "integration",
+      "requirement_id": "SCR-014-VL-002",
+      "input": "削除ボタンをクリックし、確認ダイアログでキャンセルする",
+      "steps": [
+        "削除ボタンをクリックする。",
+        "window.confirm のモックが false を返すように設定する。"
+      ],
+      "expected": "削除API（DELETE /api/admin/contractors/{id}）が呼び出されず、一覧データに変更がないこと。"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-SCR-014-001",
+      "target": "外注先企業の入力項目",
+      "reason": "画面設計では「企業名」の必須バリデーションは言及されているが、住所、連絡先、代表者名などの項目が必要であるかが未確定。システム要件定義書（SYSTEM_REQUIREMENTS_JSON）のデータ構造 definition では `Contractor` は contractor_id, name, status, created_at, updated_at のみとなっており、それ以外のカラムが存在しないため、本フロントプロトタイプでは「企業名（name）のみ」を入力対象として実装する。",
+      "sources": {
+        "system_requirements": "data_model.types.Contractor の定義",
+        "screen_design": "確認事項「外注先企業情報の具体的な項目が未定」"
+      },
+      "resolution": "system_requirements"
+    },
+    {
+      "id": "AMB-SCR-014-002",
+      "target": "企業削除時の整合性制約ルール",
+      "reason": "該当外注先企業に紐づく「作業員（workers）」や「ユーザー（users）」が存在する場合、そのまま削除して良いのか、あるいは削除を拒否・警告するのかのロジックが未定。本プロトタイプは検証用のため、一旦は物理削除可能とするか、または確認なしで強制削除する仕様とするが、本番化に向けた確認が必要。",
+      "sources": {
+        "system_requirements": "認証・認可及びデータモデル仕様（制約の明言なし）",
+        "screen_design": "確認事項「企業に紐づく作業員が存在する場合の削除可否のルールが未定」"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-SCR-014-003",
+      "target": "APIリクエストパラメータとスキーマの名称不一致",
+      "reason": "画面設計のデータ要件（SCR-014-DT-002）ではPOSTリクエストに `{ company_name, ... }` とあるが、システム要件の `Contractor` エンティティおよび型定義では `name` と定義されている。整合性を保つため、実装では `name` をキーとして送信する。",
+      "sources": {
+        "system_requirements": "data_model.types.Contractor (name: string)",
+        "screen_design": "データ要件 SCR-014-DT-002 (company_name)"
+      },
+      "resolution": "system_requirements"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-014-FN-001",
+      "acceptance_id": "AC-SCR-014-001",
+      "test_id": "TST-SCR-014-001"
+    },
+    {
+      "requirement_id": "SCR-014-FN-002",
+      "acceptance_id": "AC-SCR-014-002",
+      "test_id": "TST-SCR-014-003"
+    },
+    {
+      "requirement_id": "SCR-014-FN-003",
+      "acceptance_id": "AC-SCR-014-003",
+      "test_id": "TST-SCR-014-003"
+    },
+    {
+      "requirement_id": "SCR-014-FN-004",
+      "acceptance_id": "AC-SCR-014-004",
+      "test_id": "TST-SCR-014-004"
+    },
+    {
+      "requirement_id": "SCR-014-VL-001",
+      "acceptance_id": "AC-SCR-014-005",
+      "test_id": "TST-SCR-014-002"
+    },
+    {
+      "requirement_id": "SCR-014-VL-002",
+      "acceptance_id": "AC-SCR-014-004",
+      "test_id": "TST-SCR-014-004"
+    },
+    {
+      "requirement_id": "SCR-014-VL-003",
+      "acceptance_id": "AC-SCR-014-006",
+      "test_id": "TST-SCR-014-001"
+    }
+  ]
+}

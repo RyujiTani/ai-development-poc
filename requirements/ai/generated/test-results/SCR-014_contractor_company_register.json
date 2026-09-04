@@ -1,0 +1,8 @@
+{
+  "screen": "SCR-014_contractor_company_register",
+  "status": "PASSED",
+  "passed": true,
+  "exit_code": 0,
+  "stdout": "\n\u001b[1m\u001b[7m\u001b[36m RUN \u001b[39m\u001b[27m\u001b[22m \u001b[36mv2.1.9 \u001b[39m\u001b[90m/tmp/SCR-014_contractor_company_register-UXiQgi\u001b[39m\n\n \u001b[32m✓\u001b[39m tests/contractor.test.tsx\u001b[2m > \u001b[22mSCR-014: 外注先企業登録画面 テスト\u001b[2m > \u001b[22mTST-SCR-014-001: 正常にログインされている状態で、登録されている外注先企業一覧が正常表示されること\n \u001b[32m✓\u001b[39m tests/contractor.test.tsx\u001b[2m > \u001b[22mSCR-014: 外注先企業登録画面 テスト\u001b[2m > \u001b[22mTST-SCR-014-002: 新規登録時に企業名が空の場合、バリデーションエラーが発生すること\n \u001b[32m✓\u001b[39m tests/contractor.test.tsx\u001b[2m > \u001b[22mSCR-014: 外注先企業登録画面 テスト\u001b[2m > \u001b[22mTST-SCR-014-003: 正常に新規登録が行われ、一覧がリロードされて追加されること\n \u001b[32m✓\u001b[39m tests/contractor.test.tsx\u001b[2m > \u001b[22mSCR-014: 外注先企業登録画面 テスト\u001b[2m > \u001b[22mTST-SCR-014-004: 削除操作で確認ダイアログが表示され、キャンセルした場合は削除が行われないこと\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m4 passed\u001b[39m\u001b[22m\u001b[90m (4)\u001b[39m\n\u001b[2m   Start at \u001b[22m 01:49:22\n\u001b[2m   Duration \u001b[22m 2.35s\u001b[2m (transform 401ms, setup 243ms, collect 536ms, tests 471ms, environment 707ms, prepare 126ms)\u001b[22m\n\n",
+  "stderr": "\u001b[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.\u001b[39m\n"
+}

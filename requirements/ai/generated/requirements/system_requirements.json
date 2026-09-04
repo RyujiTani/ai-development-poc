@@ -1,0 +1,562 @@
+{
+  "version": "1.0",
+  "source": {
+    "doc_type": "system_requirements",
+    "source_file": "requirements/ai/original/requirements/system_requirements.md",
+    "source_version": "1.1.0",
+    "generated_at": "2026-04-13T00:00:00+09:00"
+  },
+  "scope": {
+    "product": "製造業向け 外注作業員 勤怠・配置管理システム（テストプロジェクト版 / フロントエンドのみ）",
+    "codename": {
+      "value": "worker-attendance-system-frontend",
+      "status": "assumption"
+    },
+    "purpose": "本来要件（写真付き打刻・労働時間集計・有資格者配置確認・ペーパーレス化）を、Next.js 単体で動作する画面プロトタイプとして検証する。バックエンド（GCP / Cloud Run / Spanner / Cloud Storage 等）は実装しない。データはクライアント内で擬似的に保持・操作する。",
+    "in": [
+      "Next.js による画面実装（レスポンシブ、PC／タブレット／スマホ）",
+      "HTML5 Camera API による写真撮影 UI",
+      "クライアント内モックデータによる打刻／マスタ管理／集計／CSV出力動作",
+      "ID/PW ログイン UI（モック認証）",
+      "ロール別画面遷移（工場側管理者 / 外注先管理者）"
+    ],
+    "out": [
+      "GCP バックエンド全般（App Engine / Cloud Run / Spanner / Cloud Storage / Secret Manager 等）",
+      "サーバサイド API 実装、DB マイグレーション、本番運用相当の認証・認可",
+      "給与計算本体",
+      "ネイティブアプリ",
+      "本番セキュリティ要件（実運用前提のSSL証明書管理、署名付きURL基盤等）"
+    ],
+    "schedule": {
+      "value": "テストプロジェクトのため原文スケジュールは参考扱い。マイルストーンは [TODO: 要確認]。",
+      "status": "todo"
+    },
+    "status": "confirmed"
+  },
+  "users": [
+    {
+      "role": "FACTORY_ADMIN",
+      "name": "工場側管理者",
+      "device": "PC（Chrome）",
+      "operations": [
+        "全体管理",
+        "外注先・ユーザー登録",
+        "打刻実績・写真確認",
+        "集計",
+        "CSV出力"
+      ]
+    },
+    {
+      "role": "CONTRACTOR_MANAGER",
+      "name": "外注先管理者",
+      "device": "スマホ／タブレット（Chrome）",
+      "operations": [
+        "自社作業員マスタ管理",
+        "現場での代行打刻（写真撮影込）",
+        "打刻修正"
+      ]
+    },
+    {
+      "role": "WORKER",
+      "name": "現場作業員",
+      "device": "（ログインなし）",
+      "operations": [
+        "操作なし"
+      ]
+    }
+  ],
+  "technology": [
+    {
+      "category": "framework",
+      "name": "Next.js 14 (App Router)",
+      "status": "assumption",
+      "note": "App Router 採用。Pages Router 希望なら [TODO: 要確認]"
+    },
+    {
+      "category": "language",
+      "name": "TypeScript 5.x",
+      "status": "confirmed"
+    },
+    {
+      "category": "runtime",
+      "name": "Node.js 20 LTS",
+      "status": "confirmed"
+    },
+    {
+      "category": "ui_library",
+      "name": "React 18",
+      "status": "confirmed"
+    },
+    {
+      "category": "styling",
+      "name": "Tailwind CSS 3.x",
+      "status": "assumption",
+      "note": "レスポンシブと大きめタップ領域の実装が容易なため"
+    },
+    {
+      "category": "component",
+      "name": "shadcn/ui",
+      "status": "assumption",
+      "note": "軽量で Tailwind と整合"
+    },
+    {
+      "category": "form",
+      "name": "React Hook Form + Zod（バリデーション）",
+      "status": "assumption"
+    },
+    {
+      "category": "state_management",
+      "name": "React Context + Zustand",
+      "status": "assumption",
+      "note": "グローバル状態が小規模なため"
+    },
+    {
+      "category": "persistence",
+      "name": "ブラウザ内 IndexedDB（idb ライブラリ経由） + 初期シード JSON",
+      "status": "assumption",
+      "note": "localStorage では写真Blob容量が不足するため IndexedDB を採用"
+    },
+    {
+      "category": "camera",
+      "name": "HTML5 getUserMedia + <canvas> でJPEG化",
+      "status": "confirmed"
+    },
+    {
+      "category": "csv",
+      "name": "papaparse + Blob ダウンロード",
+      "status": "confirmed"
+    },
+    {
+      "category": "browser",
+      "name": "Google Chrome 最新版",
+      "status": "confirmed"
+    }
+  ],
+  "architecture": {
+    "layers": [
+      {
+        "name": "UI Layer",
+        "description": "app/, components/"
+      },
+      {
+        "name": "Application Layer",
+        "description": "features/*/usecase"
+      },
+      {
+        "name": "Domain Layer",
+        "description": "features/*/domain"
+      },
+      {
+        "name": "Infrastructure Layer",
+        "description": "mock repository (IndexedDB (idb) ※ 写真 Blob / マスタ / 打刻履歴, /public/mocks/*.json ※ 初期シード)"
+      }
+    ],
+    "directory_structure": [
+      {
+        "path": "app/",
+        "description": "Next.js App Router"
+      },
+      {
+        "path": "app/(auth)/login/page.tsx"
+      },
+      {
+        "path": "app/(factory)/",
+        "description": "工場側管理者ルート"
+      },
+      {
+        "path": "app/(contractor)/",
+        "description": "外注先管理者ルート"
+      },
+      {
+        "path": "app/layout.tsx"
+      },
+      {
+        "path": "app/globals.css"
+      },
+      {
+        "path": "components/",
+        "description": "汎用UI"
+      },
+      {
+        "path": "features/"
+      },
+      {
+        "path": "features/attendance/"
+      },
+      {
+        "path": "features/attendance/domain/",
+        "description": "エンティティ・型"
+      },
+      {
+        "path": "features/attendance/usecase/",
+        "description": "ユースケース関数"
+      },
+      {
+        "path": "features/attendance/repository/",
+        "description": "I/F + IndexedDB 実装"
+      },
+      {
+        "path": "features/attendance/ui/",
+        "description": "画面部品"
+      },
+      {
+        "path": "features/worker/"
+      },
+      {
+        "path": "features/contractor/"
+      },
+      {
+        "path": "features/user/"
+      },
+      {
+        "path": "features/report/",
+        "description": "集計 / CSV"
+      },
+      {
+        "path": "lib/"
+      },
+      {
+        "path": "lib/db/",
+        "description": "idb ラッパ"
+      },
+      {
+        "path": "lib/auth/",
+        "description": "モック認証"
+      },
+      {
+        "path": "lib/csv/"
+      },
+      {
+        "path": "lib/logger/"
+      },
+      {
+        "path": "public/"
+      },
+      {
+        "path": "public/mocks/",
+        "description": "初期シード JSON"
+      },
+      {
+        "path": "tests/"
+      },
+      {
+        "path": "package.json"
+      }
+    ],
+    "repository": {
+      "strategy": "すべての「リポジトリ」はインターフェースとして定義し、実装は IndexedDB アダプタのみ。将来 GCP バックエンドに差し替える前提でI/Fを切っておくが、本プロジェクトでは差し替えない。"
+    },
+    "persistence": {
+      "strategy": "ブラウザ内 IndexedDB（idb ライブラリ経由） + 初期シード JSON"
+    }
+  },
+  "conventions": {
+    "naming": [
+      {
+        "target": "変数・関数",
+        "rule": "lowerCamelCase",
+        "example": "workerId, createAttendance()"
+      },
+      {
+        "target": "型・コンポーネント",
+        "rule": "UpperCamelCase",
+        "example": "WorkerList, AttendanceRecord"
+      },
+      {
+        "target": "定数",
+        "rule": "UPPER_SNAKE_CASE",
+        "example": "MAX_PHOTO_SIZE_MB"
+      },
+      {
+        "target": "ファイル（コンポーネント）",
+        "rule": "UpperCamelCase.tsx",
+        "example": "WorkerList.tsx"
+      },
+      {
+        "target": "ファイル（その他）",
+        "rule": "camelCase.ts",
+        "example": "attendanceRepository.ts"
+      },
+      {
+        "target": "ルートセグメント",
+        "rule": "kebab-case",
+        "example": "app/(factory)/attendance-history/page.tsx"
+      },
+      {
+        "target": "モック内テーブル名",
+        "rule": "snake_case 複数形",
+        "example": "workers, attendance_records"
+      }
+    ],
+    "error_handling": {
+      "strategy": "ユースケース層は Result<T, AppError> 型を返却し、UI 層で表示メッセージへ変換する [ASSUMPTION]。",
+      "notification": "ブラウザ通知は toast で統一表示。",
+      "exception_handling": "例外は ErrorBoundary で捕捉。",
+      "status": "assumption"
+    },
+    "logging": {
+      "strategy": "本プロジェクトはサーバ送信なし。lib/logger 経由で console に構造化出力（{level, event, payload}）。",
+      "restrictions": "個人情報・写真Blobはログ出力禁止（IDのみ）。"
+    }
+  },
+  "authentication": {
+    "mechanism": "ID/PW を IndexedDB の users テーブル（初期シード）と突合するモック認証。",
+    "session": {
+      "store": "sessionStorage",
+      "value": "ユーザIDとロール",
+      "status": "assumption"
+    },
+    "roles": [
+      {
+        "name": "FACTORY_ADMIN",
+        "description": "工場側管理者"
+      },
+      {
+        "name": "CONTRACTOR_MANAGER",
+        "description": "外注先管理者"
+      }
+    ],
+    "authorization": {
+      "restriction": "外注先管理者は自社 contractor_id のデータのみ閲覧・操作可（リポジトリ層でフィルタ強制）。",
+      "security_note": "本番相当のセキュリティ実装は行わない（本テストプロジェクトの明示的非ゴール）。"
+    }
+  },
+  "data_model": {
+    "stores": [
+      {
+        "name": "contractors",
+        "key": "contractor_id",
+        "description": "外注先企業"
+      },
+      {
+        "name": "users",
+        "key": "user_id",
+        "description": "利用者（工場側 / 外注先管理者）"
+      },
+      {
+        "name": "workers",
+        "key": "worker_id",
+        "description": "作業員マスタ（contractor_id でインデックス）"
+      },
+      {
+        "name": "attendance_records",
+        "key": "attendance_id",
+        "description": "打刻実績"
+      },
+      {
+        "name": "attendance_corrections",
+        "key": "correction_id",
+        "description": "打刻修正履歴"
+      },
+      {
+        "name": "photo_blobs",
+        "key": "photo_object_id",
+        "description": "写真の Blob 本体"
+      },
+      {
+        "name": "audit_logs",
+        "key": "audit_id",
+        "description": "監査ログ（モック）"
+      }
+    ],
+    "types": [
+      {
+        "name": "Role",
+        "definition": "export type Role = 'FACTORY_ADMIN' | 'CONTRACTOR_MANAGER';"
+      },
+      {
+        "name": "PunchType",
+        "definition": "export type PunchType = 'CLOCK_IN' | 'CLOCK_OUT';"
+      },
+      {
+        "name": "Status",
+        "definition": "export type Status = 'ACTIVE' | 'INACTIVE' | 'RETIRED' | 'LOCKED' | 'DISABLED';"
+      },
+      {
+        "name": "Contractor",
+        "definition": "export interface Contractor {\n  contractor_id: string;          // UUID\n  name: string;\n  status: Extract<Status, 'ACTIVE' | 'INACTIVE'>;\n  created_at: string;             // ISO8601\n  updated_at: string;\n}"
+      },
+      {
+        "name": "User",
+        "definition": "export interface User {\n  user_id: string;\n  contractor_id: string | null;   // null = 工場側管理者\n  role: Role;\n  login_id: string;\n  password_hash: string;          // モックでも平文保存はしない（簡易ハッシュ可）\n  display_name: string;\n  status: Extract<Status, 'ACTIVE' | 'LOCKED' | 'DISABLED'>;\n  last_login_at?: string;\n  created_at: string;\n  updated_at: string;\n}"
+      },
+      {
+        "name": "Worker",
+        "definition": "export interface Worker {\n  worker_id: string;\n  contractor_id: string;\n  name: string;\n  contact?: string;\n  qualifications: string[];       // 資格コード配列\n  trainings: Array<{ code: string; taken_at: string }>;\n  status: Extract<Status, 'ACTIVE' | 'RETIRED'>;\n  retired_at?: string;\n  created_at: string;\n  updated_at: string;\n}"
+      },
+      {
+        "name": "AttendanceRecord",
+        "definition": "export interface AttendanceRecord {\n  attendance_id: string;\n  worker_id: string;\n  contractor_id: string;\n  punch_type: PunchType;\n  clocked_at: string;             // ISO8601\n  punched_by: string;             // user_id\n  geo?: { lat: number; lng: number };\n  photo_object_id: string;\n  created_at: string;\n}"
+      },
+      {
+        "name": "AttendanceCorrection",
+        "definition": "export interface AttendanceCorrection {\n  correction_id: string;\n  attendance_id?: string;         // 新規登録時 undefined\n  corrected_by: string;\n  reason: string;                 // 必須\n  before?: Partial<AttendanceRecord>;\n  after: Partial<AttendanceRecord>;\n  corrected_at: string;\n}"
+      },
+      {
+        "name": "PhotoBlob",
+        "definition": "export interface PhotoBlob {\n  photo_object_id: string;\n  blob: Blob;                     // IndexedDB に Blob 直接保存\n  content_type: string;\n  byte_size: number;\n  uploaded_by: string;\n  uploaded_at: string;\n}"
+      },
+      {
+        "name": "AuditLog",
+        "definition": "export interface AuditLog {\n  audit_id: string;\n  occurred_at: string;\n  actor_user_id?: string;\n  actor_role?: Role;\n  action: string;                 // LOGIN / CREATE_WORKER / PUNCH / CORRECT_PUNCH ...\n  target_type?: string;\n  target_id?: string;\n  detail?: Record<string, unknown>;\n}"
+      }
+    ]
+  },
+  "seed": {
+    "file": "public/mocks/seed.json",
+    "description": "外注先2社・ユーザー数名・作業員数十名・打刻実績数百件を投入",
+    "behavior": "アプリ初回起動時、IndexedDB が空ならシードを取り込む。リセットボタンで再投入可能。",
+    "retention_policy": "本テストプロジェクトでは法定保持（5年）は適用しない。ブラウザ内のみで揮発前提。開発者向けに「全データリセット」機能を提供。",
+    "status": "assumption"
+  },
+  "non_functional": {
+    "performance": [
+      {
+        "requirement": "撮影〜画面遷移完了まで 3秒以内（クライアント完結のため、ネットワーク待ち時間は対象外）。",
+        "detail": "撮影画像はクライアント側で長辺 1280px / JPEG quality 0.7 / 上限 1MB 程度に圧縮",
+        "status": "assumption"
+      }
+    ],
+    "security": [
+      {
+        "requirement": "本番相当の対策は行わない（テストプロジェクト明示）。"
+      },
+      {
+        "requirement": "パスワードを平文表示しない"
+      },
+      {
+        "requirement": "XSS 対策として React の標準エスケープに従う（dangerouslySetInnerHTML 禁止）"
+      },
+      {
+        "requirement": "写真 Blob を IndexedDB から取り出す際、Object URL を都度発行・revoke する"
+      }
+    ],
+    "availability": [
+      {
+        "requirement": "ローカル動作のみ。可用性指標は対象外。"
+      }
+    ],
+    "audit_log": {
+      "storage": "IndexedDB の audit_logs に記録",
+      "ui_presence": {
+        "value": "参照画面の有無は [TODO: 要確認]",
+        "status": "todo"
+      }
+    }
+  },
+  "testing": {
+    "ci": [
+      "pnpm install",
+      "pnpm lint（ESLint + Prettier）",
+      "pnpm typecheck（tsc --noEmit）",
+      "pnpm test（Vitest）",
+      "pnpm build（Next.js production build の通過確認）"
+    ],
+    "frameworks": [
+      {
+        "name": "Vitest + React Testing Library",
+        "scope": "unit"
+      },
+      {
+        "name": "Playwright（主要画面遷移と打刻フローのみ）",
+        "scope": "e2e",
+        "status": "assumption"
+      }
+    ],
+    "coverage": {
+      "value": "ライン 70%（テストプロジェクトのため緩和）",
+      "status": "assumption"
+    },
+    "pr_rules": [
+      {
+        "rule": "1 PR は 1 関心事に限定。"
+      },
+      {
+        "rule": "CI 全項目グリーンが merge 条件。"
+      },
+      {
+        "rule": "レビュー1名以上の承認",
+        "status": "assumption"
+      }
+    ],
+    "deploy": {
+      "value": "デプロイは行わない（必要なら Vercel Preview のみ）",
+      "status": "todo"
+    }
+  },
+  "implementation_constraints": {
+    "allowed": [
+      "Next.js 14 (App Router) + TypeScript + Tailwind による画面・コンポーネント生成。",
+      "IndexedDB（idb 経由）のリポジトリ実装。",
+      "モック認証・モックユースケース・モック CSV 出力の生成。",
+      "HTML5 Camera API を利用した撮影 UI 実装。",
+      "Vitest / Playwright によるテストコード生成。",
+      "第3章のディレクトリ構造・第4章の命名規則・第5章の型定義に準拠した実装。"
+    ],
+    "forbidden": [
+      "GCP サービス（App Engine / Cloud Run / Spanner / Cloud Storage / Secret Manager 等）への接続コードを生成すること。",
+      "任意の外部DB（PostgreSQL / MySQL / MongoDB 等）への接続コードを生成すること。",
+      "Next.js の app/api/** から外部HTTPエンドポイントへ実通信を行うこと（モック応答のみ可）。",
+      "環境変数で外部APIキー・シークレットを参照する実装（process.env の業務用シークレット利用禁止）。",
+      "写真 Blob・パスワード・個人情報をログまたは画面のデバッグ出力に表示すること。",
+      "マルチテナントスコープ（contractor_id フィルタ）を省略したリポジトリ実装。",
+      "認証ガード（(factory) / (contractor) ルートグループ）を経由しないページ追加。",
+      "ネイティブアプリ向けコードの生成。",
+      "給与計算ロジック本体の実装（CSV 出力までがスコープ）。",
+      "第三者ライブラリの無断追加（追加時は PR 説明にライセンスと選定理由を明記）。",
+      "画面仕様の確定判断を本書のみを根拠として行うこと（画面仕様書は別管理）。",
+      "[TODO: 要確認] 項目を確認なしに確定して実装すること。"
+    ]
+  },
+  "open_items": [
+    {
+      "id": "TODO-001",
+      "target": "router",
+      "value": "App Router / Pages Router の最終確定（本書は App Router 前提）",
+      "status": "todo"
+    },
+    {
+      "id": "TODO-002",
+      "target": "deploy",
+      "value": "Vercel Preview デプロイの要否",
+      "status": "todo"
+    },
+    {
+      "id": "TODO-003",
+      "target": "audit_log_ui",
+      "value": "監査ログ参照画面の要否",
+      "status": "todo"
+    },
+    {
+      "id": "TODO-004",
+      "target": "rounding_rule",
+      "value": "打刻時刻の丸めルール",
+      "status": "todo"
+    },
+    {
+      "id": "TODO-005",
+      "target": "correction_flow",
+      "value": "打刻修正の承認フロー",
+      "status": "todo"
+    },
+    {
+      "id": "TODO-006",
+      "target": "photo_multiple_workers",
+      "value": "複数人同時撮影時の扱い（証拠写真 / 顔認識）",
+      "status": "todo"
+    },
+    {
+      "id": "TODO-007",
+      "target": "offline_behavior",
+      "value": "オフライン挙動（Service Worker による完全オフライン対応の要否）",
+      "status": "todo"
+    },
+    {
+      "id": "TODO-008",
+      "target": "seed_scale",
+      "value": "初期シードの規模・内容",
+      "status": "todo"
+    }
+  ],
+  "traceability": {}
+}

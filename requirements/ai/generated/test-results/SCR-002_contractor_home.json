@@ -1,0 +1,8 @@
+{
+  "screen": "SCR-002_contractor_home",
+  "status": "PASSED",
+  "passed": true,
+  "exit_code": 0,
+  "stdout": "\n\u001b[1m\u001b[7m\u001b[36m RUN \u001b[39m\u001b[27m\u001b[22m \u001b[36mv2.1.9 \u001b[39m\u001b[90m/tmp/SCR-002_contractor_home-e5uDkI\u001b[39m\n\n \u001b[32m✓\u001b[39m tests/contractorHome.test.tsx\u001b[2m > \u001b[22mContractorHomePage (SCR-002)\u001b[2m > \u001b[22mSCR-002-UT-001: 認証済みのときユーザー名とメニューボタンが正しく表示されること\n \u001b[32m✓\u001b[39m tests/contractorHome.test.tsx\u001b[2m > \u001b[22mContractorHomePage (SCR-002)\u001b[2m > \u001b[22mSCR-002-UT-002: 未認証のときログイン画面へリダイレクトされること\n \u001b[32m✓\u001b[39m tests/contractorHome.test.tsx\u001b[2m > \u001b[22mContractorHomePage (SCR-002)\u001b[2m > \u001b[22mSCR-002-IT-001: 打刻ボタン押下で打刻モード選択画面へ遷移すること\n \u001b[32m✓\u001b[39m tests/contractorHome.test.tsx\u001b[2m > \u001b[22mContractorHomePage (SCR-002)\u001b[2m > \u001b[22mSCR-002-IT-002: 作業員管理ボタン押下で作業員一覧画面へ遷移すること\n \u001b[32m✓\u001b[39m tests/contractorHome.test.tsx\u001b[2m > \u001b[22mContractorHomePage (SCR-002)\u001b[2m > \u001b[22mSCR-002-IT-003: ログアウトボタン押下でセッションがクリアされログイン画面へ遷移すること\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m5 passed\u001b[39m\u001b[22m\u001b[90m (5)\u001b[39m\n\u001b[2m   Start at \u001b[22m 01:48:30\n\u001b[2m   Duration \u001b[22m 2.06s\u001b[2m (transform 259ms, setup 216ms, collect 339ms, tests 276ms, environment 780ms, prepare 139ms)\u001b[22m\n\n",
+  "stderr": "\u001b[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.\u001b[39m\n"
+}

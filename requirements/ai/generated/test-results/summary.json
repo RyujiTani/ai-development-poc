@@ -1,0 +1,101 @@
+{
+  "total": 15,
+  "passed": 9,
+  "test_failed": 6,
+  "test_timeout": 0,
+  "infrastructure_failed": 0,
+  "success": false,
+  "test_completed": true,
+  "screens": [
+    {
+      "screen": "SCR-001_contractor_login",
+      "status": "PASSED",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "screen": "SCR-002_contractor_home",
+      "status": "PASSED",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "screen": "SCR-003_punch_mode_select",
+      "status": "PASSED",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "screen": "SCR-004_worker_select",
+      "status": "TEST_FAILED",
+      "passed": false,
+      "exit_code": 1
+    },
+    {
+      "screen": "SCR-005_capture_and_submit",
+      "status": "TEST_FAILED",
+      "passed": false,
+      "exit_code": 1
+    },
+    {
+      "screen": "SCR-006_punch_complete",
+      "status": "PASSED",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "screen": "SCR-007_worker_list",
+      "status": "TEST_FAILED",
+      "passed": false,
+      "exit_code": 1
+    },
+    {
+      "screen": "SCR-008_worker_add_edit",
+      "status": "PASSED",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "screen": "SCR-009_contractor_punch_correction",
+      "status": "PASSED",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "screen": "SCR-010_admin_login",
+      "status": "TEST_FAILED",
+      "passed": false,
+      "exit_code": 1
+    },
+    {
+      "screen": "SCR-011_admin_dashboard",
+      "status": "PASSED",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "screen": "SCR-012_punch_history",
+      "status": "TEST_FAILED",
+      "passed": false,
+      "exit_code": 1
+    },
+    {
+      "screen": "SCR-013_labor_time_summary",
+      "status": "PASSED",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "screen": "SCR-014_contractor_company_register",
+      "status": "PASSED",
+      "passed": true,
+      "exit_code": 0
+    },
+    {
+      "screen": "SCR-015_admin_user_register",
+      "status": "TEST_FAILED",
+      "passed": false,
+      "exit_code": 1
+    }
+  ]
+}
