@@ -1798,7 +1798,6 @@ def run_post_implementation_check(
     vertex_client,
     screen_id: str,
     max_static_repair_count: int = 2,
-    max_test_repair_count: int = 2,
 ) -> None:
     """
     1画面をApplicationへ追加した直後に検証する。
@@ -1807,12 +1806,16 @@ def run_post_implementation_check(
         1. static validation
         2. static failureならAI repair
         3. accumulated regression tests
-        4. test failureならAI repair
-        5. repair後にstatic validation
-        6. regression tests再実行
+        4. test failure / timeoutは記録して次画面へ進む
 
-    ここをPASSしない限り、
-    次画面の実装へ進ませない。
+    方針:
+        - static validation failureは後続画面へ
+          壊れたコードを引き継ぐ危険があるためblocking。
+        - regression test failure / timeoutはnon-blocking。
+          生成中は診断として扱い、15画面の生成を継続する。
+        - 最終的な機能テストとAI repairは
+          Cloud Build / Repair loopへ委譲する。
+        - test runner infrastructure failureだけはblocking。
     """
 
     static_validator = (
@@ -1843,7 +1846,14 @@ def run_post_implementation_check(
     print("=" * 60)
 
     # --------------------------------------------------------
-    # Initial static validation
+    # 1. Static validation
+    # --------------------------------------------------------
+    #
+    # TypeScript / import / dependencyなどのstatic failureを
+    # 残したまま次画面を生成すると、後続AIが壊れたApplicationを
+    # 既存コードとして読み込み、問題が連鎖する可能性がある。
+    #
+    # そのためstatic validationはblocking gateのまま維持する。
     # --------------------------------------------------------
 
     run_static_check_with_auto_repair(
@@ -1857,140 +1867,84 @@ def run_post_implementation_check(
     )
 
     # --------------------------------------------------------
-    # Accumulated regression tests + automatic repair
+    # 2. Accumulated regression tests
+    # --------------------------------------------------------
+    #
+    # 生成途中のVitestは品質ゲートではなく診断として扱う。
+    # TEST_FAILED / TEST_TIMEOUTがあっても、ここではrepairせず
+    # 次画面の生成へ進む。
+    #
+    # 最終的な全画面テストとrepairはCloud Buildで実施する。
     # --------------------------------------------------------
 
-    test_repair_count = 0
+    print()
+    print(
+        "Running regression tests through "
+        f"{screen_id}..."
+    )
 
-    while True:
+    test_result = run_regression_tests(
+        test_runner,
+        screen_id,
+    )
+
+    if test_result.returncode == 0:
         print()
         print(
-            "Running regression tests through "
-            f"{screen_id}..."
+            "Post implementation check passed: "
+            f"{screen_id}"
+        )
+        return
+
+    # exit 2 = controlled test runner側の
+    # infrastructure failure。
+    # Applicationの機能不具合ではなく、テスト基盤そのものが
+    # 正常に実行できていないため、この場合だけ停止する。
+    if test_result.returncode == 2:
+        raise RuntimeError(
+            "Test infrastructure failed "
+            "immediately after implementing "
+            f"{screen_id}. "
+            "Application generation was stopped "
+            "because the regression result cannot "
+            "be trusted."
         )
 
-        test_result = (
-            run_regression_tests(
-                test_runner,
-                screen_id,
-            )
-        )
-
-        if test_result.returncode == 0:
-            print()
-            print(
-                "Post implementation check "
-                f"passed: {screen_id}"
-            )
-            return
-
-        # exit 2 = controlled test runner側の
-        # infrastructure failure。
-        # ApplicationをAI修正しても意味がないためrepairしない。
-        if test_result.returncode == 2:
-            raise RuntimeError(
-                "Test infrastructure failed "
-                "immediately after implementing "
-                f"{screen_id}. "
-                "AI repair was not attempted."
-            )
-
-        if (
-            test_repair_count
-            >= max_test_repair_count
-        ):
-            raise RuntimeError(
-                "Regression test still failed after "
-                f"{test_repair_count} automatic "
-                f"repair(s) for {screen_id}. "
-                "The generated application was "
-                "not allowed to proceed to the "
-                "next screen."
-            )
-
-        test_repair_count += 1
-
+    # exit 1 = TEST_FAILED / TEST_TIMEOUT。
+    # 生成途中ではnon-blockingとし、後続画面へ進む。
+    if test_result.returncode == 1:
         print()
+        print("!" * 60)
         print(
-            "Regression test failed. "
-            "Starting automatic test repair "
-            f"{test_repair_count}/"
-            f"{max_test_repair_count}..."
+            "Regression test reported TEST_FAILED "
+            "or TEST_TIMEOUT."
         )
-
-        validation_result: Dict[
-            str,
-            Any,
-        ] = {
-            "screen":
-                screen_id,
-
-            "status":
-                "TEST_FAILED",
-
-            "phase":
-                "regression_test",
-
-            "command":
-                "node "
-                "test-runner/"
-                "run_generated_tests.mjs "
-                f"--through {screen_id}",
-
-            "exit_code":
-                test_result.returncode,
-
-            "repair_attempt":
-                test_repair_count,
-
-            "regression_through":
-                screen_id,
-        }
-
-        error_log = (
-            build_validation_error_log(
-                test_result.stdout
-                or "",
-
-                test_result.stderr
-                or "",
-            )
-        )
-
-        repair_screen_with_result(
-            vertex_client,
-            screen_id,
-            validation_result,
-            error_log,
-            max_attempts=2,
-        )
-
-        # Test repairでTypeScript/importを
-        # 壊していないことを必ず確認する。
-        print()
         print(
-            "Running static validation "
-            "after test repair..."
+            f"Screen: {screen_id}"
         )
-
-        run_static_check_with_auto_repair(
-            vertex_client=vertex_client,
-            screen_id=screen_id,
-            static_validator=static_validator,
-            max_static_repair_count=(
-                max_static_repair_count
-            ),
-            reason=(
-                "after_regression_test_repair_"
-                f"{test_repair_count}"
-            ),
-        )
-
-        print()
         print(
-            "Re-running regression tests "
-            "after repair..."
+            "This failure is non-blocking during "
+            "incremental generation."
         )
+        print(
+            "The current application will be kept, "
+            "and implementation will continue to the "
+            "next screen."
+        )
+        print(
+            "Final full regression testing and AI repair "
+            "will be performed by Cloud Build."
+        )
+        print("!" * 60)
+        return
+
+    # run_generated_tests.mjsの契約外exit code。
+    # 想定外なので安全側に倒して停止する。
+    raise RuntimeError(
+        "Regression test runner returned an "
+        "unexpected exit code after implementing "
+        f"{screen_id}: {test_result.returncode}"
+    )
 
 
 # ============================================================
@@ -2212,7 +2166,9 @@ def implement_all_screens(
         ↓
         SCR-001 tests
         ↓
-        PASS
+        PASS / FAILを診断記録
+        ↓
+        次画面へ
 
         SCR-002
         ↓
@@ -2223,14 +2179,18 @@ def implement_all_screens(
         ↓
         SCR-001 + SCR-002 tests
         ↓
-        PASS
+        PASS / FAILを診断記録
+        ↓
+        次画面へ
 
         ...
 
         SCR-015
 
-    各画面のPost Implementation Checkを
-    PASSしない限り次画面へ進まない。
+    各画面のstatic validationはblocking。
+    accumulated regression testの
+    TEST_FAILED / TEST_TIMEOUTはnon-blockingとし、
+    最終的な全画面テストとrepairはCloud Buildへ委譲する。
     """
 
     validate_required_files(
