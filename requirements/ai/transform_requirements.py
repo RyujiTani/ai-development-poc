@@ -64,6 +64,64 @@ REPAIR_SCREEN_PROMPT = (
 )
 
 
+
+
+# ============================================================
+# Repair protected files
+# ============================================================
+
+# AI repair must never modify the validation/test infrastructure.
+# These files are owned by the controlled runner environment or are
+# application build configuration that must not be changed merely to
+# make validation pass.
+REPAIR_PROTECTED_EXACT_PATHS = {
+    "package.json",
+    "package-lock.json",
+    "pnpm-lock.yaml",
+    "yarn.lock",
+    "tsconfig.json",
+    "jsconfig.json",
+    "vitest.config.ts",
+    "vitest.config.js",
+    "vitest.config.mts",
+    "vitest.config.mjs",
+    "vite.config.ts",
+    "vite.config.js",
+    "vite.config.mts",
+    "vite.config.mjs",
+    "postcss.config.js",
+    "postcss.config.cjs",
+    "postcss.config.mjs",
+    "postcss.config.ts",
+    "tailwind.config.js",
+    "tailwind.config.cjs",
+    "tailwind.config.mjs",
+    "tailwind.config.ts",
+}
+
+
+def validate_repair_file_paths(files: Dict[str, str]) -> None:
+    """Reject AI repair output that tries to modify protected infrastructure."""
+    violations: List[str] = []
+
+    for relative_path in files:
+        normalized = relative_path.replace("\\", "/").strip().lstrip("./")
+
+        if normalized == ".ai-repair-unresolved.txt":
+            continue
+
+        if normalized in REPAIR_PROTECTED_EXACT_PATHS:
+            violations.append(normalized)
+
+    if violations:
+        raise ValueError(
+            "AI repair attempted to modify protected test/build infrastructure: "
+            + ", ".join(sorted(violations))
+            + ". Repair application/test source instead; controlled runner files "
+            "must not be changed by AI repair."
+        )
+
+
 # ============================================================
 # Common utilities
 # ============================================================
@@ -1117,6 +1175,8 @@ def repair_screen_with_result(
                 f"specification gap was detected: {screen_id}"
             )
 
+    validate_repair_file_paths(repaired_files)
+
     saved_files = apply_repaired_files(
         repaired_files,
         APPLICATION_DIR,
@@ -1927,6 +1987,8 @@ def repair_screen(
                 "specification gap was detected."
             )
             return
+
+    validate_repair_file_paths(repaired_files)
 
     saved_files = apply_repaired_files(
         repaired_files,

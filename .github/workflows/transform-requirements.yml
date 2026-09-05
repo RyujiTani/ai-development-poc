@@ -3,7 +3,8 @@ name: AI Development Pipeline
 on:
   push:
     paths:
-      - "requirements/ai/original/**"
+      #- "requirements/ai/original/**"
+      - "/**"
 
 permissions:
   contents: write

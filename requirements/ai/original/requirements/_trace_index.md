@@ -5,7 +5,7 @@ total_screens: 15
 total_trace_ids: 236
 ---
 
-# トレースID一覧 
+# トレースID一覧
 
 ## SCR-001: 外注先ログイン画面
 

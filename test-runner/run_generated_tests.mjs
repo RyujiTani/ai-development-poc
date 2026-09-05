@@ -33,7 +33,8 @@ const resultsRoot = path.join(
 );
 
 const SCREEN_TEST_TIMEOUT_MS = 180_000;
-const SCREEN_TEST_TIMEOUT_SECONDS = SCREEN_TEST_TIMEOUT_MS / 1000;
+const SCREEN_TEST_TIMEOUT_SECONDS =
+  SCREEN_TEST_TIMEOUT_MS / 1000;
 
 const args = process.argv.slice(2);
 
@@ -50,11 +51,27 @@ function getArgValue(name) {
 const throughScreen = getArgValue('--through');
 
 function copyDir(source, destination) {
-  fs.mkdirSync(destination, { recursive: true });
+  fs.mkdirSync(destination, {
+    recursive: true,
+  });
 
-  for (const entry of fs.readdirSync(source, { withFileTypes: true })) {
-    const src = path.join(source, entry.name);
-    const dst = path.join(destination, entry.name);
+  for (
+    const entry of fs.readdirSync(
+      source,
+      {
+        withFileTypes: true,
+      }
+    )
+  ) {
+    const src = path.join(
+      source,
+      entry.name
+    );
+
+    const dst = path.join(
+      destination,
+      entry.name
+    );
 
     if (entry.isDirectory()) {
       copyDir(src, dst);
@@ -65,31 +82,176 @@ function copyDir(source, destination) {
 }
 
 function writeJson(file, value) {
-  fs.mkdirSync(path.dirname(file), { recursive: true });
-  fs.writeFileSync(file, JSON.stringify(value, null, 2) + '\n', 'utf8');
+  fs.mkdirSync(
+    path.dirname(file),
+    {
+      recursive: true,
+    }
+  );
+
+  fs.writeFileSync(
+    file,
+    JSON.stringify(
+      value,
+      null,
+      2
+    ) + '\n',
+    'utf8'
+  );
 }
 
 function getErrorMessage(error) {
   if (error instanceof Error) {
-    return error.stack ?? error.message;
+    return (
+      error.stack ??
+      error.message
+    );
   }
+
   return String(error);
+}
+
+function removeIfExists(target) {
+  try {
+    fs.rmSync(
+      target,
+      {
+        recursive: true,
+        force: true,
+      }
+    );
+  } catch (error) {
+    throw new Error(
+      `Failed to remove generated test ` +
+      `infrastructure file: ${target}\n` +
+      getErrorMessage(error)
+    );
+  }
+}
+
+function isolateRunnerInfrastructure(
+  workspaceDir
+) {
+  /*
+   * Generated Application側の設定ファイルに
+   * Vitest環境を支配させない。
+   *
+   * Applicationをworkspaceへコピーした後、
+   * build/test関連設定を削除し、
+   * test-runner側の固定設定を使用する。
+   */
+  const protectedNames = [
+    'tsconfig.json',
+    'jsconfig.json',
+
+    'vitest.config.ts',
+    'vitest.config.js',
+    'vitest.config.mts',
+    'vitest.config.mjs',
+
+    'vite.config.ts',
+    'vite.config.js',
+    'vite.config.mts',
+    'vite.config.mjs',
+
+    'postcss.config.js',
+    'postcss.config.cjs',
+    'postcss.config.mjs',
+    'postcss.config.ts',
+
+    'tailwind.config.js',
+    'tailwind.config.cjs',
+    'tailwind.config.mjs',
+    'tailwind.config.ts',
+  ];
+
+  for (const name of protectedNames) {
+    removeIfExists(
+      path.join(
+        workspaceDir,
+        name
+      )
+    );
+  }
+
+  /*
+   * test-runnerの固定設定をコピーする。
+   */
+  for (
+    const name of [
+      'tsconfig.json',
+      'vitest.config.ts',
+      'setupTests.ts',
+    ]
+  ) {
+    const sourceConfig =
+      path.join(
+        runnerRoot,
+        name
+      );
+
+    const destinationConfig =
+      path.join(
+        workspaceDir,
+        name
+      );
+
+    if (
+      !fs.existsSync(
+        sourceConfig
+      )
+    ) {
+      throw new Error(
+        `Required test-runner file ` +
+        `not found: ${sourceConfig}`
+      );
+    }
+
+    fs.copyFileSync(
+      sourceConfig,
+      destinationConfig
+    );
+  }
 }
 
 /*
  * Exit code:
- * 0: all screen tests passed
- * 1: generated implementation/test failure (repairable)
- * 2: test infrastructure failure
+ *
+ * 0:
+ *   all screen tests passed
+ *
+ * 1:
+ *   generated implementation/test
+ *   failure (repairable)
+ *
+ * 2:
+ *   test infrastructure failure
  */
 
-if (!fs.existsSync(applicationRoot)) {
-  console.error(`Application directory not found: ${applicationRoot}`);
+if (
+  !fs.existsSync(
+    applicationRoot
+  )
+) {
+  console.error(
+    `Application directory not found: ` +
+    `${applicationRoot}`
+  );
+
   process.exit(2);
 }
 
-if (!fs.existsSync(screenRequirementsRoot)) {
-  console.error(`Generated screen requirement directory not found: ${screenRequirementsRoot}`);
+if (
+  !fs.existsSync(
+    screenRequirementsRoot
+  )
+) {
+  console.error(
+    `Generated screen requirement ` +
+    `directory not found: ` +
+    `${screenRequirementsRoot}`
+  );
+
   process.exit(2);
 }
 
@@ -97,94 +259,247 @@ let screenIds;
 
 try {
   screenIds = fs
-    .readdirSync(screenRequirementsRoot, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name.startsWith('SCR-') && entry.name.endsWith('.json'))
-    .map((entry) => entry.name.slice(0, -'.json'.length))
+    .readdirSync(
+      screenRequirementsRoot,
+      {
+        withFileTypes: true,
+      }
+    )
+    .filter(
+      (entry) =>
+        entry.isFile() &&
+        entry.name.startsWith(
+          'SCR-'
+        ) &&
+        entry.name.endsWith(
+          '.json'
+        )
+    )
+    .map(
+      (entry) =>
+        entry.name.slice(
+          0,
+          -'.json'.length
+        )
+    )
     .sort();
 } catch (error) {
-  console.error('Failed to read generated screen requirements.');
-  console.error(getErrorMessage(error));
+  console.error(
+    'Failed to read generated ' +
+    'screen requirements.'
+  );
+
+  console.error(
+    getErrorMessage(error)
+  );
+
   process.exit(2);
 }
 
-if (screenIds.length === 0) {
-  console.error('No generated screen requirement JSON files found.');
+if (
+  screenIds.length === 0
+) {
+  console.error(
+    'No generated screen requirement ' +
+    'JSON files found.'
+  );
+
   process.exit(2);
 }
 
 if (throughScreen) {
-  const throughIndex = screenIds.indexOf(throughScreen);
+  const throughIndex =
+    screenIds.indexOf(
+      throughScreen
+    );
 
-  if (throughIndex === -1) {
-    console.error(`Unknown --through screen: ${throughScreen}`);
-    console.error(`Known screens: ${screenIds.join(', ')}`);
+  if (
+    throughIndex === -1
+  ) {
+    console.error(
+      `Unknown --through screen: ` +
+      `${throughScreen}`
+    );
+
+    console.error(
+      `Known screens: ` +
+      `${screenIds.join(', ')}`
+    );
+
     process.exit(2);
   }
 
-  screenIds = screenIds.slice(0, throughIndex + 1);
+  screenIds =
+    screenIds.slice(
+      0,
+      throughIndex + 1
+    );
 }
 
 try {
-  fs.rmSync(resultsRoot, { recursive: true, force: true });
-  fs.mkdirSync(resultsRoot, { recursive: true });
+  fs.rmSync(
+    resultsRoot,
+    {
+      recursive: true,
+      force: true,
+    }
+  );
+
+  fs.mkdirSync(
+    resultsRoot,
+    {
+      recursive: true,
+    }
+  );
 } catch (error) {
-  console.error('Failed to initialize test result directory.');
-  console.error(getErrorMessage(error));
+  console.error(
+    'Failed to initialize ' +
+    'test result directory.'
+  );
+
+  console.error(
+    getErrorMessage(error)
+  );
+
   process.exit(2);
 }
 
-console.log(`Found ${screenIds.length} screen(s) to test.`);
-console.log(`Integrated application: ${applicationRoot}`);
+console.log(
+  `Found ${screenIds.length} ` +
+  `screen(s) to test.`
+);
+
+console.log(
+  `Integrated application: ` +
+  `${applicationRoot}`
+);
+
 if (throughScreen) {
-  console.log(`Regression range: first screen through ${throughScreen}`);
+  console.log(
+    `Regression range: first ` +
+    `screen through ` +
+    `${throughScreen}`
+  );
 }
 
 const summary = [];
+
 let testFailed = 0;
 let testTimeout = 0;
 let infrastructureFailed = 0;
 let infrastructureError = false;
 
-for (let index = 0; index < screenIds.length; index += 1) {
-  const screenId = screenIds[index];
+for (
+  let index = 0;
+  index < screenIds.length;
+  index += 1
+) {
+  const screenId =
+    screenIds[index];
+
   let workspaceDir = null;
 
   console.log('');
-  console.log('='.repeat(60));
-  console.log(`[${index + 1}/${screenIds.length}] Testing: ${screenId}`);
-  console.log('='.repeat(60));
+
+  console.log(
+    '='.repeat(60)
+  );
+
+  console.log(
+    `[${index + 1}/` +
+    `${screenIds.length}] ` +
+    `Testing: ${screenId}`
+  );
+
+  console.log(
+    '='.repeat(60)
+  );
 
   try {
-    workspaceDir = fs.mkdtempSync(path.join(os.tmpdir(), `${screenId}-`));
-    copyDir(applicationRoot, workspaceDir);
+    workspaceDir =
+      fs.mkdtempSync(
+        path.join(
+          os.tmpdir(),
+          `${screenId}-`
+        )
+      );
 
-    for (const name of ['tsconfig.json', 'vitest.config.ts', 'setupTests.ts']) {
-      const sourceConfig = path.join(runnerRoot, name);
-      const destinationConfig = path.join(workspaceDir, name);
+    /*
+     * Application全体を一時workspaceへコピー。
+     */
+    copyDir(
+      applicationRoot,
+      workspaceDir
+    );
 
-      if (!fs.existsSync(sourceConfig)) {
-        throw new Error(`Required test-runner file not found: ${sourceConfig}`);
-      }
+    /*
+     * Application自身が生成した
+     * Vitest / Vite / PostCSS / Tailwind /
+     * TypeScript設定をテストに使用しない。
+     */
+    isolateRunnerInfrastructure(
+      workspaceDir
+    );
 
-      fs.copyFileSync(sourceConfig, destinationConfig);
+    /*
+     * test-runner/node_modules を
+     * controlled runtimeとして使用する。
+     */
+    const runnerNodeModules =
+      path.join(
+        runnerRoot,
+        'node_modules'
+      );
+
+    if (
+      !fs.existsSync(
+        runnerNodeModules
+      )
+    ) {
+      throw new Error(
+        `node_modules not found: ` +
+        `${runnerNodeModules}`
+      );
     }
 
-    const runnerNodeModules = path.join(runnerRoot, 'node_modules');
-    if (!fs.existsSync(runnerNodeModules)) {
-      throw new Error(`node_modules not found: ${runnerNodeModules}`);
-    }
+    fs.symlinkSync(
+      runnerNodeModules,
+      path.join(
+        workspaceDir,
+        'node_modules'
+      ),
+      'dir'
+    );
 
-    fs.symlinkSync(runnerNodeModules, path.join(workspaceDir, 'node_modules'), 'dir');
+    /*
+     * 対象screen test
+     */
+    const screenTestDirRelative =
+      path.posix.join(
+        'tests',
+        screenId
+      );
 
-    const screenTestDirRelative = path.posix.join('tests', screenId);
-    const screenTestDir = path.join(workspaceDir, 'tests', screenId);
+    const screenTestDir =
+      path.join(
+        workspaceDir,
+        'tests',
+        screenId
+      );
 
-    if (!fs.existsSync(screenTestDir)) {
+    if (
+      !fs.existsSync(
+        screenTestDir
+      )
+    ) {
       testFailed += 1;
 
       const message =
-        `Screen test directory not found: ${screenTestDirRelative}. ` +
-        'Each screen implementation must generate at least one test under tests/<screen_id>/.';
+        `Screen test directory not found: ` +
+        `${screenTestDirRelative}. ` +
+        'Each screen implementation must ' +
+        'generate at least one test under ' +
+        'tests/<screen_id>/.';
 
       const detail = {
         screen: screenId,
@@ -195,7 +510,14 @@ for (let index = 0; index < screenIds.length; index += 1) {
         stderr: message,
       };
 
-      writeJson(path.join(resultsRoot, `${screenId}.json`), detail);
+      writeJson(
+        path.join(
+          resultsRoot,
+          `${screenId}.json`
+        ),
+        detail
+      );
+
       summary.push({
         screen: screenId,
         status: 'TEST_FAILED',
@@ -204,218 +526,507 @@ for (let index = 0; index < screenIds.length; index += 1) {
       });
 
       console.error(message);
-      console.error(`FAIL: ${screenId}`);
+
+      console.error(
+        `FAIL: ${screenId}`
+      );
+
       continue;
     }
 
-    const vitestBin = path.join(runnerRoot, 'node_modules', '.bin', 'vitest');
-    if (!fs.existsSync(vitestBin)) {
-      throw new Error(`Vitest executable not found: ${vitestBin}`);
+    const vitestBin =
+      path.join(
+        runnerRoot,
+        'node_modules',
+        '.bin',
+        'vitest'
+      );
+
+    if (
+      !fs.existsSync(
+        vitestBin
+      )
+    ) {
+      throw new Error(
+        `Vitest executable not found: ` +
+        `${vitestBin}`
+      );
     }
 
-    const result = spawnSync(
-      vitestBin,
-      [
-        'run',
-        screenTestDirRelative,
-        '--config',
-        'vitest.config.ts',
-        '--reporter=verbose',
-        '--maxWorkers=1',
-        '--minWorkers=1',
-      ],
-      {
-        cwd: workspaceDir,
-        encoding: 'utf8',
-        timeout: SCREEN_TEST_TIMEOUT_MS,
-        env: {
-          ...process.env,
-          CI: 'true',
-          NODE_OPTIONS: [
-            process.env.NODE_OPTIONS,
-            '--max-old-space-size=1024',
-          ]
-            .filter(Boolean)
-            .join(' '),
-        },
-      }
-    );
+    /*
+     * 必ずtest-runner由来の
+     * vitest.config.tsを明示指定する。
+     */
+    const result =
+      spawnSync(
+        vitestBin,
+        [
+          'run',
 
-    const timedOut = result.error?.code === 'ETIMEDOUT';
+          screenTestDirRelative,
+
+          '--config',
+          'vitest.config.ts',
+
+          '--reporter=verbose',
+
+          '--maxWorkers=1',
+          '--minWorkers=1',
+        ],
+        {
+          cwd: workspaceDir,
+
+          encoding: 'utf8',
+
+          timeout:
+            SCREEN_TEST_TIMEOUT_MS,
+
+          env: {
+            ...process.env,
+
+            CI: 'true',
+
+            NODE_OPTIONS: [
+              process.env.NODE_OPTIONS,
+
+              '--max-old-space-size=1024',
+            ]
+              .filter(Boolean)
+              .join(' '),
+          },
+        }
+      );
+
+    const timedOut =
+      result.error?.code ===
+      'ETIMEDOUT';
 
     if (timedOut) {
       testTimeout += 1;
 
       const timeoutMessage =
-        `Vitest process exceeded ${SCREEN_TEST_TIMEOUT_SECONDS} seconds and was terminated.`;
+        `Vitest process exceeded ` +
+        `${SCREEN_TEST_TIMEOUT_SECONDS} ` +
+        `seconds and was terminated.`;
 
       const detail = {
         screen: screenId,
-        status: 'TEST_TIMEOUT',
+
+        status:
+          'TEST_TIMEOUT',
+
         passed: false,
+
         exit_code: null,
-        timeout_seconds: SCREEN_TEST_TIMEOUT_SECONDS,
-        stdout: result.stdout ?? '',
-        stderr: [result.stderr ?? '', timeoutMessage].filter(Boolean).join('\n'),
+
+        timeout_seconds:
+          SCREEN_TEST_TIMEOUT_SECONDS,
+
+        stdout:
+          result.stdout ?? '',
+
+        stderr: [
+          result.stderr ?? '',
+          timeoutMessage,
+        ]
+          .filter(Boolean)
+          .join('\n'),
       };
 
-      writeJson(path.join(resultsRoot, `${screenId}.json`), detail);
+      writeJson(
+        path.join(
+          resultsRoot,
+          `${screenId}.json`
+        ),
+        detail
+      );
+
       summary.push({
         screen: screenId,
-        status: 'TEST_TIMEOUT',
+
+        status:
+          'TEST_TIMEOUT',
+
         passed: false,
+
         exit_code: null,
-        timeout_seconds: SCREEN_TEST_TIMEOUT_SECONDS,
+
+        timeout_seconds:
+          SCREEN_TEST_TIMEOUT_SECONDS,
       });
 
-      if (result.stdout) process.stdout.write(result.stdout);
-      if (result.stderr) process.stderr.write(result.stderr);
-      console.error(timeoutMessage);
-      console.error(`TIMEOUT: ${screenId}`);
+      if (result.stdout) {
+        process.stdout.write(
+          result.stdout
+        );
+      }
+
+      if (result.stderr) {
+        process.stderr.write(
+          result.stderr
+        );
+      }
+
+      console.error(
+        timeoutMessage
+      );
+
+      console.error(
+        `TIMEOUT: ${screenId}`
+      );
+
       continue;
     }
 
+    /*
+     * spawnSync自体の失敗。
+     */
     if (result.error) {
       infrastructureError = true;
       infrastructureFailed += 1;
-      const message = getErrorMessage(result.error);
+
+      const message =
+        getErrorMessage(
+          result.error
+        );
 
       const detail = {
         screen: screenId,
-        status: 'INFRA_ERROR',
+
+        status:
+          'INFRA_ERROR',
+
         passed: false,
+
         exit_code: 2,
-        stdout: result.stdout ?? '',
+
+        stdout:
+          result.stdout ?? '',
+
         stderr: message,
       };
 
-      writeJson(path.join(resultsRoot, `${screenId}.json`), detail);
+      writeJson(
+        path.join(
+          resultsRoot,
+          `${screenId}.json`
+        ),
+        detail
+      );
+
       summary.push({
         screen: screenId,
-        status: 'INFRA_ERROR',
+
+        status:
+          'INFRA_ERROR',
+
         passed: false,
+
         exit_code: 2,
       });
 
-      if (result.stdout) process.stdout.write(result.stdout);
-      if (result.stderr) process.stderr.write(result.stderr);
-      console.error(message);
-      console.error(`INFRA ERROR: ${screenId}`);
+      if (result.stdout) {
+        process.stdout.write(
+          result.stdout
+        );
+      }
+
+      if (result.stderr) {
+        process.stderr.write(
+          result.stderr
+        );
+      }
+
+      console.error(
+        message
+      );
+
+      console.error(
+        `INFRA ERROR: ${screenId}`
+      );
+
       continue;
     }
 
-    const exitCode = typeof result.status === 'number' ? result.status : 1;
-    const passed = exitCode === 0;
+    const exitCode =
+      typeof result.status ===
+      'number'
+        ? result.status
+        : 1;
 
-    if (!passed) testFailed += 1;
+    const passed =
+      exitCode === 0;
 
-    const status = passed ? 'PASSED' : 'TEST_FAILED';
+    if (!passed) {
+      testFailed += 1;
+    }
+
+    const status =
+      passed
+        ? 'PASSED'
+        : 'TEST_FAILED';
+
     const detail = {
       screen: screenId,
       status,
       passed,
       exit_code: exitCode,
-      stdout: result.stdout ?? '',
-      stderr: result.stderr ?? '',
+
+      stdout:
+        result.stdout ?? '',
+
+      stderr:
+        result.stderr ?? '',
     };
 
-    writeJson(path.join(resultsRoot, `${screenId}.json`), detail);
-    summary.push({ screen: screenId, status, passed, exit_code: exitCode });
+    writeJson(
+      path.join(
+        resultsRoot,
+        `${screenId}.json`
+      ),
+      detail
+    );
 
-    if (result.stdout) process.stdout.write(result.stdout);
-    if (result.stderr) process.stderr.write(result.stderr);
-    console.log(passed ? `PASS: ${screenId}` : `FAIL: ${screenId}`);
+    summary.push({
+      screen: screenId,
+      status,
+      passed,
+      exit_code: exitCode,
+    });
+
+    if (result.stdout) {
+      process.stdout.write(
+        result.stdout
+      );
+    }
+
+    if (result.stderr) {
+      process.stderr.write(
+        result.stderr
+      );
+    }
+
+    console.log(
+      passed
+        ? `PASS: ${screenId}`
+        : `FAIL: ${screenId}`
+    );
   } catch (error) {
     infrastructureError = true;
     infrastructureFailed += 1;
-    const message = getErrorMessage(error);
+
+    const message =
+      getErrorMessage(error);
 
     const detail = {
       screen: screenId,
-      status: 'INFRA_ERROR',
+
+      status:
+        'INFRA_ERROR',
+
       passed: false,
+
       exit_code: 2,
+
       stdout: '',
+
       stderr: message,
     };
 
     try {
-      writeJson(path.join(resultsRoot, `${screenId}.json`), detail);
+      writeJson(
+        path.join(
+          resultsRoot,
+          `${screenId}.json`
+        ),
+        detail
+      );
     } catch (writeError) {
-      console.error('Failed to write infrastructure error result.');
-      console.error(getErrorMessage(writeError));
+      console.error(
+        'Failed to write ' +
+        'infrastructure error result.'
+      );
+
+      console.error(
+        getErrorMessage(
+          writeError
+        )
+      );
     }
 
     summary.push({
       screen: screenId,
-      status: 'INFRA_ERROR',
+
+      status:
+        'INFRA_ERROR',
+
       passed: false,
+
       exit_code: 2,
     });
 
-    console.error(message);
-    console.error(`INFRA ERROR: ${screenId}`);
+    console.error(
+      message
+    );
+
+    console.error(
+      `INFRA ERROR: ${screenId}`
+    );
   } finally {
     if (workspaceDir) {
       try {
-        fs.rmSync(workspaceDir, { recursive: true, force: true });
+        fs.rmSync(
+          workspaceDir,
+          {
+            recursive: true,
+            force: true,
+          }
+        );
       } catch (error) {
         infrastructureError = true;
         infrastructureFailed += 1;
-        console.error(`Failed to remove temporary workspace: ${workspaceDir}`);
-        console.error(getErrorMessage(error));
+
+        console.error(
+          `Failed to remove temporary ` +
+          `workspace: ${workspaceDir}`
+        );
+
+        console.error(
+          getErrorMessage(error)
+        );
       }
     }
   }
 }
 
-const passed = summary.filter((item) => item.status === 'PASSED').length;
+const passed =
+  summary.filter(
+    (item) =>
+      item.status === 'PASSED'
+  ).length;
 
 const summaryFile = {
-  total: summary.length,
+  total:
+    summary.length,
+
   passed,
-  test_failed: testFailed,
-  test_timeout: testTimeout,
-  infrastructure_failed: infrastructureFailed,
+
+  test_failed:
+    testFailed,
+
+  test_timeout:
+    testTimeout,
+
+  infrastructure_failed:
+    infrastructureFailed,
+
   success:
     testFailed === 0 &&
     testTimeout === 0 &&
     infrastructureFailed === 0,
-  test_completed: infrastructureFailed === 0,
-  screens: summary,
+
+  test_completed:
+    infrastructureFailed === 0,
+
+  screens:
+    summary,
 };
 
 try {
-  writeJson(path.join(resultsRoot, 'summary.json'), summaryFile);
+  writeJson(
+    path.join(
+      resultsRoot,
+      'summary.json'
+    ),
+    summaryFile
+  );
 } catch (error) {
-  console.error('Failed to write summary.json.');
-  console.error(getErrorMessage(error));
+  console.error(
+    'Failed to write summary.json.'
+  );
+
+  console.error(
+    getErrorMessage(error)
+  );
+
   process.exit(2);
 }
 
 console.log('');
-console.log('='.repeat(60));
-console.log('Integrated Application Screen Test Summary');
-console.log('='.repeat(60));
-console.log(`Total                 : ${summary.length}`);
-console.log(`Passed                : ${passed}`);
-console.log(`Test failed           : ${testFailed}`);
-console.log(`Test timeout          : ${testTimeout}`);
-console.log(`Infrastructure failed : ${infrastructureFailed}`);
-console.log(`Results               : ${resultsRoot}`);
+
+console.log(
+  '='.repeat(60)
+);
+
+console.log(
+  'Integrated Application ' +
+  'Screen Test Summary'
+);
+
+console.log(
+  '='.repeat(60)
+);
+
+console.log(
+  `Total                 : ` +
+  `${summary.length}`
+);
+
+console.log(
+  `Passed                : ` +
+  `${passed}`
+);
+
+console.log(
+  `Test failed           : ` +
+  `${testFailed}`
+);
+
+console.log(
+  `Test timeout          : ` +
+  `${testTimeout}`
+);
+
+console.log(
+  `Infrastructure failed : ` +
+  `${infrastructureFailed}`
+);
+
+console.log(
+  `Results               : ` +
+  `${resultsRoot}`
+);
 
 if (infrastructureError) {
   console.error('');
-  console.error('Test infrastructure error detected.');
+
+  console.error(
+    'Test infrastructure ' +
+    'error detected.'
+  );
+
   process.exit(2);
 }
 
-if (testFailed > 0 || testTimeout > 0) {
+if (
+  testFailed > 0 ||
+  testTimeout > 0
+) {
   console.log('');
-  console.log('Test failures or timeouts detected.');
+
+  console.log(
+    'Test failures or ' +
+    'timeouts detected.'
+  );
+
   process.exit(1);
 }
 
 console.log('');
-console.log('All integrated application screen tests passed.');
+
+console.log(
+  'All integrated application ' +
+  'screen tests passed.'
+);
+
 process.exit(0);

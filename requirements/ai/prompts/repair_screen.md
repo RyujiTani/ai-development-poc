@@ -52,25 +52,11 @@ ERROR_LOG:
 
 今回の修正対象は `SCREEN_REQUIREMENT_JSON` に記載された1画面のみです。
 
-`GENERATED_FILES` は、全画面を統合した現在のApplicationコードです。対象画面の実装だけでなく共有Domain / Repository / Service / route等を含む場合があります。
+`GENERATED_FILES` は、その画面について現在生成済みの実装・テストコードです。
 
 `TEST_RESULT_JSON` および `ERROR_LOG` は、その生成物を実際に検証した結果です。
 
-`TEST_RESULT_JSON` という名前は互換性のため維持されていますが、テスト結果だけでなく生成直後の静的検証結果が渡される場合があります。
-
-静的検証の場合の例:
-
-{
-  "screen": "SCR-001_contractor_login",
-  "status": "STATIC_CHECK_FAILED",
-  "phase": "typescript",
-  "command": "tsc --noEmit --project tsconfig.json",
-  "exit_code": 2
-}
-
-`status = STATIC_CHECK_FAILED` の場合は、TypeScript構文、型、import、module resolution、依存関係、重複宣言等の静的エラーを最優先で修正してください。
-
-対象画面と無関係な機能や他画面を変更してはいけません。ただし、対象画面の失敗原因が共有コードにある場合は、その根本原因を解消するために必要な共有ファイルのみ最小修正して構いません。
+対象画面と無関係な機能や他画面を変更してはいけません。
 
 ---
 
@@ -200,6 +186,48 @@ SPECIFICATION_GAP
 
 既存の標準APIまたはGENERATED_FILES内の実装で代替してください。
 
+
+---
+
+# 8.5. Protected Test / Build Infrastructure
+
+テストや静的検証を通す目的で、以下のファイルを新規作成・変更・削除してはいけません。
+これらはAI repairの管理対象外です。
+
+* `package.json`
+* `package-lock.json`
+* `pnpm-lock.yaml`
+* `yarn.lock`
+* `tsconfig.json`
+* `jsconfig.json`
+* `vitest.config.*`
+* `vite.config.*`
+* `postcss.config.*`
+* `tailwind.config.*`
+
+`Cannot find module`、TypeScriptエラー、Vitest失敗、PostCSS/Tailwindエラー等が発生しても、上記ファイルを変更して回避してはいけません。
+
+特に以下は禁止です。
+
+* `vitest.config.*` を生成してテスト挙動を変更する
+* `tsconfig.json` を緩めて型エラーを隠す
+* `postcss.config.*` / `tailwind.config.*` を変更してテスト環境へ依存を追加する
+* `package.json` に依存を追加して、controlled runnerに存在しないpackageを使える前提にする
+* `skipLibCheck`、`exclude`、path alias等で実装エラーを隠す
+
+修正対象は原則として以下に限定してください。
+
+* `app/**`
+* `components/**`
+* `features/**`
+* `lib/**`
+* `public/**`
+* `tests/**`
+
+テスト基盤の問題に見えても、ERROR_LOGとGENERATED_FILESを確認し、実装またはテストコード側の根本原因を修正してください。
+上記protected fileを変更しなければ解決できない場合は、勝手に変更せず `.ai-repair-unresolved.txt` を返してください。
+
+
 ---
 
 # 9. Repository / Service / UseCase Contract
@@ -292,102 +320,6 @@ jsdomで未実装または制限されるBrowser APIを使用する場合、テ�
 
 ---
 
-# 10.5 Static Check Repair
-
-`TEST_RESULT_JSON.status` が `STATIC_CHECK_FAILED` の場合、これは実行時テスト失敗ではなく、生成ApplicationがTypeScript静的検証を通過できなかったことを意味します。
-
-この場合は `ERROR_LOG` の `tsc` エラーを一次情報として扱い、報告されたファイルと実際のApplicationコードを照合してください。
-
-優先順位:
-
-1. TypeScript / TSX構文エラー
-2. 重複宣言・不完全な宣言
-3. import path / export mismatch
-4. 型不整合
-5. dependency / module resolution
-6. それらを引き起こす最小限の関連コード
-
-## TS2307 / Cannot find module
-
-`TS2307: Cannot find module` が存在する場合、最初にエラー対象を次の2種類へ分類してください。
-
-### A. Application内部ファイル
-
-相対importまたは `@/...` 等のApplication内部importの場合:
-
-- import先ファイルが実在するか確認する
-- relative path階層を確認する
-- default / named exportを確認する
-- route groupを含む実際のパスを確認する
-- ファイル名の大文字小文字を確認する
-
-存在しない内部モジュールを `tsconfig` のpathsで捏造してはいけません。
-
-### B. npm package
-
-bare module importの場合、利用可能なProduction dependencyは以下だけです。
-
-- `@hookform/resolvers`
-- `clsx`
-- `idb`
-- `lucide-react`
-- `next`
-- `react`
-- `react-dom`
-- `react-hook-form`
-- `tailwind-merge`
-- `zod`
-- `zustand`
-
-テストでは実行環境に存在するtest/dev dependencyも使用できます。
-
-上記allowlist内packageなのにTS2307が発生している場合、`tsconfig.json` を変更して隠してはいけません。
-
-Applicationの `package.json` に必要なProduction dependencyが欠落していれば、`package.json` を必要最小限で修正してください。
-
-allowlist外packageをimportしている場合は、そのpackageを追加するのではなく、許可済みdependencyまたは標準React / Web APIだけを使う実装へ変更してください。
-
-例:
-
-- `class-variance-authority` を追加しない
-- `@radix-ui/*` を追加しない
-- shadcn/ui風コンポーネントはReact + Tailwind CSS + `clsx` + `tailwind-merge` 等で実装する
-
-ただし、`SYSTEM_REQUIREMENTS_JSON` で `idb` が明示されている場合は、`idb` はallowlist済みなので削除・native IndexedDBへ置換せず、正しく依存関係と型を整合させてください。
-
-## tsconfig変更禁止の原則
-
-static repairで `tsconfig.json` を変更するのは、元の設定そのものが明確に誤っており、かつ仕様・実行環境と矛盾している場合だけです。
-
-次の目的で `tsconfig.json` を変更してはいけません。
-
-- missing npm packageを隠す
-- 存在しないimport pathを通す
-- 型エラーを無視する
-- strictnessを下げる
-- files/include/excludeから問題ファイルを外す
-- `skipLibCheck` 等を追加してApplication自身のエラーを回避する
-
-静的検証失敗を修正するために、仕様やテストを弱めてはいけません。
-
-禁止:
-
-- `// @ts-ignore` の追加だけで隠す
-- `// @ts-nocheck` の追加
-- `any` への大量置換
-- 問題コードの削除だけで機能を失わせる
-- tsconfigのstrictnessを下げる
-- TypeScriptチェック対象からファイルを除外する
-- package.jsonのscriptを無効化する
-- allowlist外dependencyを追加する
-- エラーを回避するためだけの無関係なリファクタリング
-
-`.ts` / `.tsx` の構文エラーでは、括弧、JSXタグ、props spread、generic、`React.forwardRef`、重複コード、Markdown/diff記号混入を特に確認してください。
-
-修正後のコードが `tsc --noEmit` を通過することを想定し、必要なファイルだけを完全なFILEブロックで返してください。
-
----
-
 # 13.5. Test Timeout Repair Rules
 
 `TEST_RESULT_JSON.status` が `TEST_TIMEOUT` の場合、そのタイムアウトは実装またはテストコードの修正対象として扱ってください。
@@ -449,20 +381,6 @@ Vitestのhoisting問題が関係する場合は、必要に応じて `vi.hoisted
 派生的な失敗ではなく、最初の根本原因を優先してください。
 
 1つの原因によって複数テストが失敗している場合、個別テストを1件ずつ場当たり的に修正してはいけません。
-
----
-
-# 14.5. Integrated Application Repair Rules
-
-現在の生成物は画面ごとの独立コードではなく、1つの統合Applicationです。
-
-* `TEST_RESULT_JSON` の `screen` を今回のrepair対象画面として扱う
-* 原則として `tests/<screen_id>/` と、その画面が直接利用する実装を優先して調査する
-* 共有Domain / Repository / Service / Utilityを修正する場合は他画面への影響を最小化する
-* 他画面専用テストをFAIL回避目的で変更してはいけない
-* 対象画面と無関係な既存routeやUIを変更してはいけない
-* 統合Application全体を再出力してはいけない
-* 修正が必要なファイルだけを完全なFILE形式で返す
 
 ---
 
@@ -548,6 +466,8 @@ Markdownコードブロックで囲んではいけません。
 * Browser API mockが必要ならテスト側へ追加した
 * timezoneを勝手に決めていない
 * エラーと無関係なファイルを変更していない
+* protected test/build infrastructureを変更していない
+* `vitest.config.*` / `tsconfig.json` / `postcss.config.*` / `tailwind.config.*` / `package.json` をrepair出力していない
 * テストケースを削除・skipしていない
 * assertionを無意味に弱めていない
 * 修正ファイルだけを出力している
