@@ -56,6 +56,20 @@ ERROR_LOG:
 
 `TEST_RESULT_JSON` および `ERROR_LOG` は、その生成物を実際に検証した結果です。
 
+`TEST_RESULT_JSON` という名前は互換性のため維持されていますが、テスト結果だけでなく生成直後の静的検証結果が渡される場合があります。
+
+静的検証の場合の例:
+
+{
+  "screen": "SCR-001_contractor_login",
+  "status": "STATIC_CHECK_FAILED",
+  "phase": "typescript",
+  "command": "tsc --noEmit --project tsconfig.json",
+  "exit_code": 2
+}
+
+`status = STATIC_CHECK_FAILED` の場合は、TypeScript構文、型、import、module resolution、依存関係、重複宣言等の静的エラーを最優先で修正してください。
+
 対象画面と無関係な機能や他画面を変更してはいけません。ただし、対象画面の失敗原因が共有コードにある場合は、その根本原因を解消するために必要な共有ファイルのみ最小修正して構いません。
 
 ---
@@ -275,6 +289,40 @@ jsdomで未実装または制限されるBrowser APIを使用する場合、テ�
 
 仕様にtimezoneがなく、正解を一意に決められない場合は勝手に新仕様を追加しないでください。
 
+
+---
+
+# 10.5 Static Check Repair
+
+`TEST_RESULT_JSON.status` が `STATIC_CHECK_FAILED` の場合、これは実行時テスト失敗ではなく、生成ApplicationがTypeScript静的検証を通過できなかったことを意味します。
+
+この場合は `ERROR_LOG` の `tsc` エラーを一次情報として扱い、最初に報告されたファイルとその周辺の構文・型・importを確認してください。
+
+優先順位:
+
+1. TypeScript / TSX構文エラー
+2. 重複宣言・不完全な宣言
+3. import path / export mismatch
+4. 型不整合
+5. dependency / module resolution
+6. それらを引き起こす最小限の関連コード
+
+静的検証失敗を修正するために、仕様やテストを弱めてはいけません。
+
+禁止:
+
+- `// @ts-ignore` の追加だけで隠す
+- `// @ts-nocheck` の追加
+- `any` への大量置換
+- 問題コードの削除だけで機能を失わせる
+- tsconfigのstrictnessを下げる
+- TypeScriptチェック対象からファイルを除外する
+- package.jsonのscriptを無効化する
+- エラーを回避するためだけの無関係なリファクタリング
+
+`.ts` / `.tsx` の構文エラーでは、括弧、JSXタグ、props spread、generic、`React.forwardRef`、重複コード、Markdown/diff記号混入を特に確認してください。
+
+修正後のコードが `tsc --noEmit` を通過することを想定し、必要なファイルだけを完全なFILEブロックで返してください。
 
 ---
 

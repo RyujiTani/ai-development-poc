@@ -576,6 +576,33 @@ renderごとに不要な新しいobject/functionを返してはいけません�
 
 ---
 
+# 30.5 TypeScript / JSX Syntax Verification
+
+出力する `.ts` / `.tsx` ファイルについて、出力前にTypeScript / JSXとして構文が成立していることを内部確認してください。
+
+特に以下を確認してください。
+
+- JSXタグの開始・終了が一致している
+- JSXの属性構文が正しい
+- props spreadが `{...props}` の形式になっている
+- `React.forwardRef` の引数・括弧・genericが正しく閉じている
+- function / arrow function / object / array の括弧が正しく閉じている
+- `>` / `)` / `}` / `]` の閉じ忘れがない
+- interface / type / class / function宣言が途中で切れていない
+- generic型の `<...>` が正しく閉じている
+- JSX内へMarkdownのコードフェンスや箇条書き記号が混入していない
+- diff由来の行頭 `+` / `-` がソースへ混入していない
+- FILE markerがソース本文へ混入していない
+- 同一ファイル内で同名export / component / constを重複定義していない
+
+特に共通UIコンポーネントを生成する場合、`Card`、`Button`、`Input` 等の単純な部品であっても、shadcn/ui等の記憶上のコードを不完全に再現してはいけません。
+
+既存依存関係だけで成立する、最小で完全なTypeScript / JSXを出力してください。
+
+今回の生成直後に `tsc --noEmit` が実行されます。構文エラー、型解決エラー、import解決エラーを残したまま出力してはいけません。
+
+---
+
 # 31. Regression Awareness
 
 今回の出力がApplicationへ反映された直後に、以下が自動実行される前提です。

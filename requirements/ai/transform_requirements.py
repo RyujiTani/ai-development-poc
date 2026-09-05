@@ -4,6 +4,7 @@ import json
 import re
 import shutil
 import subprocess
+import sys
 from typing import Any, Dict, List, Optional, Tuple
 
 
@@ -987,22 +988,190 @@ def serialize_existing_application(
     return "\n\n".join(blocks)
 
 
+def build_validation_error_log(
+    stdout: str,
+    stderr: str,
+    max_chars: int = 60000,
+) -> str:
+    """静的検証等のstdout/stderrをrepair用ログへまとめる。"""
+
+    text = (
+        "=== STDOUT ===\n"
+        f"{stdout or ''}\n\n"
+        "=== STDERR ===\n"
+        f"{stderr or ''}"
+    )
+
+    if len(text) <= max_chars:
+        return text
+
+    return (
+        "[ERROR LOG TRUNCATED: LAST "
+        f"{max_chars} CHARACTERS]\n"
+        + text[-max_chars:]
+    )
+
+
+def repair_screen_with_result(
+    vertex_client,
+    screen: str,
+    validation_result: Dict[str, Any],
+    error_log: str,
+    max_attempts: int = 2,
+) -> None:
+    """
+    test-resultsファイルを経由せず、任意の検証結果を直接repairへ渡す。
+
+    主用途:
+        - 生成直後のSTATIC_CHECK_FAILED
+
+    TEST_RESULT_JSONというplaceholder名は既存repair promptとの
+    互換性のため維持する。
+    """
+
+    system_requirements_file = (
+        GENERATED_REQUIREMENTS_DIR
+        / "system_requirements.json"
+    )
+
+    trace_index_file = (
+        GENERATED_REQUIREMENTS_DIR
+        / "trace_index.json"
+    )
+
+    screen_requirement_file = (
+        find_screen_requirement_file(screen)
+    )
+
+    validate_required_files(
+        [
+            system_requirements_file,
+            trace_index_file,
+            screen_requirement_file,
+            REPAIR_SCREEN_PROMPT,
+        ]
+    )
+
+    screen_id = screen_requirement_file.stem
+
+    generated_files_text = (
+        serialize_existing_application(
+            APPLICATION_DIR
+        )
+    )
+
+    result_json = json.dumps(
+        validation_result,
+        ensure_ascii=False,
+        indent=2,
+    )
+
+    prompt = inject_prompt(
+        load_prompt(REPAIR_SCREEN_PROMPT),
+        {
+            "{{SYSTEM_REQUIREMENTS_JSON}}":
+                read_text(system_requirements_file),
+            "{{TRACE_INDEX_JSON}}":
+                read_text(trace_index_file),
+            "{{SCREEN_REQUIREMENT_JSON}}":
+                read_text(screen_requirement_file),
+            "{{GENERATED_FILES}}":
+                generated_files_text,
+            "{{TEST_RESULT_JSON}}":
+                result_json,
+            "{{ERROR_LOG}}":
+                error_log,
+        },
+    )
+
+    print()
+    print("=" * 60)
+    print(
+        "Repairing generated application after validation "
+        f"failure: {screen_id}"
+    )
+    print("=" * 60)
+
+    repaired_files = generate_implementation_files(
+        vertex_client,
+        prompt,
+        max_attempts=max_attempts,
+    )
+
+    if ".ai-repair-unresolved.txt" in repaired_files:
+        message = repaired_files[
+            ".ai-repair-unresolved.txt"
+        ].strip()
+
+        if message == "SPECIFICATION_GAP":
+            unresolved_file = (
+                APPLICATION_DIR
+                / ".ai-repair-unresolved.txt"
+            )
+            unresolved_file.write_text(
+                message + "\n",
+                encoding="utf-8",
+            )
+            raise RuntimeError(
+                "Automatic repair stopped because a "
+                f"specification gap was detected: {screen_id}"
+            )
+
+    saved_files = apply_repaired_files(
+        repaired_files,
+        APPLICATION_DIR,
+    )
+
+    print()
+    print(
+        f"Applied {len(saved_files)} repaired file(s):"
+    )
+
+    for file_path in saved_files:
+        print(f"  {file_path}")
+
+
+def run_static_validation(
+    static_validator: Path,
+) -> subprocess.CompletedProcess:
+    """Application全体の静的検証を実行し、ログをcaptureする。"""
+
+    result = subprocess.run(
+        [
+            "node",
+            str(static_validator),
+        ],
+        cwd=PROJECT_ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    if result.stdout:
+        print(result.stdout, end="")
+
+    if result.stderr:
+        print(result.stderr, end="", file=sys.stderr)
+
+    return result
+
+
 def run_post_implementation_check(
+    vertex_client,
     screen_id: str,
+    max_static_repair_count: int = 2,
 ) -> None:
     """
     1画面をApplicationへ反映した直後に、
     Application全体の静的検証と、現在までに生成済みの
     全画面テストを実行する。
 
-    目的:
-        - 存在しないimportやTypeScriptエラーを早期検知する
-        - 後続画面追加による既存画面の回帰を、その場で検知する
-        - どの画面追加時点でApplicationが壊れたかを特定しやすくする
+    静的検証が失敗した場合は、その場でAI repairを行い、
+    最大max_static_repair_count回まで再検証する。
 
-    注意:
-        この処理はGitHub Actions上でNode.jsと
-        test-runner/node_modulesが準備済みであることを前提とする。
+    回帰テスト失敗は現時点では自動repairせず停止する。
+    これにより「どの画面追加で既存挙動を壊したか」を
+    明確に保つ。
     """
 
     static_validator = (
@@ -1021,6 +1190,7 @@ def run_post_implementation_check(
         [
             static_validator,
             test_runner,
+            REPAIR_SCREEN_PROMPT,
         ]
     )
 
@@ -1029,27 +1199,63 @@ def run_post_implementation_check(
     print(f"Post implementation check: {screen_id}")
     print("=" * 60)
 
-    print("Running static validation...")
+    static_repair_count = 0
 
-    static_result = subprocess.run(
-        [
-            "node",
-            str(static_validator),
-        ],
-        cwd=PROJECT_ROOT,
-        text=True,
-        check=False,
-    )
+    while True:
+        print("Running static validation...")
 
-    if static_result.returncode != 0:
-        raise RuntimeError(
-            "Static validation failed immediately after "
-            f"implementing {screen_id}. "
-            "The generated application was not allowed to "
-            "proceed to the next screen."
+        static_result = run_static_validation(
+            static_validator
         )
 
-    print("Static validation passed.")
+        if static_result.returncode == 0:
+            print("Static validation passed.")
+            break
+
+        if static_repair_count >= max_static_repair_count:
+            raise RuntimeError(
+                "Static validation still failed after "
+                f"{static_repair_count} automatic repair(s) "
+                f"for {screen_id}. The generated application "
+                "was not allowed to proceed to the next screen."
+            )
+
+        static_repair_count += 1
+
+        print()
+        print(
+            "Static validation failed. Starting automatic "
+            f"repair {static_repair_count}/"
+            f"{max_static_repair_count}..."
+        )
+
+        validation_result: Dict[str, Any] = {
+            "screen": screen_id,
+            "status": "STATIC_CHECK_FAILED",
+            "phase": "typescript",
+            "command": (
+                "tsc --noEmit --project tsconfig.json"
+            ),
+            "exit_code": static_result.returncode,
+            "repair_attempt": static_repair_count,
+        }
+
+        error_log = build_validation_error_log(
+            static_result.stdout or "",
+            static_result.stderr or "",
+        )
+
+        repair_screen_with_result(
+            vertex_client,
+            screen_id,
+            validation_result,
+            error_log,
+            max_attempts=2,
+        )
+
+        print()
+        print("Re-running static validation after repair...")
+
     print()
     print(
         "Running regression tests through "
@@ -1085,7 +1291,6 @@ def run_post_implementation_check(
     print(
         f"Post implementation check passed: {screen_id}"
     )
-
 
 def implement_screen(
     vertex_client,
@@ -1279,6 +1484,7 @@ def implement_all_screens(
         )
 
         run_post_implementation_check(
+            vertex_client,
             screen_id,
         )
 
