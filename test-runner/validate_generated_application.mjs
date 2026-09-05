@@ -17,63 +17,220 @@ const applicationRoot = path.join(
   'application'
 );
 
-const runnerPackageJsonPath = path.join(runnerRoot, 'package.json');
+const runnerPackageJsonPath = path.join(
+  runnerRoot,
+  'package.json'
+);
 
-function copyDir(source, destination) {
-  fs.mkdirSync(destination, { recursive: true });
+/*
+ * Generated Application側に存在していても、
+ * controlled static/test runtimeの依存検査対象にはしない設定ファイル。
+ *
+ * これらはApplicationのbuild設定であり、
+ * test-runner/node_modulesだけで解決できる必要はない。
+ *
+ * またStatic Check用workspaceでは削除し、
+ * test-runner側の設定だけを使用する。
+ */
+const EXCLUDED_ROOT_CONFIG_FILES = new Set([
+  'tailwind.config.js',
+  'tailwind.config.cjs',
+  'tailwind.config.mjs',
+  'tailwind.config.ts',
 
-  for (const entry of fs.readdirSync(source, { withFileTypes: true })) {
-    const src = path.join(source, entry.name);
-    const dst = path.join(destination, entry.name);
+  'postcss.config.js',
+  'postcss.config.cjs',
+  'postcss.config.mjs',
+  'postcss.config.ts',
+
+  'vite.config.js',
+  'vite.config.mjs',
+  'vite.config.ts',
+  'vite.config.mts',
+
+  'vitest.config.js',
+  'vitest.config.mjs',
+  'vitest.config.ts',
+  'vitest.config.mts',
+]);
+
+function copyDir(
+  source,
+  destination
+) {
+  fs.mkdirSync(
+    destination,
+    {
+      recursive: true,
+    }
+  );
+
+  for (
+    const entry of fs.readdirSync(
+      source,
+      {
+        withFileTypes: true,
+      }
+    )
+  ) {
+    const src = path.join(
+      source,
+      entry.name
+    );
+
+    const dst = path.join(
+      destination,
+      entry.name
+    );
 
     if (entry.isDirectory()) {
-      copyDir(src, dst);
+      copyDir(
+        src,
+        dst
+      );
     } else {
-      fs.copyFileSync(src, dst);
+      fs.copyFileSync(
+        src,
+        dst
+      );
     }
   }
 }
 
 function getErrorMessage(error) {
   if (error instanceof Error) {
-    return error.stack ?? error.message;
+    return (
+      error.stack ??
+      error.message
+    );
   }
 
   return String(error);
 }
 
 function readJson(filePath) {
-  return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  return JSON.parse(
+    fs.readFileSync(
+      filePath,
+      'utf8'
+    )
+  );
 }
 
-function getPackageNameFromImport(specifier) {
-  if (!specifier || specifier.startsWith('.') || specifier.startsWith('/')) {
+function removeIfExists(target) {
+  fs.rmSync(
+    target,
+    {
+      recursive: true,
+      force: true,
+    }
+  );
+}
+
+function getPackageNameFromImport(
+  specifier
+) {
+  if (
+    !specifier ||
+    specifier.startsWith('.') ||
+    specifier.startsWith('/')
+  ) {
     return null;
   }
 
-  if (specifier.startsWith('@/')) {
+  /*
+   * Application内部alias。
+   */
+  if (
+    specifier.startsWith('@/')
+  ) {
     return null;
   }
 
-  if (specifier.startsWith('node:')) {
+  /*
+   * Node.js builtin。
+   */
+  if (
+    specifier.startsWith('node:')
+  ) {
     return null;
   }
 
-  const first = specifier.split('/')[0];
+  /*
+   * Scoped package
+   *
+   * @hookform/resolvers/zod
+   * ->
+   * @hookform/resolvers
+   */
+  if (
+    specifier.startsWith('@')
+  ) {
+    const parts =
+      specifier.split('/');
 
-  if (specifier.startsWith('@')) {
-    const parts = specifier.split('/');
-    return parts.length >= 2 ? `${parts[0]}/${parts[1]}` : specifier;
+    return (
+      parts.length >= 2
+        ? `${parts[0]}/${parts[1]}`
+        : specifier
+    );
   }
 
-  return first;
+  /*
+   * Normal package
+   *
+   * react/jsx-runtime
+   * ->
+   * react
+   */
+  return specifier.split('/')[0];
+}
+
+function isExcludedRootConfigFile(
+  root,
+  filePath
+) {
+  const relative = path
+    .relative(
+      root,
+      filePath
+    )
+    .replaceAll(
+      path.sep,
+      '/'
+    );
+
+  /*
+   * root直下だけを除外する。
+   *
+   * 例えば
+   * components/example/vite.config.ts
+   * のような奇妙なsourceが存在した場合まで
+   * 無条件に隠さない。
+   */
+  if (
+    relative.includes('/')
+  ) {
+    return false;
+  }
+
+  return EXCLUDED_ROOT_CONFIG_FILES.has(
+    relative
+  );
 }
 
 function collectSourceFiles(root) {
   const result = [];
 
   function walk(current) {
-    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+    for (
+      const entry of fs.readdirSync(
+        current,
+        {
+          withFileTypes: true,
+        }
+      )
+    ) {
       if (
         entry.name === 'node_modules' ||
         entry.name === '.next' ||
@@ -83,54 +240,131 @@ function collectSourceFiles(root) {
         continue;
       }
 
-      const fullPath = path.join(current, entry.name);
+      const fullPath = path.join(
+        current,
+        entry.name
+      );
 
-      if (entry.isDirectory()) {
+      if (
+        entry.isDirectory()
+      ) {
         walk(fullPath);
         continue;
       }
 
-      if (/\.(?:ts|tsx|js|jsx|mjs|cjs)$/.test(entry.name)) {
-        result.push(fullPath);
+      /*
+       * Application rootのbuild/test設定は
+       * dependency allowlist検査対象外。
+       */
+      if (
+        isExcludedRootConfigFile(
+          root,
+          fullPath
+        )
+      ) {
+        continue;
+      }
+
+      if (
+        /\.(?:ts|tsx|js|jsx|mjs|cjs)$/.test(
+          entry.name
+        )
+      ) {
+        result.push(
+          fullPath
+        );
       }
     }
   }
 
   walk(root);
+
   return result;
 }
 
 function collectBareImports(root) {
   const imports = new Map();
 
+  /*
+   * PoC用の軽量import scanner。
+   *
+   * 対応:
+   *
+   * import x from 'pkg'
+   * import { x } from 'pkg'
+   * import 'pkg'
+   * require('pkg')
+   * import('pkg')
+   */
   const patterns = [
     /\bfrom\s*["']([^"']+)["']/g,
+
     /\bimport\s*["']([^"']+)["']/g,
+
     /\brequire\(\s*["']([^"']+)["']\s*\)/g,
+
     /\bimport\(\s*["']([^"']+)["']\s*\)/g,
   ];
 
-  for (const filePath of collectSourceFiles(root)) {
-    const source = fs.readFileSync(filePath, 'utf8');
+  for (
+    const filePath of collectSourceFiles(
+      root
+    )
+  ) {
+    const source =
+      fs.readFileSync(
+        filePath,
+        'utf8'
+      );
 
-    for (const pattern of patterns) {
+    for (
+      const pattern of patterns
+    ) {
       pattern.lastIndex = 0;
+
       let match;
 
-      while ((match = pattern.exec(source)) !== null) {
-        const packageName = getPackageNameFromImport(match[1]);
+      while (
+        (
+          match =
+            pattern.exec(source)
+        ) !== null
+      ) {
+        const packageName =
+          getPackageNameFromImport(
+            match[1]
+          );
 
-        if (!packageName) {
+        if (
+          !packageName
+        ) {
           continue;
         }
 
-        if (!imports.has(packageName)) {
-          imports.set(packageName, []);
+        if (
+          !imports.has(
+            packageName
+          )
+        ) {
+          imports.set(
+            packageName,
+            []
+          );
         }
 
-        imports.get(packageName).push(
-          path.relative(root, filePath).replaceAll(path.sep, '/')
-        );
+        imports
+          .get(packageName)
+          .push(
+            path
+              .relative(
+                root,
+                filePath
+              )
+              .replaceAll(
+                path.sep,
+                '/'
+              )
+          );
       }
     }
   }
@@ -139,110 +373,291 @@ function collectBareImports(root) {
 }
 
 function validateDependencyEnvironment() {
-  if (!fs.existsSync(runnerPackageJsonPath)) {
+  if (
+    !fs.existsSync(
+      runnerPackageJsonPath
+    )
+  ) {
     throw new Error(
-      `Required test-runner package.json not found: ${runnerPackageJsonPath}`
+      `Required test-runner package.json not found: ` +
+      `${runnerPackageJsonPath}`
     );
   }
 
-  const runnerPackage = readJson(runnerPackageJsonPath);
+  const runnerPackage =
+    readJson(
+      runnerPackageJsonPath
+    );
 
-  const allowedPackages = new Set([
-    ...Object.keys(runnerPackage.dependencies ?? {}),
-    ...Object.keys(runnerPackage.devDependencies ?? {}),
-  ]);
+  /*
+   * controlled runtimeにinstallされるpackageだけを
+   * Application sourceのimport許可対象にする。
+   */
+  const allowedPackages =
+    new Set([
+      ...Object.keys(
+        runnerPackage.dependencies ??
+          {}
+      ),
 
-  const builtins = new Set(
-    builtinModules.flatMap((name) => [
-      name,
-      name.replace(/^node:/, ''),
-    ])
-  );
+      ...Object.keys(
+        runnerPackage.devDependencies ??
+          {}
+      ),
+    ]);
 
-  const imports = collectBareImports(applicationRoot);
+  /*
+   * node:path 等だけでなく
+   * path / fs / url といったbuiltin名にも対応する。
+   */
+  const builtins =
+    new Set(
+      builtinModules.flatMap(
+        (name) => [
+          name,
+          name.replace(
+            /^node:/,
+            ''
+          ),
+        ]
+      )
+    );
+
+  const imports =
+    collectBareImports(
+      applicationRoot
+    );
+
   const disallowed = [];
 
-  for (const [packageName, files] of imports.entries()) {
-    if (builtins.has(packageName)) {
+  for (
+    const [
+      packageName,
+      files,
+    ] of imports.entries()
+  ) {
+    if (
+      builtins.has(
+        packageName
+      )
+    ) {
       continue;
     }
 
-    if (!allowedPackages.has(packageName)) {
+    if (
+      !allowedPackages.has(
+        packageName
+      )
+    ) {
       disallowed.push({
         packageName,
-        files: [...new Set(files)].sort(),
+
+        files: [
+          ...new Set(files),
+        ].sort(),
       });
     }
   }
 
-  if (disallowed.length > 0) {
-    console.error('DEPENDENCY ALLOWLIST CHECK FAILED');
+  if (
+    disallowed.length > 0
+  ) {
+    console.error(
+      'DEPENDENCY ALLOWLIST CHECK FAILED'
+    );
+
     console.error('');
 
     console.error(
-      'The generated application imports npm packages that are not installed by test-runner/package.json.'
+      'The generated application imports npm packages ' +
+      'that are not installed by test-runner/package.json.'
     );
 
     console.error(
-      'Do not hide this with tsconfig changes. Use an allowed dependency or update the controlled runtime intentionally.'
+      'Do not hide this with tsconfig changes. ' +
+      'Use an allowed dependency or update the ' +
+      'controlled runtime intentionally.'
     );
 
     console.error('');
 
     for (
-      const item of disallowed.sort((a, b) =>
-        a.packageName.localeCompare(b.packageName)
+      const item of disallowed.sort(
+        (a, b) =>
+          a.packageName.localeCompare(
+            b.packageName
+          )
       )
     ) {
-      console.error(`- ${item.packageName}`);
+      console.error(
+        `- ${item.packageName}`
+      );
 
-      for (const file of item.files) {
-        console.error(`    ${file}`);
+      for (
+        const file of item.files
+      ) {
+        console.error(
+          `    ${file}`
+        );
       }
     }
 
     return false;
   }
 
-  console.log('Dependency allowlist check passed.');
+  console.log(
+    'Dependency allowlist check passed.'
+  );
 
   return true;
 }
 
-if (!fs.existsSync(applicationRoot)) {
+function isolateStaticWorkspace(
+  workspaceDir
+) {
+  /*
+   * Generated Application側のbuild/test設定を
+   * controlled Static Checkへ混入させない。
+   *
+   * 特に以下のような問題を防ぐ。
+   *
+   * - tailwind.config.ts がtailwindcssをimport
+   * - vite.config.ts が未導入pluginをimport
+   * - vitest.config.ts がtest環境を変更
+   * - generated tsconfigがTypeScript検証を弱める
+   */
+
+  for (
+    const name of
+      EXCLUDED_ROOT_CONFIG_FILES
+  ) {
+    removeIfExists(
+      path.join(
+        workspaceDir,
+        name
+      )
+    );
+  }
+
+  /*
+   * Generated Applicationのtsconfigは
+   * controlled validatorでは使用しない。
+   */
+  removeIfExists(
+    path.join(
+      workspaceDir,
+      'tsconfig.json'
+    )
+  );
+
+  removeIfExists(
+    path.join(
+      workspaceDir,
+      'jsconfig.json'
+    )
+  );
+
+  /*
+   * test-runner側の固定tsconfigを使用する。
+   */
+  const tsconfigSource =
+    path.join(
+      runnerRoot,
+      'tsconfig.json'
+    );
+
+  const tsconfigDestination =
+    path.join(
+      workspaceDir,
+      'tsconfig.json'
+    );
+
+  if (
+    !fs.existsSync(
+      tsconfigSource
+    )
+  ) {
+    throw new Error(
+      `Required test-runner file not found: ` +
+      `${tsconfigSource}`
+    );
+  }
+
+  fs.copyFileSync(
+    tsconfigSource,
+    tsconfigDestination
+  );
+}
+
+/*
+ * Exit code
+ *
+ * 0:
+ *   static validation passed
+ *
+ * 1:
+ *   generated application error
+ *   - dependency allowlist
+ *   - TypeScript
+ *   - import
+ *   - module resolution
+ *
+ * 2:
+ *   validator infrastructure error
+ */
+
+if (
+  !fs.existsSync(
+    applicationRoot
+  )
+) {
   console.error(
-    `Application directory not found: ${applicationRoot}`
+    `Application directory not found: ` +
+    `${applicationRoot}`
   );
 
   process.exit(2);
 }
 
-const runnerNodeModules = path.join(
-  runnerRoot,
-  'node_modules'
-);
+const runnerNodeModules =
+  path.join(
+    runnerRoot,
+    'node_modules'
+  );
 
-if (!fs.existsSync(runnerNodeModules)) {
+if (
+  !fs.existsSync(
+    runnerNodeModules
+  )
+) {
   console.error(
-    `node_modules not found: ${runnerNodeModules}`
+    `node_modules not found: ` +
+    `${runnerNodeModules}`
   );
 
   console.error(
-    'Run npm install in test-runner before static validation.'
+    'Run npm install in test-runner ' +
+    'before static validation.'
   );
 
   process.exit(2);
 }
 
-const tscBin = path.join(
-  runnerNodeModules,
-  '.bin',
-  'tsc'
-);
+const tscBin =
+  path.join(
+    runnerNodeModules,
+    '.bin',
+    'tsc'
+  );
 
-if (!fs.existsSync(tscBin)) {
+if (
+  !fs.existsSync(
+    tscBin
+  )
+) {
   console.error(
-    `TypeScript executable not found: ${tscBin}`
+    `TypeScript executable not found: ` +
+    `${tscBin}`
   );
 
   process.exit(2);
@@ -251,11 +666,17 @@ if (!fs.existsSync(tscBin)) {
 let workspaceDir = null;
 
 try {
-  console.log('='.repeat(60));
+  console.log(
+    '='.repeat(60)
+  );
+
   console.log(
     'Generated Application Static Validation'
   );
-  console.log('='.repeat(60));
+
+  console.log(
+    '='.repeat(60)
+  );
 
   console.log(
     `Application: ${applicationRoot}`
@@ -265,78 +686,66 @@ try {
 
   /*
    * ----------------------------------------------------------
-   * Dependency allowlist validation
+   * 1. Dependency allowlist
    * ----------------------------------------------------------
    *
-   * test-runner/package.json is the controlled dependency
-   * environment for generated applications.
+   * Application sourceだけを検査する。
    *
-   * Any bare npm import used by generated source must exist in
-   * dependencies or devDependencies of test-runner/package.json.
-   *
-   * This validation intentionally happens before TypeScript so
-   * missing runtime dependencies are reported explicitly rather
-   * than being mixed with normal TypeScript diagnostics.
+   * Tailwind/PostCSS/Vite/Vitest configは
+   * controlled runtimeのsource dependencyではないため
+   * dependency scanから除外している。
    */
-  if (!validateDependencyEnvironment()) {
+  if (
+    !validateDependencyEnvironment()
+  ) {
     process.exit(1);
   }
 
   /*
    * ----------------------------------------------------------
-   * Temporary workspace
+   * 2. Temporary static workspace
    * ----------------------------------------------------------
    */
+  workspaceDir =
+    fs.mkdtempSync(
+      path.join(
+        os.tmpdir(),
+        'generated-application-static-'
+      )
+    );
 
-  workspaceDir = fs.mkdtempSync(
-    path.join(
-      os.tmpdir(),
-      'generated-application-static-'
-    )
-  );
-
+  /*
+   * Application全体をコピー。
+   */
   copyDir(
     applicationRoot,
     workspaceDir
   );
 
   /*
-   * Always use the controlled test-runner tsconfig.
-   *
-   * A generated application must not be able to weaken static
-   * validation by generating its own tsconfig.json.
+   * Application側のbuild/test configを除去し、
+   * controlled static environmentへ置き換える。
    */
-  const tsconfigSource = path.join(
-    runnerRoot,
-    'tsconfig.json'
-  );
-
-  const tsconfigDestination = path.join(
-    workspaceDir,
-    'tsconfig.json'
-  );
-
-  if (!fs.existsSync(tsconfigSource)) {
-    throw new Error(
-      `Required test-runner file not found: ${tsconfigSource}`
-    );
-  }
-
-  fs.copyFileSync(
-    tsconfigSource,
-    tsconfigDestination
+  isolateStaticWorkspace(
+    workspaceDir
   );
 
   /*
-   * Use exactly the same dependency environment installed for
-   * the test runner.
+   * controlled node_modulesを使用する。
    */
-  fs.symlinkSync(
-    runnerNodeModules,
+  const workspaceNodeModules =
     path.join(
       workspaceDir,
       'node_modules'
-    ),
+    );
+
+  removeIfExists(
+    workspaceNodeModules
+  );
+
+  fs.symlinkSync(
+    runnerNodeModules,
+    workspaceNodeModules,
     'dir'
   );
 
@@ -354,75 +763,86 @@ try {
 
   /*
    * ----------------------------------------------------------
-   * TypeScript static validation
+   * 3. TypeScript static check
    * ----------------------------------------------------------
    */
+  const result =
+    spawnSync(
+      tscBin,
+      [
+        '--noEmit',
 
-  const result = spawnSync(
-    tscBin,
-    [
-      '--noEmit',
-      '--project',
-      'tsconfig.json',
-      '--pretty',
-      'false',
-    ],
-    {
-      cwd: workspaceDir,
+        '--project',
+        'tsconfig.json',
 
-      encoding: 'utf8',
+        '--pretty',
+        'false',
+      ],
+      {
+        cwd:
+          workspaceDir,
 
-      env: {
-        ...process.env,
+        encoding:
+          'utf8',
 
-        CI: 'true',
+        env: {
+          ...process.env,
 
-        NODE_OPTIONS: [
-          process.env.NODE_OPTIONS,
-          '--max-old-space-size=1024',
-        ]
-          .filter(Boolean)
-          .join(' '),
-      },
-    }
-  );
+          CI:
+            'true',
 
-  if (result.stdout) {
+          NODE_OPTIONS: [
+            process.env.NODE_OPTIONS,
+
+            '--max-old-space-size=1024',
+          ]
+            .filter(Boolean)
+            .join(' '),
+        },
+      }
+    );
+
+  if (
+    result.stdout
+  ) {
     process.stdout.write(
       result.stdout
     );
   }
 
-  if (result.stderr) {
+  if (
+    result.stderr
+  ) {
     process.stderr.write(
       result.stderr
     );
   }
 
   /*
-   * spawnSync itself failed.
-   *
-   * This is considered infrastructure failure rather than
-   * generated-code failure.
+   * spawn自体が失敗した場合は
+   * Application問題ではなくinfra error。
    */
-  if (result.error) {
+  if (
+    result.error
+  ) {
     console.error(
-      getErrorMessage(result.error)
+      getErrorMessage(
+        result.error
+      )
     );
 
     process.exit(2);
   }
 
   const exitCode =
-    typeof result.status === 'number'
+    typeof result.status ===
+    'number'
       ? result.status
       : 1;
 
-  /*
-   * TypeScript error / import resolution error /
-   * generated-code error.
-   */
-  if (exitCode !== 0) {
+  if (
+    exitCode !== 0
+  ) {
     console.error('');
 
     console.error(
@@ -430,7 +850,8 @@ try {
     );
 
     console.error(
-      'The integrated application contains a TypeScript, import, or module-resolution error.'
+      'The integrated application contains a ' +
+      'TypeScript, import, or module-resolution error.'
     );
 
     process.exit(1);
@@ -444,13 +865,6 @@ try {
 
   process.exit(0);
 } catch (error) {
-  /*
-   * Validator itself failed.
-   *
-   * Exit code 2 is intentionally reserved for infrastructure
-   * errors so transform_requirements.py can distinguish these
-   * from AI-generated application errors.
-   */
   console.error(
     'Static validation infrastructure error.'
   );
@@ -461,13 +875,9 @@ try {
 
   process.exit(2);
 } finally {
-  /*
-   * ----------------------------------------------------------
-   * Cleanup
-   * ----------------------------------------------------------
-   */
-
-  if (workspaceDir) {
+  if (
+    workspaceDir
+  ) {
     try {
       fs.rmSync(
         workspaceDir,
@@ -478,7 +888,8 @@ try {
       );
     } catch (error) {
       console.error(
-        `Failed to remove temporary workspace: ${workspaceDir}`
+        `Failed to remove temporary workspace: ` +
+        `${workspaceDir}`
       );
 
       console.error(
