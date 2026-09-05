@@ -284,34 +284,79 @@ EXISTING_APPLICATION:
 
 # 13. Dependency Constraints
 
-依存ライブラリは `SYSTEM_REQUIREMENTS_JSON` と既存Applicationの `package.json` を根拠に判断してください。
+依存ライブラリについては、`test-runner/package.json` にインストールされる実行環境を唯一のallowlistとして扱ってください。
 
-原則として、仕様または既存Applicationに存在しないnpm packageを勝手に追加してはいけません。
+Application側の `package.json` に依存関係を書くだけでは、静的検証・テスト環境で利用可能になったとはみなしません。
 
-既存Applicationの `package.json` に存在する依存関係は、その既存バージョンおよび用途を尊重してください。
+以下のProduction dependencyのみ使用可能です。
 
-`SYSTEM_REQUIREMENTS_JSON` に特定ライブラリの利用が明示されている場合、そのライブラリは実装に使用して構いません。
+- `@hookform/resolvers`
+- `clsx`
+- `idb`
+- `lucide-react`
+- `next`
+- `react`
+- `react-dom`
+- `react-hook-form`
+- `tailwind-merge`
+- `zod`
+- `zustand`
 
-特に `idb` については次のルールを厳守してください。
+テストコードでは、上記に加えて実行環境に存在する以下を使用できます。
 
-- `SYSTEM_REQUIREMENTS_JSON` に `idb` 利用が明示されている場合、IndexedDBアクセスに `idb` を使用してよい
-- その場合、Applicationの `package.json` に `idb` が存在しなければ、今回の変更ファイルとして `package.json` を完全内容で出力し、依存関係へ追加する
-- `SYSTEM_REQUIREMENTS_JSON` に `idb` が記載されていない場合、実装都合だけで `idb` を追加してはいけない
-- `idb` が仕様で要求されているにもかかわらず、native IndexedDBへ勝手に置き換えて仕様を変更してはいけない
+- `@testing-library/jest-dom`
+- `@testing-library/react`
+- `@types/node`
+- `@types/react`
+- `@types/react-dom`
+- `@vitejs/plugin-react`
+- `fake-indexeddb`
+- `jsdom`
+- `typescript`
+- `vite`
+- `vitest`
 
-同じ考え方を他の依存ライブラリにも適用してください。
+この一覧に存在しないnpm packageをimportしてはいけません。
 
-つまり、仕様上必要な依存関係を禁止してはいけません。一方で、仕様にも既存Applicationにも存在しないライブラリを便利だからという理由だけで追加してはいけません。
+特に、shadcn/ui風のコンポーネントを実装する場合でも、以下のようなallowlist外packageを暗黙に追加してはいけません。
 
-依存ライブラリを新規追加する場合は、以下をすべて満たしてください。
+- `class-variance-authority`
+- `@radix-ui/react-slot`
+- `@radix-ui/react-label`
+- `@radix-ui/react-toast`
+- その他の `@radix-ui/*`
 
-1. `SYSTEM_REQUIREMENTS_JSON` に利用根拠が存在する
-2. 既存依存関係だけでは仕様を満たせない、または仕様がそのライブラリを明示している
-3. `package.json` を同時に更新する
-4. 実装コードのimport名と `package.json` のpackage名が一致する
-5. テスト環境でも解決可能な構成にする
+必要なUIは、許可済みのReact / Tailwind CSS / `clsx` / `tailwind-merge` 等だけで実装してください。
 
-依存関係をコードから暗黙に要求してはいけません。
+`SYSTEM_REQUIREMENTS_JSON` に特定ライブラリが記載されていても、実行環境allowlistに存在しないpackageを勝手にimportしてはいけません。
+
+仕様上そのライブラリ名そのものが必須で、allowlistに存在しないため実装不能な場合のみ、推測で代替packageを追加せず、`.ai-repair-unresolved.txt` の対象となり得る仕様ギャップとして扱ってください。
+
+## idb
+
+`SYSTEM_REQUIREMENTS_JSON` に `idb` 利用が明示されている場合、IndexedDBアクセスに `idb` を使用してください。
+
+`idb` は実行環境allowlistに含まれているため利用可能です。
+
+Applicationの `package.json` に `idb` が存在しない場合は、今回変更する `package.json` のdependenciesにも追加してください。
+
+`idb` が仕様で要求されているにもかかわらず、単に依存関係を避ける目的でnative IndexedDBへ置き換えてはいけません。
+
+## Application package.json
+
+Applicationの `package.json` を生成・変更する場合、importしているProduction dependencyをdependenciesへ記載してください。
+
+ただし、Applicationの `package.json` に記載できるdependencyも上記allowlistの範囲だけです。
+
+次を出力前に必ず照合してください。
+
+1. 実装コード中のbare module importがallowlist内である
+2. importしたProduction dependencyがApplicationの `package.json` に存在する
+3. package名のスペルがimportと一致する
+4. allowlist外packageを追加していない
+5. `package.json` を変更した場合は完全内容をFILEブロックで出力する
+
+依存関係エラーを `tsconfig.json` のpathsや型設定で隠してはいけません。
 
 ---
 

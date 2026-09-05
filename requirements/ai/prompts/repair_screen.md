@@ -296,7 +296,7 @@ jsdomで未実装または制限されるBrowser APIを使用する場合、テ�
 
 `TEST_RESULT_JSON.status` が `STATIC_CHECK_FAILED` の場合、これは実行時テスト失敗ではなく、生成ApplicationがTypeScript静的検証を通過できなかったことを意味します。
 
-この場合は `ERROR_LOG` の `tsc` エラーを一次情報として扱い、最初に報告されたファイルとその周辺の構文・型・importを確認してください。
+この場合は `ERROR_LOG` の `tsc` エラーを一次情報として扱い、報告されたファイルと実際のApplicationコードを照合してください。
 
 優先順位:
 
@@ -306,6 +306,67 @@ jsdomで未実装または制限されるBrowser APIを使用する場合、テ�
 4. 型不整合
 5. dependency / module resolution
 6. それらを引き起こす最小限の関連コード
+
+## TS2307 / Cannot find module
+
+`TS2307: Cannot find module` が存在する場合、最初にエラー対象を次の2種類へ分類してください。
+
+### A. Application内部ファイル
+
+相対importまたは `@/...` 等のApplication内部importの場合:
+
+- import先ファイルが実在するか確認する
+- relative path階層を確認する
+- default / named exportを確認する
+- route groupを含む実際のパスを確認する
+- ファイル名の大文字小文字を確認する
+
+存在しない内部モジュールを `tsconfig` のpathsで捏造してはいけません。
+
+### B. npm package
+
+bare module importの場合、利用可能なProduction dependencyは以下だけです。
+
+- `@hookform/resolvers`
+- `clsx`
+- `idb`
+- `lucide-react`
+- `next`
+- `react`
+- `react-dom`
+- `react-hook-form`
+- `tailwind-merge`
+- `zod`
+- `zustand`
+
+テストでは実行環境に存在するtest/dev dependencyも使用できます。
+
+上記allowlist内packageなのにTS2307が発生している場合、`tsconfig.json` を変更して隠してはいけません。
+
+Applicationの `package.json` に必要なProduction dependencyが欠落していれば、`package.json` を必要最小限で修正してください。
+
+allowlist外packageをimportしている場合は、そのpackageを追加するのではなく、許可済みdependencyまたは標準React / Web APIだけを使う実装へ変更してください。
+
+例:
+
+- `class-variance-authority` を追加しない
+- `@radix-ui/*` を追加しない
+- shadcn/ui風コンポーネントはReact + Tailwind CSS + `clsx` + `tailwind-merge` 等で実装する
+
+ただし、`SYSTEM_REQUIREMENTS_JSON` で `idb` が明示されている場合は、`idb` はallowlist済みなので削除・native IndexedDBへ置換せず、正しく依存関係と型を整合させてください。
+
+## tsconfig変更禁止の原則
+
+static repairで `tsconfig.json` を変更するのは、元の設定そのものが明確に誤っており、かつ仕様・実行環境と矛盾している場合だけです。
+
+次の目的で `tsconfig.json` を変更してはいけません。
+
+- missing npm packageを隠す
+- 存在しないimport pathを通す
+- 型エラーを無視する
+- strictnessを下げる
+- files/include/excludeから問題ファイルを外す
+- `skipLibCheck` 等を追加してApplication自身のエラーを回避する
 
 静的検証失敗を修正するために、仕様やテストを弱めてはいけません。
 
@@ -318,6 +379,7 @@ jsdomで未実装または制限されるBrowser APIを使用する場合、テ�
 - tsconfigのstrictnessを下げる
 - TypeScriptチェック対象からファイルを除外する
 - package.jsonのscriptを無効化する
+- allowlist外dependencyを追加する
 - エラーを回避するためだけの無関係なリファクタリング
 
 `.ts` / `.tsx` の構文エラーでは、括弧、JSXタグ、props spread、generic、`React.forwardRef`、重複コード、Markdown/diff記号混入を特に確認してください。
