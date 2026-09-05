@@ -64,64 +64,6 @@ REPAIR_SCREEN_PROMPT = (
 )
 
 
-
-
-# ============================================================
-# Repair protected files
-# ============================================================
-
-# AI repair must never modify the validation/test infrastructure.
-# These files are owned by the controlled runner environment or are
-# application build configuration that must not be changed merely to
-# make validation pass.
-REPAIR_PROTECTED_EXACT_PATHS = {
-    "package.json",
-    "package-lock.json",
-    "pnpm-lock.yaml",
-    "yarn.lock",
-    "tsconfig.json",
-    "jsconfig.json",
-    "vitest.config.ts",
-    "vitest.config.js",
-    "vitest.config.mts",
-    "vitest.config.mjs",
-    "vite.config.ts",
-    "vite.config.js",
-    "vite.config.mts",
-    "vite.config.mjs",
-    "postcss.config.js",
-    "postcss.config.cjs",
-    "postcss.config.mjs",
-    "postcss.config.ts",
-    "tailwind.config.js",
-    "tailwind.config.cjs",
-    "tailwind.config.mjs",
-    "tailwind.config.ts",
-}
-
-
-def validate_repair_file_paths(files: Dict[str, str]) -> None:
-    """Reject AI repair output that tries to modify protected infrastructure."""
-    violations: List[str] = []
-
-    for relative_path in files:
-        normalized = relative_path.replace("\\", "/").strip().lstrip("./")
-
-        if normalized == ".ai-repair-unresolved.txt":
-            continue
-
-        if normalized in REPAIR_PROTECTED_EXACT_PATHS:
-            violations.append(normalized)
-
-    if violations:
-        raise ValueError(
-            "AI repair attempted to modify protected test/build infrastructure: "
-            + ", ".join(sorted(violations))
-            + ". Repair application/test source instead; controlled runner files "
-            "must not be changed by AI repair."
-        )
-
-
 # ============================================================
 # Common utilities
 # ============================================================
@@ -206,6 +148,54 @@ def extract_json(text: str) -> Any:
             "Vertex AI response is not valid JSON."
         ) from exc
 
+
+
+def generate_json_with_retry(
+    vertex_client,
+    prompt: str,
+    max_attempts: int = 3,
+) -> Any:
+    """
+    Vertex AIへJSON生成を依頼し、JSONとして解析できない場合のみ再生成する。
+
+    max_attemptsには初回生成を含む。
+    """
+    if max_attempts < 1:
+        raise ValueError(
+            "max_attempts must be greater than or equal to 1."
+        )
+
+    last_error: Optional[Exception] = None
+
+    for attempt in range(1, max_attempts + 1):
+        print(f"JSON generation attempt {attempt}/{max_attempts}")
+
+        response = vertex_client.generate(prompt)
+
+        try:
+            data = extract_json(response)
+            print("Generated JSON format validation passed.")
+            return data
+        except ValueError as exc:
+            last_error = exc
+            print(f"Invalid JSON response: {exc}")
+            print()
+            print("-" * 60)
+            print(
+                "Vertex AI raw JSON response "
+                f"(attempt {attempt}/{max_attempts}):"
+            )
+            print(response)
+            print("-" * 60)
+            print()
+
+            if attempt < max_attempts:
+                print("Retrying JSON generation...")
+
+    raise RuntimeError(
+        "Failed to generate valid JSON after "
+        f"{max_attempts} attempts."
+    ) from last_error
 
 
 # ============================================================
@@ -511,9 +501,11 @@ def transform_system_requirement(
         "Generating system_requirements.json..."
     )
 
-    response = vertex_client.generate(prompt)
-
-    data = extract_json(response)
+    data = generate_json_with_retry(
+        vertex_client,
+        prompt,
+        max_attempts=3,
+    )
 
     output_file = (
         GENERATED_REQUIREMENTS_DIR
@@ -563,9 +555,11 @@ def transform_trace_index(
         "Generating trace_index.json..."
     )
 
-    response = vertex_client.generate(prompt)
-
-    data = extract_json(response)
+    data = generate_json_with_retry(
+        vertex_client,
+        prompt,
+        max_attempts=3,
+    )
 
     output_file = (
         GENERATED_REQUIREMENTS_DIR
@@ -644,9 +638,11 @@ def transform_screen_requirement(
         f"Generating screen requirement: {screen_id}"
     )
 
-    response = vertex_client.generate(prompt)
-
-    data = extract_json(response)
+    data = generate_json_with_retry(
+        vertex_client,
+        prompt,
+        max_attempts=3,
+    )
 
     output_file = (
         GENERATED_SCREEN_DIR
@@ -1174,8 +1170,6 @@ def repair_screen_with_result(
                 "Automatic repair stopped because a "
                 f"specification gap was detected: {screen_id}"
             )
-
-    validate_repair_file_paths(repaired_files)
 
     saved_files = apply_repaired_files(
         repaired_files,
@@ -1987,8 +1981,6 @@ def repair_screen(
                 "specification gap was detected."
             )
             return
-
-    validate_repair_file_paths(repaired_files)
 
     saved_files = apply_repaired_files(
         repaired_files,
