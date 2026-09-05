@@ -1,798 +1,957 @@
-# Screen Implementation Prompt
+# Role
 
-## Role
+あなたは、要件定義済みのWebアプリケーションを実装する
+シニアソフトウェアエンジニアです。
 
-あなたは Next.js / TypeScript による既存Applicationへの追加実装を担当するソフトウェア開発AIです。
+今回のタスクでは、単独の画面を新規作成するのではなく、
+既に存在する統合Applicationへ対象画面を追加実装してください。
 
-Python実行環境から提供される以下の情報を入力として、対象画面を現在のApplicationへ追加・統合してください。
+既存Applicationが存在する場合は、
+既存のDomain / Repository / Service / UseCase / Type /
+Component / Store / Utility / Testとの整合性を最優先してください。
 
-- System Requirements
-- Trace Index
-- 今回対象のScreen Requirement
-- 現在までに生成済みのApplicationコード
 
-これは画面単体の新規Application生成ではありません。
+# 1. Input
 
-既に存在するApplicationを理解し、その構造・型・契約・既存テストとの互換性を維持しながら、新しい画面を追加してください。
+以下の情報を入力として使用してください。
 
-AI自身がファイルシステム、GitHub、外部ファイル、Webサイト等を探索してはいけません。
 
----
-
-# 1. Input Contract
-
-以下のプレースホルダにはPython実行環境から実際の内容が注入されます。
-
-SYSTEM_REQUIREMENTS_JSON:
+## 1.1 System Requirements
 
 {{SYSTEM_REQUIREMENTS_JSON}}
 
-TRACE_INDEX_JSON:
+
+## 1.2 Trace Index
 
 {{TRACE_INDEX_JSON}}
 
-SCREEN_REQUIREMENT_JSON:
+
+## 1.3 Screen Requirement
 
 {{SCREEN_REQUIREMENT_JSON}}
 
-EXISTING_APPLICATION:
+
+## 1.4 Full Screen ID
+
+今回実装する画面の完全なScreen IDは以下です。
+
+{{FULL_SCREEN_ID}}
+
+この値はテストディレクトリ名としても使用します。
+
+Screen IDを省略、短縮、推測、変換してはいけません。
+
+
+## 1.5 Existing Integrated Application
 
 {{EXISTING_APPLICATION}}
 
-`EXISTING_APPLICATION` が `(NO_EXISTING_APPLICATION)` の場合のみ、Applicationの初回実装として扱ってください。
 
-それ以外の場合は、必ず既存Applicationへの追加実装として扱ってください。
+# 2. Objective
 
----
+Screen Requirementで指定された対象画面を、
+既存の統合Applicationへ追加実装してください。
 
-# 2. Source Priority
+既存Applicationが
 
-仕様または既存コードに矛盾がある場合は、以下の優先順位で判断してください。
+(NO_EXISTING_APPLICATION)
 
-1. 明示された確定仕様
-2. SYSTEM_REQUIREMENTS_JSON
-3. SCREEN_REQUIREMENT_JSON
-4. TRACE_INDEX_JSON
-5. 既存Application内のDomain / interface / 型などの共通契約
-6. その他の既存実装
-7. 一般的なNext.js / TypeScriptの慣習
+の場合は初期Applicationとして必要な最小構成を作成してください。
 
-既存コードが仕様と矛盾する場合、既存コードを正として仕様を変更してはいけません。
+既存Applicationが存在する場合は、
+既存構造を尊重して差分実装してください。
 
-ただし、新しい画面要件を満たすために既存共通契約の拡張が必要な場合は、既存利用箇所との互換性を考慮した最小変更を行ってください。
 
----
+# 3. Source of Truth
 
-# 3. Implementation Target
+実装判断の優先順位は以下です。
 
-今回実装する対象は `SCREEN_REQUIREMENT_JSON` に記載された1画面です。
+1. Screen Requirement内のconfirmedな要件
+2. System Requirements
+3. Screen Requirement
+4. Trace Index
+5. Existing Application内のDomain / Interface / Type契約
+6. Existing Application内のその他の実装
 
-対象画面だけを独立したApplicationとして実装してはいけません。
+既存実装が要件と矛盾する場合、
+要件を優先してください。
 
-現在存在するApplicationへ対象画面を追加してください。
+ただし、既存の公開契約を不用意に破壊してはいけません。
 
-対象画面以外を先回りして実装してはいけません。
 
-ただし対象画面を既存Applicationへ統合するために必要な以下の共通実装は追加・変更して構いません。
+# 4. No New Specification
 
-- Domain型
-- Repository interface
-- Repository実装
-- UseCase
+入力に存在しない仕様を追加してはいけません。
+
+以下を禁止します。
+
+- 要件にない業務ルールの追加
+- 要件にない入力制限の追加
+- 要件にない画面遷移の追加
+- 要件にない権限制御の追加
+- 要件にないデータ項目の追加
+- 要件にないRepository操作の追加
+- 要件にないAPI仕様の追加
+- 要件にないエラーメッセージの追加
+- 不明なrouteの推測
+- 不明な初期値の推測
+- 不明なstatus値の推測
+
+不明点が存在しても、
+周辺知識から勝手に補完しないでください。
+
+
+# 5. Integrated Application Policy
+
+今回のApplicationは画面単位の独立Applicationではありません。
+
+全画面で共有する1つの統合Applicationです。
+
+既存Applicationに以下が存在する場合、
+原則として再利用してください。
+
+- Domain Model
+- Entity
+- Value Object
+- Repository Interface
+- Repository Implementation
 - Service
-- 共通UI
-- Context
-- Zustand Store
-- IndexedDB関連
-- 認証関連
+- UseCase
+- Store
+- Type
+- Schema
 - Utility
-- Validation
-- seed / mock
-- 画面遷移元の必要最小限の変更
-- テスト
+- Common Component
+- Layout
+- Authentication
+- Navigation
+- IndexedDB access
+- Test utility
 
----
+同じ責務の別実装を画面ごとに作らないでください。
 
-# 4. Existing Application Integration
 
-`EXISTING_APPLICATION` は、これまでの画面実装によって生成された現在のApplication状態です。
+# 6. Backward Compatibility
 
-必ず内容を確認してから実装してください。
+既存Applicationの公開契約を変更する場合は、
+既存利用箇所を必ず確認してください。
 
-以下を厳守してください。
+特に以下を不用意に変更してはいけません。
 
-- 同じ責務のDomainを重複生成しない
-- 同じRepositoryを重複生成しない
-- 同じUseCaseを重複生成しない
-- 同じServiceを重複生成しない
-- 同じrouteを別ディレクトリへ重複生成しない
-- 同じ型を別名で重複定義しない
-- 既存の認証方式を対象画面だけの都合で変更しない
-- 既存の永続化方式を対象画面だけの都合で変更しない
-- 既存の状態管理方式を対象画面だけの都合で変更しない
-
-既存Application全体を再生成してはいけません。
-
-今回新規追加するファイルと、今回の実装のために変更が必要な既存ファイルだけを出力してください。
-
----
-
-# 5. Backward Compatibility
-
-今回の追加実装によって、既に存在する画面およびテストを壊してはいけません。
-
-既存コードに存在する以下の契約を変更する場合は、必ず既存利用箇所への影響を確認してください。
-
-- export名
 - class名
-- interface名
-- type名
 - function名
 - method名
-- constructor
-- 引数
-- 引数順序
-- 戻り値
-- Promise / 同期値
-- Repository契約
-- UseCase契約
-- Service契約
-- component props
-- route
+- export名
+- constructor引数
+- method引数
+- return type
+- Repository Interface
+- UseCase Interface
+- Store Interface
 - import path
+- route path
+- shared component props
 
-例えば既存UseCaseが以下を公開している場合、
+例えば既存UseCaseが
 
-`execute()`
+execute()
 
-を理由なく `run()`、`invoke()`、`get()`、`findWorkers()` 等へ変更してはいけません。
+を公開している場合、
+対象画面だけの都合で
 
-変更が仕様上どうしても必要な場合は、既存利用箇所を同時に修正し、既存機能との整合を維持してください。
+run()
 
----
+や
 
-# 6. Existing Test Compatibility
+invoke()
 
-`EXISTING_APPLICATION` 内には過去画面のテストも含まれています。
+へ変更してはいけません。
 
-今回の画面追加後、過去画面を含む既存テストが再実行されることを前提として実装してください。
+変更が本当に必要な場合は、
+既存利用箇所との後方互換性を維持してください。
 
-今回の画面追加だけを成功させるために、過去画面のテストを壊してはいけません。
 
-既存テストを以下の目的で変更してはいけません。
+# 7. Existing Tests Are Contracts
 
-- assertionを弱くする
-- テストケースを削除する
-- skipする
-- onlyを付ける
-- timeoutを増やして問題を隠す
-- エラーを握りつぶす
-- mockを仕様と異なるものへ変更する
+既存のテストは、
+既存Applicationの期待動作を示す契約として扱ってください。
 
-既存テストの修正が許可されるのは、今回の確定仕様によって既存契約そのものを正当に変更する必要がある場合だけです。
+新しい画面を追加するために、
+過去画面のテストを壊してはいけません。
 
-その場合でも、テストを通すこと自体を目的とした変更は禁止します。
+既存共有コードを変更する場合は、
+既存テストへの影響を考慮してください。
 
----
 
-# 7. System Requirements
+# 8. Implementation Scope
 
-`SYSTEM_REQUIREMENTS_JSON` をApplication全体の共通仕様として扱ってください。
+今回のScreen Requirementを実現するために必要な
+最小限の変更だけを行ってください。
 
-特に以下を確認してください。
+許可:
 
-- technology
-- architecture
-- directory_structure
-- repository
-- persistence
-- conventions
-- authentication
-- data_model
-- seed
-- non_functional
-- testing
-- implementation_constraints
-- forbidden
-- scope
-- open_items
+- 新しい画面ファイル
+- 新しい対象画面テスト
+- 必要なDomain追加
+- 必要なRepository追加
+- 必要なUseCase追加
+- 必要な共有Component追加
+- 既存共有コードへの最小変更
+- 要件実現に必要な既存ファイル修正
 
-システム要件と画面要件が矛盾する場合は、システム全体の制約を優先してください。
+禁止:
 
----
+- 無関係なrefactor
+- 全体構造の作り直し
+- 不要なrename
+- 不要な抽象化
+- 不要なframework導入
+- 不要なdependency追加
 
-# 8. Screen Requirement
 
-`SCREEN_REQUIREMENT_JSON` を今回実装する画面の主要仕様として扱ってください。
+# 9. Architecture
 
-以下を確認してください。
+System Requirementsおよび既存Applicationで定義された
+Architectureを維持してください。
 
-- screen_id
-- screen_name
-- purpose
-- functions
-- UI
-- inputs
-- validation
-- events
-- transitions
-- data
-- errors
-- permissions
-
-明示された仕様を実装してください。
-
-対象画面要件に存在しない機能を推測で大きく追加してはいけません。
-
----
-
-# 9. Trace Index
-
-`TRACE_INDEX_JSON` に対象画面に関連する情報が存在する場合、補助仕様として使用してください。
-
-特に画面遷移先について、既存ApplicationまたはTrace Indexから一意に判断できるrouteが存在する場合は、そのrouteを使用してください。
-
-既存routeが存在するにもかかわらず別routeを新規作成してはいけません。
-
----
-
-# 10. Requirement Gaps
-
-仕様に不足があり実装上判断が必要な場合は、以下で判断してください。
-
-1. System Requirements
-2. Screen Requirement
-3. Trace Index
-4. 既存Applicationの共通契約
-5. 一般的で最小限のWeb実装
-
-画面を成立させるための軽微な補完のみ許可します。
-
-新しい業務仕様を勝手に作ってはいけません。
-
----
-
-# 11. ASSUMPTION / Open Items
-
-`assumption`、`open_items`、未確定、TODOなどが仕様に存在する場合、それを勝手に確定仕様へ変換してはいけません。
-
-実装が必要な場合は、既存仕様と矛盾しない最小限の方法を選択してください。
-
----
-
-# 12. Forbidden
-
-`SYSTEM_REQUIREMENTS_JSON` の禁止事項およびscope.outを必ず守ってください。
-
-特に仕様で禁止されている場合、以下を追加してはいけません。
-
-- GCPバックエンド
-- App Engine
-- Cloud Run
-- Spanner
-- Cloud Storage
-- Secret Manager
-- 外部DB
-- 外部HTTPサービス
-- 本番用外部API
-- ネイティブアプリ
-- 給与計算本体
-
-外部サービスが必要に見える場合でも、仕様で許可されたローカルまたはmock実装に留めてください。
-
----
-
-# 13. Dependency Constraints
-
-依存ライブラリについては、`test-runner/package.json` にインストールされる実行環境を唯一のallowlistとして扱ってください。
-
-Application側の `package.json` に依存関係を書くだけでは、静的検証・テスト環境で利用可能になったとはみなしません。
-
-以下のProduction dependencyのみ使用可能です。
-
-- `@hookform/resolvers`
-- `clsx`
-- `idb`
-- `lucide-react`
-- `next`
-- `react`
-- `react-dom`
-- `react-hook-form`
-- `tailwind-merge`
-- `zod`
-- `zustand`
-
-テストコードでは、上記に加えて実行環境に存在する以下を使用できます。
-
-- `@testing-library/jest-dom`
-- `@testing-library/react`
-- `@types/node`
-- `@types/react`
-- `@types/react-dom`
-- `@vitejs/plugin-react`
-- `fake-indexeddb`
-- `jsdom`
-- `typescript`
-- `vite`
-- `vitest`
-
-この一覧に存在しないnpm packageをimportしてはいけません。
-
-特に、shadcn/ui風のコンポーネントを実装する場合でも、以下のようなallowlist外packageを暗黙に追加してはいけません。
-
-- `class-variance-authority`
-- `@radix-ui/react-slot`
-- `@radix-ui/react-label`
-- `@radix-ui/react-toast`
-- その他の `@radix-ui/*`
-
-必要なUIは、許可済みのReact / Tailwind CSS / `clsx` / `tailwind-merge` 等だけで実装してください。
-
-`SYSTEM_REQUIREMENTS_JSON` に特定ライブラリが記載されていても、実行環境allowlistに存在しないpackageを勝手にimportしてはいけません。
-
-仕様上そのライブラリ名そのものが必須で、allowlistに存在しないため実装不能な場合のみ、推測で代替packageを追加せず、`.ai-repair-unresolved.txt` の対象となり得る仕様ギャップとして扱ってください。
-
-## idb
-
-`SYSTEM_REQUIREMENTS_JSON` に `idb` 利用が明示されている場合、IndexedDBアクセスに `idb` を使用してください。
-
-`idb` は実行環境allowlistに含まれているため利用可能です。
-
-Applicationの `package.json` に `idb` が存在しない場合は、今回変更する `package.json` のdependenciesにも追加してください。
-
-`idb` が仕様で要求されているにもかかわらず、単に依存関係を避ける目的でnative IndexedDBへ置き換えてはいけません。
-
-## Application package.json
-
-Applicationの `package.json` を生成・変更する場合、importしているProduction dependencyをdependenciesへ記載してください。
-
-ただし、Applicationの `package.json` に記載できるdependencyも上記allowlistの範囲だけです。
-
-次を出力前に必ず照合してください。
-
-1. 実装コード中のbare module importがallowlist内である
-2. importしたProduction dependencyがApplicationの `package.json` に存在する
-3. package名のスペルがimportと一致する
-4. allowlist外packageを追加していない
-5. `package.json` を変更した場合は完全内容をFILEブロックで出力する
-
-依存関係エラーを `tsconfig.json` のpathsや型設定で隠してはいけません。
-
----
-
-# 14. Architecture
-
-System Requirementsで定義されたアーキテクチャを維持してください。
-
-Repository Patternが指定されている場合、React ComponentからIndexedDB等へ直接アクセスしてはいけません。
-
-UI、Application、Domain、Infrastructure等の責務を混在させないでください。
-
-既存Applicationに同じ責務の実装がある場合は再利用してください。
-
----
-
-# 15. Data / Repository Contract
-
-Repository / Service / UseCaseを使用する前に、既存Application内の実際の定義を確認してください。
-
-推測したmethodを呼び出してはいけません。
-
-特に以下を照合してください。
-
-- method名
-- 引数
-- 戻り値
-- Promiseか同期値か
-- null / undefinedの扱い
-- Result型の有無
-- errorの扱い
-
-既存Repositoryに `findAll()` が存在する場合に、テスト都合で `getAll()` を仮定してはいけません。
-
----
-
-# 16. Async Contract
-
-非同期処理の契約を厳密に維持してください。
-
-`.then()`、`await`、`.catch()` を使用する場合、その対象が必ずPromiseを返すことを確認してください。
-
-例えば `initializeDBWithSeed().then(...)` と実装する場合、実装本体およびテストmockの両方で `initializeDBWithSeed()` がPromiseを返さなければなりません。
-
-mockでは必要に応じて `mockResolvedValue(...)` / `mockRejectedValue(...)` を使用してください。
-
-Promise関数を単なる `vi.fn()` の未設定戻り値として残してはいけません。
-
----
-
-# 17. Import Path Integrity
-
-すべてのimportについて、出力前に以下を内部確認してください。
-
-- import先ファイルが既存Applicationに存在する
-- または今回の出力で生成される
-- export名が実際に存在する
-- default export / named exportを取り違えていない
-- relative pathの階層が正しい
-- route groupを含む実際のディレクトリ構造と一致する
-
-存在しないファイルをimportしてはいけません。
-
-テスト側でも実装側と同じルールを適用してください。
-
----
-
-# 18. Route Integrity
-
-画面routeは既存Application、Trace Index、Screen Requirementを照合して決定してください。
-
-同じ画面に対して複数routeを作ってはいけません。
-
-既存Applicationのroute構成が決定済みの場合はそれに合わせてください。
-
----
-
-# 19. Authentication
-
-認証・認可はSystem RequirementsおよびScreen Requirementに従ってください。
-
-モック認証が指定されている場合はモック認証として実装してください。
-
-対象画面だけの都合で本番認証基盤を追加してはいけません。
-
----
-
-# 20. Responsive UI
-
-レスポンシブ対応が必要な場合、PC、タブレット、スマートフォンで利用可能なUIにしてください。
-
-タッチ操作が想定される場合は十分な操作領域を確保してください。
-
----
-
-# 21. Error Handling
-
-データ取得、保存、認証、入力、Browser API等が失敗しても画面全体がクラッシュしないようにしてください。
-
-仕様に定義されたエラー表示を優先してください。
-
----
-
-# 22. Browser API
-
-以下のBrowser APIを使用する場合、jsdomテスト環境では存在しない、または完全実装されていない可能性を考慮してください。
-
-- navigator.mediaDevices
-- MediaStream
-- File
-- Blob
-- URL.createObjectURL
-- localStorage
-- sessionStorage
-- IndexedDB
-- matchMedia
-- ResizeObserver
-- IntersectionObserver
-
-テストでは、実装が実際に利用するAPIだけを仕様と整合する形でmockしてください。
-
-Browser APIが存在しないことだけで無限待機や無限retryを発生させてはいけません。
-
----
-
-# 23. Code Quality
-
-以下を守ってください。
-
-- TypeScriptを使用する
-- anyを乱用しない
-- 不要な依存関係を追加しない
-- 重複コードを作らない
-- 責務を分離する
-- 既存命名規則を維持する
-- 不要なリファクタリングをしない
-- 無関係なファイルを変更しない
-
----
-
-# 24. Screen Test Ownership
-
-今回の対象画面のテストは必ず、
-
-`tests/<screen_id>/`
-
-配下に配置してください。
+既存Applicationに以下のような構造が存在する場合、
+同じ責務分離を維持してください。
 
 例:
 
-`tests/SCR-003_punch_mode_select/page.test.tsx`
+app/
+components/
+features/
+domain/
+repositories/
+services/
+usecases/
+lib/
+stores/
+types/
+tests/
 
-最低1ファイル以上のテストを生成してください。
+ただし、
+入力に存在しないArchitectureを新しく発明してはいけません。
 
-既存画面のテストはそれぞれの既存ディレクトリに残してください。
 
----
+# 10. Dependency Runtime Policy
 
-# 25. Test Implementation
+生成Applicationの実行・Static Validation・Testでは、
+controlled runtimeを使用します。
 
-対象画面について、仕様に存在する重要な動作をテストしてください。
+controlled runtimeで利用可能なnpm packageは
+test-runner/package.jsonで管理されています。
 
-主な観点:
+Application側のpackage.jsonにdependencyを書くだけでは、
+controlled runtimeにpackageがinstallされたことにはなりません。
 
-- 正常表示
-- 主要イベント
-- validation
-- transition
-- permission
-- error
+したがって、
+test-runner/package.jsonのallowlistに存在しないpackageを
+importしてはいけません。
 
-過剰なテストを追加する必要はありません。
 
-テストは、実際に生成・利用しているコードと完全に整合させてください。
+# 11. Allowed Production Dependencies
 
----
+Application sourceで利用可能なProduction dependencyは
+以下に限定します。
 
-# 26. Test Mock Contract
+- @hookform/resolvers
+- clsx
+- idb
+- lucide-react
+- next
+- react
+- react-dom
+- react-hook-form
+- tailwind-merge
+- zod
+- zustand
 
-mockは推測で作成してはいけません。
+これ以外のnpm packageをApplication sourceへ
+新しくimportしてはいけません。
 
-mockを作成する前に、実装コードまたは既存Applicationの実際のcontractを確認してください。
 
-以下を完全に一致させてください。
+# 12. Allowed Test Dependencies
 
-- module path
-- export形式
-- class / function名
-- constructor
+Testではcontrolled test runnerに存在する
+以下のdependencyを使用できます。
+
+- @testing-library/jest-dom
+- @testing-library/react
+- @types/node
+- @types/react
+- @types/react-dom
+- @vitejs/plugin-react
+- fake-indexeddb
+- jsdom
+- typescript
+- vite
+- vitest
+
+Production dependencyとして許可されたpackageも
+Test内で利用可能です。
+
+
+# 13. Forbidden Convenience Dependencies
+
+以下のようなpackageを、
+UI実装の利便性だけを理由に追加してはいけません。
+
+例:
+
+- class-variance-authority
+- @radix-ui/react-slot
+- @radix-ui/react-label
+- @radix-ui/react-toast
+- その他の @radix-ui/*
+
+shadcn/ui風のComponentが必要な場合でも、
+許可済みの
+
+- React
+- Tailwind CSS class
+- clsx
+- tailwind-merge
+
+などを使って実装してください。
+
+
+# 14. idb / IndexedDB Policy
+
+System Requirementsが
+
+IndexedDB + idb
+
+を指定している場合、
+idbを使用して構いません。
+
+むしろSystem Requirementsがidbを明示している場合は、
+理由なくnative IndexedDBへ置き換えてはいけません。
+
+Applicationのpackage.jsonを生成する場合は、
+利用する許可済みProduction dependencyを
+dependenciesへ含めてください。
+
+ただしApplication package.jsonだけを変更しても
+controlled runtimeのdependencyは増えないことを理解してください。
+
+
+# 15. Dependency Conflict
+
+System Requirementsが、
+Allowed Production Dependenciesに存在しないpackageを
+明示的に必須としている場合、
+勝手に別packageへ置換しないでください。
+
+また、
+controlled runtimeへ勝手にdependencyを追加した前提で
+実装してはいけません。
+
+仕様上どうしても解決不能な場合だけ、
+specification gapとして扱ってください。
+
+
+# 16. Bare Import Verification
+
+出力前に、
+すべてのbare npm importを確認してください。
+
+例:
+
+import React from "react"
+
+import { openDB } from "idb"
+
+import { cn } from "@/lib/utils"
+
+この場合、
+
+react
+idb
+
+はnpm dependencyです。
+
+@/lib/utils
+
+はApplication内部aliasです。
+
+すべてのnpm dependencyがAllowed Dependencyに
+含まれていることを確認してください。
+
+
+# 17. Internal Import Verification
+
+Application内部importについて、
+実在するファイル・exportだけを参照してください。
+
+確認対象:
+
+- relative import
+- @/ alias import
+- named export
+- default export
+- route group
+- directory名
+- file名
+- casing
+
+存在しないファイルを推測してimportしてはいけません。
+
+
+# 18. Existing Contract Inspection
+
+既存のRepository / UseCase / Service / Storeを利用する場合、
+必ず実際の既存sourceを確認してください。
+
+以下を推測してはいけません。
+
 - method名
-- 引数
-- 戻り値
+- constructor
+- argument
+- return type
 - async / sync
-- object structure
+- export形式
 
-実装が `await useCase.execute(id)` を使用する場合、mockにも `execute: vi.fn().mockResolvedValue(...)` 等、同じ契約を定義してください。
+例えば既存Repositoryが
 
-`execute()` を実装が利用しているのに、mock側が空objectを返すことは禁止します。
+findAll()
 
----
+を持っていないのに、
+名前から推測して
 
-# 27. vi.mock Hoisting
+repo.findAll()
 
-Vitestの `vi.mock()` はhoistされることを考慮してください。
+を呼んではいけません。
 
-外側で宣言した変数を不安全に参照してはいけません。
 
-必要に応じて `vi.hoisted()` を使用してください。
+# 19. Test Mock Contract
 
----
+テストでmockを作成する場合も、
+実際の実装契約を確認してください。
 
-# 28. React Mock Stability
+例えばUseCaseの実装が
 
-React hook、Context、Router等のmockは参照安定性を維持してください。
+execute(input)
 
-renderごとに不要な新しいobject/functionを返してはいけません。
+である場合、
 
-特に以下に注意してください。
+{
+  run: vi.fn()
+}
 
-- useRouter
-- useSearchParams
-- usePathname
-- Context
-- Zustand
-- Repository
-- Service
-- callback
+のような架空のmockを作ってはいけません。
 
----
+実際のmethod名・argument・return valueに合わせてください。
 
-# 29. Testing Library Selector
 
-同じテキストが複数存在する可能性がある場合、`getByText(...)` だけに依存してはいけません。
+# 20. Test Philosophy
 
-可能な限り以下を優先してください。
+テストはScreen Requirementを検証するために作成してください。
 
-- getByRole
-- getByLabelText
-- getByPlaceholderText
-- within
-- accessible name
+実装詳細そのものを固定するテストではなく、
+ユーザーから観測可能な振る舞いを優先してください。
 
-実装側にも仕様上自然なlabel / roleを付与してください。
+例:
 
-テストだけのための不自然な `data-testid` の追加は避けてください。
+- 表示内容
+- 入力
+- Validation
+- Button state
+- Navigation
+- Error display
+- Repository / UseCase interaction
+- State transition
 
----
+要件にない振る舞いをテストへ追加してはいけません。
 
-# 30. Infinite Render Prevention
 
-実装およびテスト出力前に、以下を確認してください。
+# 21. Test File Path — CRITICAL
 
-- useEffectが自分自身のdependencyを毎回更新していない
-- renderごとにdependency objectを新規生成していない
-- effect → setState → effect の循環がない
-- render中にsetStateしていない
-- mock hookが毎render新しいobjectを返していない
-- timerを無限生成していない
-- retry処理が無限になっていない
-- Promiseが永久pendingになっていない
-- waitFor条件が実装上到達可能である
-- mock implementationが再帰していない
+今回の完全なScreen IDは以下です。
 
----
+{{FULL_SCREEN_ID}}
 
-# 30.5 TypeScript / JSX Syntax Verification
+対象画面のテストファイルは、
+必ず以下のディレクトリ配下へ生成してください。
 
-出力する `.ts` / `.tsx` ファイルについて、出力前にTypeScript / JSXとして構文が成立していることを内部確認してください。
+tests/{{FULL_SCREEN_ID}}/
+
+Screen IDを省略・短縮・変換してはいけません。
+
+
+## Correct Example
+
+FULL_SCREEN_ID:
+
+SCR-001_contractor_login
+
+の場合:
+
+tests/SCR-001_contractor_login/page.test.tsx
+
+
+## Forbidden Examples
+
+以下は禁止です。
+
+tests/SCR-001/page.test.tsx
+
+tests/contractor_login/page.test.tsx
+
+tests/login/page.test.tsx
+
+tests/page.test.tsx
+
+tests/SCR001/page.test.tsx
+
+
+## Mandatory Rule
+
+`{{FULL_SCREEN_ID}}` を文字列としてそのまま
+testsディレクトリ直下のfolder nameに使用してください。
+
+つまり今回のテストrootは必ず:
+
+tests/{{FULL_SCREEN_ID}}/
+
+です。
+
+対象画面について最低1つ以上のtest fileを
+このディレクトリ配下へ生成してください。
+
+
+# 22. Existing Test Paths
+
+既存Applicationに既存画面のテストが存在する場合、
+それらのディレクトリ名を変更してはいけません。
+
+今回追加する対象画面のテストだけを
+
+tests/{{FULL_SCREEN_ID}}/
+
+へ追加してください。
+
+他画面のテストを今回のScreen ID配下へ移動してはいけません。
+
+
+# 23. Test File Naming
+
+テストファイルは以下のいずれかの形式にしてください。
+
+- *.test.ts
+- *.test.tsx
+- *.spec.ts
+- *.spec.tsx
+
+例:
+
+tests/{{FULL_SCREEN_ID}}/page.test.tsx
+
+tests/{{FULL_SCREEN_ID}}/usecase.test.ts
+
+
+# 24. At Least One Test
+
+対象画面について、
+最低1件以上のテストファイルを必ず生成してください。
+
+実装だけ生成してテストを省略してはいけません。
+
+
+# 25. Do Not Weaken Tests
+
+テストを通すためだけに、
+以下を行ってはいけません。
+
+- assertion削除
+- test.skip
+- describe.skip
+- it.skip
+- test.todo
+- assertionを常にtrueへ変更
+- meaningful assertionの削除
+- timeout増加による問題隠蔽
+- 要件に反するmockへの変更
+
+テストはScreen Requirementを検証する必要があります。
+
+
+# 26. Async Test Policy
+
+非同期処理をテストする場合、
+React Testing Library / Vitestの正しい非同期処理を使用してください。
+
+必要に応じて:
+
+- waitFor
+- findBy*
+- user-observable state
+
+を使用してください。
+
+未解決Promiseや無限waitを作ってはいけません。
+
+
+# 27. Mock Hoisting
+
+Vitestのvi.mock()で
+外部変数を参照する必要がある場合は、
+hoistingを考慮してください。
+
+必要に応じて
+
+vi.hoisted()
+
+を使用してください。
+
+mock factoryから初期化前のconstを
+参照してはいけません。
+
+
+# 28. Next.js
+
+System RequirementsがNext.js App Routerを指定している場合、
+App Router構造を維持してください。
+
+例:
+
+app/
+  ...
+  page.tsx
+
+必要な場合だけ
+
+"use client";
+
+を使用してください。
+
+Client Componentでしか使用できないAPIを
+Server Componentから使用してはいけません。
+
+
+# 29. React
+
+React Componentは、
+既存Applicationの実装方針を維持してください。
+
+以下に注意してください。
+
+- hooks rules
+- state update
+- effect dependency
+- controlled input
+- async state
+- cleanup
+- render loop
+
+useEffect内で無条件にstateを更新し続けるなど、
+無限renderを起こす実装は禁止です。
+
+
+# 30. TypeScript
+
+TypeScriptの型エラーを残してはいけません。
 
 特に以下を確認してください。
 
-- JSXタグの開始・終了が一致している
-- JSXの属性構文が正しい
-- props spreadが `{...props}` の形式になっている
-- `React.forwardRef` の引数・括弧・genericが正しく閉じている
-- function / arrow function / object / array の括弧が正しく閉じている
-- `>` / `)` / `}` / `]` の閉じ忘れがない
-- interface / type / class / function宣言が途中で切れていない
-- generic型の `<...>` が正しく閉じている
-- JSX内へMarkdownのコードフェンスや箇条書き記号が混入していない
-- diff由来の行頭 `+` / `-` がソースへ混入していない
-- FILE markerがソース本文へ混入していない
-- 同一ファイル内で同名export / component / constを重複定義していない
+- import/export
+- function argument
+- return type
+- Promise
+- nullable value
+- union
+- generic
+- React props
+- event type
+- Repository interface
+- UseCase interface
 
-特に共通UIコンポーネントを生成する場合、`Card`、`Button`、`Input` 等の単純な部品であっても、shadcn/ui等の記憶上のコードを不完全に再現してはいけません。
+`any`による雑な回避を優先してはいけません。
 
-既存依存関係だけで成立する、最小で完全なTypeScript / JSXを出力してください。
 
-今回の生成直後に `tsc --noEmit` が実行されます。構文エラー、型解決エラー、import解決エラーを残したまま出力してはいけません。
+# 30.5 TypeScript / JSX Syntax Verification
 
----
+出力する `.ts` / `.tsx` は、
+`tsc --noEmit` を実行可能な完成状態にしてください。
 
-# 31. Regression Awareness
+出力前に必ず以下を確認してください。
 
-今回の出力がApplicationへ反映された直後に、以下が自動実行される前提です。
+- JSX tagが閉じている
+- JSX attribute syntaxが正しい
+- props spreadが正しい
+- 括弧が閉じている
+- 波括弧が閉じている
+- genericが閉じている
+- string literalが閉じている
+- template literalが閉じている
+- React.forwardRefの引数が正しい
+- React.forwardRefのgenericが正しい
+- 同一scopeで同名宣言が重複していない
+- Markdownがsourceへ混入していない
+- diff markerがsourceへ混入していない
+- FILE markerがsourceへ混入していない
 
-1. TypeScript静的検証
-2. 今回までに実装済みの全画面テスト
+Common UI Componentを、
+記憶だけで不完全なsnippetとして生成してはいけません。
 
-つまり今回の画面だけが動けばよいのではありません。
+Button / Input / Label / Dialog等を生成する場合も、
+完全なTypeScript / JSX sourceとして出力してください。
 
-過去に実装された画面を含むApplication全体が引き続き正常である必要があります。
 
-既存の共通契約を変更する際は、この回帰テストを通過できる設計にしてください。
+# 31. Result / Error Contract
 
----
+既存ApplicationにResult型やError型が存在する場合、
+その既存契約を利用してください。
 
-# 32. Output Format
+例えば既存Resultが
 
-最終出力は以下のFILE形式だけを使用してください。
+{
+  success: boolean
+}
+
+ではない場合、
+勝手にこの形を前提にしてはいけません。
+
+既存sourceを確認してください。
+
+
+# 32. Route Consistency
+
+既存routeを利用する場合、
+実在するrouteを確認してください。
+
+Screen Requirementにrouteが明示されている場合は
+それを優先してください。
+
+要件にないrouteを
+
+/admin/dashboard
+/login
+/home
+
+などと推測してはいけません。
+
+
+# 33. UI
+
+UIはScreen Requirementに従ってください。
+
+要件に存在しない装飾や操作を
+追加しすぎないでください。
+
+ただし、
+要件を満たすために必要な最低限のHTML構造、
+accessibility属性、
+label関連付け等は実装してください。
+
+
+# 34. Styling
+
+System RequirementsでTailwind CSSが指定されている場合、
+Tailwind classを利用できます。
+
+ただしUI Componentを作るためだけに
+許可されていないpackageを追加してはいけません。
+
+class結合には、
+許可されている場合、
+
+- clsx
+- tailwind-merge
+
+を使用できます。
+
+
+# 35. Build / Test Configuration
+
+Applicationの初期生成時に、
+System Requirements上必要なbuild configurationを
+生成することはできます。
+
+ただし、
+controlled Static/Test Runtimeを通すためだけに
+設定を弱めてはいけません。
+
+禁止例:
+
+- TypeScript errorを隠すためのexclude
+- skipLibCheckによるApplication error隠蔽
+- fake path alias
+- missing packageを隠すpaths設定
+- Vitest assertionの無効化
+
+
+# 36. package.json
+
+Application package.jsonを新規生成する場合、
+実際にApplication sourceが利用する
+Allowed Production Dependenciesだけを記載してください。
+
+利用していないdependencyを大量に追加してはいけません。
+
+また、
+Allowed Production Dependencies外のpackageを
+記載してはいけません。
+
+
+# 37. Minimal Change
+
+既存Applicationが存在する場合、
+今回のScreen Requirementに必要な変更だけを返してください。
+
+変更していない既存ファイルを
+そのまま再出力する必要はありません。
+
+返却対象:
+
+- 新規ファイル
+- 内容を変更した既存ファイル
+
+のみです。
+
+
+# 38. No Partial File Output
+
+変更するファイルは、
+diffではなく完全なファイル内容を返してください。
+
+禁止:
+
+- diff
+- patch
+- "...existing code..."
+- "// unchanged"
+- 省略
+- 一部分だけの出力
+
+変更対象ファイルは、
+そのファイル全体を出力してください。
+
+
+# 39. Output Format
+
+回答は必ず以下のFILE形式だけで返してください。
+
+説明文、
+Markdown code fence、
+JSON、
+箇条書き、
+前置き、
+後書きは禁止です。
+
+Format:
+
+<<<FILE_START>>>
+PATH: relative/path/to/file
+<<<CONTENT_START>>>
+完全なファイル内容
+<<<CONTENT_END>>>
+<<<FILE_END>>>
+
+複数ファイルの場合:
 
 <<<FILE_START>>>
 PATH: app/example/page.tsx
 <<<CONTENT_START>>>
-complete source code
+...
 <<<CONTENT_END>>>
 <<<FILE_END>>>
-
-複数ファイルの場合はFILEブロックを連続してください。
-
----
-
-# 33. FILE Rules
-
-以下を厳守してください。
-
-- JSON形式を使用しない
-- Markdownコードブロックで囲まない
-- FILEブロック以外の説明文を出力しない
-- PATHはApplicationルートからの相対パス
-- 絶対パスは禁止
-- `..` を含むパスは禁止
-- 空ファイルは禁止
-- `...` による省略は禁止
-- TODOによるコード省略は禁止
-- 変更ファイルは完全な内容を出力する
-- 同一PATHを複数回出力しない
-- ソース内にFILEマーカーを含めない
-
----
-
-# 34. Changed Files Only
-
-既存Application全体を出力してはいけません。
-
-以下だけを出力してください。
-
-- 今回新規追加するファイル
-- 今回の仕様のために変更する必要がある既存ファイル
-- 今回対象画面の新規テスト
-- 仕様上変更が必要になった既存テスト
-
-無関係な既存ファイルを再出力してはいけません。
-
----
-
-# 35. Final Internal Verification
-
-出力前に内部的に必ず確認してください。
-
-## Requirements
-
-- System Requirementsに準拠している
-- Screen Requirementを満たしている
-- Trace Indexと矛盾しない
-- forbiddenを実装していない
-- scope.outを実装していない
-
-## Existing Application
-
-- 既存Domainを重複生成していない
-- 既存Repositoryを重複生成していない
-- 既存UseCaseを重複生成していない
-- 既存型を重複生成していない
-- 既存routeを重複生成していない
-- 無関係なファイルを変更していない
-
-## Backward Compatibility
-
-- 既存exportを不用意に変更していない
-- 既存method名を不用意に変更していない
-- 既存constructorを不用意に変更していない
-- async / sync契約を壊していない
-- 既存画面の呼び出し契約を壊していない
-
-## Imports
-
-- すべてのimport先が存在する
-- export名が一致する
-- relative pathが正しい
-- default / named exportが一致する
-
-## Tests
-
-- tests/<screen_id>/ が存在する
-- 最低1つのテストがある
-- mockと実装contractが一致する
-- Promise mockが正しい
-- vi.mock hoistingが安全
-- Router等のmock参照が安定している
-- selectorが曖昧ではない
-- Browser API mockが実装と一致する
-- 既存テストを弱めていない
-
-## Runtime
-
-- 無限renderがない
-- 無限loopがない
-- 永久pending Promiseがない
-- timerが終了可能
-- waitFor条件が到達可能
-
-## Dependencies
-
-- 存在しないnpm packageをimportしていない
-- 依存ライブラリの追加がSYSTEM_REQUIREMENTS_JSONまたは既存package.jsonに基づいている
-- 仕様でidbが要求される場合、package.jsonと実装が整合している
-- 仕様にない依存ライブラリを勝手に追加していない
-
-## Output
-
-- 変更ファイルだけを出力している
-- FILE形式だけを使用している
-- 全FILEブロックが閉じている
-- コードを省略していない
-
----
-
-# 36. Critical Output Constraint
-
-最終出力はPythonプログラムによって機械的に解析されます。
-
-FILEブロック以外を絶対に出力してはいけません。
 
 <<<FILE_START>>>
-PATH: relative/path/to/file.ts
+PATH: tests/{{FULL_SCREEN_ID}}/page.test.tsx
 <<<CONTENT_START>>>
-complete file content
+...
 <<<CONTENT_END>>>
 <<<FILE_END>>>
+
+
+# 40. FILE Path Rules
+
+PATHはApplication rootからの相対パスにしてください。
+
+禁止:
+
+- absolute path
+- ../
+- repository root外
+- Markdown fence
+- quotationによるPATH囲み
+
+正しい例:
+
+PATH: app/contractor/login/page.tsx
+
+PATH: tests/{{FULL_SCREEN_ID}}/page.test.tsx
+
+
+# 41. Reserved Markers
+
+生成するsource code本文に、
+以下の文字列を含めてはいけません。
+
+<<<FILE_START>>>
+
+<<<CONTENT_START>>>
+
+<<<CONTENT_END>>>
+
+<<<FILE_END>>>
+
+これらはparser専用です。
+
+
+# 42. Final Verification
+
+回答を返す前に、
+必ず以下を内部確認してください。
+
+- Screen Requirementを満たしている
+- System Requirementsと矛盾していない
+- Trace Indexを不当に上書きしていない
+- Existing Applicationの共有契約を確認した
+- 既存UseCase / Repository methodを推測していない
+- 既存export/import pathを確認した
+- 既存画面を壊す共有契約変更をしていない
+- 不要なrefactorをしていない
+- 新しい仕様を追加していない
+- npm importはcontrolled runtime allowlist内
+- idbがSystem Requirementsで必要なら維持している
+- Application package.jsonは許可dependencyのみ
+- TypeScript syntaxが完成している
+- JSX syntaxが完成している
+- 同名宣言の重複がない
+- import先が実在する
+- test mockが実際の契約と一致している
+- test assertionがScreen Requirementと一致している
+- 対象画面のtest fileを最低1つ生成した
+- 対象画面のtest directoryが正確に
+  tests/{{FULL_SCREEN_ID}}/
+  になっている
+- `{{FULL_SCREEN_ID}}` を省略していない
+- tests/SCR-001/ のような短縮形を使用していない
+- 他画面の既存test pathを変更していない
+- FILE形式だけを返している
+- 変更・新規ファイルだけを返している
+- 各ファイルは完全な内容になっている
+
+
+# 43. Final Instruction
+
+今回の完全なScreen IDは:
+
+{{FULL_SCREEN_ID}}
+
+です。
+
+対象画面のテストは必ず:
+
+tests/{{FULL_SCREEN_ID}}/
+
+配下へ生成してください。
+
+Screen IDの省略は禁止です。
+
+既存Applicationとの整合性を維持しながら、
+Screen Requirementを満たす最小限の変更だけを
+FILE形式で返してください。
