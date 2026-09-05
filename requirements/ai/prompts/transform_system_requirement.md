@@ -391,24 +391,22 @@ Zustand
 
 のような具体的な値は、そのまま保持してください。
 
-### Technology Name / Version Preservation
+### 技術名・バージョン保持ルール
 
-技術スタックについては、技術名だけでなく原文に記載されたバージョン情報も必ず保持してください。
+原文に技術名とバージョンが明記されている場合、両方を必ず保持してください。
 
-特に以下のようなバージョン付き技術情報を、技術名だけへ一般化してはいけません。
+技術名だけを残してバージョンを欠落させてはいけません。
 
-* `Next.js 14`
-* `TypeScript 5.x`
-* `Node.js 20 LTS`
-* `React 18`
-* `Tailwind CSS 3.x`
+例えば原文が `TypeScript 5.x` の場合、以下のどちらも許可します。
 
-原文にバージョンが存在する場合、生成JSON内で少なくとも以下の両方が機械的に確認できるようにしてください。
+```json
+{
+  "name": "TypeScript 5.x",
+  "status": "confirmed"
+}
+```
 
-1. 技術名
-2. バージョン
-
-例えば原文が `TypeScript 5.x` の場合、次のような表現は許可します。
+または、
 
 ```json
 {
@@ -418,27 +416,24 @@ Zustand
 }
 ```
 
-または、文字列として `TypeScript 5.x` を保持しても構いません。
-
-ただし以下は禁止します。
+ただし、以下のようにバージョンを欠落させてはいけません。
 
 ```json
-{ "name": "TypeScript" }
+{
+  "name": "TypeScript",
+  "status": "confirmed"
+}
 ```
 
-```json
-{ "version": "5.x" }
-```
+同様に、原文に存在する以下のような技術名・バージョンは欠落させないでください。
 
-技術名とバージョンのどちらか一方だけを残すことは禁止します。
+* Next.js 14
+* TypeScript 5.x
+* Node.js 20 LTS
+* React 18
+* Tailwind CSS 3.x
 
-`20 LTS`、`14 (App Router)`、`3.x` 等、バージョンに付随する情報も原文に存在する場合は可能な限り保持してください。
-
-`[ASSUMPTION]` が付与された技術についても情報自体を削除してはいけません。値とバージョンを保持したうえで `status: "assumption"` としてください。
-
-`[TODO: 要確認]` が付与された技術についても同様に、値とバージョンを保持したうえで未決状態を維持してください。
-
-出力前に、原文のtechnologyセクションに存在する各技術について、技術名とバージョンの両方が生成JSON内に残っていることを内部確認してください。
+表現を構造化することは許可しますが、技術名とバージョンの意味情報を削除してはいけません。
 
 ## architecture
 
@@ -557,6 +552,145 @@ Zustand
 
 ---
 
+# 11.7. JSON Schema Type Safety
+
+生成JSONでは、下記フィールドのJSON型を必ず固定してください。
+
+原文の記述量、項目数、Markdown上の表現に関係なく、指定された型を変更してはいけません。
+
+## Arrayとして固定するフィールド
+
+以下は必ずJSON arrayとして出力してください。
+
+* `scope.in`
+* `scope.out`
+* `users`
+* `technology`
+* `architecture.layers`
+* `architecture.directory_structure`
+* `conventions.naming`
+* `data_model.stores`
+* `data_model.types`
+* `non_functional.performance`
+* `non_functional.security`
+* `non_functional.availability`
+* `testing.ci`
+* `testing.frameworks`
+* `testing.pr_rules`
+* `implementation_constraints.allowed`
+* `implementation_constraints.forbidden`
+* `open_items`
+
+上記フィールドは、要素が1件だけの場合でもobjectへ変換してはいけません。
+
+悪い例:
+
+```json
+"ci": {
+  "name": "GitHub Actions"
+}
+```
+
+正しい例:
+
+```json
+"ci": [
+  {
+    "name": "GitHub Actions"
+  }
+]
+```
+
+文字列1件だけの場合も同様です。
+
+悪い例:
+
+```json
+"frameworks": "Vitest"
+```
+
+正しい例:
+
+```json
+"frameworks": [
+  "Vitest"
+]
+```
+
+原文に該当情報が存在しない場合は、array指定フィールドについて `null` や `{}` を使用せず、空配列 `[]` を使用してください。
+
+## Objectとして固定するフィールド
+
+以下は必ずJSON objectとして出力してください。
+
+* `source`
+* `scope`
+* `architecture`
+* `architecture.repository`
+* `architecture.persistence`
+* `conventions`
+* `conventions.error_handling`
+* `conventions.logging`
+* `authentication`
+* `data_model`
+* `seed`
+* `non_functional`
+* `non_functional.audit_log`
+* `testing`
+* `implementation_constraints`
+* `traceability`
+
+上記objectフィールドをarrayやstringへ変更してはいけません。
+
+## Scalarとして扱うフィールド
+
+以下は原文または固定スキーマに従い、array/objectへ勝手に変換しないでください。
+
+* `version`
+* `source.doc_type`
+* `source.source_file`
+* `source.source_version`
+* `source.generated_at`
+* `scope.product`
+* `scope.purpose`
+* `scope.status`
+* `testing.coverage`
+
+## testing.ci の特別ルール
+
+`testing.ci` は常にarrayです。
+
+CIに関する情報が複数の属性を持つ場合でも、array内のobjectとして表現してください。
+
+例えば、原文にGitHub Actions、実行条件、実行内容が記載されている場合は、以下のように表現できます。
+
+```json
+"testing": {
+  "ci": [
+    {
+      "name": "GitHub Actions",
+      "trigger": "push",
+      "description": "要件変換・検証・実装・テストを実行する"
+    }
+  ],
+  "frameworks": [],
+  "coverage": null,
+  "pr_rules": []
+}
+```
+
+`testing.ci` をobjectへ変換してはいけません。
+
+## 型の優先順位
+
+原文のMarkdown表現がJSONスキーマと異なるように見えても、情報内容は保持しつつ、JSON型はこのプロンプトで定義されたスキーマを優先してください。
+
+例えば原文にCI設定が1つの表や1つの段落として記載されていても、`testing.ci` はarrayとして出力してください。
+
+情報保持とJSON型固定は両立させてください。
+
+---
+
 # 12. 出力形式
 
 以下のJSON構造を使用してください。
@@ -660,7 +794,6 @@ JSONを出力する前に内部的に以下を確認してください。
 
 * `SYSTEM_REQUIREMENTS_MD` の内容だけを変換対象にした
 * 原文の確定仕様を失っていない
-* 原文に記載された技術名とバージョンを失っていない
 * `[ASSUMPTION]` を確定仕様にしていない
 * `[TODO: 要確認]` を確定していない
 * GCP実装を追加していない
@@ -677,6 +810,25 @@ JSONを出力する前に内部的に以下を確認してください。
 * JSON以外の文字列を出力していない
 * 原文に存在する「外部DB禁止」がJSON内に保持されている
 * 原文に存在する「外部HTTP通信禁止」がJSON内に保持されている
-
+* 原文に技術名とバージョンがある場合、両方がJSON内に保持されている
+* `scope.in` がarrayである
+* `scope.out` がarrayである
+* `users` がarrayである
+* `technology` がarrayである
+* `architecture.layers` がarrayである
+* `architecture.directory_structure` がarrayである
+* `conventions.naming` がarrayである
+* `data_model.stores` がarrayである
+* `data_model.types` がarrayである
+* `non_functional.performance` がarrayである
+* `non_functional.security` がarrayである
+* `non_functional.availability` がarrayである
+* `testing.ci` が必ずarrayであり、object / string / nullではない
+* `testing.frameworks` がarrayである
+* `testing.pr_rules` がarrayである
+* `implementation_constraints.allowed` がarrayである
+* `implementation_constraints.forbidden` がarrayである
+* `open_items` がarrayである
+* object指定されたフィールドがarrayやstringになっていない
 
 すべて確認した後、完成したJSONのみを出力してください。
