@@ -1156,48 +1156,54 @@ def run_static_validation(
     return result
 
 
-def run_post_implementation_check(
+def run_regression_tests(
+    test_runner: Path,
+    screen_id: str,
+) -> subprocess.CompletedProcess:
+    """
+    現在のscreen_idまでの累積回帰テストを実行し、
+    stdout/stderrをcaptureして返す。
+
+    exit code:
+      0: PASS
+      1: generated test failure / timeout
+      2: infrastructure failure
+    """
+
+    result = subprocess.run(
+        [
+            "node",
+            str(test_runner),
+            "--through",
+            screen_id,
+        ],
+        cwd=PROJECT_ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    if result.stdout:
+        print(result.stdout, end="")
+
+    if result.stderr:
+        print(result.stderr, end="", file=sys.stderr)
+
+    return result
+
+
+def run_static_check_with_auto_repair(
     vertex_client,
     screen_id: str,
-    max_static_repair_count: int = 2,
+    static_validator: Path,
+    max_static_repair_count: int,
+    reason: str,
 ) -> None:
     """
-    1画面をApplicationへ反映した直後に、
-    Application全体の静的検証と、現在までに生成済みの
-    全画面テストを実行する。
+    静的検証を実行し、生成コード起因の失敗のみAI repairする。
 
-    静的検証が失敗した場合は、その場でAI repairを行い、
-    最大max_static_repair_count回まで再検証する。
-
-    回帰テスト失敗は現時点では自動repairせず停止する。
-    これにより「どの画面追加で既存挙動を壊したか」を
-    明確に保つ。
+    validator exit code 2はインフラ障害なのでAI repairせず停止する。
     """
-
-    static_validator = (
-        PROJECT_ROOT
-        / "test-runner"
-        / "validate_generated_application.mjs"
-    )
-
-    test_runner = (
-        PROJECT_ROOT
-        / "test-runner"
-        / "run_generated_tests.mjs"
-    )
-
-    validate_required_files(
-        [
-            static_validator,
-            test_runner,
-            REPAIR_SCREEN_PROMPT,
-        ]
-    )
-
-    print()
-    print("=" * 60)
-    print(f"Post implementation check: {screen_id}")
-    print("=" * 60)
 
     static_repair_count = 0
 
@@ -1210,7 +1216,13 @@ def run_post_implementation_check(
 
         if static_result.returncode == 0:
             print("Static validation passed.")
-            break
+            return
+
+        if static_result.returncode == 2:
+            raise RuntimeError(
+                "Static validation infrastructure failed "
+                f"for {screen_id}. AI repair was not attempted."
+            )
 
         if static_repair_count >= max_static_repair_count:
             raise RuntimeError(
@@ -1238,6 +1250,7 @@ def run_post_implementation_check(
             ),
             "exit_code": static_result.returncode,
             "repair_attempt": static_repair_count,
+            "reason": reason,
         }
 
         error_log = build_validation_error_log(
@@ -1256,41 +1269,162 @@ def run_post_implementation_check(
         print()
         print("Re-running static validation after repair...")
 
-    print()
-    print(
-        "Running regression tests through "
-        f"{screen_id}..."
+
+def run_post_implementation_check(
+    vertex_client,
+    screen_id: str,
+    max_static_repair_count: int = 2,
+    max_test_repair_count: int = 2,
+) -> None:
+    """
+    1画面をApplicationへ反映した直後に、以下を実行する。
+
+    1. Application全体の静的検証
+       - 生成コード起因の失敗はAI repair
+       - 最大max_static_repair_count回
+
+    2. 現在screen_idまでの累積回帰テスト
+       - テスト失敗/timeoutはAI repair
+       - 最大max_test_repair_count回
+
+    3. テストrepair後は必ず静的検証を再実行してから
+       回帰テストを再実行する。
+
+    これにより、各画面追加時点でTypeScript/import問題と
+    既存画面の回帰を解消してから次画面へ進む。
+    """
+
+    static_validator = (
+        PROJECT_ROOT
+        / "test-runner"
+        / "validate_generated_application.mjs"
     )
 
-    test_result = subprocess.run(
+    test_runner = (
+        PROJECT_ROOT
+        / "test-runner"
+        / "run_generated_tests.mjs"
+    )
+
+    validate_required_files(
         [
-            "node",
-            str(test_runner),
-            "--through",
+            static_validator,
+            test_runner,
+            REPAIR_SCREEN_PROMPT,
+        ]
+    )
+
+    print()
+    print("=" * 60)
+    print(f"Post implementation check: {screen_id}")
+    print("=" * 60)
+
+    # ---------------------------------------------------------
+    # Initial static validation
+    # ---------------------------------------------------------
+    run_static_check_with_auto_repair(
+        vertex_client=vertex_client,
+        screen_id=screen_id,
+        static_validator=static_validator,
+        max_static_repair_count=max_static_repair_count,
+        reason="post_implementation",
+    )
+
+    # ---------------------------------------------------------
+    # Accumulated regression tests + automatic repair
+    # ---------------------------------------------------------
+    test_repair_count = 0
+
+    while True:
+        print()
+        print(
+            "Running regression tests through "
+            f"{screen_id}..."
+        )
+
+        test_result = run_regression_tests(
+            test_runner,
             screen_id,
-        ],
-        cwd=PROJECT_ROOT,
-        text=True,
-        check=False,
-    )
-
-    if test_result.returncode == 2:
-        raise RuntimeError(
-            "Test infrastructure failed immediately after "
-            f"implementing {screen_id}."
         )
 
-    if test_result.returncode != 0:
-        raise RuntimeError(
-            "Regression test failed immediately after "
-            f"implementing {screen_id}. "
-            "The generated application was not allowed to "
-            "proceed to the next screen."
+        if test_result.returncode == 0:
+            print(
+                f"Post implementation check passed: {screen_id}"
+            )
+            return
+
+        if test_result.returncode == 2:
+            raise RuntimeError(
+                "Test infrastructure failed immediately after "
+                f"implementing {screen_id}. AI repair was not "
+                "attempted."
+            )
+
+        if test_repair_count >= max_test_repair_count:
+            raise RuntimeError(
+                "Regression test still failed after "
+                f"{test_repair_count} automatic repair(s) "
+                f"for {screen_id}. The generated application "
+                "was not allowed to proceed to the next screen."
+            )
+
+        test_repair_count += 1
+
+        print()
+        print(
+            "Regression test failed. Starting automatic "
+            f"test repair {test_repair_count}/"
+            f"{max_test_repair_count}..."
         )
 
-    print(
-        f"Post implementation check passed: {screen_id}"
-    )
+        validation_result: Dict[str, Any] = {
+            "screen": screen_id,
+            "status": "TEST_FAILED",
+            "phase": "regression_test",
+            "command": (
+                "node test-runner/run_generated_tests.mjs "
+                f"--through {screen_id}"
+            ),
+            "exit_code": test_result.returncode,
+            "repair_attempt": test_repair_count,
+            "regression_through": screen_id,
+        }
+
+        error_log = build_validation_error_log(
+            test_result.stdout or "",
+            test_result.stderr or "",
+        )
+
+        repair_screen_with_result(
+            vertex_client,
+            screen_id,
+            validation_result,
+            error_log,
+            max_attempts=2,
+        )
+
+        # テスト修正でTypeScript/importを壊していないことを
+        # 必ず確認してからVitestを再実行する。
+        print()
+        print(
+            "Running static validation after test repair..."
+        )
+
+        run_static_check_with_auto_repair(
+            vertex_client=vertex_client,
+            screen_id=screen_id,
+            static_validator=static_validator,
+            max_static_repair_count=max_static_repair_count,
+            reason=(
+                "after_regression_test_repair_"
+                f"{test_repair_count}"
+            ),
+        )
+
+        print()
+        print(
+            "Re-running regression tests after repair..."
+        )
 
 def implement_screen(
     vertex_client,
