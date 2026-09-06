@@ -1,0 +1,8 @@
+{
+  "screen": "SCR-006_punch_complete",
+  "status": "PASSED",
+  "passed": true,
+  "exit_code": 0,
+  "stdout": "\n\u001b[1m\u001b[7m\u001b[36m RUN \u001b[39m\u001b[27m\u001b[22m \u001b[36mv2.1.9 \u001b[39m\u001b[90m/tmp/SCR-006_punch_complete-tLAXtT\u001b[39m\n\n \u001b[32m✓\u001b[39m tests/SCR-006_punch_complete/page.test.tsx\u001b[2m > \u001b[22mPunchCompletePage (SCR-006)\u001b[2m > \u001b[22mTEST-SCR-006-001: should display completion message, mode '出勤', and worker count '3'\n \u001b[32m✓\u001b[39m tests/SCR-006_punch_complete/page.test.tsx\u001b[2m > \u001b[22mPunchCompletePage (SCR-006)\u001b[2m > \u001b[22mTEST-SCR-006-002: should navigate to home and clear store when clicking 'ホームへ戻る'\n \u001b[32m✓\u001b[39m tests/SCR-006_punch_complete/page.test.tsx\u001b[2m > \u001b[22mPunchCompletePage (SCR-006)\u001b[2m > \u001b[22mTEST-SCR-006-003: should redirect to login if unauthorized\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m3 passed\u001b[39m\u001b[22m\u001b[90m (3)\u001b[39m\n\u001b[2m   Start at \u001b[22m 16:47:13\n\u001b[2m   Duration \u001b[22m 1.62s\u001b[2m (transform 211ms, setup 154ms, collect 336ms, tests 119ms, environment 676ms, prepare 110ms)\u001b[22m\n\n",
+  "stderr": "\u001b[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.\u001b[39m\n"
+}

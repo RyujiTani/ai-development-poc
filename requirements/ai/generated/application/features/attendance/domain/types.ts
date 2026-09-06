@@ -1,0 +1,1 @@
+export type PunchType = 'CLOCK_IN' | 'CLOCK_OUT';

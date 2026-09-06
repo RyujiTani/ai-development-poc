@@ -1,0 +1,57 @@
+{
+  "users": [
+    {
+      "user_id": "user-1",
+      "contractor_id": "contractor-1",
+      "role": "CONTRACTOR_MANAGER",
+      "login_id": "valid_contractor_manager",
+      "password_hash": "Y29ycmVjdF9wYXNzd29yZA==",
+      "display_name": "外注先 太郎",
+      "status": "ACTIVE",
+      "created_at": "2026-04-13T00:00:00+09:00",
+      "updated_at": "2026-04-13T00:00:00+09:00"
+    },
+    {
+      "user_id": "user-admin",
+      "contractor_id": null,
+      "role": "FACTORY_ADMIN",
+      "login_id": "valid_factory_admin",
+      "password_hash": "Y29ycmVjdF9wYXNzd29yZA==",
+      "display_name": "工場側管理者 A",
+      "status": "ACTIVE",
+      "created_at": "2026-04-13T00:00:00+09:00",
+      "updated_at": "2026-04-13T00:00:00+09:00"
+    }
+  ],
+  "contractors": [
+    {
+      "contractor_id": "contractor-1",
+      "name": "株式会社 A建設",
+      "status": "ACTIVE",
+      "created_at": "2026-04-13T00:00:00+09:00",
+      "updated_at": "2026-04-13T00:00:00+09:00"
+    }
+  ],
+  "workers": [
+    {
+      "worker_id": "worker-1",
+      "contractor_id": "contractor-1",
+      "name": "作業員 A",
+      "status": "ACTIVE",
+      "qualifications": ["QUAL-01"],
+      "trainings": [{ "code": "TRAIN-01", "taken_at": "2026-01-10T00:00:00+09:00" }],
+      "created_at": "2026-04-13T00:00:00+09:00",
+      "updated_at": "2026-04-13T00:00:00+09:00"
+    },
+    {
+      "worker_id": "worker-2",
+      "contractor_id": "contractor-1",
+      "name": "作業員 B",
+      "status": "ACTIVE",
+      "qualifications": [],
+      "trainings": [],
+      "created_at": "2026-04-13T00:00:00+09:00",
+      "updated_at": "2026-04-13T00:00:00+09:00"
+    }
+  ]
+}

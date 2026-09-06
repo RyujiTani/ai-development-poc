@@ -1,0 +1,1291 @@
+/home/runner/work/_temp/3a1d1a5e-98fc-42ec-abea-559cfae20af8/google-cloud-sdk/lib/third_party/google/cloud/__init__.py:20: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+----------------------------- REMOTE BUILD OUTPUT ------------------------------
+starting build "01b72e68-049d-46f3-aa4e-732f013d362b"
+FETCHSOURCE
+Fetching storage object: gs://aidf-team-suda_cloudbuild/source/1788713142.473496-3d15f581722e4a9c868975b6f32e24b1.tgz#1788713175704567
+Copying gs://aidf-team-suda_cloudbuild/source/1788713142.473496-3d15f581722e4a9c868975b6f32e24b1.tgz#1788713175704567...
+/ [0 files][    0.0 B/ 80.6 MiB]                                                -- [1 files][ 80.6 MiB/ 80.6 MiB]
+Operation completed over 1 objects/80.6 MiB.
+BUILD
+Starting Step #0 - "install-test-dependencies"
+Step #0 - "install-test-dependencies": Pulling image: node:20-bookworm
+Step #0 - "install-test-dependencies": 20-bookworm: Pulling from library/node
+Step #0 - "install-test-dependencies": db53381ee51f: Pulling fs layer
+Step #0 - "install-test-dependencies": e5203b2bfeff: Pulling fs layer
+Step #0 - "install-test-dependencies": 8fcda2b4d799: Pulling fs layer
+Step #0 - "install-test-dependencies": 2933ecab0f11: Pulling fs layer
+Step #0 - "install-test-dependencies": c83419f44309: Pulling fs layer
+Step #0 - "install-test-dependencies": 76e6b8204a89: Pulling fs layer
+Step #0 - "install-test-dependencies": 2f2ab6e4eb46: Pulling fs layer
+Step #0 - "install-test-dependencies": 0b22ec2d9b1a: Pulling fs layer
+Step #0 - "install-test-dependencies": 2f2ab6e4eb46: Waiting
+Step #0 - "install-test-dependencies": 0b22ec2d9b1a: Waiting
+Step #0 - "install-test-dependencies": c83419f44309: Download complete
+Step #0 - "install-test-dependencies": 2f2ab6e4eb46: Verifying Checksum
+Step #0 - "install-test-dependencies": 2f2ab6e4eb46: Download complete
+Step #0 - "install-test-dependencies": e5203b2bfeff: Verifying Checksum
+Step #0 - "install-test-dependencies": e5203b2bfeff: Download complete
+Step #0 - "install-test-dependencies": 0b22ec2d9b1a: Verifying Checksum
+Step #0 - "install-test-dependencies": 0b22ec2d9b1a: Download complete
+Step #0 - "install-test-dependencies": db53381ee51f: Verifying Checksum
+Step #0 - "install-test-dependencies": db53381ee51f: Download complete
+Step #0 - "install-test-dependencies": 76e6b8204a89: Verifying Checksum
+Step #0 - "install-test-dependencies": 76e6b8204a89: Download complete
+Step #0 - "install-test-dependencies": 8fcda2b4d799: Verifying Checksum
+Step #0 - "install-test-dependencies": 8fcda2b4d799: Download complete
+Step #0 - "install-test-dependencies": 2933ecab0f11: Verifying Checksum
+Step #0 - "install-test-dependencies": 2933ecab0f11: Download complete
+Step #0 - "install-test-dependencies": db53381ee51f: Pull complete
+Step #0 - "install-test-dependencies": e5203b2bfeff: Pull complete
+Step #0 - "install-test-dependencies": 8fcda2b4d799: Pull complete
+Step #0 - "install-test-dependencies": 2933ecab0f11: Pull complete
+Step #0 - "install-test-dependencies": c83419f44309: Pull complete
+Step #0 - "install-test-dependencies": 76e6b8204a89: Pull complete
+Step #0 - "install-test-dependencies": 2f2ab6e4eb46: Pull complete
+Step #0 - "install-test-dependencies": 0b22ec2d9b1a: Pull complete
+Step #0 - "install-test-dependencies": Digest: sha256:8f693eaa7e0a8e71560c9a82b55fd54c2ae920a2ba5d2cde28bac7d1c01c9ba5
+Step #0 - "install-test-dependencies": Status: Downloaded newer image for node:20-bookworm
+Step #0 - "install-test-dependencies": docker.io/library/node:20-bookworm
+Step #0 - "install-test-dependencies":
+Step #0 - "install-test-dependencies": added 2 packages in 3s
+Finished Step #0 - "install-test-dependencies"
+Starting Step #1 - "test-generated-implementations"
+Step #1 - "test-generated-implementations": Already have image (with digest): node:20-bookworm
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": > generated-screen-test-runner@1.0.0 test:generated
+Step #1 - "test-generated-implementations": > node run_generated_tests.mjs
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Found 15 screen(s) to test.
+Step #1 - "test-generated-implementations": Integrated application: /workspace/requirements/ai/generated/application
+Step #1 - "test-generated-implementations": Screen test timeout: 30 seconds
+Step #1 - "test-generated-implementations": Test mode: full regression
+Step #1 - "test-generated-implementations": All generated screens will be executed once.
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [1/15] Testing: SCR-001_contractor_login
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-001_contractor_login-SLtZ9y[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-001_contractor_login/page.test.tsx[2m > [22mLoginPage[2m > [22mTST-SCR-001-001: ID必須エラー文言が画面上に描画されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-001_contractor_login/page.test.tsx[2m > [22mLoginPage[2m > [22mTST-SCR-001-002: パスワード必須エラー文言が画面上に描画されること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-001_contractor_login/page.test.tsx[2m > [22m[2mLoginPage[2m > [22m[2mTST-SCR-001-003: 誤ったログイン情報で認証エラーメッセージが表示されること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"LOGIN_FAILED_USER_NOT_FOUND","payload":{"login_id":"wrong_user"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-001_contractor_login/page.test.tsx[2m > [22mLoginPage[2m > [22mTST-SCR-001-003: 誤ったログイン情報で認証エラーメッセージが表示されること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-001_contractor_login/page.test.tsx[2m > [22m[2mLoginPage[2m > [22m[2mTST-SCR-001-004: 正しいログイン情報でsessionStorageに情報がセットされ、ホームへ遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"LOGIN_SUCCESS","payload":{"user_id":"user-1","role":"CONTRACTOR_MANAGER"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-001_contractor_login/page.test.tsx[2m > [22mLoginPage[2m > [22mTST-SCR-001-004: 正しいログイン情報でsessionStorageに情報がセットされ、ホームへ遷移すること
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m4 passed[39m[22m[90m (4)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 16:47:00
+Step #1 - "test-generated-implementations": [2m   Duration [22m 1.89s[2m (transform 265ms, setup 198ms, collect 384ms, tests 315ms, environment 647ms, prepare 114ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-001_contractor_login
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [2/15] Testing: SCR-002_contractor_home
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-002_contractor_home-JxlnVm[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-002_contractor_home/page.test.tsx[2m > [22mSCR-002 ContractorHomePage[2m > [22msessionStorageが空の場合にログイン画面へリダイレクトされること (TST-SCR-002-001)
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-002_contractor_home/page.test.tsx[2m > [22mSCR-002 ContractorHomePage[2m > [22m認証情報が正しくセットされている場合、ユーザー情報がロードされて表示されること (TST-SCR-002-002)
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-002_contractor_home/page.test.tsx[2m > [22mSCR-002 ContractorHomePage[2m > [22m「打刻」ボタンをクリックすると /punch-mode へ遷移すること (TST-SCR-002-003)
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-002_contractor_home/page.test.tsx[2m > [22mSCR-002 ContractorHomePage[2m > [22m「作業員管理」ボタンをクリックすると /workers へ遷移すること (TST-SCR-002-004)
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-002_contractor_home/page.test.tsx[2m > [22m[2mSCR-002 ContractorHomePage[2m > [22m[2m「ログアウト」ボタンをクリックするとsessionStorageがクリアされ /login へ遷移すること (TST-SCR-002-005)
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"LOGOUT_SUCCESS"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-002_contractor_home/page.test.tsx[2m > [22mSCR-002 ContractorHomePage[2m > [22m「ログアウト」ボタンをクリックするとsessionStorageがクリアされ /login へ遷移すること (TST-SCR-002-005)
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 16:47:03
+Step #1 - "test-generated-implementations": [2m   Duration [22m 2.00s[2m (transform 285ms, setup 196ms, collect 408ms, tests 402ms, environment 643ms, prepare 115ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-002_contractor_home
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [3/15] Testing: SCR-003_punch_mode_select
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-003_punch_mode_select-QiIWAN[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-003_punch_mode_select/page.test.tsx[2m > [22mPunchModeSelectPage[2m > [22mTST-SCR-003-VL-001: ログイン状態にない（sessionStorageが空）の場合に/loginへ強制リダイレクトされること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-003_punch_mode_select/page.test.tsx[2m > [22mPunchModeSelectPage[2m > [22mTST-SCR-003-VL-001: roleがCONTRACTOR_MANAGERではない場合に/loginへ強制リダイレクトされること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-003_punch_mode_select/page.test.tsx[2m > [22mPunchModeSelectPage[2m > [22mTST-SCR-003-FN-001: 出勤ボタンを押下すると打刻モードがCLOCK_INに更新され、/workers-selectへ遷移すること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-003_punch_mode_select/page.test.tsx[2m > [22mPunchModeSelectPage[2m > [22mTST-SCR-003-FN-002: 退勤ボタンを押下すると打刻モードがCLOCK_OUTに更新され、/workers-selectへ遷移すること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-003_punch_mode_select/page.test.tsx[2m > [22mPunchModeSelectPage[2m > [22mTST-SCR-003-UI-003: システムの現在日時が正しいフォーマットで表示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-003_punch_mode_select/page.test.tsx[2m > [22mPunchModeSelectPage[2m > [22m戻るボタンを押下すると /home へ遷移すること
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m6 passed[39m[22m[90m (6)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 16:47:05
+Step #1 - "test-generated-implementations": [2m   Duration [22m 1.75s[2m (transform 271ms, setup 189ms, collect 366ms, tests 176ms, environment 652ms, prepare 137ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-003_punch_mode_select
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [4/15] Testing: SCR-004_worker_select
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [90mstderr[2m | tests/SCR-004_worker_select/page.test.tsx[2m > [22m[2mSCR-004_worker_select - 作業員選択画面[2m > [22m[2mTST-SCR-004-003: 打刻モード（出勤/退勤）が正しく画面に明示されること
+Step #1 - "test-generated-implementations": [22m[39mWarning: An update to WorkerSelectPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerSelectPage (/tmp/SCR-004_worker_select-6HVe1d/app/(contractor)/worker-select/page.tsx:47:69)
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-004_worker_select-6HVe1d[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-004_worker_select/page.test.tsx[2m > [22mSCR-004_worker_select - 作業員選択画面[2m > [22mTST-SCR-004-001: 自社に紐づく作業員のみが表示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-004_worker_select/page.test.tsx[2m > [22mSCR-004_worker_select - 作業員選択画面[2m > [22mTST-SCR-004-002: 個別選択、一括選択、全解除のトグル動作検証
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-004_worker_select/page.test.tsx[2m > [22mSCR-004_worker_select - 作業員選択画面[2m > [22mTST-SCR-004-003: 打刻モード（出勤/退勤）が正しく画面に明示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-004_worker_select/page.test.tsx[2m > [22mSCR-004_worker_select - 作業員選択画面[2m > [22mTST-SCR-004-004: 1名も選択していない場合にエラーが表示され遷移しないこと
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-004_worker_select/page.test.tsx[2m > [22mSCR-004_worker_select - 作業員選択画面[2m > [22mTST-SCR-004-005: 未ログイン時にログイン画面にリダイレクトされること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-004_worker_select/page.test.tsx[2m > [22mSCR-004_worker_select - 作業員選択画面[2m > [22mTST-SCR-004-006: 1名以上選択して「次へ」を押した時にZustandに状態を保持して撮影画面に遷移すること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-004_worker_select/page.test.tsx[2m > [22mSCR-004_worker_select - 作業員選択画面[2m > [22mTST-SCR-004-007: 「戻る」ボタン押下時に打刻モード選択画面へ遷移すること
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m7 passed[39m[22m[90m (7)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 16:47:08
+Step #1 - "test-generated-implementations": [2m   Duration [22m 1.98s[2m (transform 384ms, setup 216ms, collect 496ms, tests 264ms, environment 657ms, prepare 114ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-004_worker_select
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [5/15] Testing: SCR-005_capture_and_submit
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [90mstderr[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-011: カメラの利用権限がない場合に警告メッセージが表示されること
+Step #1 - "test-generated-implementations": [22m[39mFailed to initialize camera: Error: NotAllowedError
+Step #1 - "test-generated-implementations":     at [90m/tmp/SCR-005_capture_and_submit-IQIVRE/[39mtests/SCR-005_capture_and_submit/page.test.tsx:190:69
+Step #1 - "test-generated-implementations":     at file:///workspace/test-runner/node_modules/[4m@vitest/runner[24m/dist/index.js:146:14
+Step #1 - "test-generated-implementations":     at file:///workspace/test-runner/node_modules/[4m@vitest/runner[24m/dist/index.js:533:11
+Step #1 - "test-generated-implementations":     at runWithTimeout (file:///workspace/test-runner/node_modules/[4m@vitest/runner[24m/dist/index.js:39:7)
+Step #1 - "test-generated-implementations":     at runTest (file:///workspace/test-runner/node_modules/[4m@vitest/runner[24m/dist/index.js:1056:17)
+Step #1 - "test-generated-implementations":     at runSuite (file:///workspace/test-runner/node_modules/[4m@vitest/runner[24m/dist/index.js:1205:15)
+Step #1 - "test-generated-implementations":     at runSuite (file:///workspace/test-runner/node_modules/[4m@vitest/runner[24m/dist/index.js:1205:15)
+Step #1 - "test-generated-implementations":     at runFiles (file:///workspace/test-runner/node_modules/[4m@vitest/runner[24m/dist/index.js:1262:5)
+Step #1 - "test-generated-implementations":     at startTests (file:///workspace/test-runner/node_modules/[4m@vitest/runner[24m/dist/index.js:1271:3)
+Step #1 - "test-generated-implementations":     at file:///workspace/test-runner/node_modules/[4mvitest[24m/dist/chunks/runBaseTests.3qpJUEJM.js:126:11
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstderr[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-016: 送信エラーが発生した場合、エラーメッセージが発生し画面遷移しないこと
+Step #1 - "test-generated-implementations": [22m[39mSubmission error: Error: IndexedDB write error
+Step #1 - "test-generated-implementations":     at [90m/tmp/SCR-005_capture_and_submit-IQIVRE/[39mtests/SCR-005_capture_and_submit/page.test.tsx:220:57
+Step #1 - "test-generated-implementations":     at file:///workspace/test-runner/node_modules/[4m@vitest/runner[24m/dist/index.js:146:14
+Step #1 - "test-generated-implementations":     at file:///workspace/test-runner/node_modules/[4m@vitest/runner[24m/dist/index.js:533:11
+Step #1 - "test-generated-implementations":     at runWithTimeout (file:///workspace/test-runner/node_modules/[4m@vitest/runner[24m/dist/index.js:39:7)
+Step #1 - "test-generated-implementations":     at runTest (file:///workspace/test-runner/node_modules/[4m@vitest/runner[24m/dist/index.js:1056:17)
+Step #1 - "test-generated-implementations":     at runSuite (file:///workspace/test-runner/node_modules/[4m@vitest/runner[24m/dist/index.js:1205:15)
+Step #1 - "test-generated-implementations":     at runSuite (file:///workspace/test-runner/node_modules/[4m@vitest/runner[24m/dist/index.js:1205:15)
+Step #1 - "test-generated-implementations":     at runFiles (file:///workspace/test-runner/node_modules/[4m@vitest/runner[24m/dist/index.js:1262:5)
+Step #1 - "test-generated-implementations":     at startTests (file:///workspace/test-runner/node_modules/[4m@vitest/runner[24m/dist/index.js:1271:3)
+Step #1 - "test-generated-implementations":     at file:///workspace/test-runner/node_modules/[4mvitest[24m/dist/chunks/runBaseTests.3qpJUEJM.js:126:11
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-005_capture_and_submit-IQIVRE[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-001: カメラ権限が許可されている場合、カメラが自動起動して video 要素が表示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-002 & 013: 撮影ボタンを押下すると静静画がキャプチャされ、プレビューが表示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-003 & 014: 撮り直しボタンを押下すると、一時データが破棄され、ストリームが再度初期化されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-004: 送信ボタンを押下すると打刻保存リポジトリが実行されて完了画面へ遷移すること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-008: 画面ヘッダー部分に選択中の打刻モードと対象作業員数が表示されていること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-010: 写真未撮影状態では、送信ボタンがdisabledであること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-011: カメラの利用権限がない場合に警告メッセージが表示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-012: 未認証状態でアクセスした場合、ログイン画面へ即座にリダイレクトされること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-016: 送信エラーが発生した場合、エラーメッセージが発生し画面遷移しないこと
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-017: 戻るボタンを押下した際、作業員選択画面へ遷移すること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-005 & 019: 画像圧縮処理がJPEG品質0.7で実行されることを検証する
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m11 passed[39m[22m[90m (11)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 16:47:10
+Step #1 - "test-generated-implementations": [2m   Duration [22m 2.15s[2m (transform 318ms, setup 190ms, collect 442ms, tests 480ms, environment 669ms, prepare 120ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-005_capture_and_submit
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [6/15] Testing: SCR-006_punch_complete
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-006_punch_complete-tLAXtT[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-006_punch_complete/page.test.tsx[2m > [22mPunchCompletePage (SCR-006)[2m > [22mTEST-SCR-006-001: should display completion message, mode '出勤', and worker count '3'
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-006_punch_complete/page.test.tsx[2m > [22mPunchCompletePage (SCR-006)[2m > [22mTEST-SCR-006-002: should navigate to home and clear store when clicking 'ホームへ戻る'
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-006_punch_complete/page.test.tsx[2m > [22mPunchCompletePage (SCR-006)[2m > [22mTEST-SCR-006-003: should redirect to login if unauthorized
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m3 passed[39m[22m[90m (3)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 16:47:13
+Step #1 - "test-generated-implementations": [2m   Duration [22m 1.62s[2m (transform 211ms, setup 154ms, collect 336ms, tests 119ms, environment 676ms, prepare 110ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-006_punch_complete
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [7/15] Testing: SCR-007_worker_list
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-007_worker_list-s9Qtux[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-007_worker_list/page.test.tsx[2m > [22mSCR-007 作業員一覧画面テスト[2m > [22mUT-SCR-007-001: 未認証状態でアクセスした場合、ログイン画面へリダイレクトされること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-007_worker_list/page.test.tsx[2m > [22mSCR-007 作業員一覧画面テスト[2m > [22mUT-SCR-007-002: 自社の作業員のみが表示され、他社のデータが表示されないこと
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-007_worker_list/page.test.tsx[2m > [22mSCR-007 作業員一覧画面テスト[2m > [22mUT-SCR-007-003: 各作業員の詳細項目(氏名、連絡先、資格、講習受講履歴)が正しく表示されていること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-007_worker_list/page.test.tsx[2m > [22mSCR-007 作業員一覧画面テスト[2m > [22mUT-SCR-007-004: 削除ボタンクリック時に確認ダイアログが呼び出されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-007_worker_list/page.test.tsx[2m > [22mSCR-007 作業員一覧画面テスト[2m > [22mUT-SCR-007-005: 削除ダイアログでキャンセルした場合、削除処理が中断されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-007_worker_list/page.test.tsx[2m > [22mSCR-007 作業員一覧画面テスト[2m > [22mUT-SCR-007-006: 削除ダイアログで「OK/削除」を選択時、退職ステータス(RETIRED)に更新され一覧から非表示になり、Toastが表示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-007_worker_list/page.test.tsx[2m > [22mSCR-007 作業員一覧画面テスト[2m > [22mE2E-SCR-007-001: 各ナビゲーション(戻る、新規追加、編集)操作時に正しい遷移が行われること
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m7 passed[39m[22m[90m (7)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 16:47:15
+Step #1 - "test-generated-implementations": [2m   Duration [22m 2.05s[2m (transform 378ms, setup 196ms, collect 465ms, tests 406ms, environment 647ms, prepare 115ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-007_worker_list
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [90mstderr[2m | tests/SCR-007_worker_list/page.test.tsx[2m > [22m[2mSCR-007 作業員一覧画面テスト[2m > [22m[2mUT-SCR-007-005: 削除ダイアログでキャンセルした場合、削除処理が中断されること
+Step #1 - "test-generated-implementations": [22m[39mWarning: An update to WorkerListPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerListPage (/tmp/SCR-007_worker_list-s9Qtux/app/(contractor)/workers/page.tsx:154:55)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerListPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerListPage (/tmp/SCR-007_worker_list-s9Qtux/app/(contractor)/workers/page.tsx:154:55)
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstderr[2m | tests/SCR-007_worker_list/page.test.tsx[2m > [22m[2mSCR-007 作業員一覧画面テスト[2m > [22m[2mUT-SCR-007-006: 削除ダイアログで「OK/削除」を選択時、退職ステータス(RETIRED)に更新され一覧から非表示になり、Toastが表示されること
+Step #1 - "test-generated-implementations": [22m[39mWarning: An update to WorkerListPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerListPage (/tmp/SCR-007_worker_list-s9Qtux/app/(contractor)/workers/page.tsx:154:55)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerListPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerListPage (/tmp/SCR-007_worker_list-s9Qtux/app/(contractor)/workers/page.tsx:154:55)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerListPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerListPage (/tmp/SCR-007_worker_list-s9Qtux/app/(contractor)/workers/page.tsx:154:55)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerListPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerListPage (/tmp/SCR-007_worker_list-s9Qtux/app/(contractor)/workers/page.tsx:154:55)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerListPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerListPage (/tmp/SCR-007_worker_list-s9Qtux/app/(contractor)/workers/page.tsx:154:55)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerListPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerListPage (/tmp/SCR-007_worker_list-s9Qtux/app/(contractor)/workers/page.tsx:154:55)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerListPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerListPage (/tmp/SCR-007_worker_list-s9Qtux/app/(contractor)/workers/page.tsx:154:55)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerListPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerListPage (/tmp/SCR-007_worker_list-s9Qtux/app/(contractor)/workers/page.tsx:154:55)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerListPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerListPage (/tmp/SCR-007_worker_list-s9Qtux/app/(contractor)/workers/page.tsx:154:55)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerListPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerListPage (/tmp/SCR-007_worker_list-s9Qtux/app/(contractor)/workers/page.tsx:154:55)
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [8/15] Testing: SCR-008_worker_add_edit
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [90mstderr[2m | tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22m[2mSCR-008 作業員追加・編集画面[2m > [22m[2mTST-SCR-008-006: 編集モードでのデータ変更と保存
+Step #1 - "test-generated-implementations": [22m[39mWarning: An update to WorkerForm inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerForm (/tmp/SCR-008_worker_add_edit-03DPQL/features/worker/ui/WorkerForm.tsx:148:23)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerForm inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerForm (/tmp/SCR-008_worker_add_edit-03DPQL/features/worker/ui/WorkerForm.tsx:148:23)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerForm inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerForm (/tmp/SCR-008_worker_add_edit-03DPQL/features/worker/ui/WorkerForm.tsx:148:23)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerForm inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerForm (/tmp/SCR-008_worker_add_edit-03DPQL/features/worker/ui/WorkerForm.tsx:148:23)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerForm inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerForm (/tmp/SCR-008_worker_add_edit-03DPQL/features/worker/ui/WorkerForm.tsx:148:23)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerForm inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerForm (/tmp/SCR-008_worker_add_edit-03DPQL/features/worker/ui/WorkerForm.tsx:148:23)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerForm inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerForm (/tmp/SCR-008_worker_add_edit-03DPQL/features/worker/ui/WorkerForm.tsx:148:23)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerForm inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerForm (/tmp/SCR-008_worker_add_edit-03DPQL/features/worker/ui/WorkerForm.tsx:148:23)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerForm inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerForm (/tmp/SCR-008_worker_add_edit-03DPQL/features/worker/ui/WorkerForm.tsx:148:23)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerForm inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerForm (/tmp/SCR-008_worker_add_edit-03DPQL/features/worker/ui/WorkerForm.tsx:148:23)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerForm inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerForm (/tmp/SCR-008_worker_add_edit-03DPQL/features/worker/ui/WorkerForm.tsx:148:23)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerForm inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerForm (/tmp/SCR-008_worker_add_edit-03DPQL/features/worker/ui/WorkerForm.tsx:148:23)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerForm inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerForm (/tmp/SCR-008_worker_add_edit-03DPQL/features/worker/ui/WorkerForm.tsx:148:23)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerForm inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerForm (/tmp/SCR-008_worker_add_edit-03DPQL/features/worker/ui/WorkerForm.tsx:148:23)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerForm inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerForm (/tmp/SCR-008_worker_add_edit-03DPQL/features/worker/ui/WorkerForm.tsx:148:23)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerForm inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerForm (/tmp/SCR-008_worker_add_edit-03DPQL/features/worker/ui/WorkerForm.tsx:148:23)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerForm inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerForm (/tmp/SCR-008_worker_add_edit-03DPQL/features/worker/ui/WorkerForm.tsx:148:23)
+Step #1 - "test-generated-implementations": Warning: An update to WorkerForm inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at WorkerForm (/tmp/SCR-008_worker_add_edit-03DPQL/features/worker/ui/WorkerForm.tsx:148:23)
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-008_worker_add_edit-03DPQL[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22mSCR-008 作業員追加・編集画面[2m > [22mTST-SCR-008-001: 氏名入力欄が空の状態で保存を押すと、エラーが表示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22mSCR-008 作業員追加・編集画面[2m > [22mTST-SCR-008-002: 連絡先入力欄が空の状態で保存を押すと、エラーが表示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22mSCR-008 作業員追加・編集画面[2m > [22mTST-SCR-008-003: 未認証状態でアクセスするとログイン画面へリダイレクトされること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22mSCR-008 作業員追加・編集画面[2m > [22mTST-SCR-008-004: 編集モードでデータを自動ロードすること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22mSCR-008 作業員追加・編集画面[2m > [22mTST-SCR-008-005: 新規登録モードでの正常データ保存と画面遷移
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22mSCR-008 作業員追加・編集画面[2m > [22mTST-SCR-008-006: 編集モードでのデータ変更と保存
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22mSCR-008 作業員追加・編集画面[2m > [22mTST-SCR-008-007: キャンセルボタンのクリックで保存せずに一覧へ戻ること
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m7 passed[39m[22m[90m (7)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 16:47:18
+Step #1 - "test-generated-implementations": [2m   Duration [22m 2.29s[2m (transform 354ms, setup 201ms, collect 485ms, tests 568ms, environment 655ms, prepare 134ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-008_worker_add_edit
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [9/15] Testing: SCR-009_contractor_punch_correction
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [90mstderr[2m | tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22m[2mSCR-009 外注先打刻修正画面 テスト[2m > [22m[2mすべてのバリデーションを通過して正常に送信されるとIndexedDBに登録され/homeへ遷移すること（SCR-009-EV-001, SCR-009-IT-001）
+Step #1 - "test-generated-implementations": [22m[39mWarning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstderr[2m | tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22m[2mSCR-009 外注先打刻修正画面 テスト[2m > [22m[2mすべてのバリデーションを通過して正常に送信されるとIndexedDBに登録され/homeへ遷移すること（SCR-009-EV-001, SCR-009-IT-001）
+Step #1 - "test-generated-implementations": [22m[39mWarning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstderr[2m | tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22m[2mSCR-009 外注先打刻修正画面 テスト[2m > [22m[2mすべてのバリデーションを通過して正常に送信されるとIndexedDBに登録され/homeへ遷移すること（SCR-009-EV-001, SCR-009-IT-001）
+Step #1 - "test-generated-implementations": [22m[39mWarning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstderr[2m | tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22m[2mSCR-009 外注先打刻修正画面 テスト[2m > [22m[2mキャンセルボタン押下時はデータ登録を行わず/homeへ戻ること（SCR-009-EV-002, SCR-009-IT-002）
+Step #1 - "test-generated-implementations": [22m[39mWarning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations": Warning: An update to PunchCorrectionContent inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at PunchCorrectionContent (/tmp/SCR-009_contractor_punch_correction-MTMO06/app/(contractor)/punch-correction/page.tsx:63:55)
+Step #1 - "test-generated-implementations":     at Suspense
+Step #1 - "test-generated-implementations":     at PunchCorrectionPage
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-009_contractor_punch_correction-MTMO06[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22mSCR-009 外注先打刻修正画面 テスト[2m > [22m自社のACTIVEな作業員のみがセレクトボックスに表示されること（SCR-009-ST-001, SCR-009-DT-001）
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22mSCR-009 外注先打刻修正画面 テスト[2m > [22m作業員を未選択の状態で送信するとエラーが表示されること（SCR-009-VL-001, SCR-009-UT-001）
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22mSCR-009 外注先打刻修正画面 テスト[2m > [22m修正理由が未入力の場合に送信するとエラーが表示されること（SCR-009-VL-004, SCR-009-UT-004）
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22mSCR-009 外注先打刻修正画面 テスト[2m > [22mすべてのバリデーションを通過して正常に送信されるとIndexedDBに登録され/homeへ遷移すること（SCR-009-EV-001, SCR-009-IT-001）[33m 1101[2mms[22m[39m
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22mSCR-009 外注先打刻修正画面 テスト[2m > [22mキャンセルボタン押下時はデータ登録を行わず/homeへ戻ること（SCR-009-EV-002, SCR-009-IT-002）
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 16:47:21
+Step #1 - "test-generated-implementations": [2m   Duration [22m 3.12s[2m (transform 376ms, setup 194ms, collect 482ms, tests 1.39s, environment 648ms, prepare 146ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-009_contractor_punch_correction
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [10/15] Testing: SCR-010_admin_login
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-010_admin_login-49HJPc[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-010_admin_login/page.test.tsx[2m > [22mSCR-010_admin_login - 管理者ログイン画面[2m > [22mTST-010-001: 有効な工場管理者アカウントでログインに成功し、ダッシュボードに遷移する
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-010_admin_login/page.test.tsx[2m > [22mSCR-010_admin_login - 管理者ログイン画面[2m > [22mTST-010-002: ID未入力時にバリデーションエラーが発生する
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-010_admin_login/page.test.tsx[2m > [22mSCR-010_admin_login - 管理者ログイン画面[2m > [22mTST-010-003: パスワード未入力時にバリデーションエラーが発生する
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-010_admin_login/page.test.tsx[2m > [22mSCR-010_admin_login - 管理者ログイン画面[2m > [22mTST-010-004: 無効な認証情報でログインに失敗し、エラーメッセージが表示される
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-010_admin_login/page.test.tsx[2m > [22mSCR-010_admin_login - 管理者ログイン画面[2m > [22m工場管理者以外のロールでログインしようとした場合、エラーメッセージを表示してログアウト処理を行う
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 16:47:25
+Step #1 - "test-generated-implementations": [2m   Duration [22m 1.80s[2m (transform 283ms, setup 221ms, collect 357ms, tests 196ms, environment 653ms, prepare 121ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-010_admin_login
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [11/15] Testing: SCR-011_admin_dashboard
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-011_admin_dashboard-8dv0q0[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22mSCR-011_admin_dashboard - 総合ダッシュボードのテスト[2m > [22mSCR-011-VL-001: 未認証時に /admin-login へリダイレクトされること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22mSCR-011_admin_dashboard - 総合ダッシュボードのテスト[2m > [22mSCR-011-VL-001: FACTORY_ADMIN 以外のロールの場合に /admin-login へリダイレクトされること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22mSCR-011_admin_dashboard - 総合ダッシュボードのテスト[2m > [22mSCR-011-FN-001: ログイン成功後の初回描画時に API が実行され、取得した稼働人数サマリーが正しく表示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22mSCR-011_admin_dashboard - 総合ダッシュボードのテスト[2m > [22mSCR-011-FN-002: APIから返却された直近アラート配列データが正しく表示されること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22m[2mSCR-011_admin_dashboard - 総合ダッシュボードのテスト[2m > [22m[2mSCR-011-FN-004: ログアウト操作が正しく機能すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"LOGOUT_SUCCESS"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22mSCR-011_admin_dashboard - 総合ダッシュボードのテスト[2m > [22mSCR-011-FN-004: ログアウト操作が正しく機能すること
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 16:47:27
+Step #1 - "test-generated-implementations": [2m   Duration [22m 1.95s[2m (transform 368ms, setup 196ms, collect 484ms, tests 263ms, environment 651ms, prepare 112ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-011_admin_dashboard
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [12/15] Testing: SCR-012_punch_history
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-012_punch_history-FUZF40[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-012_punch_history/page.test.tsx[2m > [22mSCR-012 AttendanceHistoryPage[2m > [22mshould render correct initial active date filter and fetch today records
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-012_punch_history/page.test.tsx[2m > [22mSCR-012 AttendanceHistoryPage[2m > [22mshould open photo modal on thumbnail click
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-012_punch_history/page.test.tsx[2m > [22mSCR-012 AttendanceHistoryPage[2m > [22mshould open correction modal with populated data
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-012_punch_history/page.test.tsx[2m > [22mSCR-012 AttendanceHistoryPage[2m > [22mshould display validation error if reason is empty on correction save
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-012_punch_history/page.test.tsx[2m > [22mSCR-012 AttendanceHistoryPage[2m > [22mshould successfully update record on valid reason submit
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 16:47:30
+Step #1 - "test-generated-implementations": [2m   Duration [22m 2.72s[2m (transform 423ms, setup 166ms, collect 613ms, tests 889ms, environment 682ms, prepare 128ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": PASS: SCR-012_punch_history
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [13/15] Testing: SCR-013_labor_time_summary
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-013_labor_time_summary-q5FEw3[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22mSCR-013_labor_time_summary Tests[2m > [22mTST-013-001: 日次労働時間集計の正常表示[33m 309[2mms[22m[39m
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22mSCR-013_labor_time_summary Tests[2m > [22mTST-013-002: 月次労働時間集計の表示確認
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22mSCR-013_labor_time_summary Tests[2m > [22mTST-013-003: 開始日未入力時のバリデーションエラー
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22mSCR-013_labor_time_summary Tests[2m > [22mTST-013-004: 終了日整合性バリデーション（逆転日付）
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22mSCR-013_labor_time_summary Tests[2m > [22mTST-013-005: CSVダウンロード動作確認
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22mSCR-013_labor_time_summary Tests[2m > [22mTST-013-006: 未ログイン状態でのリダイレクト
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m6 passed[39m[22m[90m (6)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 16:47:33
+Step #1 - "test-generated-implementations": [2m   Duration [22m 2.63s[2m (transform 459ms, setup 201ms, collect 595ms, tests 832ms, environment 637ms, prepare 134ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-013_labor_time_summary
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [14/15] Testing: SCR-014_contractor_company_register
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-014_contractor_company_register-DYg9US[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-014_contractor_company_register/page.test.tsx[2m > [22m外注先企業登録画面 (SCR-014_contractor_company_register)[2m > [22mSCR-014-TC-001: 登録済みの外注先企業がテーブルに一覧表示されること (SCR-014-FN-001)
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-014_contractor_company_register/page.test.tsx[2m > [22m外注先企業登録画面 (SCR-014_contractor_company_register)[2m > [22mSCR-014-TC-002: 企業名が空欄の場合はバリデーションエラーが表示され、保存されないこと (SCR-014-VL-001)
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-014_contractor_company_register/page.test.tsx[2m > [22m外注先企業登録画面 (SCR-014_contractor_company_register)[2m > [22mSCR-014-TC-003: 外注先企業の新規登録フローが正常に動作すること (SCR-014-FN-002)
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-014_contractor_company_register/page.test.tsx[2m > [22m外注先企業登録画面 (SCR-014_contractor_company_register)[2m > [22mSCR-014-TC-004: 登録情報の編集・ステータス変更の更新ができること (SCR-014-FN-003)
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-014_contractor_company_register/page.test.tsx[2m > [22m外注先企業登録画面 (SCR-014_contractor_company_register)[2m > [22mSCR-014-TC-005 & SCR-014-TC-006: 所属作業員がいる企業は削除が制限され、いない企業は削除できること (SCR-014-FN-004 / SCR-014-VL-002)
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-014_contractor_company_register/page.test.tsx[2m > [22m外注先企業登録画面 (SCR-014_contractor_company_register)[2m > [22mSCR-014-TC-007: 未認証状態の場合はログイン画面に強制遷移されること (SCR-014-VL-003)
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m6 passed[39m[22m[90m (6)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 16:47:36
+Step #1 - "test-generated-implementations": [2m   Duration [22m 2.63s[2m (transform 498ms, setup 197ms, collect 653ms, tests 764ms, environment 666ms, prepare 111ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [90mstderr[2m | tests/SCR-014_contractor_company_register/page.test.tsx[2m > [22m[2m外注先企業登録画面 (SCR-014_contractor_company_register)[2m > [22m[2mSCR-014-TC-003: 外注先企業の新規登録フローが正常に動作すること (SCR-014-FN-002)
+Step #1 - "test-generated-implementations": [22m[39mWarning: An update to ContractorRegisterPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at ContractorRegisterPage (/tmp/SCR-014_contractor_company_register-DYg9US/app/(factory)/contractor-register/page.tsx:282:67)
+Step #1 - "test-generated-implementations": Warning: An update to ContractorRegisterPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at ContractorRegisterPage (/tmp/SCR-014_contractor_company_register-DYg9US/app/(factory)/contractor-register/page.tsx:282:67)
+Step #1 - "test-generated-implementations": Warning: An update to ContractorRegisterPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at ContractorRegisterPage (/tmp/SCR-014_contractor_company_register-DYg9US/app/(factory)/contractor-register/page.tsx:282:67)
+Step #1 - "test-generated-implementations": Warning: An update to ContractorFormModal inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at ContractorFormModal (/tmp/SCR-014_contractor_company_register-DYg9US/features/contractor/ui/ContractorFormModal.tsx:17:3)
+Step #1 - "test-generated-implementations":     at div
+Step #1 - "test-generated-implementations":     at ContractorRegisterPage (/tmp/SCR-014_contractor_company_register-DYg9US/app/(factory)/contractor-register/page.tsx:282:67)
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstderr[2m | tests/SCR-014_contractor_company_register/page.test.tsx[2m > [22m[2m外注先企業登録画面 (SCR-014_contractor_company_register)[2m > [22m[2mSCR-014-TC-004: 登録情報の編集・ステータス変更の更新ができること (SCR-014-FN-003)
+Step #1 - "test-generated-implementations": [22m[39mWarning: An update to ContractorRegisterPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at ContractorRegisterPage (/tmp/SCR-014_contractor_company_register-DYg9US/app/(factory)/contractor-register/page.tsx:282:67)
+Step #1 - "test-generated-implementations": Warning: An update to ContractorRegisterPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at ContractorRegisterPage (/tmp/SCR-014_contractor_company_register-DYg9US/app/(factory)/contractor-register/page.tsx:282:67)
+Step #1 - "test-generated-implementations": Warning: An update to ContractorRegisterPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at ContractorRegisterPage (/tmp/SCR-014_contractor_company_register-DYg9US/app/(factory)/contractor-register/page.tsx:282:67)
+Step #1 - "test-generated-implementations": Warning: An update to ContractorFormModal inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at ContractorFormModal (/tmp/SCR-014_contractor_company_register-DYg9US/features/contractor/ui/ContractorFormModal.tsx:17:3)
+Step #1 - "test-generated-implementations":     at div
+Step #1 - "test-generated-implementations":     at ContractorRegisterPage (/tmp/SCR-014_contractor_company_register-DYg9US/app/(factory)/contractor-register/page.tsx:282:67)
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstderr[2m | tests/SCR-014_contractor_company_register/page.test.tsx[2m > [22m[2m外注先企業登録画面 (SCR-014_contractor_company_register)[2m > [22m[2mSCR-014-TC-005 & SCR-014-TC-006: 所属作業員がいる企業は削除が制限され、いない企業は削除できること (SCR-014-FN-004 / SCR-014-VL-002)
+Step #1 - "test-generated-implementations": [22m[39mError: この企業には登録作業員が存在するため削除できません
+Step #1 - "test-generated-implementations":     at Module.deleteContractor [90m(/tmp/SCR-014_contractor_company_register-DYg9US/[39mfeatures/contractor/repository/contractorRepository.ts:79:11[90m)[39m
+Step #1 - "test-generated-implementations":     at handleDeleteContractor [90m(/tmp/SCR-014_contractor_company_register-DYg9US/[39mapp/(factory)/contractor-register/page.tsx:206:7[90m)[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstderr[2m | tests/SCR-014_contractor_company_register/page.test.tsx[2m > [22m[2m外注先企業登録画面 (SCR-014_contractor_company_register)[2m > [22m[2mSCR-014-TC-005 & SCR-014-TC-006: 所属作業員がいる企業は削除が制限され、いない企業は削除できること (SCR-014-FN-004 / SCR-014-VL-002)
+Step #1 - "test-generated-implementations": [22m[39mWarning: An update to ContractorRegisterPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at ContractorRegisterPage (/tmp/SCR-014_contractor_company_register-DYg9US/app/(factory)/contractor-register/page.tsx:282:67)
+Step #1 - "test-generated-implementations": Warning: An update to ContractorRegisterPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at ContractorRegisterPage (/tmp/SCR-014_contractor_company_register-DYg9US/app/(factory)/contractor-register/page.tsx:282:67)
+Step #1 - "test-generated-implementations": Warning: An update to ContractorRegisterPage inside a test was not wrapped in act(...).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": When testing, code that causes React state updates should be wrapped into act(...):
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": act(() => {
+Step #1 - "test-generated-implementations":   /* fire events that update state */
+Step #1 - "test-generated-implementations": });
+Step #1 - "test-generated-implementations": /* assert on the output */
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+Step #1 - "test-generated-implementations":     at ContractorRegisterPage (/tmp/SCR-014_contractor_company_register-DYg9US/app/(factory)/contractor-register/page.tsx:282:67)
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-014_contractor_company_register
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [15/15] Testing: SCR-015_admin_user_register
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-015_admin_user_register-SrnZJe[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-015_admin_user_register/page.test.tsx[2m > [22mSCR-015 管理者ユーザー登録画面 テスト[2m > [22mTS-SCR-015-001: ユーザーデータが正しくテーブルに描画される
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-015_admin_user_register/page.test.tsx[2m > [22mSCR-015 管理者ユーザー登録画面 テスト[2m > [22mTS-SCR-015-002: 重複エラーおよび必須エラーメッセージの表示[33m 376[2mms[22m[39m
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-015_admin_user_register/page.test.tsx[2m > [22mSCR-015 管理者ユーザー登録画面 テスト[2m > [22mTS-SCR-015-003: 権限種別を外注先管理者に変更した際に所属企業選択が表示される
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m3 passed[39m[22m[90m (3)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 16:47:40
+Step #1 - "test-generated-implementations": [2m   Duration [22m 2.40s[2m (transform 386ms, setup 194ms, collect 592ms, tests 602ms, environment 643ms, prepare 138ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [90mstderr[2m | tests/SCR-015_admin_user_register/page.test.tsx[2m > [22m[2mSCR-015 管理者ユーザー登録画面 テスト[2m > [22m[2mTS-SCR-015-002: 重複エラーおよび必須エラーメッセージの表示
+Step #1 - "test-generated-implementations": [22m[39mError: このユーザーIDは既に登録されています
+Step #1 - "test-generated-implementations":     at Module.createUser [90m(/tmp/SCR-015_admin_user_register-SrnZJe/[39mfeatures/user/repository/userRepository.ts:30:11[90m)[39m
+Step #1 - "test-generated-implementations":     at handleSaveUser [90m(/tmp/SCR-015_admin_user_register-SrnZJe/[39mapp/(factory)/admin-users/page.tsx:203:9[90m)[39m
+Step #1 - "test-generated-implementations":     at onSubmit [90m(/tmp/SCR-015_admin_user_register-SrnZJe/[39mfeatures/user/ui/UserFormModal.tsx:119:5[90m)[39m
+Step #1 - "test-generated-implementations":     at file:///workspace/test-runner/node_modules/[4mreact-hook-form[24m/src/logic/createFormControl.ts:1794:20
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-015_admin_user_register
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": Integrated Application Screen Test Summary
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": Mode                  : full
+Step #1 - "test-generated-implementations": Total                 : 15
+Step #1 - "test-generated-implementations": Passed                : 15
+Step #1 - "test-generated-implementations": Test failed           : 0
+Step #1 - "test-generated-implementations": Test timeout          : 0
+Step #1 - "test-generated-implementations": Infrastructure failed : 0
+Step #1 - "test-generated-implementations": Results               : /workspace/requirements/ai/generated/test-results
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": All integrated application screen tests passed.
+Finished Step #1 - "test-generated-implementations"
+Starting Step #2 - "upload-test-results"
+Step #2 - "upload-test-results": Pulling image: gcr.io/google.com/cloudsdktool/cloud-sdk
+Step #2 - "upload-test-results": Using default tag: latest
+Step #2 - "upload-test-results": latest: Pulling from google.com/cloudsdktool/cloud-sdk
+Step #2 - "upload-test-results": 6310eb16bf42: Pulling fs layer
+Step #2 - "upload-test-results": dfcc9dd3fe4f: Pulling fs layer
+Step #2 - "upload-test-results": d62cf106e29f: Pulling fs layer
+Step #2 - "upload-test-results": 31b69bf81a68: Pulling fs layer
+Step #2 - "upload-test-results": c304b907d70e: Pulling fs layer
+Step #2 - "upload-test-results": 59a29f1f3196: Pulling fs layer
+Step #2 - "upload-test-results": c304b907d70e: Verifying Checksum
+Step #2 - "upload-test-results": c304b907d70e: Download complete
+Step #2 - "upload-test-results": 59a29f1f3196: Verifying Checksum
+Step #2 - "upload-test-results": 59a29f1f3196: Download complete
+Step #2 - "upload-test-results": dfcc9dd3fe4f: Verifying Checksum
+Step #2 - "upload-test-results": dfcc9dd3fe4f: Download complete
+Step #2 - "upload-test-results": 6310eb16bf42: Download complete
+Step #2 - "upload-test-results": 31b69bf81a68: Verifying Checksum
+Step #2 - "upload-test-results": 31b69bf81a68: Download complete
+Step #2 - "upload-test-results": 6310eb16bf42: Pull complete
+Step #2 - "upload-test-results": dfcc9dd3fe4f: Pull complete
+Step #2 - "upload-test-results": d62cf106e29f: Verifying Checksum
+Step #2 - "upload-test-results": d62cf106e29f: Download complete
+Step #2 - "upload-test-results": d62cf106e29f: Pull complete
+Step #2 - "upload-test-results": 31b69bf81a68: Pull complete
+Step #2 - "upload-test-results": c304b907d70e: Pull complete
+Step #2 - "upload-test-results": 59a29f1f3196: Pull complete
+Step #2 - "upload-test-results": Digest: sha256:c6c6bec5b8b94e4eb2f8ade1f17cf4cb01f07973b7fbb3a4843f0a61592ad5ed
+Step #2 - "upload-test-results": Status: Downloaded newer image for gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+Step #2 - "upload-test-results": gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/summary.json to gs://aidf-team-suda.appspot.com/ai-development/01b72e68-049d-46f3-aa4e-732f013d362b/test-results/summary.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-002_contractor_home.json to gs://aidf-team-suda.appspot.com/ai-development/01b72e68-049d-46f3-aa4e-732f013d362b/test-results/SCR-002_contractor_home.json
+Step #2 - "upload-test-results":
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-005_capture_and_submit.json to gs://aidf-team-suda.appspot.com/ai-development/01b72e68-049d-46f3-aa4e-732f013d362b/test-results/SCR-005_capture_and_submit.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-007_worker_list.json to gs://aidf-team-suda.appspot.com/ai-development/01b72e68-049d-46f3-aa4e-732f013d362b/test-results/SCR-007_worker_list.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-015_admin_user_register.json to gs://aidf-team-suda.appspot.com/ai-development/01b72e68-049d-46f3-aa4e-732f013d362b/test-results/SCR-015_admin_user_register.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-009_contractor_punch_correction.json to gs://aidf-team-suda.appspot.com/ai-development/01b72e68-049d-46f3-aa4e-732f013d362b/test-results/SCR-009_contractor_punch_correction.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-011_admin_dashboard.json to gs://aidf-team-suda.appspot.com/ai-development/01b72e68-049d-46f3-aa4e-732f013d362b/test-results/SCR-011_admin_dashboard.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-001_contractor_login.json to gs://aidf-team-suda.appspot.com/ai-development/01b72e68-049d-46f3-aa4e-732f013d362b/test-results/SCR-001_contractor_login.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-008_worker_add_edit.json to gs://aidf-team-suda.appspot.com/ai-development/01b72e68-049d-46f3-aa4e-732f013d362b/test-results/SCR-008_worker_add_edit.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-014_contractor_company_register.json to gs://aidf-team-suda.appspot.com/ai-development/01b72e68-049d-46f3-aa4e-732f013d362b/test-results/SCR-014_contractor_company_register.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-013_labor_time_summary.json to gs://aidf-team-suda.appspot.com/ai-development/01b72e68-049d-46f3-aa4e-732f013d362b/test-results/SCR-013_labor_time_summary.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-012_punch_history.json to gs://aidf-team-suda.appspot.com/ai-development/01b72e68-049d-46f3-aa4e-732f013d362b/test-results/SCR-012_punch_history.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-006_punch_complete.json to gs://aidf-team-suda.appspot.com/ai-development/01b72e68-049d-46f3-aa4e-732f013d362b/test-results/SCR-006_punch_complete.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-004_worker_select.json to gs://aidf-team-suda.appspot.com/ai-development/01b72e68-049d-46f3-aa4e-732f013d362b/test-results/SCR-004_worker_select.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-003_punch_mode_select.json to gs://aidf-team-suda.appspot.com/ai-development/01b72e68-049d-46f3-aa4e-732f013d362b/test-results/SCR-003_punch_mode_select.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-010_admin_login.json to gs://aidf-team-suda.appspot.com/ai-development/01b72e68-049d-46f3-aa4e-732f013d362b/test-results/SCR-010_admin_login.json
+Step #2 - "upload-test-results": ..............
+Step #2 - "upload-test-results":
+Step #2 - "upload-test-results": Average throughput: 127.3kiB/s
+Finished Step #2 - "upload-test-results"
+PUSH
+DONE
+--------------------------------------------------------------------------------

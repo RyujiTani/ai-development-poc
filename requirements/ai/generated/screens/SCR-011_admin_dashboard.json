@@ -1,0 +1,283 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-011_admin_dashboard.md"
+  },
+  "screen": {
+    "id": "SCR-011",
+    "name": "総合ダッシュボード",
+    "user": "FACTORY_ADMIN",
+    "path": "app/(factory)/dashboard/page.tsx",
+    "role_restriction": "FACTORY_ADMIN"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-011-FN-001",
+        "summary": "本日の稼働人数サマリーを表示できる",
+        "detail": "本日の稼働人数等のサマリー情報をAPI（GET /api/admin/dashboard）から取得してダッシュボード上部に表示する。ただし、具体的な項目・数値の仕様が未定のためモックデータを使用する。"
+      },
+      {
+        "id": "SCR-011-FN-002",
+        "summary": "直近のアラート（打刻漏れ、異常等）を表示できる",
+        "detail": "直近のアラート情報をAPI（GET /api/admin/dashboard）から取得して一覧表示する。具体的なアラート判定条件が未定のため、モックデータのアラート配列を表示する。"
+      },
+      {
+        "id": "SCR-011-FN-003",
+        "summary": "各管理画面への遷移メニューを提供する",
+        "detail": "打刻履歴確認、労働時間集計、外注先企業登録、管理者ユーザー登録の各管理画面への導線メニューを提供する。"
+      },
+      {
+        "id": "SCR-011-FN-004",
+        "summary": "ログアウトができる",
+        "detail": "ログアウト操作を行うことで、セッション（sessionStorage）を破棄し、管理者ログイン画面（SCR-010）へ遷移する。"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-011-UI-001",
+        "summary": "サマリー情報（稼働人数等）をカード形式またはウィジェット形式で上部に表示する",
+        "detail": "本日の稼働状況などを一目で把握できるよう、グリッドレイアウトを用いたカード形式のUI部品を画面上部に配置する。"
+      },
+      {
+        "id": "SCR-011-UI-002",
+        "summary": "アラート情報をリスト形式で表示する",
+        "detail": "確認が必要な未読アラートや異常アラートをリスト形式で表示する。アラートには重要度等に応じたバッジを付与する。"
+      },
+      {
+        "id": "SCR-011-UI-003",
+        "summary": "ナビゲーションメニューから各管理画面へ遷移できるようにする",
+        "detail": "サイドバーまたはヘッダー部に、各管理画面へ遷移するためのナビゲーションメニューを配置する。"
+      },
+      {
+        "id": "SCR-011-UI-004",
+        "summary": "レスポンシブWebデザインでPC/スマホ両対応とする",
+        "detail": "Tailwind CSSを使用し、PCでの一覧性を確保しつつ、スマートフォン（タブレット）端末でも崩れずに操作可能なレスポンシブレイアウト（ブレークポイント md 以上でサイドバー表示等）を実装する。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-011-VL-001",
+        "summary": "未認証・権限なしリダイレクト",
+        "detail": "セッション（sessionStorage）を確認し、未認証状態、または role が 'FACTORY_ADMIN' 以外である場合は、管理者ログイン画面（SCR-010）へリダイレクトする。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-011-EV-001",
+        "summary": "「打刻履歴確認」メニュー選択時の遷移",
+        "detail": "メニュー内の「打刻履歴確認」をクリックした際、打刻履歴確認画面（/app/(factory)/attendance-history/page.tsx - SCR-012）へ遷移する。"
+      },
+      {
+        "id": "SCR-011-EV-002",
+        "summary": "「労働時間集計」メニュー選択時の遷移",
+        "detail": "メニュー内の「労働時間集計」をクリックした際、労働時間集計画面（SCR-013）へ遷移する。"
+      },
+      {
+        "id": "SCR-011-EV-003",
+        "summary": "「外注先企業登録」メニュー選択時の遷移",
+        "detail": "メニュー内の「外注先企業登録」をクリックした際、外注先企業登録画面（SCR-014）へ遷移する。"
+      },
+      {
+        "id": "SCR-011-EV-004",
+        "summary": "「管理者ユーザー登録」メニュー選択時の遷移",
+        "detail": "メニュー内の「管理者ユーザー登録」をクリックした際、管理者ユーザー登録画面（SCR-015）へ遷移する。"
+      },
+      {
+        "id": "SCR-011-EV-005",
+        "summary": "ログアウト操作時の挙動",
+        "detail": "ログアウトボタンをクリックした際、sessionStorage の 'user_id' および 'role' を削除し、管理者ログイン画面（SCR-010）へ遷移する。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-011-DT-001",
+        "summary": "GET /api/admin/dashboard によるデータ取得",
+        "detail": "IndexedDBまたはモックAPIエンドポイント経由で、本日の稼働状況サマリー（稼働企業数、作業員数等）および直近アラート一覧を取得する。"
+      }
+    ],
+    "api": [
+      {
+        "id": "SCR-011-AP-001",
+        "path": "/api/admin/dashboard",
+        "method": "GET",
+        "description": "本日の稼働状況サマリー（稼働中作業員数、外注社数）および直近アラート情報を取得する。認証ヘッダーまたはセッション検証が必要。",
+        "response_mock": {
+          "summary": {
+            "working_workers_count": 24,
+            "active_contractors_count": 2,
+            "total_workers_registered": 45
+          },
+          "alerts": [
+            {
+              "alert_id": "ALT-001",
+              "type": "MISSING_CLOCK_OUT",
+              "message": "山田 太郎（A社）の退刻打刻がありません。",
+              "severity": "WARNING",
+              "occurred_at": "2026-04-13T18:00:00+09:00"
+            }
+          ]
+        }
+      }
+    ],
+    "state": [
+      {
+        "id": "SCR-011-ST-001",
+        "name": "loading",
+        "type": "boolean",
+        "description": "API（GET /api/admin/dashboard）の取得完了を待つ間のローディング状態。trueの間はスケルトンスクリーンまたはスピナーを表示する。"
+      },
+      {
+        "id": "SCR-011-ST-002",
+        "name": "error",
+        "type": "AppError | null",
+        "description": "API取得失敗時のエラー状態。エラー発生時はトースト通知または画面内に再試行ボタン付きのエラーUIを表示する。"
+      },
+      {
+        "id": "SCR-011-ST-003",
+        "name": "userSession",
+        "type": "{ userId: string; role: Role } | null",
+        "description": "sessionStorage から復元されたログインユーザーのセッション情報。"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-011"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "SCR-011-AC-001",
+      "requirement_id": "SCR-011-VL-001",
+      "description": "認証情報（sessionStorage の role）が 'FACTORY_ADMIN' 以外、もしくは存在しない状態でアクセスした場合、管理者ログイン画面（SCR-010）にリダイレクトされること。"
+    },
+    {
+      "id": "SCR-011-AC-002",
+      "requirement_id": "SCR-011-FN-001",
+      "description": "ログイン成功後の初回描画時に API（GET /api/admin/dashboard）が実行され、取得した稼働人数サマリーがカードUIに正しく表示されること。"
+    },
+    {
+      "id": "SCR-011-AC-003",
+      "requirement_id": "SCR-011-FN-002",
+      "description": "APIから返却された直近アラート配列データが、アラートリストUIに発生時間順または重要度順で表示されること。"
+    },
+    {
+      "id": "SCR-011-AC-004",
+      "requirement_id": "SCR-011-FN-003",
+      "description": "ナビゲーションメニューに「打刻履歴確認」、「労働時間集計」、「外注先企業登録」、「管理者ユーザー登録」が存在し、クリックにより対応する遷移イベントがトリガーされること。"
+    },
+    {
+      "id": "SCR-011-AC-005",
+      "requirement_id": "SCR-011-FN-004",
+      "description": "ログアウトボタンを押下した際、sessionStorageから認証キーが破棄され、管理者ログイン画面に遷移すること。"
+    }
+  ],
+  "tests": [
+    {
+      "id": "SCR-011-UT-001",
+      "type": "unit",
+      "requirement_id": "SCR-011-VL-001",
+      "input": "sessionStorage に 'role' = 'CONTRACTOR_MANAGER' を設定して画面をマウントする",
+      "steps": [
+        "1. テスト環境の sessionStorage に user_id='test-user', role='CONTRACTOR_MANAGER' をセットする。",
+        "2. SCR-011 画面コンポーネントをレンダリングする。"
+      ],
+      "expected": "画面は表示されず、管理者ログイン画面への遷移処理（router.push('/login') 等）が呼び出されること。"
+    },
+    {
+      "id": "SCR-011-UT-002",
+      "type": "unit",
+      "requirement_id": "SCR-011-FN-001",
+      "input": "サマリーAPIのモックデータ（稼働人数: 24人）を設定する",
+      "steps": [
+        "1. sessionStorage に user_id='admin-1', role='FACTORY_ADMIN' をセットする。",
+        "2. APIモックで稼働人数が24人のデータを返却するよう設定する。",
+        "3. 画面コンポーネントをマウントする。"
+      ],
+      "expected": "画面上部のサマリーカードに「24」という数値が表示されていること。"
+    },
+    {
+      "id": "SCR-011-UT-003",
+      "type": "unit",
+      "requirement_id": "SCR-011-FN-002",
+      "input": "アラートAPIのモックデータ（1件のアラート）を設定する",
+      "steps": [
+        "1. sessionStorage にログイン情報をセットする。",
+        "2. APIモックに1件のモックアラートをセットする。",
+        "3. 画面コンポーネントをマウントする。"
+      ],
+      "expected": "アラートリスト領域に、モックアラートのメッセージ「山田 太郎（A社）の退刻打刻がありません。」が表示されていること。"
+    },
+    {
+      "id": "SCR-011-UT-004",
+      "type": "unit",
+      "requirement_id": "SCR-011-FN-004",
+      "input": "ログイン済みの状態でログアウトボタンをクリックする",
+      "steps": [
+        "1. ログイン状態でダッシュボードを表示する。",
+        "2. ログアウトボタン（またはメニュー内のログアウト）をクリックする。"
+      ],
+      "expected": "sessionStorage の 'user_id', 'role' が null または未定義になり、ログイン画面（/login または SCR-010）にリダイレクトされること。"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-011-001",
+      "target": "SCR-011-FN-002",
+      "reason": "アラートの具体的な判定ロジック（打刻漏れ、遅刻、未打刻の定義など）がシステム要件および画面設計に定義されていません。",
+      "sources": {
+        "system_requirements": "非機能要件や要件モデルにアラートの言及はあるが判定閾値の記載なし。",
+        "trace_index": "SCR-011-FN-002: 直近アラート表示",
+        "screen_design": "「確認事項: アラートの具体的な条件が未定」の記述あり。"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-011-002",
+      "target": "SCR-011-FN-001",
+      "reason": "稼働人数サマリーに表示すべき具体的なKPI（現在出勤者数、本日退勤済数、欠勤者数、異常打刻数など）の定義および計算ロジックが未決定です。",
+      "sources": {
+        "system_requirements": "6章にて言及ありとされるが詳細データスキーマ・数式なし。",
+        "trace_index": "SCR-011-FN-001: 本日の稼働人数サマリー表示",
+        "screen_design": "「確認事項: サマリーに表示する具体的な項目・数値の仕様が未定」の記述あり。"
+      },
+      "resolution": "manual_confirmation"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-011-FN-001",
+      "acceptance_id": "SCR-011-AC-002",
+      "test_id": "SCR-011-UT-002"
+    },
+    {
+      "requirement_id": "SCR-011-FN-002",
+      "acceptance_id": "SCR-011-AC-003",
+      "test_id": "SCR-011-UT-003"
+    },
+    {
+      "requirement_id": "SCR-011-FN-003",
+      "acceptance_id": "SCR-011-AC-004",
+      "test_id": null
+    },
+    {
+      "requirement_id": "SCR-011-FN-004",
+      "acceptance_id": "SCR-011-AC-005",
+      "test_id": "SCR-011-UT-004"
+    },
+    {
+      "requirement_id": "SCR-011-VL-001",
+      "acceptance_id": "SCR-011-AC-001",
+      "test_id": "SCR-011-UT-001"
+    }
+  ]
+}
