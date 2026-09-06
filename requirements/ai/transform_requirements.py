@@ -1652,8 +1652,10 @@ def repair_screen_with_result(
         )
 
     return [
-        str(path.relative_to(APPLICATION_DIR).as_posix())
-        for path in saved_files
+        Path(file_path)
+        .relative_to(APPLICATION_DIR)
+        .as_posix()
+        for file_path in saved_files
     ]
 
 
