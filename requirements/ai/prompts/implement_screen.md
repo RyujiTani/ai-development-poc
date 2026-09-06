@@ -716,21 +716,211 @@ Button / Input / Label / Dialog等を生成する場合も、
 既存sourceを確認してください。
 
 
-# 32. Route Consistency
+# 32. Route / Authentication Consistency — CRITICAL
 
 既存routeを利用する場合、
-実在するrouteを確認してください。
+実在するrouteを必ず確認してください。
 
 Screen Requirementにrouteが明示されている場合は
 それを優先してください。
 
-要件にないrouteを
+要件にないrouteを推測してはいけません。
 
-/admin/dashboard
+
+## 32.1 Next.js App Router Route Group Rule — CRITICAL
+
+Next.js App RouterのRoute Groupは、
+URL pathのprefixではありません。
+
+括弧で囲まれたdirectory:
+
+- `(auth)`
+- `(contractor)`
+- `(factory)`
+- `(admin)`
+- その他の `(group-name)`
+
+はURLへ含めてはいけません。
+
+例えばApplicationに以下が存在する場合:
+
+app/(auth)/login/page.tsx
+
+実URLは:
+
 /login
+
+であり、
+
+/auth/login
+
+ではありません。
+
+同様に:
+
+app/(contractor)/home/page.tsx
+
+の実URLは:
+
 /home
 
-などと推測してはいけません。
+です。
+
+以下は誤りです:
+
+/contractor/home
+
+また:
+
+app/(contractor)/punch-mode/page.tsx
+
+の実URLは:
+
+/punch-mode
+
+です。
+
+以下は誤りです:
+
+/contractor/punch-mode
+
+Route Group名を業務上のURL prefixとして解釈してはいけません。
+
+
+## 32.2 Route Derivation Rule
+
+router.push(), router.replace(), redirect(), Link href,
+その他navigation先を生成する場合は、
+既存Applicationの `app/**/page.tsx` 構造から
+実際のURL pathを導出してください。
+
+導出時は以下をURLから除外してください。
+
+- `(group-name)` のRoute Group segment
+- `page.tsx`
+- `layout.tsx`
+
+例えば:
+
+app/(factory)/dashboard/page.tsx
+→ /dashboard
+
+app/(contractor)/workers/page.tsx
+→ /workers
+
+app/(contractor)/workers/[id]/page.tsx
+→ /workers/[id]
+
+既存ファイル構造を見ずに、
+
+/contractor/...
+/factory/...
+/admin/...
+
+などのprefixを推測してはいけません。
+
+ただし、括弧なしの実directoryが存在する場合は
+そのdirectory名はURLへ含まれます。
+
+例:
+
+app/contractor/home/page.tsx
+→ /contractor/home
+
+
+## 32.3 Navigation Target Verification
+
+navigationを実装する前に、
+遷移先に対応する `page.tsx` が既存Application内に
+実在することを確認してください。
+
+存在しないrouteへのnavigationは禁止です。
+
+対象画面自身が後続画面であり、
+まだExisting Applicationへ実装されていない場合だけ、
+Screen RequirementまたはTrace Indexで
+明示されたrouteを使用できます。
+
+routeが入力情報から確定できない場合は、
+勝手に補完しないでください。
+
+
+## 32.4 Authentication Guard Rule — CRITICAL
+
+認証ガードや未認証時redirectは、
+System Requirements / Screen Requirement / Trace Indexに
+明示されている場合だけ実装してください。
+
+以下を理由に、
+勝手に認証ガードを追加してはいけません。
+
+- 管理画面に見える
+- contractor向け画面に見える
+- factory向け画面に見える
+- 既存の別画面に認証処理がある
+- 一般的なWebアプリでは認証が必要そう
+- sessionStorageにuser情報がありそう
+
+要件に明示されていないのに、
+
+sessionStorage.getItem(...)
+localStorage.getItem(...)
+cookie確認
+useEffectによる/login redirect
+router.push('/login')
+router.replace('/login')
+
+などを新規追加してはいけません。
+
+
+## 32.5 Existing Authentication Contract
+
+認証が要件として明示されている場合は、
+既存Applicationの認証契約を必ず確認し、
+既存方式を再利用してください。
+
+確認対象:
+
+- session key名
+- session data構造
+- role値
+- contractor_id等の付随情報
+- 認証判定utility
+- auth hook
+- middleware
+- redirect先
+
+例えば既存ログイン処理が:
+
+sessionStorage.setItem('auth_session', ...)
+
+を使用している場合に、
+
+sessionStorage.getItem('user_id')
+
+を新たな認証契約として勝手に導入してはいけません。
+
+逆に既存契約が:
+
+user_id
+role
+contractor_id
+
+の個別keyである場合に、
+勝手に `auth_session` へ置き換えてはいけません。
+
+
+## 32.6 Direct Screen Verification
+
+個別画面の実装確認を妨げる、
+要件外の強制redirectを追加してはいけません。
+
+対象画面を直接URLで開いた場合でも、
+要件上認証必須と明示されていない限り、
+ログイン画面へ強制遷移させてはいけません。
+
+これは開発・PoC上の画面単体確認を可能にするためでもありますが、
+最優先はSource of Truthに記載された要件です。
 
 
 # 33. UI
@@ -763,23 +953,45 @@ class結合には、
 を使用できます。
 
 
-# 35. Build / Test Configuration
+# 35. Controlled Build / Test Infrastructure — CRITICAL
 
-Applicationの初期生成時に、
-System Requirements上必要なbuild configurationを
-生成することはできます。
+生成ApplicationのStatic ValidationおよびTestは、リポジトリ側で管理されたcontrolled runtimeを使用します。
 
-ただし、
-controlled Static/Test Runtimeを通すためだけに
-設定を弱めてはいけません。
+以下のbuild / test infrastructureファイルはScreen Implementationの生成対象ではありません。新規作成・変更・再生成してはいけません。
 
-禁止例:
+- `tsconfig.json`
+- `jsconfig.json`
+- `vitest.config.ts`
+- `vitest.config.js`
+- `vitest.config.mts`
+- `vitest.config.mjs`
+- `vite.config.ts`
+- `vite.config.js`
+- `vite.config.mts`
+- `vite.config.mjs`
+- `postcss.config.js`
+- `postcss.config.cjs`
+- `postcss.config.mjs`
+- `postcss.config.ts`
+- `tailwind.config.js`
+- `tailwind.config.cjs`
+- `tailwind.config.mjs`
+- `tailwind.config.ts`
 
-- TypeScript errorを隠すためのexclude
-- skipLibCheckによるApplication error隠蔽
-- fake path alias
-- missing packageを隠すpaths設定
-- Vitest assertionの無効化
+これらはcontrolled runtime側が管理します。Static CheckやVitestを通す目的だけでなく、初期Application構築のためであっても上記ファイルをFILE blockとして出力してはいけません。
+
+特に以下を禁止します。
+
+- `vitest.config.*` を生成してtest environmentを変更する
+- `vite.config.*` を生成してmodule resolutionを変更する
+- `tsconfig.json` / `jsconfig.json` を生成・変更して型検証を変更する
+- `skipLibCheck`、`exclude`、`paths`等で実装エラーを隠す
+- `postcss.config.*` / `tailwind.config.*` を生成する
+- testを通す目的でbuild/test infrastructureをApplication側へ持ち込む
+
+主な生成対象は `app/**`, `components/**`, `features/**`, `lib/**`, `public/**`, `tests/{{FULL_SCREEN_ID}}/**` です。
+
+`package.json` は禁止対象には含めません。初期Applicationで必要な場合のみ生成できますが、次節のdependency制約を必ず守ってください。
 
 
 # 36. package.json
@@ -918,10 +1130,21 @@ PATH: tests/{{FULL_SCREEN_ID}}/page.test.tsx
 - npm importはcontrolled runtime allowlist内
 - idbがSystem Requirementsで必要なら維持している
 - Application package.jsonは許可dependencyのみ
+- controlled build/test infrastructureを生成・変更していない
+- tsconfig.json / jsconfig.jsonを出力していない
+- vitest.config.* / vite.config.*を出力していない
+- postcss.config.* / tailwind.config.*を出力していない
 - TypeScript syntaxが完成している
 - JSX syntaxが完成している
 - 同名宣言の重複がない
 - import先が実在する
+- Next.js Route Group `(group)` をURL prefixへ含めていない
+- router.push / router.replace / Link hrefの遷移先が実在する
+- app/(contractor)/home/page.tsx を `/contractor/home` と誤解していない
+- app/(factory)/dashboard/page.tsx を `/factory/dashboard` と誤解していない
+- 認証ガードは要件に明示されている場合だけ実装している
+- 要件外の/login redirectを追加していない
+- 認証が必要な場合は既存session key / auth契約を再利用している
 - test mockが実際の契約と一致している
 - test assertionがScreen Requirementと一致している
 - 対象画面のtest fileを最低1つ生成した

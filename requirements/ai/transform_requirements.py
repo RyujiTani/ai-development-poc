@@ -64,6 +64,35 @@ REPAIR_SCREEN_PROMPT = (
 
 
 # ============================================================
+# Implementation protected files
+# ============================================================
+
+# AI implementation must never create or modify controlled build/test infrastructure.
+# package.json is intentionally allowed for the initial Application artifact.
+IMPLEMENTATION_PROTECTED_EXACT_PATHS = {
+    "tsconfig.json", "jsconfig.json",
+    "vitest.config.ts", "vitest.config.js", "vitest.config.mts", "vitest.config.mjs",
+    "vite.config.ts", "vite.config.js", "vite.config.mts", "vite.config.mjs",
+    "postcss.config.js", "postcss.config.cjs", "postcss.config.mjs", "postcss.config.ts",
+    "tailwind.config.js", "tailwind.config.cjs", "tailwind.config.mjs", "tailwind.config.ts",
+}
+
+def validate_implementation_file_paths(files: Dict[str, str]) -> None:
+    """Implementation生成からcontrolled build/test infrastructureを除外する。"""
+    violations: List[str] = []
+    for relative_path in files:
+        normalized = relative_path.replace("\\", "/").strip().lstrip("./")
+        if normalized in IMPLEMENTATION_PROTECTED_EXACT_PATHS:
+            violations.append(normalized)
+    if violations:
+        raise ValueError(
+            "Implementation generation attempted to create or modify controlled build/test infrastructure: "
+            + ", ".join(sorted(violations))
+            + ". Generate application/test source only; controlled build/test configuration must not be emitted."
+        )
+
+
+# ============================================================
 # Repair protected files
 # ============================================================
 
@@ -657,6 +686,12 @@ def generate_implementation_files(
             )
 
             validate_generated_files_content(
+                generated_files
+            )
+
+            # Prompt instruction alone is not trusted.
+            # Reject controlled build/test infrastructure mechanically.
+            validate_implementation_file_paths(
                 generated_files
             )
 
