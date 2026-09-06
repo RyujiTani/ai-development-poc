@@ -1,0 +1,47 @@
+{
+  "contractors": [
+    {
+      "contractor_id": "c1-uuid",
+      "name": "第一建設",
+      "status": "ACTIVE",
+      "created_at": "2026-04-13T00:00:00Z",
+      "updated_at": "2026-04-13T00:00:00Z"
+    },
+    {
+      "contractor_id": "c2-uuid",
+      "name": "第二電気",
+      "status": "ACTIVE",
+      "created_at": "2026-04-13T00:00:00Z",
+      "updated_at": "2026-04-13T00:00:00Z"
+    }
+  ],
+  "users": [
+    {
+      "user_id": "u1-uuid",
+      "contractor_id": "c1-uuid",
+      "role": "CONTRACTOR_MANAGER",
+      "login_id": "subcon1",
+      "password_hash": "password123",
+      "display_name": "田中 職長",
+      "status": "ACTIVE",
+      "created_at": "2026-04-13T00:00:00Z",
+      "updated_at": "2026-04-13T00:00:00Z"
+    },
+    {
+      "user_id": "u2-uuid",
+      "contractor_id": null,
+      "role": "FACTORY_ADMIN",
+      "login_id": "admin1",
+      "password_hash": "admin123",
+      "display_name": "佐藤 工場管理者",
+      "status": "ACTIVE",
+      "created_at": "2026-04-13T00:00:00Z",
+      "updated_at": "2026-04-13T00:00:00Z"
+    }
+  ],
+  "workers": [],
+  "attendance_records": [],
+  "attendance_corrections": [],
+  "photo_blobs": [],
+  "audit_logs": []
+}

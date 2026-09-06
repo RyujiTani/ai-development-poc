@@ -1,0 +1,507 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-012_punch_history.md"
+  },
+  "screen": {
+    "id": "SCR-012",
+    "name": "打刻履歴確認画面",
+    "route": "/(factory)/attendance-history",
+    "user_role": "FACTORY_ADMIN",
+    "description": "工場側管理者が日別・外注先別に作業員の打刻履歴を一覧確認し、必要に応じて打刻情報の修正および写真サムネイルの拡大確認を行う画面。"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-012-FN-001",
+        "summary": "日別・外注先別に打刻履歴一覧を表示できる",
+        "detail": "工場側管理者が指定した日付と外注先の条件に合致する打刻履歴（作業員名、外注先名、打刻種別（出勤/退勤）、打刻日時、写真サムネイル）の一覧を表示する。"
+      },
+      {
+        "id": "SCR-012-FN-002",
+        "summary": "日付フィルタで絞り込み検索ができる",
+        "detail": "日付入力フィールドから特定の日付を指定し、その日に発生した打刻履歴のみに一覧を絞り込むことができる。"
+      },
+      {
+        "id": "SCR-012-FN-003",
+        "summary": "外注先フィルタで絞り込み検索ができる",
+        "detail": "登録済みの外注先マスタ（contractors）から企業を選択し、その外注先に所属する作業員の打刻履歴のみに一覧を絞り込むことができる。"
+      },
+      {
+        "id": "SCR-012-FN-004",
+        "summary": "打刻履歴に紐づく撮影写真をサムネイルで表示できる",
+        "detail": "各打刻レコードに紐づく `photo_object_id` をもとに、対応する `photo_blobs` から取得した画像データをサムネイルとして一覧内に表示する。"
+      },
+      {
+        "id": "SCR-012-FN-005",
+        "summary": "サムネイルをクリック/タップして写真を拡大表示できる",
+        "detail": "一覧内の写真サムネイルをクリック/タップした際、モーダルダイアログで画像を大きく鮮明に表示し、確認しやすくする。"
+      },
+      {
+        "id": "SCR-012-FN-006",
+        "summary": "打刻修正（工場側管理者による手動登録・修正）ができる",
+        "detail": "一覧上の各レコードの打刻修正ボタンから、打刻日時や打刻種別の修正登録（手動変更）を行える。変更の際は修正理由の入力が必須となる。"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-012-UI-001",
+        "summary": "フィルタ条件配置",
+        "detail": "画面上部（ファーストビュー）に日付フィルタ（カレンダー等入力欄）と外注先フィルタ（プルダウンメニュー）を並列配置する。"
+      },
+      {
+        "id": "SCR-012-UI-002",
+        "summary": "テーブル形式表示",
+        "detail": "打刻履歴一覧をPCでは表形式（テーブル）で表示する。カラム構成：[作業員名]、[外注先企業名]、[打刻種別]、[打刻日時]、[写真確認]、[操作]。"
+      },
+      {
+        "id": "SCR-012-UI-003",
+        "summary": "写真サムネイルリスト内表示",
+        "detail": "テーブルの各行（またはモバイル用のカードUI）内の「写真確認」カラムに、小さな画像プレビュー（アスペクト比固定、最大幅/高さ 64px 程度）をインライン表示する。"
+      },
+      {
+        "id": "SCR-012-UI-004",
+        "summary": "ページネーション/無限スクロール",
+        "detail": "大量の打刻履歴データに対応するため、ページネーションコントロール（前へ、次へ、ページ番号、1ページあたり表示件数選択等）をテーブル下部に設置する。"
+      },
+      {
+        "id": "SCR-012-UI-005",
+        "summary": "レスポンシブWebデザイン",
+        "detail": "Tailwind CSSを用いてPC、タブレット、スマホの各画面サイズに対応する。スマートフォン表示時は、テーブルを縦並びのカードUIに切り替えるなどのレスポンシブ制御を行う。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-012-VL-001",
+        "summary": "日付フィルタ有効形式",
+        "detail": "日付入力フィールドで不正なフォーマットが入力された場合、または日付が空の場合は適切なプレースホルダー表示にするか、バリデーションで検索不可とする。"
+      },
+      {
+        "id": "SCR-012-VL-002",
+        "summary": "打刻修正時の修正理由必須",
+        "detail": "打刻修正モーダルにて「修正理由」が未入力、またはスペースのみの場合は保存ボタンを活性化しない、もしくは「修正理由を入力してください」のエラーメッセージをトーストまたは入力欄直下に表示する。"
+      },
+      {
+        "id": "SCR-012-VL-003",
+        "summary": "未認証・権限なしリダイレクト",
+        "detail": "sessionStorageの認証情報（user_id, role）をチェックし、未ログイン、またはロールが `FACTORY_ADMIN` 以外のユーザーがアクセスした場合は、即座に管理者ログイン画面（SCR-010: /(factory)/login または共有ログイン）へリダイレクトする。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-012-EV-001",
+        "summary": "フィルタ条件変更・検索ボタン押下",
+        "detail": "日付や外注先のフィルタ条件が変更された、または検索ボタンが押下されたタイミングで、IndexedDBから指定条件に合致する打刻履歴（attendance_records）を非同期に再取得して一覧を再描画する。"
+      },
+      {
+        "id": "SCR-012-EV-002",
+        "summary": "サムネイル画像クリック/タップ",
+        "detail": "写真サムネイルをクリック/タップした際、対象レコードの `photo_object_id` から取得した画像BlobのObject URLを生成し、ライトボックス形式のモーダルダイアログで拡大表示する。"
+      },
+      {
+        "id": "SCR-012-EV-003",
+        "summary": "打刻修正ボタン押下",
+        "detail": "打刻履歴レコードの「修正」ボタンを押下した際、打刻修正用のモーダルダイアログを表示し、対象レコードの現在情報をフォーム（日時、打刻種別）に初期ロードする。"
+      },
+      {
+        "id": "SCR-012-EV-004",
+        "summary": "打刻修正の保存",
+        "detail": "打刻修正モーダルで「保存」ボタンが押下された際、バリデーションを通過したデータをIndexedDBの `attendance_records` および `attendance_corrections` に保存し、成功トーストを表示した後にダイアログを閉じ、一覧データを最新化する。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-012-DT-001",
+        "summary": "打刻履歴一覧データの取得",
+        "detail": "IndexedDBの `attendance_records` からフィルタ条件に適合するレコードを検索・取得する。さらに `workers` テーブルおよび `contractors` テーブルとID結合を行い、作業員名と外注先企業名をマッピングした表示用モデルを構成する。"
+      },
+      {
+        "id": "SCR-012-DT-002",
+        "summary": "写真データ取得・Object URL生成",
+        "detail": "IndexedDBの `photo_blobs` から該当する写真Blobを取得し、 `URL.createObjectURL(blob)` を用いて一時的な表示用URLを生成する。メモリリークを避けるため、画像表示コンポーネントのアンマウント時またはモーダルクローズ時に `URL.revokeObjectURL(url)` を確実に呼び出す。"
+      },
+      {
+        "id": "SCR-012-DT-003",
+        "summary": "打刻修正データの保存送信",
+        "detail": "修正後の内容（修正後の打刻日時、修正理由、操作者 user_id）を `attendance_records` に更新保存するとともに、修正前後の差分情報を `attendance_corrections` に新規レコードとして追加登録する。"
+      },
+      {
+        "id": "SCR-012-DT-004",
+        "summary": "外注先マスタデータの取得",
+        "detail": "外注先フィルタ（プルダウンメニュー）を表示するため、IndexedDBの `contractors` ストアからステータスが「ACTIVE」の全レコードを取得する。"
+      }
+    ],
+    "api": [
+      {
+        "id": "SCR-012-API-001",
+        "method": "GET",
+        "path": "/api/admin/punches",
+        "query_params": {
+          "date": "string (YYYY-MM-DD)",
+          "contractor_id": "string (UUID)"
+        },
+        "response": "Array<AttendanceRecord & { worker_name: string, contractor_name: string }>",
+        "mock_implementation_note": "IndexedDBの attendance_records からクエリ一致するデータを抽出し、workers, contractors の名前を解決して返す。"
+      },
+      {
+        "id": "SCR-012-API-002",
+        "method": "GET",
+        "path": "/api/admin/punches/{punch_id}/photo",
+        "response": "Blob",
+        "mock_implementation_note": "IndexedDBの photo_blobs から photo_object_id に対応するレコードを検索し、Blobオブジェクトを直接返却する。フロントエンド側でObjectURLを作成する。"
+      },
+      {
+        "id": "SCR-012-API-003",
+        "method": "PUT",
+        "path": "/api/admin/punches/{punch_id}",
+        "request_body": {
+          "clocked_at": "string (ISO8601)",
+          "punch_type": "CLOCK_IN | CLOCK_OUT",
+          "reason": "string (非空)"
+        },
+        "response": {
+          "success": true
+        },
+        "mock_implementation_note": "IndexedDB内のレコードを更新し、同時に attendance_corrections に監査・履歴用の修正記録をインサートする。"
+      },
+      {
+        "id": "SCR-012-API-004",
+        "method": "GET",
+        "path": "/api/admin/contractors",
+        "response": "Array<Contractor>",
+        "mock_implementation_note": "IndexedDBの contractors ストアからアクティブな外注先一覧を取得する。"
+      }
+    ],
+    "state": [
+      {
+        "name": "filterDate",
+        "type": "string (YYYY-MM-DD)",
+        "initial": "当日（現在の日付）"
+      },
+      {
+        "name": "filterContractorId",
+        "type": "string | null",
+        "initial": "null (すべて)"
+      },
+      {
+        "name": "punchRecords",
+        "type": "Array<AttendanceRecord & { worker_name: string, contractor_name: string }>",
+        "initial": "[]"
+      },
+      {
+        "name": "contractorsList",
+        "type": "Array<Contractor>",
+        "initial": "[]"
+      },
+      {
+        "name": "isLoading",
+        "type": "boolean",
+        "initial": "false"
+      },
+      {
+        "name": "selectedPhotoUrl",
+        "type": "string | null",
+        "initial": "null",
+        "description": "モーダル表示用の生成Object URL（都度クリーンアップ対象）"
+      },
+      {
+        "name": "editingRecord",
+        "type": "AttendanceRecord | null",
+        "initial": "null",
+        "description": "現在修正対象としてモーダルにロードされているレコード情報"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-012"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "ACP-012-001",
+      "requirement_ids": [
+        "SCR-012-FN-001",
+        "SCR-012-UI-002",
+        "SCR-012-UI-003",
+        "SCR-012-DT-001"
+      ],
+      "input": "工場側管理者ロールでログインした状態で、打刻履歴確認画面にアクセスする。",
+      "operation": "画面に初期遷移する、または日付/外注先フィルタを設定する。",
+      "steps": [
+        "1. システムは IndexedDB から合致する打刻レコード、作業員名、外注先名、およびサムネイル表示用画像Blobを読み込む。",
+        "2. 読み込み中表示（ローダー等）を経て、テーブル形式で情報が表示される。"
+      ],
+      "expected": "指定された日付・外注先に合致する打刻履歴が一覧（テーブル形式）で表示され、作業員名、外注先企業名、打刻種別（出勤/退勤）、日時、写真サムネイル（小さい画像）が表示されていること。"
+    },
+    {
+      "id": "ACP-012-002",
+      "requirement_ids": [
+        "SCR-012-FN-002",
+        "SCR-012-FN-003",
+        "SCR-012-UI-001",
+        "SCR-012-EV-001"
+      ],
+      "input": "任意の特定日付（例: 2026-04-13）を日付フィルタに入力し、外注先フィルタで特定の企業（例: 外注先A）を選択する。",
+      "operation": "フィルタの値を変更、または検索ボタンを押下する。",
+      "steps": [
+        "1. 変更検知、またはボタン押下をトリガーにIndexedDBのクエリが再実行される。",
+        "2. 2026-04-13 かつ 外注先Aに所属する作業員の打刻レコードのみを抽出して一覧を更新する。"
+      ],
+      "expected": "指定した条件（2026-04-13、外注先A）に完全一致する打刻レコードのみが表示され、条件に合致しない他日・他社のレコードが非表示になっていること。"
+    },
+    {
+      "id": "ACP-012-003",
+      "requirement_ids": [
+        "SCR-012-FN-005",
+        "SCR-012-EV-002",
+        "SCR-012-DT-002"
+      ],
+      "input": "一覧上の特定の写真サムネイル要素をクリック/タップする。",
+      "operation": "写真サムネイルをクリック/タップする。",
+      "steps": [
+        "1. 対象の photo_object_id に紐づくBlobから URL.createObjectURL() で一時URLを生成する。",
+        "2. 写真確認用モーダルを画面中央にポップアップ表示し、生成したURLを src とする img タグを表示する。",
+        "3. モーダルの「閉じる」ボタン、または背景をクリックしてモーダルを閉じる。"
+      ],
+      "expected": "クリックした写真が画面中央に大きく表示され、問題なく拡大確認できること。モーダルを閉じた際は表示用の一時Object URLが安全に revoke されること。"
+    },
+    {
+      "id": "ACP-012-004",
+      "requirement_ids": [
+        "SCR-012-FN-006",
+        "SCR-012-VL-002",
+        "SCR-012-EV-003",
+        "SCR-012-EV-004",
+        "SCR-012-DT-003"
+      ],
+      "input": "特定の打刻レコードの「修正」ボタンを押下し、打刻時刻を変更する。修正理由入力欄に「打刻忘れのため代理入力」と入力する。",
+      "operation": "「修正」ボタン押下、入力フォームに値設定、および「保存」ボタン押下を行う。",
+      "steps": [
+        "1. 修正理由が入力されているかをバリデーションチェックする。",
+        "2. バリデーション成功時、IndexedDBの attendance_records を更新し、修正理由を保持した attendance_corrections レコードを新規追加する。",
+        "3. 成功トーストを画面に表示し、モーダルを閉じて一覧を再ロードする。"
+      ],
+      "expected": "修正が正常に完了し、一覧の打刻日時が修正後の日時に更新され、トーストメッセージ（「打刻を修正しました」等）が表示されること。IndexedDBの attendance_corrections テーブルに対象の修正ログが1件追加されていること。"
+    },
+    {
+      "id": "ACP-012-005",
+      "requirement_ids": [
+        "SCR-012-VL-003"
+      ],
+      "input": "未ログイン、または一般外注先管理者ロール（CONTRACTOR_MANAGER）で打刻履歴確認画面へダイレクトURLからアクセスする。",
+      "operation": "ブラウザのアドレスバーに打刻履歴確認画面のURLを入力して遷移を試みる。",
+      "steps": [
+        "1. 画面レイアウト（レイアウトガード）またはコンポーネントマウント時、sessionStorageの user_id および role を確認する。",
+        "2. 工場側管理者の情報がない、またはロールが FACTORY_ADMIN 以外であることを検知する。"
+      ],
+      "expected": "画面が表示されず、即座に管理者ログイン画面（SCR-010）へリダイレクトされること。"
+    }
+  ],
+  "tests": [
+    {
+      "id": "TST-012-001",
+      "type": "unit_integration",
+      "requirement_id": "SCR-012-FN-001",
+      "input": "模擬シードデータ（2026-04-13に外注先Aの作業員「山田太郎」の出勤打刻レコードが1件存在）が設定された模擬IndexedDB環境",
+      "steps": [
+        "1. 工場側管理者（FACTORY_ADMIN）の模擬認証セッションを確立する。",
+        "2. SCR-012 コンポーネントをマウントする（初期表示日付は 2026-04-13 とする）。",
+        "3. 表示されているテーブルの行およびセルデータを検証する。"
+      ],
+      "expected": "テーブル内に「山田太郎」、「外注先A」、「出勤」、および「2026-04-13」に該当するテキストを含むセルがレンダリングされていること。"
+    },
+    {
+      "id": "TST-012-002",
+      "type": "unit_integration",
+      "requirement_id": "SCR-012-FN-002",
+      "input": "複数日付に跨る模擬打刻レコードが存在する環境",
+      "steps": [
+        "1. 日付フィルタの入力値に「2026-04-14」を設定する。",
+        "2. フィルタ変更イベント（EV-001）をシミュレートする。",
+        "3. 更新されたテーブル表示行数を検証する。"
+      ],
+      "expected": "表示される履歴が 2026-04-14 の打刻レコードに正しく絞り込まれ、他の日付のデータが排除されていること。"
+    },
+    {
+      "id": "TST-012-003",
+      "type": "unit_integration",
+      "requirement_id": "SCR-012-FN-005",
+      "input": "任意の有効な photo_object_id を含む一覧行のサムネイル画像要素",
+      "steps": [
+        "1. サムネイル画像プレビュー要素を特定し、クリックイベントを発生させる。",
+        "2. URL.createObjectURL() のモック呼び出し履歴を検証する。",
+        "3. モーダル要素が表示され、拡大された img の src にObject URLが設定されているか検証する。"
+      ],
+      "expected": "画像拡大用モーダルがドキュメント内に表示されること。URL.createObjectURL が1回呼び出されていること。"
+    },
+    {
+      "id": "TST-012-004",
+      "type": "unit_integration",
+      "requirement_id": "SCR-012-VL-002",
+      "input": "特定の打刻レコードに対する修正フォーム入力",
+      "steps": [
+        "1. 対象行の「修正」ボタンを押下して修正用モーダルを開く。",
+        "2. 修正理由入力フィールドを空文字（または空白スペース）にする。",
+        "3. 保存処理を実行する（または保存ボタンの disabled 状態を確認する）。"
+      ],
+      "expected": "保存ボタンが非活性になっている、または「修正理由を入力してください」といったエラー通知（トーストやバリデーションメッセージ）が表示され、データ保存処理が実行されないこと。"
+    },
+    {
+      "id": "TST-012-005",
+      "type": "unit_integration",
+      "requirement_id": "SCR-012-FN-006",
+      "input": "特定の打刻レコードに対する修正入力（正しい変更日時および有効な修正理由）",
+      "steps": [
+        "1. 対象レコードの「修正」ボタンを押下し、打刻日時を「2026-04-13T09:05:00Z」に設定、修正理由に「本人の打刻遅れを修正」を入力する。",
+        "2. 「保存」ボタンを押下する。",
+        "3. IndexedDBへの模擬データ保存処理の呼び出し引数を確認する。"
+      ],
+      "expected": "保存API（PUT /api/admin/punches/{punch_id}）が正しいパラメータ（修正後の時間、修正理由）を伴って呼び出され、保存成功トーストが表示されること。"
+    },
+    {
+      "id": "TST-012-006",
+      "type": "unit_integration",
+      "requirement_id": "SCR-012-VL-003",
+      "input": "セッション内のロールが 'CONTRACTOR_MANAGER'（外注先管理者）である状態",
+      "steps": [
+        "1. ロールに 'CONTRACTOR_MANAGER'、ユーザーIDに 'user_contractor_1' を設定した模擬sessionStorage環境を構成する。",
+        "2. SCR-012 のページコンポーネントをレンダリングする。",
+        "3. Next.js router.push またはリダイレクト処理のモック関数が呼び出されたか検証する。"
+      ],
+      "expected": "管理者用ログインページ（/factory/login または SCR-010 相当）へのリダイレクトが作動していること。"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-012-001",
+      "target": "打刻時刻の丸めルール",
+      "reason": "システム要件の「TODO-004（打刻時刻の丸めルール）」および画面設計の確認事項に丸めルールが未定である旨が記載されている。フロントエンド単体の本プロトタイプでは、打刻された時間（分・秒まで）をそのまま丸めずにIndexedDBへ保存・表示し、丸め計算処理は実装しないままとする。",
+      "sources": {
+        "system_requirements": "Open Item TODO-004: 打刻時刻の丸めルール",
+        "screen_design": "確認事項: 打刻の切り捨て・切り上げルールの具体的な仕様が未定"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-012-002",
+      "target": "打刻修正の承認フロー",
+      "reason": "システム要件の「TODO-005（打刻修正の承認フロー）」で、工場側管理者が手動で修正・確認する際の承認ステップ有無が確定していない。画面設計書上では『手動登録・修正ができる（修正理由必須）』となっているため、本プロトタイプでは二重承認などの承認ワークフローは実装せず、工場側管理者が保存した時点で即座にIndexedDBの attendance_records が確定更新される設計で実装する。",
+      "sources": {
+        "system_requirements": "Open Item TODO-005: 打刻修正の承認フロー",
+        "screen_design": "確認事項: 打刻修正時の承認フローの要否が未確定"
+      },
+      "resolution": "manual_confirmation"
+    },
+    {
+      "id": "AMB-012-003",
+      "target": "写真取得時の署名付きURL仕様とObject URLの関係",
+      "reason": "画面設計のデータ要件（SCR-012-DT-002）に「署名付きURLで写真を取得する」との記載があるが、システム要件の適用除外範囲（GCP / Cloud Storage 等の非実装）と矛盾する。本プロトタイプはクライアント完結型のため、IndexedDBの photo_blobs ストアから直接Blobを読み出して Object URL（URL.createObjectURL）を都度発行し表示する実装で代替し、実通信を伴う署名付きURLの発行は行わない。",
+      "sources": {
+        "system_requirements": "scope.out: GCP バックエンド全般、本番セキュリティ要件（署名付きURL基盤等）。non_functional: 写真 Blob を IndexedDB から取り出す際、Object URL を都度発行・revoke する。",
+        "screen_design": "SCR-012-DT-002: GET /api/admin/punches/{punch_id}/photo — 署名付きURLで写真を取得する（直リンク禁止）"
+      },
+      "resolution": "system_requirements"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-012-FN-001",
+      "acceptance_criterion_id": "ACP-012-001",
+      "test_case_id": "TST-012-001"
+    },
+    {
+      "requirement_id": "SCR-012-FN-002",
+      "acceptance_criterion_id": "ACP-012-002",
+      "test_case_id": "TST-012-002"
+    },
+    {
+      "requirement_id": "SCR-012-FN-003",
+      "acceptance_criterion_id": "ACP-012-002",
+      "test_case_id": "TST-012-002"
+    },
+    {
+      "requirement_id": "SCR-012-FN-004",
+      "acceptance_criterion_id": "ACP-012-001",
+      "test_case_id": "TST-012-001"
+    },
+    {
+      "requirement_id": "SCR-012-FN-005",
+      "acceptance_criterion_id": "ACP-012-003",
+      "test_case_id": "TST-012-003"
+    },
+    {
+      "requirement_id": "SCR-012-FN-006",
+      "acceptance_criterion_id": "ACP-012-004",
+      "test_case_id": "TST-012-005"
+    },
+    {
+      "requirement_id": "SCR-012-UI-001",
+      "acceptance_criterion_id": "ACP-012-002",
+      "test_case_id": "TST-012-002"
+    },
+    {
+      "requirement_id": "SCR-012-UI-002",
+      "acceptance_criterion_id": "ACP-012-001",
+      "test_case_id": "TST-012-001"
+    },
+    {
+      "requirement_id": "SCR-012-UI-003",
+      "acceptance_criterion_id": "ACP-012-001",
+      "test_case_id": "TST-012-001"
+    },
+    {
+      "requirement_id": "SCR-012-VL-002",
+      "acceptance_criterion_id": "ACP-012-004",
+      "test_case_id": "TST-012-004"
+    },
+    {
+      "requirement_id": "SCR-012-VL-003",
+      "acceptance_criterion_id": "ACP-012-005",
+      "test_case_id": "TST-012-006"
+    },
+    {
+      "requirement_id": "SCR-012-EV-001",
+      "acceptance_criterion_id": "ACP-012-002",
+      "test_case_id": "TST-012-002"
+    },
+    {
+      "requirement_id": "SCR-012-EV-002",
+      "acceptance_criterion_id": "ACP-012-003",
+      "test_case_id": "TST-012-003"
+    },
+    {
+      "requirement_id": "SCR-012-EV-003",
+      "acceptance_criterion_id": "ACP-012-004",
+      "test_case_id": "TST-012-005"
+    },
+    {
+      "requirement_id": "SCR-012-EV-004",
+      "acceptance_criterion_id": "ACP-012-004",
+      "test_case_id": "TST-012-005"
+    },
+    {
+      "requirement_id": "SCR-012-DT-001",
+      "acceptance_criterion_id": "ACP-012-001",
+      "test_case_id": "TST-012-001"
+    },
+    {
+      "requirement_id": "SCR-012-DT-002",
+      "acceptance_criterion_id": "ACP-012-003",
+      "test_case_id": "TST-012-003"
+    },
+    {
+      "requirement_id": "SCR-012-DT-003",
+      "acceptance_criterion_id": "ACP-012-004",
+      "test_case_id": "TST-012-005"
+    }
+  ]
+}

@@ -1,0 +1,1763 @@
+/home/runner/work/_temp/7741a276-4ac8-41c6-a17f-91948e430ec4/google-cloud-sdk/lib/third_party/google/cloud/__init__.py:20: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+----------------------------- REMOTE BUILD OUTPUT ------------------------------
+starting build "4ca3a2f5-88db-45b5-85c9-6e8f8e6a08e4"
+FETCHSOURCE
+Fetching storage object: gs://aidf-team-suda_cloudbuild/source/1788678136.587689-389ff8a8856c48f989b97d09515253b3.tgz#1788678170293581
+Copying gs://aidf-team-suda_cloudbuild/source/1788678136.587689-389ff8a8856c48f989b97d09515253b3.tgz#1788678170293581...
+/ [0 files][    0.0 B/ 80.5 MiB]                                                -- [1 files][ 80.5 MiB/ 80.5 MiB]
+Operation completed over 1 objects/80.5 MiB.
+BUILD
+Starting Step #0 - "install-test-dependencies"
+Step #0 - "install-test-dependencies": Pulling image: node:20-bookworm
+Step #0 - "install-test-dependencies": 20-bookworm: Pulling from library/node
+Step #0 - "install-test-dependencies": db53381ee51f: Pulling fs layer
+Step #0 - "install-test-dependencies": e5203b2bfeff: Pulling fs layer
+Step #0 - "install-test-dependencies": 8fcda2b4d799: Pulling fs layer
+Step #0 - "install-test-dependencies": 2933ecab0f11: Pulling fs layer
+Step #0 - "install-test-dependencies": c83419f44309: Pulling fs layer
+Step #0 - "install-test-dependencies": 76e6b8204a89: Pulling fs layer
+Step #0 - "install-test-dependencies": 2f2ab6e4eb46: Pulling fs layer
+Step #0 - "install-test-dependencies": 0b22ec2d9b1a: Pulling fs layer
+Step #0 - "install-test-dependencies": 2f2ab6e4eb46: Waiting
+Step #0 - "install-test-dependencies": 0b22ec2d9b1a: Waiting
+Step #0 - "install-test-dependencies": c83419f44309: Verifying Checksum
+Step #0 - "install-test-dependencies": c83419f44309: Download complete
+Step #0 - "install-test-dependencies": 2f2ab6e4eb46: Verifying Checksum
+Step #0 - "install-test-dependencies": 2f2ab6e4eb46: Download complete
+Step #0 - "install-test-dependencies": e5203b2bfeff: Verifying Checksum
+Step #0 - "install-test-dependencies": e5203b2bfeff: Download complete
+Step #0 - "install-test-dependencies": 0b22ec2d9b1a: Verifying Checksum
+Step #0 - "install-test-dependencies": 0b22ec2d9b1a: Download complete
+Step #0 - "install-test-dependencies": 76e6b8204a89: Verifying Checksum
+Step #0 - "install-test-dependencies": 76e6b8204a89: Download complete
+Step #0 - "install-test-dependencies": db53381ee51f: Verifying Checksum
+Step #0 - "install-test-dependencies": db53381ee51f: Download complete
+Step #0 - "install-test-dependencies": 8fcda2b4d799: Verifying Checksum
+Step #0 - "install-test-dependencies": 8fcda2b4d799: Download complete
+Step #0 - "install-test-dependencies": 2933ecab0f11: Verifying Checksum
+Step #0 - "install-test-dependencies": 2933ecab0f11: Download complete
+Step #0 - "install-test-dependencies": db53381ee51f: Pull complete
+Step #0 - "install-test-dependencies": e5203b2bfeff: Pull complete
+Step #0 - "install-test-dependencies": 8fcda2b4d799: Pull complete
+Step #0 - "install-test-dependencies": 2933ecab0f11: Pull complete
+Step #0 - "install-test-dependencies": c83419f44309: Pull complete
+Step #0 - "install-test-dependencies": 76e6b8204a89: Pull complete
+Step #0 - "install-test-dependencies": 2f2ab6e4eb46: Pull complete
+Step #0 - "install-test-dependencies": 0b22ec2d9b1a: Pull complete
+Step #0 - "install-test-dependencies": Digest: sha256:8f693eaa7e0a8e71560c9a82b55fd54c2ae920a2ba5d2cde28bac7d1c01c9ba5
+Step #0 - "install-test-dependencies": Status: Downloaded newer image for node:20-bookworm
+Step #0 - "install-test-dependencies": docker.io/library/node:20-bookworm
+Step #0 - "install-test-dependencies":
+Step #0 - "install-test-dependencies": added 2 packages in 4s
+Finished Step #0 - "install-test-dependencies"
+Starting Step #1 - "test-generated-implementations"
+Step #1 - "test-generated-implementations": Already have image (with digest): node:20-bookworm
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": > generated-screen-test-runner@1.0.0 test:generated
+Step #1 - "test-generated-implementations": > node run_generated_tests.mjs
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Found 15 screen(s) to test.
+Step #1 - "test-generated-implementations": Integrated application: /workspace/requirements/ai/generated/application
+Step #1 - "test-generated-implementations": Screen test timeout: 30 seconds
+Step #1 - "test-generated-implementations": Test mode: full regression
+Step #1 - "test-generated-implementations": All generated screens will be executed once.
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [1/15] Testing: SCR-001_contractor_login
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-001_contractor_login-HOt5S6[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-001_contractor_login/page.test.tsx[2m > [22m[2mSCR-001_contractor_login[2m > [22m[2mTST-SCR-001-001: IDが未入力の状態でログインボタンを押下した場合、必須入力エラーが表示される
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SEED_DATA_IMPORT_START"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-001_contractor_login/page.test.tsx[2m > [22m[2mSCR-001_contractor_login[2m > [22m[2mTST-SCR-001-001: IDが未入力の状態でログインボタンを押下した場合、必須入力エラーが表示される
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SEED_DATA_IMPORT_SUCCESS"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-001_contractor_login/page.test.tsx[2m > [22mSCR-001_contractor_login[2m > [22mTST-SCR-001-001: IDが未入力の状態でログインボタンを押下した場合、必須入力エラーが表示される
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-001_contractor_login/page.test.tsx[2m > [22mSCR-001_contractor_login[2m > [22mTST-SCR-001-002: パスワードが未入力の状態でログインボタンを押下した場合、必須入力エラーが表示される
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-001_contractor_login/page.test.tsx[2m > [22m[2mSCR-001_contractor_login[2m > [22m[2mTST-SCR-001-003: 登録されていないユーザー情報を入力した場合、認証エラーが表示される
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"LOGIN_ATTEMPT","payload":{"loginId":"invalid_user"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-001_contractor_login/page.test.tsx[2m > [22m[2mSCR-001_contractor_login[2m > [22m[2mTST-SCR-001-003: 登録されていないユーザー情報を入力した場合、認証エラーが表示される
+Step #1 - "test-generated-implementations": [22m[39m{"level":"WARN","event":"LOGIN_FAILED_USER_NOT_FOUND","payload":{"loginId":"invalid_user"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-001_contractor_login/page.test.tsx[2m > [22mSCR-001_contractor_login[2m > [22mTST-SCR-001-003: 登録されていないユーザー情報を入力した場合、認証エラーが表示される
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-001_contractor_login/page.test.tsx[2m > [22m[2mSCR-001_contractor_login[2m > [22m[2mTST-SCR-001-004 / TST-SCR-001-005: 正しいログイン情報でログイン成功し、sessionStorageが保存され遷移する
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"LOGIN_ATTEMPT","payload":{"loginId":"subcon1"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-001_contractor_login/page.test.tsx[2m > [22m[2mSCR-001_contractor_login[2m > [22m[2mTST-SCR-001-004 / TST-SCR-001-005: 正しいログイン情報でログイン成功し、sessionStorageが保存され遷移する
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"LOGIN_SUCCESS","payload":{"loginId":"subcon1","userId":"u1-uuid","role":"CONTRACTOR_MANAGER"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-001_contractor_login/page.test.tsx[2m > [22mSCR-001_contractor_login[2m > [22mTST-SCR-001-004 / TST-SCR-001-005: 正しいログイン情報でログイン成功し、sessionStorageが保存され遷移する
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m4 passed[39m[22m[90m (4)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 07:03:38
+Step #1 - "test-generated-implementations": [2m   Duration [22m 1.98s[2m (transform 274ms, setup 187ms, collect 413ms, tests 351ms, environment 654ms, prepare 139ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": PASS: SCR-001_contractor_login
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [2/15] Testing: SCR-002_contractor_home
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-002_contractor_home-9mTgcB[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-002_contractor_home/page.test.tsx[2m > [22m[2mSCR-002_contractor_home[2m > [22m[2mTS-SCR-002-001: sessionStorage が未設定の状態のとき /login に遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"WARN","event":"UNAUTHORIZED_ACCESS_ATTEMPT","payload":{"userId":null,"role":null}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-002_contractor_home/page.test.tsx[2m > [22m[2mSCR-002_contractor_home[2m > [22m[2mTS-SCR-002-002: sessionStorage にログイン情報があり、IndexedDB からユーザー名を取得できるとき表示されること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SEED_DATA_IMPORT_START"}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"SEED_FETCH_FAILED_USING_FALLBACK"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-002_contractor_home/page.test.tsx[2m > [22mSCR-002_contractor_home[2m > [22mTS-SCR-002-001: sessionStorage が未設定の状態のとき /login に遷移すること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-002_contractor_home/page.test.tsx[2m > [22m[2mSCR-002_contractor_home[2m > [22m[2mTS-SCR-002-002: sessionStorage にログイン情報があり、IndexedDB からユーザー名を取得できるとき表示されること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SEED_DATA_IMPORT_SUCCESS"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-002_contractor_home/page.test.tsx[2m > [22m[2mSCR-002_contractor_home[2m > [22m[2mTS-SCR-002-002: sessionStorage にログイン情報があり、IndexedDB からユーザー名を取得できるとき表示されること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_USER_SUCCESS","payload":{"userId":"u1-uuid"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-002_contractor_home/page.test.tsx[2m > [22m[2mSCR-002_contractor_home[2m > [22m[2mTS-SCR-002-003: 打刻ボタンクリックで /contractor/punch-mode に遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_USER_SUCCESS","payload":{"userId":"u1-uuid"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-002_contractor_home/page.test.tsx[2m > [22m[2mSCR-002_contractor_home[2m > [22m[2mTS-SCR-002-003: 打刻ボタンクリックで /contractor/punch-mode に遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_USER_SUCCESS","payload":{"userId":"u1-uuid"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-002_contractor_home/page.test.tsx[2m > [22mSCR-002_contractor_home[2m > [22mTS-SCR-002-002: sessionStorage にログイン情報があり、IndexedDB からユーザー名を取得できるとき表示されること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-002_contractor_home/page.test.tsx[2m > [22m[2mSCR-002_contractor_home[2m > [22m[2mTS-SCR-002-004: 作業員管理ボタンクリックで /contractor/workers に遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_USER_SUCCESS","payload":{"userId":"u1-uuid"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [31m×[39m tests/SCR-002_contractor_home/page.test.tsx[2m > [22mSCR-002_contractor_home[2m > [22mTS-SCR-002-003: 打刻ボタンクリックで /contractor/punch-mode に遷移すること
+Step #1 - "test-generated-implementations": [31m   → Unable to find an accessible element with the role "button" and name `/^打刻$/`
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Here are the accessible roles:
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   banner:
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   Name "":
+Step #1 - "test-generated-implementations":   [36m<header[31m
+Step #1 - "test-generated-implementations":     [33mclass[31m=[32m"bg-white shadow"[31m
+Step #1 - "test-generated-implementations":   [36m/>[31m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   --------------------------------------------------
+Step #1 - "test-generated-implementations":   heading:
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   Name "外注先ホーム":
+Step #1 - "test-generated-implementations":   [36m<h1[31m
+Step #1 - "test-generated-implementations":     [33mclass[31m=[32m"text-xl font-bold text-gray-900"[31m
+Step #1 - "test-generated-implementations":   [36m/>[31m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   --------------------------------------------------
+Step #1 - "test-generated-implementations":   paragraph:
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   Name "":
+Step #1 - "test-generated-implementations":   [36m<p[31m
+Step #1 - "test-generated-implementations":     [33mclass[31m=[32m"text-sm text-gray-600 mt-1"[31m
+Step #1 - "test-generated-implementations":   [36m/>[31m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   --------------------------------------------------
+Step #1 - "test-generated-implementations":   button:
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   Name "ログアウト":
+Step #1 - "test-generated-implementations":   [36m<button[31m
+Step #1 - "test-generated-implementations":     [33mclass[31m=[32m"rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"[31m
+Step #1 - "test-generated-implementations":     [33mstyle[31m=[32m"min-height: 44px;"[31m
+Step #1 - "test-generated-implementations":   [36m/>[31m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   Name "打刻 出勤・退勤の打刻を行います":
+Step #1 - "test-generated-implementations":   [36m<button[31m
+Step #1 - "test-generated-implementations":     [33mclass[31m=[32m"flex h-36 w-full flex-col items-center justify-center rounded-xl bg-blue-600 text-white shadow-md hover:bg-blue-505 transition-colors"[31m
+Step #1 - "test-generated-implementations":     [33mstyle[31m=[32m"min-height: 44px;"[31m
+Step #1 - "test-generated-implementations":   [36m/>[31m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   Name "打刻データ登録・修正 手動打刻登録や既存打刻の修正を行います":
+Step #1 - "test-generated-implementations":   [36m<button[31m
+Step #1 - "test-generated-implementations":     [33mclass[31m=[32m"flex h-36 w-full flex-col items-center justify-center rounded-xl bg-orange-600 text-white shadow-md hover:bg-orange-500 transition-colors"[31m
+Step #1 - "test-generated-implementations":     [33mstyle[31m=[32m"min-height: 44px;"[31m
+Step #1 - "test-generated-implementations":   [36m/>[31m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   Name "作業員管理 作業員の登録・編集・削除を行います":
+Step #1 - "test-generated-implementations":   [36m<button[31m
+Step #1 - "test-generated-implementations":     [33mclass[31m=[32m"flex h-36 w-full flex-col items-center justify-center rounded-xl bg-green-600 text-white shadow-md hover:bg-green-500 transition-colors"[31m
+Step #1 - "test-generated-implementations":     [33mstyle[31m=[32m"min-height: 44px;"[31m
+Step #1 - "test-generated-implementations":   [36m/>[31m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   --------------------------------------------------
+Step #1 - "test-generated-implementations":   main:
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   Name "":
+Step #1 - "test-generated-implementations":   [36m<main[31m
+Step #1 - "test-generated-implementations":     [33mclass[31m=[32m"flex-1 mx-auto max-w-md w-full px-4 py-12 flex flex-col justify-center space-y-6"[31m
+Step #1 - "test-generated-implementations":   [36m/>[31m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   --------------------------------------------------
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Ignored nodes: comments, script, style
+Step #1 - "test-generated-implementations": [36m<body>[31m
+Step #1 - "test-generated-implementations":   [36m<div>[31m
+Step #1 - "test-generated-implementations":     [36m<div[31m
+Step #1 - "test-generated-implementations":       [33mclass[31m=[32m"flex min-h-screen flex-col bg-gray-100"[31m
+Step #1 - "test-generated-implementations":     [36m>[31m
+Step #1 - "test-generated-implementations":       [36m<header[31m
+Step #1 - "test-generated-implementations":         [33mclass[31m=[32m"bg-white shadow"[31m
+Step #1 - "test-generated-implementations":       [36m>[31m
+Step #1 - "test-generated-implementations":         [36m<div[31m
+Step #1 - "test-generated-implementations":           [33mclass[31m=[32m"mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center"[31m
+Step #1 - "test-generated-implementations":         [36m>[31m
+Step #1 - "test-generated-implementations":           [36m<div>[31m
+Step #1 - "test-generated-implementations":             [36m<h1[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"text-xl font-bold text-gray-900"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [0m外注先ホーム[0m
+Step #1 - "test-generated-implementations":             [36m</h1>[31m
+Step #1 - "test-generated-implementations":             [36m<p[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"text-sm text-gray-600 mt-1"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [0mログイン中: [0m
+Step #1 - "test-generated-implementations":               [36m<span[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"font-semibold"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [0mテスト管理者[0m
+Step #1 - "test-generated-implementations":               [36m</span>[31m
+Step #1 - "test-generated-implementations":             [36m</p>[31m
+Step #1 - "test-generated-implementations":           [36m</div>[31m
+Step #1 - "test-generated-implementations":           [36m<button[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"[31m
+Step #1 - "test-generated-implementations":             [33mstyle[31m=[32m"min-height: 44px;"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [0mログアウト[0m
+Step #1 - "test-generated-implementations":           [36m</button>[31m
+Step #1 - "test-generated-implementations":         [36m</div>[31m
+Step #1 - "test-generated-implementations":       [36m</header>[31m
+Step #1 - "test-generated-implementations":       [36m<main[31m
+Step #1 - "test-generated-implementations":         [33mclass[31m=[32m"flex-1 mx-auto max-w-md w-full px-4 py-12 flex flex-col justify-center space-y-6"[31m
+Step #1 - "test-generated-implementations":       [36m>[31m
+Step #1 - "test-generated-implementations":         [36m<button[31m
+Step #1 - "test-generated-implementations":           [33mclass[31m=[32m"flex h-36 w-full flex-col items-center justify-center rounded-xl bg-blue-600 text-white shadow-md hover:bg-blue-505 transition-colors"[31m
+Step #1 - "test-generated-implementations":           [33mstyle[31m=[32m"min-height: 44px;"[31m
+Step #1 - "test-generated-implementations":         [36m>[31m
+Step #1 - "test-generated-implementations":           [36m<span[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"text-2xl font-bold"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [0m打刻[0m
+Step #1 - "test-generated-implementations":           [36m</span>[31m
+Step #1 - "test-generated-implementations":           [36m<span[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"text-sm mt-2"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [0m出勤・退勤の打刻を行います[0m
+Step #1 - "test-generated-implementations":           [36m</span>[31m
+Step #1 - "test-generated-implementations":         [36m</button>[31m
+Step #1 - "test-generated-implementations":         [36m<button[31m
+Step #1 - "test-generated-implementations":           [33mclass[31m=[32m"flex h-36 w-full flex-col items-center justify-center rounded-xl bg-orange-600 text-white shadow-md hover:bg-orange-500 transition-colors"[31m
+Step #1 - "test-generated-implementations":           [33mstyle[31m=[32m"min-height: 44px;"[31m
+Step #1 - "test-generated-implementations":         [36m>[31m
+Step #1 - "test-generated-implementations":           [36m<span[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"text-2xl font-bold"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [0m打刻データ登録・修正[0m
+Step #1 - "test-generated-implementations":           [36m</span>[31m
+Step #1 - "test-generated-implementations":           [36m<span[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"text-sm mt-2"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [0m手動打刻登録や既存打刻の修正を行います[0m
+Step #1 - "test-generated-implementations":           [36m</span>[31m
+Step #1 - "test-generated-implementations":         [36m</button>[31m
+Step #1 - "test-generated-implementations":         [36m<button[31m
+Step #1 - "test-generated-implementations":           [33mclass[31m=[32m"flex h-36 w-full flex-col items-center justify-center rounded-xl bg-green-600 text-white shadow-md hover:bg-green-500 transition-colors"[31m
+Step #1 - "test-generated-implementations":           [33mstyle[31m=[32m"min-height: 44px;"[31m
+Step #1 - "test-generated-implementations":         [36m>[31m
+Step #1 - "test-generated-implementations":           [36m<span[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"text-2xl font-bold"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [0m作業員管理[0m
+Step #1 - "test-generated-implementations":           [36m</span>[31m
+Step #1 - "test-generated-implementations":           [36m<span[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"text-sm mt-2"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [0m作業員の登録・編集・削除を行います[0m
+Step #1 - "test-generated-implementations":           [36m</span>[31m
+Step #1 - "test-generated-implementations":         [36m</button>[31m
+Step #1 - "test-generated-implementations":       [36m</main>[31m
+Step #1 - "test-generated-implementations":     [36m</div>[31m
+Step #1 - "test-generated-implementations":   [36m</div>[31m
+Step #1 - "test-generated-implementations": [36m</body>[31m[39m
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-002_contractor_home/page.test.tsx[2m > [22m[2mSCR-002_contractor_home[2m > [22m[2mTS-SCR-002-004: 作業員管理ボタンクリックで /contractor/workers に遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_USER_SUCCESS","payload":{"userId":"u1-uuid"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-002_contractor_home/page.test.tsx[2m > [22mSCR-002_contractor_home[2m > [22mTS-SCR-002-004: 作業員管理ボタンクリックで /contractor/workers に遷移すること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-002_contractor_home/page.test.tsx[2m > [22m[2mSCR-002_contractor_home[2m > [22m[2mTS-SCR-002-005: ログアウトボタンクリックでセッションがクリアされ /login に遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_USER_SUCCESS","payload":{"userId":"u1-uuid"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-002_contractor_home/page.test.tsx[2m > [22m[2mSCR-002_contractor_home[2m > [22m[2mTS-SCR-002-005: ログアウトボタンクリックでセッションがクリアされ /login に遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_USER_SUCCESS","payload":{"userId":"u1-uuid"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-002_contractor_home/page.test.tsx[2m > [22m[2mSCR-002_contractor_home[2m > [22m[2mTS-SCR-002-005: ログアウトボタンクリックでセッションがクリアされ /login に遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"LOGOUT_SUCCESS","payload":{"userId":"u1-uuid"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-002_contractor_home/page.test.tsx[2m > [22mSCR-002_contractor_home[2m > [22mTS-SCR-002-005: ログアウトボタンクリックでセッションがクリアされ /login に遷移すること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-002_contractor_home/page.test.tsx
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_USER_SUCCESS","payload":{"userId":"u1-uuid"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m4 passed[39m[22m[90m (5)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 07:03:41
+Step #1 - "test-generated-implementations": [2m   Duration [22m 2.05s[2m (transform 235ms, setup 163ms, collect 373ms, tests 430ms, environment 687ms, prepare 148ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": FAIL: SCR-002_contractor_home
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯⎯[1m[7m Failed Tests 1 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[1m[7m FAIL [27m[22m[39m tests/SCR-002_contractor_home/page.test.tsx[2m > [22mSCR-002_contractor_home[2m > [22mTS-SCR-002-003: 打刻ボタンクリックで /contractor/punch-mode に遷移すること
+Step #1 - "test-generated-implementations": [31m[1mTestingLibraryElementError[22m[39m: Unable to find an accessible element with the role "button" and name `/^打刻$/`
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Here are the accessible roles:
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   banner:
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   Name "":
+Step #1 - "test-generated-implementations":   [36m<header[39m
+Step #1 - "test-generated-implementations":     [33mclass[39m=[32m"bg-white shadow"[39m
+Step #1 - "test-generated-implementations":   [36m/>[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   --------------------------------------------------
+Step #1 - "test-generated-implementations":   heading:
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   Name "外注先ホーム":
+Step #1 - "test-generated-implementations":   [36m<h1[39m
+Step #1 - "test-generated-implementations":     [33mclass[39m=[32m"text-xl font-bold text-gray-900"[39m
+Step #1 - "test-generated-implementations":   [36m/>[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   --------------------------------------------------
+Step #1 - "test-generated-implementations":   paragraph:
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   Name "":
+Step #1 - "test-generated-implementations":   [36m<p[39m
+Step #1 - "test-generated-implementations":     [33mclass[39m=[32m"text-sm text-gray-600 mt-1"[39m
+Step #1 - "test-generated-implementations":   [36m/>[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   --------------------------------------------------
+Step #1 - "test-generated-implementations":   button:
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   Name "ログアウト":
+Step #1 - "test-generated-implementations":   [36m<button[39m
+Step #1 - "test-generated-implementations":     [33mclass[39m=[32m"rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"[39m
+Step #1 - "test-generated-implementations":     [33mstyle[39m=[32m"min-height: 44px;"[39m
+Step #1 - "test-generated-implementations":   [36m/>[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   Name "打刻 出勤・退勤の打刻を行います":
+Step #1 - "test-generated-implementations":   [36m<button[39m
+Step #1 - "test-generated-implementations":     [33mclass[39m=[32m"flex h-36 w-full flex-col items-center justify-center rounded-xl bg-blue-600 text-white shadow-md hover:bg-blue-505 transition-colors"[39m
+Step #1 - "test-generated-implementations":     [33mstyle[39m=[32m"min-height: 44px;"[39m
+Step #1 - "test-generated-implementations":   [36m/>[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   Name "打刻データ登録・修正 手動打刻登録や既存打刻の修正を行います":
+Step #1 - "test-generated-implementations":   [36m<button[39m
+Step #1 - "test-generated-implementations":     [33mclass[39m=[32m"flex h-36 w-full flex-col items-center justify-center rounded-xl bg-orange-600 text-white shadow-md hover:bg-orange-500 transition-colors"[39m
+Step #1 - "test-generated-implementations":     [33mstyle[39m=[32m"min-height: 44px;"[39m
+Step #1 - "test-generated-implementations":   [36m/>[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   Name "作業員管理 作業員の登録・編集・削除を行います":
+Step #1 - "test-generated-implementations":   [36m<button[39m
+Step #1 - "test-generated-implementations":     [33mclass[39m=[32m"flex h-36 w-full flex-col items-center justify-center rounded-xl bg-green-600 text-white shadow-md hover:bg-green-500 transition-colors"[39m
+Step #1 - "test-generated-implementations":     [33mstyle[39m=[32m"min-height: 44px;"[39m
+Step #1 - "test-generated-implementations":   [36m/>[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   --------------------------------------------------
+Step #1 - "test-generated-implementations":   main:
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   Name "":
+Step #1 - "test-generated-implementations":   [36m<main[39m
+Step #1 - "test-generated-implementations":     [33mclass[39m=[32m"flex-1 mx-auto max-w-md w-full px-4 py-12 flex flex-col justify-center space-y-6"[39m
+Step #1 - "test-generated-implementations":   [36m/>[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":   --------------------------------------------------
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Ignored nodes: comments, script, style
+Step #1 - "test-generated-implementations": [36m<body>[39m
+Step #1 - "test-generated-implementations":   [36m<div>[39m
+Step #1 - "test-generated-implementations":     [36m<div[39m
+Step #1 - "test-generated-implementations":       [33mclass[39m=[32m"flex min-h-screen flex-col bg-gray-100"[39m
+Step #1 - "test-generated-implementations":     [36m>[39m
+Step #1 - "test-generated-implementations":       [36m<header[39m
+Step #1 - "test-generated-implementations":         [33mclass[39m=[32m"bg-white shadow"[39m
+Step #1 - "test-generated-implementations":       [36m>[39m
+Step #1 - "test-generated-implementations":         [36m<div[39m
+Step #1 - "test-generated-implementations":           [33mclass[39m=[32m"mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center"[39m
+Step #1 - "test-generated-implementations":         [36m>[39m
+Step #1 - "test-generated-implementations":           [36m<div>[39m
+Step #1 - "test-generated-implementations":             [36m<h1[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"text-xl font-bold text-gray-900"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [0m外注先ホーム[0m
+Step #1 - "test-generated-implementations":             [36m</h1>[39m
+Step #1 - "test-generated-implementations":             [36m<p[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"text-sm text-gray-600 mt-1"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [0mログイン中: [0m
+Step #1 - "test-generated-implementations":               [36m<span[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"font-semibold"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [0mテスト管理者[0m
+Step #1 - "test-generated-implementations":               [36m</span>[39m
+Step #1 - "test-generated-implementations":             [36m</p>[39m
+Step #1 - "test-generated-implementations":           [36m</div>[39m
+Step #1 - "test-generated-implementations":           [36m<button[39m
+Step #1 - "test-generated-implementations":             [33mclass[39m=[32m"rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"[39m
+Step #1 - "test-generated-implementations":             [33mstyle[39m=[32m"min-height: 44px;"[39m
+Step #1 - "test-generated-implementations":           [36m>[39m
+Step #1 - "test-generated-implementations":             [0mログアウト[0m
+Step #1 - "test-generated-implementations":           [36m</button>[39m
+Step #1 - "test-generated-implementations":         [36m</div>[39m
+Step #1 - "test-generated-implementations":       [36m</header>[39m
+Step #1 - "test-generated-implementations":       [36m<main[39m
+Step #1 - "test-generated-implementations":         [33mclass[39m=[32m"flex-1 mx-auto max-w-md w-full px-4 py-12 flex flex-col justify-center space-y-6"[39m
+Step #1 - "test-generated-implementations":       [36m>[39m
+Step #1 - "test-generated-implementations":         [36m<button[39m
+Step #1 - "test-generated-implementations":           [33mclass[39m=[32m"flex h-36 w-full flex-col items-center justify-center rounded-xl bg-blue-600 text-white shadow-md hover:bg-blue-505 transition-colors"[39m
+Step #1 - "test-generated-implementations":           [33mstyle[39m=[32m"min-height: 44px;"[39m
+Step #1 - "test-generated-implementations":         [36m>[39m
+Step #1 - "test-generated-implementations":           [36m<span[39m
+Step #1 - "test-generated-implementations":             [33mclass[39m=[32m"text-2xl font-bold"[39m
+Step #1 - "test-generated-implementations":           [36m>[39m
+Step #1 - "test-generated-implementations":             [0m打刻[0m
+Step #1 - "test-generated-implementations":           [36m</span>[39m
+Step #1 - "test-generated-implementations":           [36m<span[39m
+Step #1 - "test-generated-implementations":             [33mclass[39m=[32m"text-sm mt-2"[39m
+Step #1 - "test-generated-implementations":           [36m>[39m
+Step #1 - "test-generated-implementations":             [0m出勤・退勤の打刻を行います[0m
+Step #1 - "test-generated-implementations":           [36m</span>[39m
+Step #1 - "test-generated-implementations":         [36m</button>[39m
+Step #1 - "test-generated-implementations":         [36m<button[39m
+Step #1 - "test-generated-implementations":           [33mclass[39m=[32m"flex h-36 w-full flex-col items-center justify-center rounded-xl bg-orange-600 text-white shadow-md hover:bg-orange-500 transition-colors"[39m
+Step #1 - "test-generated-implementations":           [33mstyle[39m=[32m"min-height: 44px;"[39m
+Step #1 - "test-generated-implementations":         [36m>[39m
+Step #1 - "test-generated-implementations":           [36m<span[39m
+Step #1 - "test-generated-implementations":             [33mclass[39m=[32m"text-2xl font-bold"[39m
+Step #1 - "test-generated-implementations":           [36m>[39m
+Step #1 - "test-generated-implementations":             [0m打刻データ登録・修正[0m
+Step #1 - "test-generated-implementations":           [36m</span>[39m
+Step #1 - "test-generated-implementations":           [36m<span[39m
+Step #1 - "test-generated-implementations":             [33mclass[39m=[32m"text-sm mt-2"[39m
+Step #1 - "test-generated-implementations":           [36m>[39m
+Step #1 - "test-generated-implementations":             [0m手動打刻登録や既存打刻の修正を行います[0m
+Step #1 - "test-generated-implementations":           [36m</span>[39m
+Step #1 - "test-generated-implementations":         [36m</button>[39m
+Step #1 - "test-generated-implementations":         [36m<button[39m
+Step #1 - "test-generated-implementations":           [33mclass[39m=[32m"flex h-36 w-full flex-col items-center justify-center rounded-xl bg-green-600 text-white shadow-md hover:bg-green-500 transition-colors"[39m
+Step #1 - "test-generated-implementations":           [33mstyle[39m=[32m"min-height: 44px;"[39m
+Step #1 - "test-generated-implementations":         [36m>[39m
+Step #1 - "test-generated-implementations":           [36m<span[39m
+Step #1 - "test-generated-implementations":             [33mclass[39m=[32m"text-2xl font-bold"[39m
+Step #1 - "test-generated-implementations":           [36m>[39m
+Step #1 - "test-generated-implementations":             [0m作業員管理[0m
+Step #1 - "test-generated-implementations":           [36m</span>[39m
+Step #1 - "test-generated-implementations":           [36m<span[39m
+Step #1 - "test-generated-implementations":             [33mclass[39m=[32m"text-sm mt-2"[39m
+Step #1 - "test-generated-implementations":           [36m>[39m
+Step #1 - "test-generated-implementations":             [0m作業員の登録・編集・削除を行います[0m
+Step #1 - "test-generated-implementations":           [36m</span>[39m
+Step #1 - "test-generated-implementations":         [36m</button>[39m
+Step #1 - "test-generated-implementations":       [36m</main>[39m
+Step #1 - "test-generated-implementations":     [36m</div>[39m
+Step #1 - "test-generated-implementations":   [36m</div>[39m
+Step #1 - "test-generated-implementations": [36m</body>[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m Object.getElementError ../../workspace/test-runner/node_modules/@testing-library/dom/dist/config.js:[2m37:19[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/@testing-library/dom/dist/query-helpers.js:[2m76:38[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/@testing-library/dom/dist/query-helpers.js:[2m52:17[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/@testing-library/dom/dist/query-helpers.js:[2m95:19[22m[39m
+Step #1 - "test-generated-implementations": [36m [2m❯[22m tests/SCR-002_contractor_home/page.test.tsx:[2m86:32[22m[39m
+Step #1 - "test-generated-implementations":     [90m 84| [39m    })[33m;[39m
+Step #1 - "test-generated-implementations":     [90m 85| [39m
+Step #1 - "test-generated-implementations":     [90m 86| [39m    [35mconst[39m punchButton [33m=[39m screen[33m.[39m[34mgetByRole[39m([32m'button'[39m[33m,[39m { name[33m:[39m [36m/^打刻$/[39m })[33m;[39m
+Step #1 - "test-generated-implementations":     [90m   | [39m                               [31m^[39m
+Step #1 - "test-generated-implementations":     [90m 87| [39m    fireEvent[33m.[39m[34mclick[39m(punchButton)[33m;[39m
+Step #1 - "test-generated-implementations":     [90m 88| [39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [3/15] Testing: SCR-003_punch_mode_select
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-003_punch_mode_select-j6c36n[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-003_punch_mode_select/page.test.tsx[2m > [22mSCR-003_punch_mode_select[2m > [22mTEST-SCR-003-005: 認証セッションが存在しない場合はログイン画面へリダイレクトされること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-003_punch_mode_select/page.test.tsx[2m > [22mSCR-003_punch_mode_select[2m > [22mTEST-SCR-003-001: 「出勤」ボタン押下により打刻モードが CLOCK_IN に設定され、作業員選択画面へ遷移すること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-003_punch_mode_select/page.test.tsx[2m > [22mSCR-003_punch_mode_select[2m > [22mTEST-SCR-003-002: 「退勤」ボタン押下により打刻モードが CLOCK_OUT に設定され、作業員選択画面へ遷移すること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-003_punch_mode_select/page.test.tsx[2m > [22mSCR-003_punch_mode_select[2m > [22mTEST-SCR-003-004: 現在の日時が意図したフォーマットで画面上部に表示されていること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-003_punch_mode_select/page.test.tsx[2m > [22mSCR-003_punch_mode_select[2m > [22mTEST-SCR-003-006: 「戻る」ボタンが押下された際、選択状態をクリアしてホーム画面へ遷移すること
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 07:03:43
+Step #1 - "test-generated-implementations": [2m   Duration [22m 1.83s[2m (transform 237ms, setup 193ms, collect 355ms, tests 263ms, environment 647ms, prepare 114ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": PASS: SCR-003_punch_mode_select
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [4/15] Testing: SCR-004_worker_select
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-004_worker_select-WjfmJU[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-004_worker_select/page.test.tsx[2m > [22m[2mSCR-004 作業員選択画面テスト[2m > [22m[2mログイン中の外注先に紐づくACTIVEな作業員のみが氏名順で表示されること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SEED_DATA_IMPORT_START"}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"SEED_FETCH_FAILED_USING_FALLBACK"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-004_worker_select/page.test.tsx[2m > [22m[2mSCR-004 作業員選択画面テスト[2m > [22m[2mログイン中の外注先に紐づくACTIVEな作業員のみが氏名順で表示されること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SEED_DATA_IMPORT_SUCCESS"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-004_worker_select/page.test.tsx[2m > [22m[2mSCR-004 作業員選択画面テスト[2m > [22m[2mログイン中の外注先に紐づくACTIVEな作業員のみが氏名順で表示されること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-004_worker_select/page.test.tsx[2m > [22m[2mSCR-004 作業員選択画面テスト[2m > [22m[2mチェックボックスをクリックして個別選択および全選択ができること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-004_worker_select/page.test.tsx[2m > [22m[2mSCR-004 作業員選択画面テスト[2m > [22m[2mチェックボックスをクリックして個別選択および全選択ができること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-004_worker_select/page.test.tsx[2m > [22mSCR-004 作業員選択画面テスト[2m > [22mログイン中の外注先に紐づくACTIVEな作業員のみが氏名順で表示されること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-004_worker_select/page.test.tsx[2m > [22m[2mSCR-004 作業員選択画面テスト[2m > [22m[2m1名も選択せずに「次へ」を押下したとき、エラーメッセージが表示され、画面遷移しないこと
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-004_worker_select/page.test.tsx[2m > [22m[2mSCR-004 作業員選択画面テスト[2m > [22m[2m1名も選択せずに「次へ」を押下したとき、エラーメッセージが表示され、画面遷移しないこと
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-004_worker_select/page.test.tsx[2m > [22mSCR-004 作業員選択画面テスト[2m > [22mチェックボックスをクリックして個別選択および全選択ができること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-004_worker_select/page.test.tsx[2m > [22m[2mSCR-004 作業員選択画面テスト[2m > [22m[2m1名も選択せずに「次へ」を押下したとき、エラーメッセージが表示され、画面遷移しないこと
+Step #1 - "test-generated-implementations": [22m[39m{"level":"WARN","event":"NEXT_STEP_FAILED_NO_WORKERS_SELECTED","payload":{"userId":"u1-uuid"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-004_worker_select/page.test.tsx[2m > [22m[2mSCR-004 作業員選択画面テスト[2m > [22m[2m1名以上選択して「次へ」を押下したとき、次の画面へ遷移し状態が保持されること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-004_worker_select/page.test.tsx[2m > [22m[2mSCR-004 作業員選択画面テスト[2m > [22m[2m1名以上選択して「次へ」を押下したとき、次の画面へ遷移し状態が保持されること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-004_worker_select/page.test.tsx[2m > [22mSCR-004 作業員選択画面テスト[2m > [22m1名も選択せずに「次へ」を押下したとき、エラーメッセージが表示され、画面遷移しないこと
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-004_worker_select/page.test.tsx[2m > [22m[2mSCR-004 作業員選択画面テスト[2m > [22m[2m1名以上選択して「次へ」を押下したとき、次の画面へ遷移し状態が保持されること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"WORKERS_SELECTED_NEXT_STEP","payload":{"userId":"u1-uuid","selectedCount":1}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-004_worker_select/page.test.tsx[2m > [22m[2mSCR-004 作業員選択画面テスト[2m > [22m[2m「戻る」ボタンを押下したとき、選択状態が初期化されてモード選択画面へ戻ること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-004_worker_select/page.test.tsx[2m > [22m[2mSCR-004 作業員選択画面テスト[2m > [22m[2m「戻る」ボタンを押下したとき、選択状態が初期化されてモード選択画面へ戻ること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-004_worker_select/page.test.tsx[2m > [22mSCR-004 作業員選択画面テスト[2m > [22m1名以上選択して「次へ」を押下したとき、次の画面へ遷移し状態が保持されること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-004_worker_select/page.test.tsx[2m > [22m[2mSCR-004 作業員選択画面テスト[2m > [22m[2m「戻る」ボタンを押下したとき、選択状態が初期化されてモード選択画面へ戻ること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"WORKERS_SELECT_CANCELLED","payload":{"userId":"u1-uuid"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-004_worker_select/page.test.tsx[2m > [22mSCR-004 作業員選択画面テスト[2m > [22m「戻る」ボタンを押下したとき、選択状態が初期化されてモード選択画面へ戻ること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-004_worker_select/page.test.tsx
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | Object.log (/tmp/SCR-004_worker_select-WjfmJU/lib/logger/index.ts:14:13)
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKERS_SUCCESS","payload":{"contractorId":"c1-uuid","count":2}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 07:03:46
+Step #1 - "test-generated-implementations": [2m   Duration [22m 2.11s[2m (transform 356ms, setup 194ms, collect 466ms, tests 438ms, environment 650ms, prepare 119ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-004_worker_select
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [5/15] Testing: SCR-005_capture_and_submit
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-005_capture_and_submit-TtXfoH[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-001: 未認証状態の場合はログイン画面へリダイレクトされること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"WARN","event":"UNAUTHORIZED_ACCESS_ATTEMPT","payload":{"userId":null,"role":null}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"CAMERA_STARTED_SUCCESSFULLY"}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"UNAUTHORIZED_ACCESS_ATTEMPT","payload":{"userId":null,"role":null}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-002: カメラデバイスの正常応答時にGetUserMediaが呼び出されること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"CAMERA_STARTED_SUCCESSFULLY"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-003: カメラデバイスへのアクセス拒否時にエラーメッセージが表示されること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"ERROR","event":"CAMERA_ACCESS_FAILED","payload":{"error":"Error: NotAllowedError"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-001: 未認証状態の場合はログイン画面へリダイレクトされること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-002: カメラデバイスの正常応答時にGetUserMediaが呼び出されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-003: カメラデバイスへのアクセス拒否時にエラーメッセージが表示されること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-004: 初期表示状態では送信ボタンが表示されていない、あるいは非活性であること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"CAMERA_STARTED_SUCCESSFULLY"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-004: 初期表示状態では送信ボタンが表示されていない、あるいは非活性であること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-005: 撮影ボタンクリックでプレビューが表示され、送信ボタンが活性化すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"CAMERA_STARTED_SUCCESSFULLY"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-005: 撮影ボタンクリックでプレビューが表示され、送信ボタンが活性化すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"PHOTO_CAPTURED_SUCCESSFULLY"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-006: 撮り直しボタンクリックでビデオが再表示され、送信ボタンが消えること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"CAMERA_STARTED_SUCCESSFULLY"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-005: 撮影ボタンクリックでプレビューが表示され、送信ボタンが活性化すること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-006: 撮り直しボタンクリックでビデオが再表示され、送信ボタンが消えること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"PHOTO_CAPTURED_SUCCESSFULLY"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-006: 撮り直しボタンクリックでビデオが再表示され、送信ボタンが消えること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"PHOTO_RETAKE_TRIGGERED"}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"CAMERA_STARTED_SUCCESSFULLY"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-008: 送信ボタンクリックによってデータが保存され、完了画面へ遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"CAMERA_STARTED_SUCCESSFULLY"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-006: 撮り直しボタンクリックでビデオが再表示され、送信ボタンが消えること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-008: 送信ボタンクリックによってデータが保存され、完了画面へ遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"PHOTO_CAPTURED_SUCCESSFULLY"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-008: 送信ボタンクリックによってデータが保存され、完了画面へ遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"COMPRESS_IMAGE_START"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-008: 送信ボタンクリックによってデータが保存され、完了画面へ遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"COMPRESS_IMAGE_SUCCESS","payload":{"originalSize":16,"compressedSize":16}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-008: 送信ボタンクリックによってデータが保存され、完了画面へ遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SEED_DATA_IMPORT_START"}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"SEED_FETCH_FAILED_USING_FALLBACK"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-008: 送信ボタンクリックによってデータが保存され、完了画面へ遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SEED_DATA_IMPORT_SUCCESS"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-008: 送信ボタンクリックによってデータが保存され、完了画面へ遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"PUNCH_SUBMISSION_SUCCESSFUL"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-010: 戻るボタンのクリックでカメラが停止し、前画面（worker-select）へ遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"CAMERA_STARTED_SUCCESSFULLY"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-008: 送信ボタンクリックによってデータが保存され、完了画面へ遷移すること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22mSCR-005_capture_and_submit Page Tests[2m > [22mTST-SCR-005-010: 戻るボタンのクリックでカメラが停止し、前画面（worker-select）へ遷移すること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-005_capture_and_submit/page.test.tsx[2m > [22m[2mSCR-005_capture_and_submit Page Tests[2m > [22m[2mTST-SCR-005-010: 戻るボタンのクリックでカメラが停止し、前画面（worker-select）へ遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"BACK_TO_WORKER_SELECT_TRIGGERED"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-005_capture_and_submit/compressImage.test.ts[2m > [22mcompressImage Utility Tests[2m > [22mTST-SCR-005-007: 画像圧縮ユーティリティが画像をアスペクト比を維持して圧縮・リサイズすること
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m9 passed[39m[22m[90m (9)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 07:03:49
+Step #1 - "test-generated-implementations": [2m   Duration [22m 3.20s[2m (transform 358ms, setup 355ms, collect 468ms, tests 493ms, environment 1.25s, prepare 199ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-005_capture_and_submit
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [6/15] Testing: SCR-006_punch_complete
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-006_punch_complete-NgEuRS[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-006_punch_complete/page.test.tsx[2m > [22m[2mSCR-006_punch_complete - 打刻完了画面[2m > [22m[2mTS-SCR-006-003: 未ログイン状態（sessionStorageが空）の時に、即座にログイン画面へ遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"WARN","event":"UNAUTHORIZED_ACCESS_ATTEMPT","payload":{"userId":null,"role":null}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-006_punch_complete/page.test.tsx[2m > [22m[2mSCR-006_punch_complete - 打刻完了画面[2m > [22m[2mTS-SCR-006-002: 「ホームへ戻る」ボタンが適切なサイズで描画され、クリック時に外注先ホームへ遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"PUNCH_COMPLETE_GO_HOME_TRIGGERED"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-006_punch_complete/page.test.tsx[2m > [22mSCR-006_punch_complete - 打刻完了画面[2m > [22mTS-SCR-006-003: 未ログイン状態（sessionStorageが空）の時に、即座にログイン画面へ遷移すること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-006_punch_complete/page.test.tsx[2m > [22mSCR-006_punch_complete - 打刻完了画面[2m > [22mTS-SCR-006-001: 正常ログイン時、クエリパラメータから取得した出勤モードと対象人数を含むメッセージが表示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-006_punch_complete/page.test.tsx[2m > [22mSCR-006_punch_complete - 打刻完了画面[2m > [22mTS-SCR-006-001: 退勤打刻を完了した旨のメッセージが正しく表示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-006_punch_complete/page.test.tsx[2m > [22mSCR-006_punch_complete - 打刻完了画面[2m > [22mTS-SCR-006-001: クエリパラメータがない場合、デフォルトのフォールバック完了メッセージが表示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-006_punch_complete/page.test.tsx[2m > [22mSCR-006_punch_complete - 打刻完了画面[2m > [22mTS-SCR-006-002: 「ホームへ戻る」ボタンが適切なサイズで描画され、クリック時に外注先ホームへ遷移すること
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 07:03:53
+Step #1 - "test-generated-implementations": [2m   Duration [22m 1.65s[2m (transform 225ms, setup 217ms, collect 325ms, tests 109ms, environment 637ms, prepare 110ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": PASS: SCR-006_punch_complete
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [7/15] Testing: SCR-007_worker_list
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-007_worker_list-CtLEvo[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-007_worker_list/page.test.tsx[2m > [22mSCR-007 Worker List Page[2m > [22mTST-007-007: Unauthenticated access redirects instantly to /login
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-007_worker_list/page.test.tsx[2m > [22mSCR-007 Worker List Page[2m > [22mTST-007-001: Renders active workers belonging to logged-in contractor C01
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-007_worker_list/page.test.tsx[2m > [22mSCR-007 Worker List Page[2m > [22mTST-007-002: Click on 新規追加 navigates to SCR-008 new mode
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-007_worker_list/page.test.tsx[2m > [22mSCR-007 Worker List Page[2m > [22mTST-007-003: Click on 編集 navigates to SCR-008 edit mode pointing to W007
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-007_worker_list/page.test.tsx[2m > [22mSCR-007 Worker List Page[2m > [22mTST-007-004: Click on 削除 with confirm true deletes worker
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-007_worker_list/page.test.tsx[2m > [22mSCR-007 Worker List Page[2m > [22mTST-007-005: Click on 削除 with confirm false keeps worker
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-007_worker_list/page.test.tsx[2m > [22mSCR-007 Worker List Page[2m > [22mTST-007-006: Click on 戻る navigates back to contractor home
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m7 passed[39m[22m[90m (7)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 07:03:55
+Step #1 - "test-generated-implementations": [2m   Duration [22m 2.22s[2m (transform 410ms, setup 201ms, collect 486ms, tests 510ms, environment 668ms, prepare 113ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-007_worker_list
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [8/15] Testing: SCR-008_worker_add_edit
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-008_worker_add_edit-foZqeI[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22m[2mSCR-008 Worker Add/Edit Page[2m > [22m[2mTST-001 & ACP-001: should show error when name is empty and submit is clicked
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SEED_DATA_IMPORT_START"}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"SEED_FETCH_FAILED_USING_FALLBACK"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22m[2mSCR-008 Worker Add/Edit Page[2m > [22m[2mTST-001 & ACP-001: should show error when name is empty and submit is clicked
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SEED_DATA_IMPORT_SUCCESS"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22mSCR-008 Worker Add/Edit Page[2m > [22mTST-001 & ACP-001: should show error when name is empty and submit is clicked
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22m[2mSCR-008 Worker Add/Edit Page[2m > [22m[2mTST-003 & ACP-003: should redirect to login if session does not exist
+Step #1 - "test-generated-implementations": [22m[39m{"level":"WARN","event":"UNAUTHORIZED_ACCESS_ATTEMPT","payload":{"userId":null,"role":null}}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"UNAUTHORIZED_ACCESS_ATTEMPT","payload":{"userId":null,"role":null}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22mSCR-008 Worker Add/Edit Page[2m > [22mTST-002 & ACP-002: should show error when contact is empty and submit is clicked
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22mSCR-008 Worker Add/Edit Page[2m > [22mTST-003 & ACP-003: should redirect to login if session does not exist
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22m[2mSCR-008 Worker Add/Edit Page[2m > [22m[2mTST-004 & ACP-004: should submit new worker successfully and redirect
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"CREATE_WORKER_START"}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"CREATE_WORKER_SUCCESS","payload":{"workerId":"new-worker-id"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22mSCR-008 Worker Add/Edit Page[2m > [22mTST-004 & ACP-004: should submit new worker successfully and redirect
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22m[2mSCR-008 Worker Add/Edit Page[2m > [22m[2mTST-005 & ACP-005: should edit worker successfully and redirect
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_WORKER_START","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_SUCCESS","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_START","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_SUCCESS","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"UPDATE_WORKER_START","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"UPDATE_WORKER_SUCCESS","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22m[2mSCR-008 Worker Add/Edit Page[2m > [22m[2mTST-006 & ACP-006: should discard changes and go back on cancel
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_WORKER_START","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"WORKER_NOT_FOUND_OR_ACCESS_DENIED","payload":{"workerId":"worker-xyz-789","contractorId":"c1-uuid"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_START","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"WORKER_NOT_FOUND_OR_ACCESS_DENIED","payload":{"workerId":"worker-xyz-789","contractorId":"c1-uuid"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_START","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"WORKER_NOT_FOUND_OR_ACCESS_DENIED","payload":{"workerId":"worker-xyz-789","contractorId":"c1-uuid"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_START","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"WORKER_NOT_FOUND_OR_ACCESS_DENIED","payload":{"workerId":"worker-xyz-789","contractorId":"c1-uuid"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_START","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"WORKER_NOT_FOUND_OR_ACCESS_DENIED","payload":{"workerId":"worker-xyz-789","contractorId":"c1-uuid"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_START","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"WORKER_NOT_FOUND_OR_ACCESS_DENIED","payload":{"workerId":"worker-xyz-789","contractorId":"c1-uuid"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_START","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"WORKER_NOT_FOUND_OR_ACCESS_DENIED","payload":{"workerId":"worker-xyz-789","contractorId":"c1-uuid"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22mSCR-008 Worker Add/Edit Page[2m > [22mTST-005 & ACP-005: should edit worker successfully and redirect
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22m[2mSCR-008 Worker Add/Edit Page[2m > [22m[2mTST-006 & ACP-006: should discard changes and go back on cancel
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SAVE_WORKER_CANCELLED"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22m[2mSCR-008 Worker Add/Edit Page[2m > [22m[2mTST-007 & ACP-007: should load and display worker info correctly in edit mode
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_WORKER_START","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_SUCCESS","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_START","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_SUCCESS","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22mSCR-008 Worker Add/Edit Page[2m > [22mTST-006 & ACP-006: should discard changes and go back on cancel
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-008_worker_add_edit/page.test.tsx[2m > [22mSCR-008 Worker Add/Edit Page[2m > [22mTST-007 & ACP-007: should load and display worker info correctly in edit mode
+Step #1 - "test-generated-implementations": [90mstdout[2m | Object.log (/tmp/SCR-008_worker_add_edit-foZqeI/lib/logger/index.ts:14:13)
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_WORKER_START","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_SUCCESS","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_START","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_SUCCESS","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_START","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_SUCCESS","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_START","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_WORKER_SUCCESS","payload":{"workerId":"worker-xyz-789"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m7 passed[39m[22m[90m (7)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 07:03:58
+Step #1 - "test-generated-implementations": [2m   Duration [22m 2.33s[2m (transform 380ms, setup 203ms, collect 510ms, tests 602ms, environment 658ms, prepare 113ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-008_worker_add_edit
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [9/15] Testing: SCR-009_contractor_punch_correction
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯⎯[1m[7m Failed Tests 1 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[1m[7m FAIL [27m[22m[39m tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22mSCR-009_contractor_punch_correction[2m > [22mキャンセルボタンをクリックした際、入力内容を破棄して直ちにホーム画面へ遷移すること
+Step #1 - "test-generated-implementations": [31m[1mTestingLibraryElementError[22m: Unable to find an element with the text: 手動打刻登録. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Ignored nodes: comments, script, style
+Step #1 - "test-generated-implementations": [36m<body>[31m
+Step #1 - "test-generated-implementations":   [36m<div>[31m
+Step #1 - "test-generated-implementations":     [36m<div[31m
+Step #1 - "test-generated-implementations":       [33mclass[31m=[32m"flex min-h-screen items-center justify-center bg-gray-100"[31m
+Step #1 - "test-generated-implementations":     [36m>[31m
+Step #1 - "test-generated-implementations":       [36m<p[31m
+Step #1 - "test-generated-implementations":         [33mclass[31m=[32m"text-gray-600"[31m
+Step #1 - "test-generated-implementations":       [36m>[31m
+Step #1 - "test-generated-implementations":         [0m読み込み中...[0m
+Step #1 - "test-generated-implementations":       [36m</p>[31m
+Step #1 - "test-generated-implementations":     [36m</div>[31m
+Step #1 - "test-generated-implementations":   [36m</div>[31m
+Step #1 - "test-generated-implementations": [36m</body>[31m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Ignored nodes: comments, script, style
+Step #1 - "test-generated-implementations": [36m<body>[31m
+Step #1 - "test-generated-implementations":   [36m<div>[31m
+Step #1 - "test-generated-implementations":     [36m<div[31m
+Step #1 - "test-generated-implementations":       [33mclass[31m=[32m"flex min-h-screen items-center justify-center bg-gray-100"[31m
+Step #1 - "test-generated-implementations":     [36m>[31m
+Step #1 - "test-generated-implementations":       [36m<p[31m
+Step #1 - "test-generated-implementations":         [33mclass[31m=[32m"text-gray-600"[31m
+Step #1 - "test-generated-implementations":       [36m>[31m
+Step #1 - "test-generated-implementations":         [0m読み込み中...[0m
+Step #1 - "test-generated-implementations":       [36m</p>[31m
+Step #1 - "test-generated-implementations":     [36m</div>[31m
+Step #1 - "test-generated-implementations":   [36m</div>[31m
+Step #1 - "test-generated-implementations": [36m</body>[31m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m waitForWrapper ../../workspace/test-runner/node_modules/@testing-library/dom/dist/wait-for.js:[2m163:27[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/@testing-library/dom/dist/query-helpers.js:[2m86:33[22m[39m
+Step #1 - "test-generated-implementations": [36m [2m❯[22m tests/SCR-009_contractor_punch_correction/page.test.tsx:[2m157:18[22m[39m
+Step #1 - "test-generated-implementations":     [90m155| [39m    mockGet[33m.[39m[34mmockReturnValue[39m([35mnull[39m)[33m;[39m
+Step #1 - "test-generated-implementations":     [90m156| [39m    [34mrender[39m([33m<[39m[33mPunchCorrectionPage[39m [33m/[39m[33m>[39m)[33m;[39m
+Step #1 - "test-generated-implementations":     [90m157| [39m    [35mawait[39m screen[33m.[39m[34mfindByText[39m([32m'手動打刻登録'[39m)[33m;[39m
+Step #1 - "test-generated-implementations":     [90m   | [39m                 [31m^[39m
+Step #1 - "test-generated-implementations":     [90m158| [39m
+Step #1 - "test-generated-implementations":     [90m159| [39m    [35mconst[39m cancelButton [33m=[39m screen[33m.[39m[34mgetAllByRole[39m([32m'button'[39m[33m,[39m { name[33m:[39m [32m'キャン[39m…
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-009_contractor_punch_correction-eEDxA0[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22m[2mSCR-009_contractor_punch_correction[2m > [22m[2mCONTRACTOR_MANAGERではない、または未ログインの場合、ログイン画面にリダイレクトされること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SEED_DATA_IMPORT_START"}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"SEED_FETCH_FAILED_USING_FALLBACK"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22m[2mSCR-009_contractor_punch_correction[2m > [22m[2mCONTRACTOR_MANAGERではない、または未ログインの場合、ログイン画面にリダイレクトされること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SEED_DATA_IMPORT_SUCCESS"}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"UNAUTHORIZED_ACCESS_ATTEMPT","payload":{"userId":null,"role":null}}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"UNAUTHORIZED_ACCESS_ATTEMPT","payload":{"userId":null,"role":null}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22mSCR-009_contractor_punch_correction[2m > [22mCONTRACTOR_MANAGERではない、または未ログインの場合、ログイン画面にリダイレクトされること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22mSCR-009_contractor_punch_correction[2m > [22m対象作業員を未選択のままで送信を試みた場合、バリデーションエラーが表示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22mSCR-009_contractor_punch_correction[2m > [22m打刻日時が空、または無効な形式の場合、バリデーションエラーが表示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22mSCR-009_contractor_punch_correction[2m > [22m修正理由が空、または半角全角スペースのみの場合、バリデーションエラーが表示されること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22m[2mSCR-009_contractor_punch_correction[2m > [22m[2m有効な入力を入力して送信した際、IndexedDB にデータが保存され、ホーム画面に遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SAVE_PUNCH_CORRECTION_START","payload":{}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22m[2mSCR-009_contractor_punch_correction[2m > [22m[2m有効な入力を入力して送信した際、IndexedDB にデータが保存され、ホーム画面に遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SAVE_PUNCH_CORRECTION_SUCCESS","payload":{}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22mSCR-009_contractor_punch_correction[2m > [22m有効な入力を入力して送信した際、IndexedDB にデータが保存され、ホーム画面に遷移すること[33m 3295[2mms[22m[39m
+Step #1 - "test-generated-implementations":  [31m×[39m tests/SCR-009_contractor_punch_correction/page.test.tsx[2m > [22mSCR-009_contractor_punch_correction[2m > [22mキャンセルボタンをクリックした際、入力内容を破棄して直ちにホーム画面へ遷移すること[33m 2041[2mms[22m[39m
+Step #1 - "test-generated-implementations": [31m   → Unable to find an element with the text: 手動打刻登録. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Ignored nodes: comments, script, style
+Step #1 - "test-generated-implementations": [36m<body>[31m
+Step #1 - "test-generated-implementations":   [36m<div>[31m
+Step #1 - "test-generated-implementations":     [36m<div[31m
+Step #1 - "test-generated-implementations":       [33mclass[31m=[32m"flex min-h-screen items-center justify-center bg-gray-100"[31m
+Step #1 - "test-generated-implementations":     [36m>[31m
+Step #1 - "test-generated-implementations":       [36m<p[31m
+Step #1 - "test-generated-implementations":         [33mclass[31m=[32m"text-gray-600"[31m
+Step #1 - "test-generated-implementations":       [36m>[31m
+Step #1 - "test-generated-implementations":         [0m読み込み中...[0m
+Step #1 - "test-generated-implementations":       [36m</p>[31m
+Step #1 - "test-generated-implementations":     [36m</div>[31m
+Step #1 - "test-generated-implementations":   [36m</div>[31m
+Step #1 - "test-generated-implementations": [36m</body>[31m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Ignored nodes: comments, script, style
+Step #1 - "test-generated-implementations": [36m<body>[31m
+Step #1 - "test-generated-implementations":   [36m<div>[31m
+Step #1 - "test-generated-implementations":     [36m<div[31m
+Step #1 - "test-generated-implementations":       [33mclass[31m=[32m"flex min-h-screen items-center justify-center bg-gray-100"[31m
+Step #1 - "test-generated-implementations":     [36m>[31m
+Step #1 - "test-generated-implementations":       [36m<p[31m
+Step #1 - "test-generated-implementations":         [33mclass[31m=[32m"text-gray-600"[31m
+Step #1 - "test-generated-implementations":       [36m>[31m
+Step #1 - "test-generated-implementations":         [0m読み込み中...[0m
+Step #1 - "test-generated-implementations":       [36m</p>[31m
+Step #1 - "test-generated-implementations":     [36m</div>[31m
+Step #1 - "test-generated-implementations":   [36m</div>[31m
+Step #1 - "test-generated-implementations": [36m</body>[31m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m5 passed[39m[22m[90m (6)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 07:04:01
+Step #1 - "test-generated-implementations": [2m   Duration [22m 7.85s[2m (transform 395ms, setup 206ms, collect 507ms, tests 5.78s, environment 658ms, prepare 119ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": FAIL: SCR-009_contractor_punch_correction
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [10/15] Testing: SCR-010_admin_login
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-010_admin_login-7MjpOD[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-010_admin_login/page.test.tsx[2m > [22m[2mSCR-010 管理者ログイン画面[2m > [22m[2mTST-SCR-010-001: 有効な管理者認証情報でログインに成功し、sessionStorageに値が設定され、ダッシュボードに遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SEED_DATA_IMPORT_START"}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"SEED_FETCH_FAILED_USING_FALLBACK"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-010_admin_login/page.test.tsx[2m > [22m[2mSCR-010 管理者ログイン画面[2m > [22m[2mTST-SCR-010-001: 有効な管理者認証情報でログインに成功し、sessionStorageに値が設定され、ダッシュボードに遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SEED_DATA_IMPORT_SUCCESS"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-010_admin_login/page.test.tsx[2m > [22m[2mSCR-010 管理者ログイン画面[2m > [22m[2mTST-SCR-010-001: 有効な管理者認証情報でログインに成功し、sessionStorageに値が設定され、ダッシュボードに遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"LOGIN_ATTEMPT","payload":{"loginId":"admin"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-010_admin_login/page.test.tsx[2m > [22m[2mSCR-010 管理者ログイン画面[2m > [22m[2mTST-SCR-010-001: 有効な管理者認証情報でログインに成功し、sessionStorageに値が設定され、ダッシュボードに遷移すること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"LOGIN_SUCCESS","payload":{"loginId":"admin","userId":"admin-uuid","role":"FACTORY_ADMIN"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-010_admin_login/page.test.tsx[2m > [22mSCR-010 管理者ログイン画面[2m > [22mTST-SCR-010-001: 有効な管理者認証情報でログインに成功し、sessionStorageに値が設定され、ダッシュボードに遷移すること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-010_admin_login/page.test.tsx[2m > [22mSCR-010 管理者ログイン画面[2m > [22mTST-SCR-010-002: 画面の初期マウント時にログインフォーム要素が中央配置のクラスを持つラッパー内に描画されていること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-010_admin_login/page.test.tsx[2m > [22mSCR-010 管理者ログイン画面[2m > [22mTST-SCR-010-003: レスポンシブ表示に対応しビューポートが変化しても要素が領域内にあること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-010_admin_login/page.test.tsx[2m > [22mSCR-010 管理者ログイン画面[2m > [22mTST-SCR-010-004: ID未入力の場合にバリデーション警告が表示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-010_admin_login/page.test.tsx[2m > [22mSCR-010 管理者ログイン画面[2m > [22mTST-SCR-010-005: パスワード未入力の場合にバリデーション警告が表示されること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-010_admin_login/page.test.tsx[2m > [22m[2mSCR-010 管理者ログイン画面[2m > [22m[2mTST-SCR-010-006: 不整合な認証情報を入力した場合にエラーが表示され画面遷移しないこと
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"LOGIN_ATTEMPT","payload":{"loginId":"admin"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-010_admin_login/page.test.tsx[2m > [22m[2mSCR-010 管理者ログイン画面[2m > [22m[2mTST-SCR-010-006: 不整合な認証情報を入力した場合にエラーが表示され画面遷移しないこと
+Step #1 - "test-generated-implementations": [22m[39m{"level":"WARN","event":"LOGIN_FAILED_PASSWORD_MISMATCH","payload":{"loginId":"admin"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-010_admin_login/page.test.tsx[2m > [22mSCR-010 管理者ログイン画面[2m > [22mTST-SCR-010-006: 不整合な認証情報を入力した場合にエラーが表示され画面遷移しないこと
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m6 passed[39m[22m[90m (6)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 07:04:09
+Step #1 - "test-generated-implementations": [2m   Duration [22m 2.05s[2m (transform 301ms, setup 187ms, collect 417ms, tests 393ms, environment 657ms, prepare 159ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-010_admin_login
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [11/15] Testing: SCR-011_admin_dashboard
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-011_admin_dashboard-NbI1lW[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22m[2mAdminDashboardPage (SCR-011_admin_dashboard)[2m > [22m[2m未認証状態の場合、管理者ログイン画面へ強制リダイレクトされること (TST-011-001)
+Step #1 - "test-generated-implementations": [22m[39m{"level":"WARN","event":"UNAUTHORIZED_ACCESS_ATTEMPT","payload":{"userId":null,"role":null}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22m[2mAdminDashboardPage (SCR-011_admin_dashboard)[2m > [22m[2m外注先管理者アカウント（role が CONTRACTOR_MANAGER）の場合、強制リダイレクトされること (TST-011-001)
+Step #1 - "test-generated-implementations": [22m[39m{"level":"WARN","event":"UNAUTHORIZED_ACCESS_ATTEMPT","payload":{"userId":"u1-uuid","role":"CONTRACTOR_MANAGER"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22mAdminDashboardPage (SCR-011_admin_dashboard)[2m > [22m未認証状態の場合、管理者ログイン画面へ強制リダイレクトされること (TST-011-001)
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22mAdminDashboardPage (SCR-011_admin_dashboard)[2m > [22m外注先管理者アカウント（role が CONTRACTOR_MANAGER）の場合、強制リダイレクトされること (TST-011-001)
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22m[2mAdminDashboardPage (SCR-011_admin_dashboard)[2m > [22m[2mサマリー情報がカード形式で正常に表示されること (TST-011-002)
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_USER_SUCCESS_ADMIN","payload":{"userId":"u2-uuid"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_DASHBOARD_DATA_SUCCESS"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22m[2mAdminDashboardPage (SCR-011_admin_dashboard)[2m > [22m[2m直近のアラート情報が重要度に応じたスタイルでリスト表示されること (TST-011-003)
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_USER_SUCCESS_ADMIN","payload":{"userId":"u2-uuid"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_DASHBOARD_DATA_SUCCESS"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22mAdminDashboardPage (SCR-011_admin_dashboard)[2m > [22mサマリー情報がカード形式で正常に表示されること (TST-011-002)
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22m[2mAdminDashboardPage (SCR-011_admin_dashboard)[2m > [22m[2mナビゲーションメニューから、打刻履歴確認等の各画面へ遷移可能であること (TST-011-004)
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_USER_SUCCESS_ADMIN","payload":{"userId":"u2-uuid"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_DASHBOARD_DATA_SUCCESS"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22mAdminDashboardPage (SCR-011_admin_dashboard)[2m > [22m直近のアラート情報が重要度に応じたスタイルでリスト表示されること (TST-011-003)
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22m[2mAdminDashboardPage (SCR-011_admin_dashboard)[2m > [22m[2mログアウトボタンを押下した際、セッションが破棄されログイン画面にリダイレクトされること (TST-011-005)
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"FETCH_USER_SUCCESS_ADMIN","payload":{"userId":"u2-uuid"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"FETCH_DASHBOARD_DATA_SUCCESS"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22mAdminDashboardPage (SCR-011_admin_dashboard)[2m > [22mナビゲーションメニューから、打刻履歴確認等の各画面へ遷移可能であること (TST-011-004)
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22m[2mAdminDashboardPage (SCR-011_admin_dashboard)[2m > [22m[2mログアウトボタンを押下した際、セッションが破棄されログイン画面にリダイレクトされること (TST-011-005)
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"LOGOUT_SUCCESS_ADMIN","payload":{"userId":"u2-uuid"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-011_admin_dashboard/page.test.tsx[2m > [22mAdminDashboardPage (SCR-011_admin_dashboard)[2m > [22mログアウトボタンを押下した際、セッションが破棄されログイン画面にリダイレクトされること (TST-011-005)
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m6 passed[39m[22m[90m (6)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 07:04:12
+Step #1 - "test-generated-implementations": [2m   Duration [22m 1.84s[2m (transform 311ms, setup 200ms, collect 406ms, tests 179ms, environment 659ms, prepare 146ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-011_admin_dashboard
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [12/15] Testing: SCR-012_punch_history
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-012_punch_history-TSca7U[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-012_punch_history/page.test.tsx[2m > [22m[2mSCR-012_punch_history: 打刻履歴確認画面[2m > [22m[2mTST-012-006: 未ログインまたは一般外注先管理者ロールでアクセスした場合、管理者ログイン画面へリダイレクトされること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"WARN","event":"UNAUTHORIZED_ACCESS_ATTEMPT_ATTENDANCE_HISTORY","payload":{"userId":"user_contractor_1","role":"CONTRACTOR_MANAGER"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-012_punch_history/page.test.tsx[2m > [22mSCR-012_punch_history: 打刻履歴確認画面[2m > [22mTST-012-006: 未ログインまたは一般外注先管理者ロールでアクセスした場合、管理者ログイン画面へリダイレクトされること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-012_punch_history/page.test.tsx[2m > [22m[2mSCR-012_punch_history: 打刻履歴確認画面[2m > [22m[2mTST-012-001: 工場管理者でログインしている場合、初期状態で履歴一覧が読み込まれてテーブル表示されること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"WARN","event":"UNAUTHORIZED_ACCESS_ATTEMPT_ATTENDANCE_HISTORY","payload":{"userId":null,"role":null}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-012_punch_history/page.test.tsx[2m > [22mSCR-012_punch_history: 打刻履歴確認画面[2m > [22mTST-012-001: 工場管理者でログインしている場合、初期状態で履歴一覧が読み込まれてテーブル表示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-012_punch_history/page.test.tsx[2m > [22mSCR-012_punch_history: 打刻履歴確認画面[2m > [22mTST-012-002: 日付フィルタを変更して更新ボタンを押した際、条件に合わせた打刻履歴が再取得されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-012_punch_history/page.test.tsx[2m > [22mSCR-012_punch_history: 打刻履歴確認画面[2m > [22mTST-012-004: 打刻修正モーダルで、修正理由を入力せずに保存ボタンを押した場合、必須エラーメッセージが表示されること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-012_punch_history/page.test.tsx[2m > [22m[2mSCR-012_punch_history: 打刻履歴確認画面[2m > [22m[2mTST-012-005: 修正フォームに正しくデータを入力して保存した際、保存APIが呼ばれて成功メッセージが表示されること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"CORRECT_PUNCH_SAVE_SUCCESS","payload":{"attendanceId":"att-1"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-012_punch_history/page.test.tsx[2m > [22mSCR-012_punch_history: 打刻履歴確認画面[2m > [22mTST-012-005: 修正フォームに正しくデータを入力して保存した際、保存APIが呼ばれて成功メッセージが表示されること
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 07:04:14
+Step #1 - "test-generated-implementations": [2m   Duration [22m 1.96s[2m (transform 316ms, setup 160ms, collect 449ms, tests 338ms, environment 672ms, prepare 109ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-012_punch_history
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [13/15] Testing: SCR-013_labor_time_summary
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-013_labor_time_summary-1QtR62[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22m[2mSCR-013_labor_time_summary[2m > [22m[2m未認証のとき、管理者ログイン画面にリダイレクトされること (SCR-013-VL-003)
+Step #1 - "test-generated-implementations": [22m[39m{"level":"WARN","event":"UNAUTHORIZED_ACCESS_ATTEMPT_LABOR_SUMMARY","payload":{"userId":null,"role":null}}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"UNAUTHORIZED_ACCESS_ATTEMPT_LABOR_SUMMARY","payload":{"userId":null,"role":null}}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"UNAUTHORIZED_ACCESS_ATTEMPT_LABOR_SUMMARY","payload":{"userId":null,"role":null}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22mSCR-013_labor_time_summary[2m > [22m未認証のとき、管理者ログイン画面にリダイレクトされること (SCR-013-VL-003)
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22mSCR-013_labor_time_summary[2m > [22m認証済み状態のテスト (FACTORY_ADMIN)[2m > [22m日付を未入力にして集計を押すと、バリデーションエラーが表示されること (SCR-013-VL-001, SCR-013-VL-002)
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22mSCR-013_labor_time_summary[2m > [22m認証済み状態のテスト (FACTORY_ADMIN)[2m > [22m開始日より前の終了日を入力すると、日付逆転バリデーションエラーが表示されること (SCR-013-VL-002)
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22m[2mSCR-013_labor_time_summary[2m > [22m[2m認証済み状態のテスト (FACTORY_ADMIN)[2m > [22m[2m正しく日次集計が計算・表示されること (SCR-013-FN-001, SCR-013-FN-003)
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SEED_DATA_IMPORT_START"}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"SEED_FETCH_FAILED_USING_FALLBACK"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22m[2mSCR-013_labor_time_summary[2m > [22m[2m認証済み状態のテスト (FACTORY_ADMIN)[2m > [22m[2m正しく日次集計が計算・表示されること (SCR-013-FN-001, SCR-013-FN-003)
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SEED_DATA_IMPORT_SUCCESS"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22m[2mSCR-013_labor_time_summary[2m > [22m[2m認証済み状態のテスト (FACTORY_ADMIN)[2m > [22m[2m正しく日次集計が計算・表示されること (SCR-013-FN-001, SCR-013-FN-003)
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"GET_LABOR_SUMMARY_START","payload":{"startDate":"2026-04-01","endDate":"2026-04-01","unit":"daily"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22m[2mSCR-013_labor_time_summary[2m > [22m[2m認証済み状態のテスト (FACTORY_ADMIN)[2m > [22m[2m正しく日次集計が計算・表示されること (SCR-013-FN-001, SCR-013-FN-003)
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"GET_LABOR_SUMMARY_SUCCESS","payload":{"count":1}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22mSCR-013_labor_time_summary[2m > [22m認証済み状態のテスト (FACTORY_ADMIN)[2m > [22m正しく日次集計が計算・表示されること (SCR-013-FN-001, SCR-013-FN-003)
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22m[2mSCR-013_labor_time_summary[2m > [22m[2m認証済み状態のテスト (FACTORY_ADMIN)[2m > [22m[2m月次集計を選択して、期間内の合算値が正しく表示されること (SCR-013-FN-002)
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"GET_LABOR_SUMMARY_START","payload":{"startDate":"2026-04","endDate":"2026-04","unit":"monthly"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22m[2mSCR-013_labor_time_summary[2m > [22m[2m認証済み状態のテスト (FACTORY_ADMIN)[2m > [22m[2m月次集計を選択して、期間内の合算値が正しく表示されること (SCR-013-FN-002)
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"GET_LABOR_SUMMARY_SUCCESS","payload":{"count":1}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22mSCR-013_labor_time_summary[2m > [22m認証済み状態のテスト (FACTORY_ADMIN)[2m > [22m月次集計を選択して、期間内の合算値が正しく表示されること (SCR-013-FN-002)
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-013_labor_time_summary/page.test.tsx[2m > [22mSCR-013_labor_time_summary[2m > [22m認証済み状態のテスト (FACTORY_ADMIN)[2m > [22m集計データが存在するときにCSVダウンロードボタンが活性化し、クリックできること (SCR-013-FN-004, SCR-013-UI-003)
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m6 passed[39m[22m[90m (6)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 07:04:17
+Step #1 - "test-generated-implementations": [2m   Duration [22m 2.29s[2m (transform 375ms, setup 188ms, collect 541ms, tests 560ms, environment 656ms, prepare 117ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-013_labor_time_summary
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [14/15] Testing: SCR-014_contractor_company_register
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-014_contractor_company_register-j0gc5J[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-014_contractor_company_register/page.test.tsx[2m > [22mSCR-014 外注先企業登録画面テスト[2m > [22mtest-scr-014-vl-003-unauthorized: 未ログイン状態でのアクセス時に /admin-login へリダイレクトされること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-014_contractor_company_register/page.test.tsx[2m > [22mSCR-014 外注先企業登録画面テスト[2m > [22mtest-scr-014-fn-001: 工場側管理者としてログイン時、登録済みの企業データが一覧に正しく表示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-014_contractor_company_register/page.test.tsx[2m > [22mSCR-014 外注先企業登録画面テスト[2m > [22mtest-scr-014-ui: テーブルヘッダーに必要な項目(企業ID, 企業名, ステータス, 登録日時)が揃っていること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-014_contractor_company_register/page.test.tsx[2m > [22mSCR-014 外注先企業登録画面テスト[2m > [22mtest-scr-014-fn-002: 新規登録モーダルから企業名「新規テスト企業X」を新規登録できること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-014_contractor_company_register/page.test.tsx[2m > [22mSCR-014 外注先企業登録画面テスト[2m > [22mtest-scr-014-vl-001: 企業名を空（またはスペースのみ）にした状態で保存した際、保存が実行されず「企業名は必須入力です」とエラーが表示されること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-014_contractor_company_register/page.test.tsx[2m > [22mSCR-014 外注先企業登録画面テスト[2m > [22mtest-scr-014-fn-003: 既存外注先企業の編集ボタン押下時に現在値がプリセットされ、変更を保存できること
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-014_contractor_company_register/page.test.tsx[2m > [22mSCR-014 外注先企業登録画面テスト[2m > [22mtest-scr-014-fn-004 & test-scr-014-vl-002: 削除時の確認ダイアログのキャンセルで処理中断、OKで正常に削除完了し一覧から消失すること
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[32m7 passed[39m[22m[90m (7)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 07:04:20
+Step #1 - "test-generated-implementations": [2m   Duration [22m 2.24s[2m (transform 366ms, setup 167ms, collect 514ms, tests 497ms, environment 684ms, prepare 154ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": PASS: SCR-014_contractor_company_register
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": [15/15] Testing: SCR-015_admin_user_register
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90m/tmp/SCR-015_admin_user_register-zYjFQX[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-015_admin_user_register/page.test.tsx[2m > [22m[2mSCR-015_admin_user_register - 管理者ユーザー登録画面の検証[2m > [22m[2m[TST-SCR-015-001] 工場側管理者でログイン中、登録ユーザー一覧が正しく取得されて表示されること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SEED_DATA_IMPORT_START"}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"SEED_FETCH_FAILED_USING_FALLBACK"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-015_admin_user_register/page.test.tsx[2m > [22m[2mSCR-015_admin_user_register - 管理者ユーザー登録画面の検証[2m > [22m[2m[TST-SCR-015-001] 工場側管理者でログイン中、登録ユーザー一覧が正しく取得されて表示されること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"SEED_DATA_IMPORT_SUCCESS"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [31m×[39m tests/SCR-015_admin_user_register/page.test.tsx[2m > [22mSCR-015_admin_user_register - 管理者ユーザー登録画面の検証[2m > [22m[TST-SCR-015-001] 工場側管理者でログイン中、登録ユーザー一覧が正しく取得されて表示されること
+Step #1 - "test-generated-implementations": [31m   → Found multiple elements with the text: テスト外注先企業 A
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Here are the matching elements:
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Ignored nodes: comments, script, style
+Step #1 - "test-generated-implementations": [36m<td[31m
+Step #1 - "test-generated-implementations":   [33mclass[31m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500"[31m
+Step #1 - "test-generated-implementations": [36m>[31m
+Step #1 - "test-generated-implementations":   [0mテスト外注先企業 A[0m
+Step #1 - "test-generated-implementations": [36m</td>[31m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Ignored nodes: comments, script, style
+Step #1 - "test-generated-implementations": [36m<span>[31m
+Step #1 - "test-generated-implementations":   [0mテスト外注先企業 A[0m
+Step #1 - "test-generated-implementations": [36m</span>[31m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": (If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Ignored nodes: comments, script, style
+Step #1 - "test-generated-implementations": [36m<body>[31m
+Step #1 - "test-generated-implementations":   [36m<div>[31m
+Step #1 - "test-generated-implementations":     [36m<div[31m
+Step #1 - "test-generated-implementations":       [33mclass[31m=[32m"flex min-h-screen flex-col bg-gray-100 text-gray-900"[31m
+Step #1 - "test-generated-implementations":     [36m>[31m
+Step #1 - "test-generated-implementations":       [36m<header[31m
+Step #1 - "test-generated-implementations":         [33mclass[31m=[32m"bg-white shadow"[31m
+Step #1 - "test-generated-implementations":       [36m>[31m
+Step #1 - "test-generated-implementations":         [36m<div[31m
+Step #1 - "test-generated-implementations":           [33mclass[31m=[32m"mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center"[31m
+Step #1 - "test-generated-implementations":         [36m>[31m
+Step #1 - "test-generated-implementations":           [36m<div>[31m
+Step #1 - "test-generated-implementations":             [36m<h1[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"text-xl font-bold text-gray-900"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [0m管理者ユーザー登録[0m
+Step #1 - "test-generated-implementations":             [36m</h1>[31m
+Step #1 - "test-generated-implementations":             [36m<p[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"text-sm text-gray-600 mt-1"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [0mシステムを利用する工場側・外注先の管理者アカウント管理[0m
+Step #1 - "test-generated-implementations":             [36m</p>[31m
+Step #1 - "test-generated-implementations":           [36m</div>[31m
+Step #1 - "test-generated-implementations":           [36m<button[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"rounded bg-gray-600 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-500 transition-colors"[31m
+Step #1 - "test-generated-implementations":             [33mstyle[31m=[32m"min-height: 44px;"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [0mダッシュボードへ[0m
+Step #1 - "test-generated-implementations":           [36m</button>[31m
+Step #1 - "test-generated-implementations":         [36m</div>[31m
+Step #1 - "test-generated-implementations":       [36m</header>[31m
+Step #1 - "test-generated-implementations":       [36m<main[31m
+Step #1 - "test-generated-implementations":         [33mclass[31m=[32m"flex-1 mx-auto max-w-7xl w-full px-4 py-6 md:py-8 flex flex-col space-y-6"[31m
+Step #1 - "test-generated-implementations":       [36m>[31m
+Step #1 - "test-generated-implementations":         [36m<div[31m
+Step #1 - "test-generated-implementations":           [33mclass[31m=[32m"flex justify-between items-center bg-white p-4 rounded-xl shadow"[31m
+Step #1 - "test-generated-implementations":         [36m>[31m
+Step #1 - "test-generated-implementations":           [36m<span[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"text-sm font-medium text-gray-500"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [0m登録アカウント数: [0m
+Step #1 - "test-generated-implementations":             [36m<span[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"font-bold text-gray-900"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [0m3[0m
+Step #1 - "test-generated-implementations":               [0m件[0m
+Step #1 - "test-generated-implementations":             [36m</span>[31m
+Step #1 - "test-generated-implementations":           [36m</span>[31m
+Step #1 - "test-generated-implementations":           [36m<button[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-blue-500 transition-colors flex items-center gap-1 shadow-sm animate-fade-in"[31m
+Step #1 - "test-generated-implementations":             [33mdata-testid[31m=[32m"add-user-btn"[31m
+Step #1 - "test-generated-implementations":             [33mstyle[31m=[32m"min-height: 44px;"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [36m<svg[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"h-5 w-5"[31m
+Step #1 - "test-generated-implementations":               [33mfill[31m=[32m"none"[31m
+Step #1 - "test-generated-implementations":               [33mstroke[31m=[32m"currentColor"[31m
+Step #1 - "test-generated-implementations":               [33mstroke-width[31m=[32m"2"[31m
+Step #1 - "test-generated-implementations":               [33mviewBox[31m=[32m"0 0 24 24"[31m
+Step #1 - "test-generated-implementations":               [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [36m<path[31m
+Step #1 - "test-generated-implementations":                 [33md[31m=[32m"M12 4v16m8-8H4"[31m
+Step #1 - "test-generated-implementations":                 [33mstroke-linecap[31m=[32m"round"[31m
+Step #1 - "test-generated-implementations":                 [33mstroke-linejoin[31m=[32m"round"[31m
+Step #1 - "test-generated-implementations":               [36m/>[31m
+Step #1 - "test-generated-implementations":             [36m</svg>[31m
+Step #1 - "test-generated-implementations":             [0m新規登録[0m
+Step #1 - "test-generated-implementations":           [36m</button>[31m
+Step #1 - "test-generated-implementations":         [36m</div>[31m
+Step #1 - "test-generated-implementations":         [36m<div[31m
+Step #1 - "test-generated-implementations":           [33mclass[31m=[32m"bg-white rounded-xl shadow overflow-hidden flex-1 flex flex-col"[31m
+Step #1 - "test-generated-implementations":         [36m>[31m
+Step #1 - "test-generated-implementations":           [36m<div[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"hidden md:block overflow-x-auto"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [36m<table[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"min-w-full divide-y divide-gray-200"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [36m<thead[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"bg-gray-50"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [36m<tr>[31m
+Step #1 - "test-generated-implementations":                   [36m<th[31m
+Step #1 - "test-generated-implementations":                     [33mclass[31m=[32m"px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"[31m
+Step #1 - "test-generated-implementations":                     [33mscope[31m=[32m"col"[31m
+Step #1 - "test-generated-implementations":                   [36m>[31m
+Step #1 - "test-generated-implementations":                     [0mユーザーID[0m
+Step #1 - "test-generated-implementations":                   [36m</th>[31m
+Step #1 - "test-generated-implementations":                   [36m<th[31m
+Step #1 - "test-generated-implementations":                     [33mclass[31m=[32m"px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"[31m
+Step #1 - "test-generated-implementations":                     [33mscope[31m=[32m"col"[31m
+Step #1 - "test-generated-implementations":                   [36m>[31m
+Step #1 - "test-generated-implementations":                     [0mログインID[0m
+Step #1 - "test-generated-implementations":                   [36m</th>[31m
+Step #1 - "test-generated-implementations":                   [36m<th[31m
+Step #1 - "test-generated-implementations":                     [33mclass[31m=[32m"px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"[31m
+Step #1 - "test-generated-implementations":                     [33mscope[31m=[32m"col"[31m
+Step #1 - "test-generated-implementations":                   [36m>[31m
+Step #1 - "test-generated-implementations":                     [0m表示名[0m
+Step #1 - "test-generated-implementations":                   [36m</th>[31m
+Step #1 - "test-generated-implementations":                   [36m<th[31m
+Step #1 - "test-generated-implementations":                     [33mclass[31m=[32m"px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"[31m
+Step #1 - "test-generated-implementations":                     [33mscope[31m=[32m"col"[31m
+Step #1 - "test-generated-implementations":                   [36m>[31m
+Step #1 - "test-generated-implementations":                     [0m権限種別[0m
+Step #1 - "test-generated-implementations":                   [36m</th>[31m
+Step #1 - "test-generated-implementations":                   [36m<th[31m
+Step #1 - "test-generated-implementations":                     [33mclass[31m=[32m"px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"[31m
+Step #1 - "test-generated-implementations":                     [33mscope[31m=[32m"col"[31m
+Step #1 - "test-generated-implementations":                   [36m>[31m
+Step #1 - "test-generated-implementations":                     [0m所属外注先企業[0m
+Step #1 - "test-generated-implementations":                   [36m</th>[31m
+Step #1 - "test-generated-implementations":                   [36m<th[31m
+Step #1 - "test-generated-implementations":                     [33mclass[31m=[32m"px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"[31m
+Step #1 - "test-generated-implementations":                     [33mscope[31m=[32m"col"[31m
+Step #1 - "test-generated-implementations":                   [36m>[31m
+Step #1 - "test-generated-implementations":                     [0mステータス[0m
+Step #1 - "test-generated-implementations":                   [36m</th>[31m
+Step #1 - "test-generated-implementations":                   [36m<th[31m
+Step #1 - "test-generated-implementations":                     [33mclass[31m=[32m"relative px-6 py-3"[31m
+Step #1 - "test-generated-implementations":                     [33mscope[31m=[32m"col"[31m
+Step #1 - "test-generated-implementations":                   [36m>[31m
+Step #1 - "test-generated-implementations":                     [36m<span[31m
+Step #1 - "test-generated-implementations":                       [33mclass[31m=[32m"sr-only"[31m
+Step #1 - "test-generated-implementations":                     [36m>[31m
+Step #1 - "test-generated-implementations":                       [0m操作[0m
+Step #1 - "test-generated-implementations":                     [36m</span>[31m
+Step #1 - "test-generated-implementations":                   [36m</th>[31m
+Step #1 - "test-generated-implementations":                 [36m</tr>[31m
+Step #1 - "test-generated-implementations":               [36m</thead>[31m
+Step #1 - "test-generated-implementations":               [36m<tbody[31m
+Step #1 - "test-generated-implementations":                 [33mclass[31m=[32m"bg-white divide-y divide-gray-200"[31m
+Step #1 - "test-generated-implementations":                 [33mdata-testid[31m=[32m"users-tbody"[31m
+Step #1 - "test-generated-implementations":               [36m>[31m
+Step #1 - "test-generated-implementations":                 [36m<tr[31m
+Step #1 - "test-generated-implementations":                   [33mclass[31m=[32m"hover:bg-gray-50"[31m
+Step #1 - "test-generated-implementations":                   [33mdata-testid[31m=[32m"user-row"[31m
+Step #1 - "test-generated-implementations":                 [36m>[31m
+Step #1 - "test-generated-implementations":                   [36m<td[31m
+Step #1 - "test-generated-implementations":                     [33mclass[31m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono font-bold"[31m
+Step #1 - "test-generated-implementations":                   [36m>[31m
+Step #1 - "test-generated-implementations":                     [0madmin-01[0m
+Step #1 - "test-generated-implementations":                   [36m</td>[31m
+Step #1 - "test-generated-implementations":                   [36m<td[31m
+Step #1 - "test-generated-implementations":                     [33mclass[31m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium"[31m
+Step #1 - "test-generated-implementations":                   [36m>[31m
+Step #1 - "test-generated-implementations":                     [0mmain_admin[0m
+Step #1 - "test-generated-implementations":                   [36m</td>[31m
+Step #1 - "test-generated-implementations":                   [36m<td[31m
+Step #1 - "test-generated-implementations":                     [33mclass[31m=[32m"px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900"[31m
+Step #1 - "test-generated-implementations":                   [36m>[31m
+Step #1 - "test-generated-implementations":                     [0m管理者 佐藤[0m
+Step #1 - "test-generated-implementations":                     [36m<span[31m
+Step #1 - "test-generated-implementations":                       [33mclass[31m=[32m"ml-1.5 inline-flex items-center px-2...[39m
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-015_admin_user_register/page.test.tsx[2m > [22m[2mSCR-015_admin_user_register - 管理者ユーザー登録画面の検証[2m > [22m[2m[TST-SCR-015-002] 新規登録時に未入力項目がある場合に適切なエラーメッセージが表示されること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"ADD_USER_MODAL_OPENED"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-015_admin_user_register/page.test.tsx[2m > [22mSCR-015_admin_user_register - 管理者ユーザー登録画面の検証[2m > [22m[TST-SCR-015-002] 新規登録時に未入力項目がある場合に適切なエラーメッセージが表示されること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-015_admin_user_register/page.test.tsx[2m > [22m[2mSCR-015_admin_user_register - 管理者ユーザー登録画面の検証[2m > [22m[2m[TST-SCR-015-003] 外注先管理者を選択した際、所属外注先企業が必須選択になること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"ADD_USER_MODAL_OPENED"}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-015_admin_user_register/page.test.tsx[2m > [22mSCR-015_admin_user_register - 管理者ユーザー登録画面の検証[2m > [22m[TST-SCR-015-003] 外注先管理者を選択した際、所属外注先企業が必須選択になること
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-015_admin_user_register/page.test.tsx[2m > [22m[2mSCR-015_admin_user_register - 管理者ユーザー登録画面の検証[2m > [22m[2m[TST-SCR-015-004] 正常な入力パラメータで新規管理者ユーザーが登録できること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"ADD_USER_MODAL_OPENED"}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"CREATE_USER_START","payload":{"newUserId":"new_admin_99"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-015_admin_user_register/page.test.tsx[2m > [22m[2mSCR-015_admin_user_register - 管理者ユーザー登録画面の検証[2m > [22m[2m[TST-SCR-015-004] 正常な入力パラメータで新規管理者ユーザーが登録できること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"CREATE_USER_SUCCESS","payload":{"newUserId":"new_admin_99"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-015_admin_user_register/page.test.tsx[2m > [22mSCR-015_admin_user_register - 管理者ユーザー登録画面の検証[2m > [22m[TST-SCR-015-004] 正常な入力パラメータで新規管理者ユーザーが登録できること[33m 743[2mms[22m[39m
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-015_admin_user_register/page.test.tsx[2m > [22m[2mSCR-015_admin_user_register - 管理者ユーザー登録画面の検証[2m > [22m[2m[TST-SCR-015-005] 既存のユーザー情報を編集して更新できること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"EDIT_USER_MODAL_OPENED","payload":{"targetUserId":"subcon-01"}}
+Step #1 - "test-generated-implementations": {"level":"INFO","event":"UPDATE_USER_START","payload":{"targetUserId":"subcon-01"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-015_admin_user_register/page.test.tsx[2m > [22m[2mSCR-015_admin_user_register - 管理者ユーザー登録画面の検証[2m > [22m[2m[TST-SCR-015-005] 既存のユーザー情報を編集して更新できること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"INFO","event":"UPDATE_USER_SUCCESS","payload":{"targetUserId":"subcon-01"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-015_admin_user_register/page.test.tsx[2m > [22mSCR-015_admin_user_register - 管理者ユーザー登録画面の検証[2m > [22m[TST-SCR-015-005] 既存のユーザー情報を編集して更新できること[33m 563[2mms[22m[39m
+Step #1 - "test-generated-implementations":  [31m×[39m tests/SCR-015_admin_user_register/page.test.tsx[2m > [22mSCR-015_admin_user_register - 管理者ユーザー登録画面の検証[2m > [22m[TST-SCR-015-006] ユーザーを削除した際、一覧から消失すること (ただし自分自身は削除不可)
+Step #1 - "test-generated-implementations": [31m   → Unable to find an element by: [data-testid="delete-btn-admin-01"]
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Ignored nodes: comments, script, style
+Step #1 - "test-generated-implementations": [36m<body>[31m
+Step #1 - "test-generated-implementations":   [36m<div>[31m
+Step #1 - "test-generated-implementations":     [36m<div[31m
+Step #1 - "test-generated-implementations":       [33mclass[31m=[32m"flex min-h-screen flex-col bg-gray-100 text-gray-900"[31m
+Step #1 - "test-generated-implementations":     [36m>[31m
+Step #1 - "test-generated-implementations":       [36m<header[31m
+Step #1 - "test-generated-implementations":         [33mclass[31m=[32m"bg-white shadow"[31m
+Step #1 - "test-generated-implementations":       [36m>[31m
+Step #1 - "test-generated-implementations":         [36m<div[31m
+Step #1 - "test-generated-implementations":           [33mclass[31m=[32m"mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center"[31m
+Step #1 - "test-generated-implementations":         [36m>[31m
+Step #1 - "test-generated-implementations":           [36m<div>[31m
+Step #1 - "test-generated-implementations":             [36m<h1[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"text-xl font-bold text-gray-900"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [0m管理者ユーザー登録[0m
+Step #1 - "test-generated-implementations":             [36m</h1>[31m
+Step #1 - "test-generated-implementations":             [36m<p[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"text-sm text-gray-600 mt-1"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [0mシステムを利用する工場側・外注先の管理者アカウント管理[0m
+Step #1 - "test-generated-implementations":             [36m</p>[31m
+Step #1 - "test-generated-implementations":           [36m</div>[31m
+Step #1 - "test-generated-implementations":           [36m<button[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"rounded bg-gray-600 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-500 transition-colors"[31m
+Step #1 - "test-generated-implementations":             [33mstyle[31m=[32m"min-height: 44px;"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [0mダッシュボードへ[0m
+Step #1 - "test-generated-implementations":           [36m</button>[31m
+Step #1 - "test-generated-implementations":         [36m</div>[31m
+Step #1 - "test-generated-implementations":       [36m</header>[31m
+Step #1 - "test-generated-implementations":       [36m<main[31m
+Step #1 - "test-generated-implementations":         [33mclass[31m=[32m"flex-1 mx-auto max-w-7xl w-full px-4 py-6 md:py-8 flex flex-col space-y-6"[31m
+Step #1 - "test-generated-implementations":       [36m>[31m
+Step #1 - "test-generated-implementations":         [36m<div[31m
+Step #1 - "test-generated-implementations":           [33mclass[31m=[32m"flex justify-between items-center bg-white p-4 rounded-xl shadow"[31m
+Step #1 - "test-generated-implementations":         [36m>[31m
+Step #1 - "test-generated-implementations":           [36m<span[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"text-sm font-medium text-gray-500"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [0m登録アカウント数: [0m
+Step #1 - "test-generated-implementations":             [36m<span[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"font-bold text-gray-900"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [0m4[0m
+Step #1 - "test-generated-implementations":               [0m件[0m
+Step #1 - "test-generated-implementations":             [36m</span>[31m
+Step #1 - "test-generated-implementations":           [36m</span>[31m
+Step #1 - "test-generated-implementations":           [36m<button[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-blue-500 transition-colors flex items-center gap-1 shadow-sm animate-fade-in"[31m
+Step #1 - "test-generated-implementations":             [33mdata-testid[31m=[32m"add-user-btn"[31m
+Step #1 - "test-generated-implementations":             [33mstyle[31m=[32m"min-height: 44px;"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [36m<svg[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"h-5 w-5"[31m
+Step #1 - "test-generated-implementations":               [33mfill[31m=[32m"none"[31m
+Step #1 - "test-generated-implementations":               [33mstroke[31m=[32m"currentColor"[31m
+Step #1 - "test-generated-implementations":               [33mstroke-width[31m=[32m"2"[31m
+Step #1 - "test-generated-implementations":               [33mviewBox[31m=[32m"0 0 24 24"[31m
+Step #1 - "test-generated-implementations":               [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [36m<path[31m
+Step #1 - "test-generated-implementations":                 [33md[31m=[32m"M12 4v16m8-8H4"[31m
+Step #1 - "test-generated-implementations":                 [33mstroke-linecap[31m=[32m"round"[31m
+Step #1 - "test-generated-implementations":                 [33mstroke-linejoin[31m=[32m"round"[31m
+Step #1 - "test-generated-implementations":               [36m/>[31m
+Step #1 - "test-generated-implementations":             [36m</svg>[31m
+Step #1 - "test-generated-implementations":             [0m新規登録[0m
+Step #1 - "test-generated-implementations":           [36m</button>[31m
+Step #1 - "test-generated-implementations":         [36m</div>[31m
+Step #1 - "test-generated-implementations":         [36m<div[31m
+Step #1 - "test-generated-implementations":           [33mclass[31m=[32m"bg-white rounded-xl shadow overflow-hidden flex-1 flex flex-col"[31m
+Step #1 - "test-generated-implementations":         [36m>[31m
+Step #1 - "test-generated-implementations":           [36m<div[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"p-12 text-center text-gray-500 font-bold"[31m
+Step #1 - "test-generated-implementations":             [33mdata-testid[31m=[32m"loading-text"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [0m読み込み中...[0m
+Step #1 - "test-generated-implementations":           [36m</div>[31m
+Step #1 - "test-generated-implementations":         [36m</div>[31m
+Step #1 - "test-generated-implementations":       [36m</main>[31m
+Step #1 - "test-generated-implementations":     [36m</div>[31m
+Step #1 - "test-generated-implementations":   [36m</div>[31m
+Step #1 - "test-generated-implementations": [36m</body>[31m[39m
+Step #1 - "test-generated-implementations": [90mstdout[2m | tests/SCR-015_admin_user_register/page.test.tsx[2m > [22m[2mSCR-015_admin_user_register - 管理者ユーザー登録画面の検証[2m > [22m[2m[TST-SCR-015-007] 未認証状態、または外注先管理者の場合にログイン画面へ自動リダイレクトされること
+Step #1 - "test-generated-implementations": [22m[39m{"level":"WARN","event":"UNAUTHORIZED_ACCESS_ATTEMPT_USERS","payload":{"userId":"subcon-01","role":"CONTRACTOR_MANAGER"}}
+Step #1 - "test-generated-implementations": {"level":"WARN","event":"UNAUTHORIZED_ACCESS_ATTEMPT_USERS","payload":{"userId":"subcon-01","role":"CONTRACTOR_MANAGER"}}
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":  [32m✓[39m tests/SCR-015_admin_user_register/page.test.tsx[2m > [22mSCR-015_admin_user_register - 管理者ユーザー登録画面の検証[2m > [22m[TST-SCR-015-007] 未認証状態、または外注先管理者の場合にログイン画面へ自動リダイレクトされること
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+Step #1 - "test-generated-implementations": [2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m5 passed[39m[22m[90m (7)[39m
+Step #1 - "test-generated-implementations": [2m   Start at [22m 07:04:23
+Step #1 - "test-generated-implementations": [2m   Duration [22m 3.64s[2m (transform 447ms, setup 200ms, collect 570ms, tests 1.86s, environment 642ms, prepare 115ms)[22m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": FAIL: SCR-015_admin_user_register
+Step #1 - "test-generated-implementations": [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+Step #1 - "test-generated-implementations": [31m⎯⎯⎯⎯⎯⎯⎯[1m[7m Failed Tests 2 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[1m[7m FAIL [27m[22m[39m tests/SCR-015_admin_user_register/page.test.tsx[2m > [22mSCR-015_admin_user_register - 管理者ユーザー登録画面の検証[2m > [22m[TST-SCR-015-001] 工場側管理者でログイン中、登録ユーザー一覧が正しく取得されて表示されること
+Step #1 - "test-generated-implementations": [31m[1mTestingLibraryElementError[22m[39m: Found multiple elements with the text: テスト外注先企業 A
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Here are the matching elements:
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Ignored nodes: comments, script, style
+Step #1 - "test-generated-implementations": [36m<td[39m
+Step #1 - "test-generated-implementations":   [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500"[39m
+Step #1 - "test-generated-implementations": [36m>[39m
+Step #1 - "test-generated-implementations":   [0mテスト外注先企業 A[0m
+Step #1 - "test-generated-implementations": [36m</td>[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Ignored nodes: comments, script, style
+Step #1 - "test-generated-implementations": [36m<span>[39m
+Step #1 - "test-generated-implementations":   [0mテスト外注先企業 A[0m
+Step #1 - "test-generated-implementations": [36m</span>[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": (If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Ignored nodes: comments, script, style
+Step #1 - "test-generated-implementations": [36m<body>[39m
+Step #1 - "test-generated-implementations":   [36m<div>[39m
+Step #1 - "test-generated-implementations":     [36m<div[39m
+Step #1 - "test-generated-implementations":       [33mclass[39m=[32m"flex min-h-screen flex-col bg-gray-100 text-gray-900"[39m
+Step #1 - "test-generated-implementations":     [36m>[39m
+Step #1 - "test-generated-implementations":       [36m<header[39m
+Step #1 - "test-generated-implementations":         [33mclass[39m=[32m"bg-white shadow"[39m
+Step #1 - "test-generated-implementations":       [36m>[39m
+Step #1 - "test-generated-implementations":         [36m<div[39m
+Step #1 - "test-generated-implementations":           [33mclass[39m=[32m"mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center"[39m
+Step #1 - "test-generated-implementations":         [36m>[39m
+Step #1 - "test-generated-implementations":           [36m<div>[39m
+Step #1 - "test-generated-implementations":             [36m<h1[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"text-xl font-bold text-gray-900"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [0m管理者ユーザー登録[0m
+Step #1 - "test-generated-implementations":             [36m</h1>[39m
+Step #1 - "test-generated-implementations":             [36m<p[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"text-sm text-gray-600 mt-1"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [0mシステムを利用する工場側・外注先の管理者アカウント管理[0m
+Step #1 - "test-generated-implementations":             [36m</p>[39m
+Step #1 - "test-generated-implementations":           [36m</div>[39m
+Step #1 - "test-generated-implementations":           [36m<button[39m
+Step #1 - "test-generated-implementations":             [33mclass[39m=[32m"rounded bg-gray-600 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-500 transition-colors"[39m
+Step #1 - "test-generated-implementations":             [33mstyle[39m=[32m"min-height: 44px;"[39m
+Step #1 - "test-generated-implementations":           [36m>[39m
+Step #1 - "test-generated-implementations":             [0mダッシュボードへ[0m
+Step #1 - "test-generated-implementations":           [36m</button>[39m
+Step #1 - "test-generated-implementations":         [36m</div>[39m
+Step #1 - "test-generated-implementations":       [36m</header>[39m
+Step #1 - "test-generated-implementations":       [36m<main[39m
+Step #1 - "test-generated-implementations":         [33mclass[39m=[32m"flex-1 mx-auto max-w-7xl w-full px-4 py-6 md:py-8 flex flex-col space-y-6"[39m
+Step #1 - "test-generated-implementations":       [36m>[39m
+Step #1 - "test-generated-implementations":         [36m<div[39m
+Step #1 - "test-generated-implementations":           [33mclass[39m=[32m"flex justify-between items-center bg-white p-4 rounded-xl shadow"[39m
+Step #1 - "test-generated-implementations":         [36m>[39m
+Step #1 - "test-generated-implementations":           [36m<span[39m
+Step #1 - "test-generated-implementations":             [33mclass[39m=[32m"text-sm font-medium text-gray-500"[39m
+Step #1 - "test-generated-implementations":           [36m>[39m
+Step #1 - "test-generated-implementations":             [0m登録アカウント数: [0m
+Step #1 - "test-generated-implementations":             [36m<span[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"font-bold text-gray-900"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [0m3[0m
+Step #1 - "test-generated-implementations":               [0m件[0m
+Step #1 - "test-generated-implementations":             [36m</span>[39m
+Step #1 - "test-generated-implementations":           [36m</span>[39m
+Step #1 - "test-generated-implementations":           [36m<button[39m
+Step #1 - "test-generated-implementations":             [33mclass[39m=[32m"rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-blue-500 transition-colors flex items-center gap-1 shadow-sm animate-fade-in"[39m
+Step #1 - "test-generated-implementations":             [33mdata-testid[39m=[32m"add-user-btn"[39m
+Step #1 - "test-generated-implementations":             [33mstyle[39m=[32m"min-height: 44px;"[39m
+Step #1 - "test-generated-implementations":           [36m>[39m
+Step #1 - "test-generated-implementations":             [36m<svg[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"h-5 w-5"[39m
+Step #1 - "test-generated-implementations":               [33mfill[39m=[32m"none"[39m
+Step #1 - "test-generated-implementations":               [33mstroke[39m=[32m"currentColor"[39m
+Step #1 - "test-generated-implementations":               [33mstroke-width[39m=[32m"2"[39m
+Step #1 - "test-generated-implementations":               [33mviewBox[39m=[32m"0 0 24 24"[39m
+Step #1 - "test-generated-implementations":               [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [36m<path[39m
+Step #1 - "test-generated-implementations":                 [33md[39m=[32m"M12 4v16m8-8H4"[39m
+Step #1 - "test-generated-implementations":                 [33mstroke-linecap[39m=[32m"round"[39m
+Step #1 - "test-generated-implementations":                 [33mstroke-linejoin[39m=[32m"round"[39m
+Step #1 - "test-generated-implementations":               [36m/>[39m
+Step #1 - "test-generated-implementations":             [36m</svg>[39m
+Step #1 - "test-generated-implementations":             [0m新規登録[0m
+Step #1 - "test-generated-implementations":           [36m</button>[39m
+Step #1 - "test-generated-implementations":         [36m</div>[39m
+Step #1 - "test-generated-implementations":         [36m<div[39m
+Step #1 - "test-generated-implementations":           [33mclass[39m=[32m"bg-white rounded-xl shadow overflow-hidden flex-1 flex flex-col"[39m
+Step #1 - "test-generated-implementations":         [36m>[39m
+Step #1 - "test-generated-implementations":           [36m<div[39m
+Step #1 - "test-generated-implementations":             [33mclass[39m=[32m"hidden md:block overflow-x-auto"[39m
+Step #1 - "test-generated-implementations":           [36m>[39m
+Step #1 - "test-generated-implementations":             [36m<table[39m
+Step #1 - "test-generated-implementations":               [33mclass[39m=[32m"min-w-full divide-y divide-gray-200"[39m
+Step #1 - "test-generated-implementations":             [36m>[39m
+Step #1 - "test-generated-implementations":               [36m<thead[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"bg-gray-50"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [36m<tr>[39m
+Step #1 - "test-generated-implementations":                   [36m<th[39m
+Step #1 - "test-generated-implementations":                     [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"[39m
+Step #1 - "test-generated-implementations":                     [33mscope[39m=[32m"col"[39m
+Step #1 - "test-generated-implementations":                   [36m>[39m
+Step #1 - "test-generated-implementations":                     [0mユーザーID[0m
+Step #1 - "test-generated-implementations":                   [36m</th>[39m
+Step #1 - "test-generated-implementations":                   [36m<th[39m
+Step #1 - "test-generated-implementations":                     [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"[39m
+Step #1 - "test-generated-implementations":                     [33mscope[39m=[32m"col"[39m
+Step #1 - "test-generated-implementations":                   [36m>[39m
+Step #1 - "test-generated-implementations":                     [0mログインID[0m
+Step #1 - "test-generated-implementations":                   [36m</th>[39m
+Step #1 - "test-generated-implementations":                   [36m<th[39m
+Step #1 - "test-generated-implementations":                     [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"[39m
+Step #1 - "test-generated-implementations":                     [33mscope[39m=[32m"col"[39m
+Step #1 - "test-generated-implementations":                   [36m>[39m
+Step #1 - "test-generated-implementations":                     [0m表示名[0m
+Step #1 - "test-generated-implementations":                   [36m</th>[39m
+Step #1 - "test-generated-implementations":                   [36m<th[39m
+Step #1 - "test-generated-implementations":                     [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"[39m
+Step #1 - "test-generated-implementations":                     [33mscope[39m=[32m"col"[39m
+Step #1 - "test-generated-implementations":                   [36m>[39m
+Step #1 - "test-generated-implementations":                     [0m権限種別[0m
+Step #1 - "test-generated-implementations":                   [36m</th>[39m
+Step #1 - "test-generated-implementations":                   [36m<th[39m
+Step #1 - "test-generated-implementations":                     [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"[39m
+Step #1 - "test-generated-implementations":                     [33mscope[39m=[32m"col"[39m
+Step #1 - "test-generated-implementations":                   [36m>[39m
+Step #1 - "test-generated-implementations":                     [0m所属外注先企業[0m
+Step #1 - "test-generated-implementations":                   [36m</th>[39m
+Step #1 - "test-generated-implementations":                   [36m<th[39m
+Step #1 - "test-generated-implementations":                     [33mclass[39m=[32m"px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"[39m
+Step #1 - "test-generated-implementations":                     [33mscope[39m=[32m"col"[39m
+Step #1 - "test-generated-implementations":                   [36m>[39m
+Step #1 - "test-generated-implementations":                     [0mステータス[0m
+Step #1 - "test-generated-implementations":                   [36m</th>[39m
+Step #1 - "test-generated-implementations":                   [36m<th[39m
+Step #1 - "test-generated-implementations":                     [33mclass[39m=[32m"relative px-6 py-3"[39m
+Step #1 - "test-generated-implementations":                     [33mscope[39m=[32m"col"[39m
+Step #1 - "test-generated-implementations":                   [36m>[39m
+Step #1 - "test-generated-implementations":                     [36m<span[39m
+Step #1 - "test-generated-implementations":                       [33mclass[39m=[32m"sr-only"[39m
+Step #1 - "test-generated-implementations":                     [36m>[39m
+Step #1 - "test-generated-implementations":                       [0m操作[0m
+Step #1 - "test-generated-implementations":                     [36m</span>[39m
+Step #1 - "test-generated-implementations":                   [36m</th>[39m
+Step #1 - "test-generated-implementations":                 [36m</tr>[39m
+Step #1 - "test-generated-implementations":               [36m</thead>[39m
+Step #1 - "test-generated-implementations":               [36m<tbody[39m
+Step #1 - "test-generated-implementations":                 [33mclass[39m=[32m"bg-white divide-y divide-gray-200"[39m
+Step #1 - "test-generated-implementations":                 [33mdata-testid[39m=[32m"users-tbody"[39m
+Step #1 - "test-generated-implementations":               [36m>[39m
+Step #1 - "test-generated-implementations":                 [36m<tr[39m
+Step #1 - "test-generated-implementations":                   [33mclass[39m=[32m"hover:bg-gray-50"[39m
+Step #1 - "test-generated-implementations":                   [33mdata-testid[39m=[32m"user-row"[39m
+Step #1 - "test-generated-implementations":                 [36m>[39m
+Step #1 - "test-generated-implementations":                   [36m<td[39m
+Step #1 - "test-generated-implementations":                     [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono font-bold"[39m
+Step #1 - "test-generated-implementations":                   [36m>[39m
+Step #1 - "test-generated-implementations":                     [0madmin-01[0m
+Step #1 - "test-generated-implementations":                   [36m</td>[39m
+Step #1 - "test-generated-implementations":                   [36m<td[39m
+Step #1 - "test-generated-implementations":                     [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium"[39m
+Step #1 - "test-generated-implementations":                   [36m>[39m
+Step #1 - "test-generated-implementations":                     [0mmain_admin[0m
+Step #1 - "test-generated-implementations":                   [36m</td>[39m
+Step #1 - "test-generated-implementations":                   [36m<td[39m
+Step #1 - "test-generated-implementations":                     [33mclass[39m=[32m"px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900"[39m
+Step #1 - "test-generated-implementations":                   [36m>[39m
+Step #1 - "test-generated-implementations":                     [0m管理者 佐藤[0m
+Step #1 - "test-generated-implementations":                     [36m<span[39m
+Step #1 - "test-generated-implementations":                       [33mclass[39m=[32m"ml-1.5 inline-flex items-center px-2...
+Step #1 - "test-generated-implementations": [90m [2m❯[22m Object.getElementError ../../workspace/test-runner/node_modules/@testing-library/dom/dist/config.js:[2m37:19[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m getElementError ../../workspace/test-runner/node_modules/@testing-library/dom/dist/query-helpers.js:[2m20:35[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m getMultipleElementsFoundError ../../workspace/test-runner/node_modules/@testing-library/dom/dist/query-helpers.js:[2m23:10[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/@testing-library/dom/dist/query-helpers.js:[2m55:13[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/@testing-library/dom/dist/query-helpers.js:[2m95:19[22m[39m
+Step #1 - "test-generated-implementations": [36m [2m❯[22m tests/SCR-015_admin_user_register/page.test.tsx:[2m115:19[22m[39m
+Step #1 - "test-generated-implementations":     [90m113| [39m    [34mexpect[39m(screen[33m.[39m[34mgetByText[39m([32m'main_admin'[39m))[33m.[39m[34mtoBeInTheDocument[39m()[33m;[39m
+Step #1 - "test-generated-implementations":     [90m114| [39m    [34mexpect[39m(screen[33m.[39m[34mgetByText[39m([32m'sub_tanaka'[39m))[33m.[39m[34mtoBeInTheDocument[39m()[33m;[39m
+Step #1 - "test-generated-implementations":     [90m115| [39m    [34mexpect[39m(screen[33m.[39m[34mgetByText[39m([32m'テスト外注先企業 A'[39m))[33m.[39m[34mtoBeInTheDocument[39m()[33m;[39m
+Step #1 - "test-generated-implementations":     [90m   | [39m                  [31m^[39m
+Step #1 - "test-generated-implementations":     [90m116| [39m  })[33m;[39m
+Step #1 - "test-generated-implementations":     [90m117| [39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[1m[7m FAIL [27m[22m[39m tests/SCR-015_admin_user_register/page.test.tsx[2m > [22mSCR-015_admin_user_register - 管理者ユーザー登録画面の検証[2m > [22m[TST-SCR-015-006] ユーザーを削除した際、一覧から消失すること (ただし自分自身は削除不可)
+Step #1 - "test-generated-implementations": [31m[1mTestingLibraryElementError[22m: Unable to find an element by: [data-testid="delete-btn-admin-01"]
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Ignored nodes: comments, script, style
+Step #1 - "test-generated-implementations": [36m<body>[31m
+Step #1 - "test-generated-implementations":   [36m<div>[31m
+Step #1 - "test-generated-implementations":     [36m<div[31m
+Step #1 - "test-generated-implementations":       [33mclass[31m=[32m"flex min-h-screen flex-col bg-gray-100 text-gray-900"[31m
+Step #1 - "test-generated-implementations":     [36m>[31m
+Step #1 - "test-generated-implementations":       [36m<header[31m
+Step #1 - "test-generated-implementations":         [33mclass[31m=[32m"bg-white shadow"[31m
+Step #1 - "test-generated-implementations":       [36m>[31m
+Step #1 - "test-generated-implementations":         [36m<div[31m
+Step #1 - "test-generated-implementations":           [33mclass[31m=[32m"mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center"[31m
+Step #1 - "test-generated-implementations":         [36m>[31m
+Step #1 - "test-generated-implementations":           [36m<div>[31m
+Step #1 - "test-generated-implementations":             [36m<h1[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"text-xl font-bold text-gray-900"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [0m管理者ユーザー登録[0m
+Step #1 - "test-generated-implementations":             [36m</h1>[31m
+Step #1 - "test-generated-implementations":             [36m<p[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"text-sm text-gray-600 mt-1"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [0mシステムを利用する工場側・外注先の管理者アカウント管理[0m
+Step #1 - "test-generated-implementations":             [36m</p>[31m
+Step #1 - "test-generated-implementations":           [36m</div>[31m
+Step #1 - "test-generated-implementations":           [36m<button[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"rounded bg-gray-600 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-500 transition-colors"[31m
+Step #1 - "test-generated-implementations":             [33mstyle[31m=[32m"min-height: 44px;"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [0mダッシュボードへ[0m
+Step #1 - "test-generated-implementations":           [36m</button>[31m
+Step #1 - "test-generated-implementations":         [36m</div>[31m
+Step #1 - "test-generated-implementations":       [36m</header>[31m
+Step #1 - "test-generated-implementations":       [36m<main[31m
+Step #1 - "test-generated-implementations":         [33mclass[31m=[32m"flex-1 mx-auto max-w-7xl w-full px-4 py-6 md:py-8 flex flex-col space-y-6"[31m
+Step #1 - "test-generated-implementations":       [36m>[31m
+Step #1 - "test-generated-implementations":         [36m<div[31m
+Step #1 - "test-generated-implementations":           [33mclass[31m=[32m"flex justify-between items-center bg-white p-4 rounded-xl shadow"[31m
+Step #1 - "test-generated-implementations":         [36m>[31m
+Step #1 - "test-generated-implementations":           [36m<span[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"text-sm font-medium text-gray-500"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [0m登録アカウント数: [0m
+Step #1 - "test-generated-implementations":             [36m<span[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"font-bold text-gray-900"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [0m4[0m
+Step #1 - "test-generated-implementations":               [0m件[0m
+Step #1 - "test-generated-implementations":             [36m</span>[31m
+Step #1 - "test-generated-implementations":           [36m</span>[31m
+Step #1 - "test-generated-implementations":           [36m<button[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-blue-500 transition-colors flex items-center gap-1 shadow-sm animate-fade-in"[31m
+Step #1 - "test-generated-implementations":             [33mdata-testid[31m=[32m"add-user-btn"[31m
+Step #1 - "test-generated-implementations":             [33mstyle[31m=[32m"min-height: 44px;"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [36m<svg[31m
+Step #1 - "test-generated-implementations":               [33mclass[31m=[32m"h-5 w-5"[31m
+Step #1 - "test-generated-implementations":               [33mfill[31m=[32m"none"[31m
+Step #1 - "test-generated-implementations":               [33mstroke[31m=[32m"currentColor"[31m
+Step #1 - "test-generated-implementations":               [33mstroke-width[31m=[32m"2"[31m
+Step #1 - "test-generated-implementations":               [33mviewBox[31m=[32m"0 0 24 24"[31m
+Step #1 - "test-generated-implementations":               [33mxmlns[31m=[32m"http://www.w3.org/2000/svg"[31m
+Step #1 - "test-generated-implementations":             [36m>[31m
+Step #1 - "test-generated-implementations":               [36m<path[31m
+Step #1 - "test-generated-implementations":                 [33md[31m=[32m"M12 4v16m8-8H4"[31m
+Step #1 - "test-generated-implementations":                 [33mstroke-linecap[31m=[32m"round"[31m
+Step #1 - "test-generated-implementations":                 [33mstroke-linejoin[31m=[32m"round"[31m
+Step #1 - "test-generated-implementations":               [36m/>[31m
+Step #1 - "test-generated-implementations":             [36m</svg>[31m
+Step #1 - "test-generated-implementations":             [0m新規登録[0m
+Step #1 - "test-generated-implementations":           [36m</button>[31m
+Step #1 - "test-generated-implementations":         [36m</div>[31m
+Step #1 - "test-generated-implementations":         [36m<div[31m
+Step #1 - "test-generated-implementations":           [33mclass[31m=[32m"bg-white rounded-xl shadow overflow-hidden flex-1 flex flex-col"[31m
+Step #1 - "test-generated-implementations":         [36m>[31m
+Step #1 - "test-generated-implementations":           [36m<div[31m
+Step #1 - "test-generated-implementations":             [33mclass[31m=[32m"p-12 text-center text-gray-500 font-bold"[31m
+Step #1 - "test-generated-implementations":             [33mdata-testid[31m=[32m"loading-text"[31m
+Step #1 - "test-generated-implementations":           [36m>[31m
+Step #1 - "test-generated-implementations":             [0m読み込み中...[0m
+Step #1 - "test-generated-implementations":           [36m</div>[31m
+Step #1 - "test-generated-implementations":         [36m</div>[31m
+Step #1 - "test-generated-implementations":       [36m</main>[31m
+Step #1 - "test-generated-implementations":     [36m</div>[31m
+Step #1 - "test-generated-implementations":   [36m</div>[31m
+Step #1 - "test-generated-implementations": [36m</body>[31m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m Object.getElementError ../../workspace/test-runner/node_modules/@testing-library/dom/dist/config.js:[2m37:19[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/@testing-library/dom/dist/query-helpers.js:[2m76:38[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/@testing-library/dom/dist/query-helpers.js:[2m52:17[22m[39m
+Step #1 - "test-generated-implementations": [90m [2m❯[22m ../../workspace/test-runner/node_modules/@testing-library/dom/dist/query-helpers.js:[2m95:19[22m[39m
+Step #1 - "test-generated-implementations": [36m [2m❯[22m tests/SCR-015_admin_user_register/page.test.tsx:[2m254:34[22m[39m
+Step #1 - "test-generated-implementations":     [90m252| [39m
+Step #1 - "test-generated-implementations":     [90m253| [39m    [90m// 自分自身の削除ボタンが非活性であることを確認[39m
+Step #1 - "test-generated-implementations":     [90m254| [39m    [35mconst[39m selfDeleteBtn [33m=[39m screen[33m.[39m[34mgetByTestId[39m([32m'delete-btn-admin-01'[39m)[33m;[39m
+Step #1 - "test-generated-implementations":     [90m   | [39m                                 [31m^[39m
+Step #1 - "test-generated-implementations":     [90m255| [39m    [34mexpect[39m(selfDeleteBtn)[33m.[39m[34mtoBeDisabled[39m()[33m;[39m
+Step #1 - "test-generated-implementations":     [90m256| [39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": Integrated Application Screen Test Summary
+Step #1 - "test-generated-implementations": ============================================================
+Step #1 - "test-generated-implementations": Mode                  : full
+Step #1 - "test-generated-implementations": Total                 : 15
+Step #1 - "test-generated-implementations": Passed                : 12
+Step #1 - "test-generated-implementations": Test failed           : 3
+Step #1 - "test-generated-implementations": Test timeout          : 0
+Step #1 - "test-generated-implementations": Infrastructure failed : 0
+Step #1 - "test-generated-implementations": Results               : /workspace/requirements/ai/generated/test-results
+Step #1 - "test-generated-implementations":
+Step #1 - "test-generated-implementations": Test failures or timeouts detected.
+Finished Step #1 - "test-generated-implementations"
+ERROR: step exited with non-zero status: 1
+Starting Step #2 - "upload-test-results"
+Step #2 - "upload-test-results": Pulling image: gcr.io/google.com/cloudsdktool/cloud-sdk
+Step #2 - "upload-test-results": Using default tag: latest
+Step #2 - "upload-test-results": latest: Pulling from google.com/cloudsdktool/cloud-sdk
+Step #2 - "upload-test-results": 6310eb16bf42: Already exists
+Step #2 - "upload-test-results": dfcc9dd3fe4f: Pulling fs layer
+Step #2 - "upload-test-results": d62cf106e29f: Pulling fs layer
+Step #2 - "upload-test-results": 31b69bf81a68: Pulling fs layer
+Step #2 - "upload-test-results": c304b907d70e: Pulling fs layer
+Step #2 - "upload-test-results": 59a29f1f3196: Pulling fs layer
+Step #2 - "upload-test-results": dfcc9dd3fe4f: Verifying Checksum
+Step #2 - "upload-test-results": dfcc9dd3fe4f: Download complete
+Step #2 - "upload-test-results": 59a29f1f3196: Verifying Checksum
+Step #2 - "upload-test-results": 59a29f1f3196: Download complete
+Step #2 - "upload-test-results": c304b907d70e: Verifying Checksum
+Step #2 - "upload-test-results": c304b907d70e: Download complete
+Step #2 - "upload-test-results": dfcc9dd3fe4f: Pull complete
+Step #2 - "upload-test-results": 31b69bf81a68: Verifying Checksum
+Step #2 - "upload-test-results": 31b69bf81a68: Download complete
+Step #2 - "upload-test-results": d62cf106e29f: Verifying Checksum
+Step #2 - "upload-test-results": d62cf106e29f: Download complete
+Step #2 - "upload-test-results": d62cf106e29f: Pull complete
+Step #2 - "upload-test-results": 31b69bf81a68: Pull complete
+Step #2 - "upload-test-results": c304b907d70e: Pull complete
+Step #2 - "upload-test-results": 59a29f1f3196: Pull complete
+Step #2 - "upload-test-results": Digest: sha256:c6c6bec5b8b94e4eb2f8ade1f17cf4cb01f07973b7fbb3a4843f0a61592ad5ed
+Step #2 - "upload-test-results": Status: Downloaded newer image for gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+Step #2 - "upload-test-results": gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/summary.json to gs://aidf-team-suda.appspot.com/ai-development/4ca3a2f5-88db-45b5-85c9-6e8f8e6a08e4/test-results/summary.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-002_contractor_home.json to gs://aidf-team-suda.appspot.com/ai-development/4ca3a2f5-88db-45b5-85c9-6e8f8e6a08e4/test-results/SCR-002_contractor_home.json
+Step #2 - "upload-test-results":
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-005_capture_and_submit.json to gs://aidf-team-suda.appspot.com/ai-development/4ca3a2f5-88db-45b5-85c9-6e8f8e6a08e4/test-results/SCR-005_capture_and_submit.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-007_worker_list.json to gs://aidf-team-suda.appspot.com/ai-development/4ca3a2f5-88db-45b5-85c9-6e8f8e6a08e4/test-results/SCR-007_worker_list.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-015_admin_user_register.json to gs://aidf-team-suda.appspot.com/ai-development/4ca3a2f5-88db-45b5-85c9-6e8f8e6a08e4/test-results/SCR-015_admin_user_register.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-009_contractor_punch_correction.json to gs://aidf-team-suda.appspot.com/ai-development/4ca3a2f5-88db-45b5-85c9-6e8f8e6a08e4/test-results/SCR-009_contractor_punch_correction.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-011_admin_dashboard.json to gs://aidf-team-suda.appspot.com/ai-development/4ca3a2f5-88db-45b5-85c9-6e8f8e6a08e4/test-results/SCR-011_admin_dashboard.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-001_contractor_login.json to gs://aidf-team-suda.appspot.com/ai-development/4ca3a2f5-88db-45b5-85c9-6e8f8e6a08e4/test-results/SCR-001_contractor_login.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-008_worker_add_edit.json to gs://aidf-team-suda.appspot.com/ai-development/4ca3a2f5-88db-45b5-85c9-6e8f8e6a08e4/test-results/SCR-008_worker_add_edit.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-014_contractor_company_register.json to gs://aidf-team-suda.appspot.com/ai-development/4ca3a2f5-88db-45b5-85c9-6e8f8e6a08e4/test-results/SCR-014_contractor_company_register.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-013_labor_time_summary.json to gs://aidf-team-suda.appspot.com/ai-development/4ca3a2f5-88db-45b5-85c9-6e8f8e6a08e4/test-results/SCR-013_labor_time_summary.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-012_punch_history.json to gs://aidf-team-suda.appspot.com/ai-development/4ca3a2f5-88db-45b5-85c9-6e8f8e6a08e4/test-results/SCR-012_punch_history.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-006_punch_complete.json to gs://aidf-team-suda.appspot.com/ai-development/4ca3a2f5-88db-45b5-85c9-6e8f8e6a08e4/test-results/SCR-006_punch_complete.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-004_worker_select.json to gs://aidf-team-suda.appspot.com/ai-development/4ca3a2f5-88db-45b5-85c9-6e8f8e6a08e4/test-results/SCR-004_worker_select.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-003_punch_mode_select.json to gs://aidf-team-suda.appspot.com/ai-development/4ca3a2f5-88db-45b5-85c9-6e8f8e6a08e4/test-results/SCR-003_punch_mode_select.json
+Step #2 - "upload-test-results": Copying file://requirements/ai/generated/test-results/SCR-010_admin_login.json to gs://aidf-team-suda.appspot.com/ai-development/4ca3a2f5-88db-45b5-85c9-6e8f8e6a08e4/test-results/SCR-010_admin_login.json
+Step #2 - "upload-test-results": .................
+Step #2 - "upload-test-results":
+Step #2 - "upload-test-results": Average throughput: 166.5kiB/s
+Finished Step #2 - "upload-test-results"
+PUSH
+DONE
+--------------------------------------------------------------------------------
