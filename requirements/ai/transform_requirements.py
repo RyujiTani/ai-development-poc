@@ -1434,13 +1434,17 @@ def run_static_validation(
     )
 
 
-def run_regression_tests(
+def run_screen_tests(
     test_runner: Path,
     screen_id: str,
 ) -> subprocess.CompletedProcess:
     """
-    先頭画面からscreen_idまでの
-    accumulated regression testsを実行する。
+    今回生成したscreen_idの画面テストだけを実行する。
+
+    incremental生成中は過去画面の機能テストを再実行しない。
+    統合Application全体の型・import・dependency整合性は
+    static validationで毎回確認し、最終的な全画面回帰テストは
+    Cloud Buildへ委譲する。
 
     stdout/stderrをcaptureしつつ、
     GitHub Actionsログにも出力する。
@@ -1452,7 +1456,7 @@ def run_regression_tests(
             str(
                 test_runner
             ),
-            "--through",
+            "--screen",
             screen_id,
         ],
         cwd=PROJECT_ROOT,
@@ -1805,13 +1809,13 @@ def run_post_implementation_check(
     Flow:
         1. static validation
         2. static failureならAI repair
-        3. accumulated regression tests
+        3. current screen test
         4. test failure / timeoutは記録して次画面へ進む
 
     方針:
         - static validation failureは後続画面へ
           壊れたコードを引き継ぐ危険があるためblocking。
-        - regression test failure / timeoutはnon-blocking。
+        - current screen test failure / timeoutはnon-blocking。
           生成中は診断として扱い、15画面の生成を継続する。
         - 最終的な機能テストとAI repairは
           Cloud Build / Repair loopへ委譲する。
@@ -1867,7 +1871,7 @@ def run_post_implementation_check(
     )
 
     # --------------------------------------------------------
-    # 2. Accumulated regression tests
+    # 2. Current screen test
     # --------------------------------------------------------
     #
     # 生成途中のVitestは品質ゲートではなく診断として扱う。
@@ -1879,11 +1883,11 @@ def run_post_implementation_check(
 
     print()
     print(
-        "Running regression tests through "
+        "Running current screen tests: "
         f"{screen_id}..."
     )
 
-    test_result = run_regression_tests(
+    test_result = run_screen_tests(
         test_runner,
         screen_id,
     )
@@ -2284,7 +2288,7 @@ def implement_all_screens(
         )
 
         # ----------------------------------------------------
-        # 2. Static + accumulated regression tests
+        # 2. Static + current screen test
         # ----------------------------------------------------
 
         run_post_implementation_check(
