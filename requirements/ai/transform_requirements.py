@@ -1490,131 +1490,6 @@ def run_regression_tests(
     return result
 
 
-
-def extract_static_error_signatures(
-    stdout: str,
-    stderr: str,
-) -> List[str]:
-    """
-    static validationログから、repair前後で比較可能な
-    安定したエラーsignatureを抽出する。
-    """
-
-    combined = "\n".join(
-        part
-        for part in (
-            stdout or "",
-            stderr or "",
-        )
-        if part
-    )
-
-    signatures: List[str] = []
-
-    ts_pattern = re.compile(
-        r"(?P<path>[A-Za-z0-9_./()\-]+)"
-        r"\(\d+,\d+\):\s*error\s+"
-        r"(?P<code>TS\d+):\s*"
-        r"(?P<message>[^\r\n]+)"
-    )
-
-    for match in ts_pattern.finditer(combined):
-        path = match.group("path").replace("\\", "/")
-        code = match.group("code").strip()
-        message = re.sub(
-            r"\s+",
-            " ",
-            match.group("message").strip(),
-        )
-
-        signatures.append(
-            f"{path} | {code} | {message}"
-        )
-
-    if "DEPENDENCY ALLOWLIST CHECK FAILED" in combined:
-        dependency_section = combined.split(
-            "DEPENDENCY ALLOWLIST CHECK FAILED",
-            1,
-        )[1]
-
-        dependency_section = dependency_section.split(
-            "STATIC CHECK FAILED",
-            1,
-        )[0]
-
-        for line in dependency_section.splitlines():
-            stripped = line.strip()
-
-            if (
-                stripped.startswith("- ")
-                and len(stripped) > 2
-            ):
-                dependency = stripped[2:].strip()
-
-                if dependency:
-                    signatures.append(
-                        "DEPENDENCY_NOT_ALLOWED | "
-                        f"{dependency}"
-                    )
-
-    fallback_patterns = (
-        r"Cannot find module ['\"][^'\"]+['\"]",
-        r"Cannot find name ['\"]?[^'\"\r\n]+['\"]?",
-        r"Module ['\"][^'\"]+['\"] has no exported member ['\"][^'\"]+['\"]",
-    )
-
-    for pattern in fallback_patterns:
-        for match in re.finditer(
-            pattern,
-            combined,
-            flags=re.IGNORECASE,
-        ):
-            signatures.append(
-                re.sub(
-                    r"\s+",
-                    " ",
-                    match.group(0).strip(),
-                )
-            )
-
-    unique: List[str] = []
-    seen = set()
-
-    for signature in signatures:
-        if signature in seen:
-            continue
-
-        seen.add(signature)
-        unique.append(signature)
-
-    return unique
-
-
-def find_repeated_error_signatures(
-    previous_signatures: List[str],
-    current_signatures: List[str],
-) -> List[str]:
-    """
-    直前repairへ渡したエラーと、
-    repair後のstatic validationに残っているエラーの
-    共通signatureを返す。
-    """
-
-    previous = set(
-        previous_signatures
-        or []
-    )
-
-    return [
-        signature
-        for signature in (
-            current_signatures
-            or []
-        )
-        if signature in previous
-    ]
-
-
 def repair_screen_with_result(
     vertex_client,
     screen: str,
@@ -1624,7 +1499,7 @@ def repair_screen_with_result(
     ],
     error_log: str,
     max_attempts: int = 2,
-) -> List[str]:
+) -> None:
     """
     test-resultsファイルを経由せず、
     任意の検証結果を直接repairへ渡す。
@@ -1635,9 +1510,6 @@ def repair_screen_with_result(
 
     TEST_RESULT_JSONというplaceholder名は
     既存repair promptとの互換性のため維持する。
-
-    戻り値:
-        実際にApplicationへ適用したファイルパス一覧。
     """
 
     system_requirements_file = (
@@ -1779,15 +1651,12 @@ def repair_screen_with_result(
             f"  {file_path}"
         )
 
-    return saved_files
-
 
 def run_static_check_with_auto_repair(
     vertex_client,
     screen_id: str,
     static_validator: Path,
     max_static_repair_count: int = 2,
-    max_root_cause_recovery_count: int = 1,
     reason: str = "post_implementation",
 ) -> None:
     """
@@ -1795,27 +1664,11 @@ def run_static_check_with_auto_repair(
     generated application error(exit 1)なら
     AI repairして再検証する。
 
-    通常repair:
-        最大 max_static_repair_count 回。
-
-    root-cause recovery:
-        通常repair上限到達後でも、
-        直前repairへ渡した同一error signatureが
-        repair後にも残っている場合だけ、
-        max_root_cause_recovery_count 回まで
-        追加repairを許可する。
-
-    exit 2はinfra errorなのでAI repairしない。
+    exit 2はinfra errorなので
+    AI repairしない。
     """
 
     static_repair_count = 0
-    root_cause_recovery_count = 0
-
-    previous_repair_signatures: List[str] = []
-
-    repair_history: List[
-        Dict[str, Any]
-    ] = []
 
     while True:
         print(
@@ -1865,101 +1718,30 @@ def run_static_check_with_auto_repair(
                 "failed. AI repair was not attempted."
             )
 
-        current_signatures = (
-            extract_static_error_signatures(
-                static_result.stdout
-                or "",
-                static_result.stderr
-                or "",
-            )
-        )
-
-        repeated_signatures = (
-            find_repeated_error_signatures(
-                previous_repair_signatures,
-                current_signatures,
-            )
-        )
-
-        same_error_after_previous_repair = bool(
-            repeated_signatures
-        )
-
-        repair_mode = "normal"
-
         if (
             static_repair_count
-            < max_static_repair_count
+            >= max_static_repair_count
         ):
-            static_repair_count += 1
-
-            print()
-            print(
-                "Static validation failed. "
-                "Starting automatic repair "
-                f"{static_repair_count}/"
-                f"{max_static_repair_count}..."
-            )
-
-        elif (
-            same_error_after_previous_repair
-            and root_cause_recovery_count
-            < max_root_cause_recovery_count
-        ):
-            repair_mode = "root_cause_recovery"
-            root_cause_recovery_count += 1
-
-            print()
-            print("!" * 60)
-            print(
-                "Static validation still contains "
-                "the same error after the previous repair."
-            )
-            print()
-            print(
-                "Normal static repair limit has been reached, "
-                "but a root-cause recovery repair is allowed."
-            )
-            print()
-            print(
-                "Starting root-cause recovery "
-                f"{root_cause_recovery_count}/"
-                f"{max_root_cause_recovery_count}..."
-            )
-            print("!" * 60)
-
-            if repeated_signatures:
-                print()
-                print(
-                    "Detected static error signature(s) "
-                    "that survived the previous repair:"
-                )
-
-                for signature in repeated_signatures:
-                    print(
-                        f"  - {signature}"
-                    )
-
-                print()
-                print(
-                    "The next repair will receive the "
-                    "previous repair history and must use "
-                    "a different root-cause strategy."
-                )
-
-        else:
             raise RuntimeError(
                 "Static validation still failed "
                 "after "
-                f"{static_repair_count} normal automatic "
-                "repair(s) and "
-                f"{root_cause_recovery_count} root-cause "
-                "recovery repair(s) "
+                f"{static_repair_count} "
+                "automatic repair(s) "
                 f"for {screen_id}. "
                 "The generated application was "
                 "not allowed to proceed to the "
                 "next screen."
             )
+
+        static_repair_count += 1
+
+        print()
+        print(
+            "Static validation failed. "
+            "Starting automatic repair "
+            f"{static_repair_count}/"
+            f"{max_static_repair_count}..."
+        )
 
         validation_result: Dict[
             str,
@@ -1986,24 +1768,6 @@ def run_static_check_with_auto_repair(
 
             "repair_attempt":
                 static_repair_count,
-
-            "repair_mode":
-                repair_mode,
-
-            "root_cause_recovery_attempt":
-                root_cause_recovery_count,
-
-            "same_error_after_previous_repair":
-                same_error_after_previous_repair,
-
-            "current_error_signatures":
-                current_signatures,
-
-            "repeated_error_signatures":
-                repeated_signatures,
-
-            "repair_history":
-                repair_history,
         }
 
         error_log = (
@@ -2016,68 +1780,12 @@ def run_static_check_with_auto_repair(
             )
         )
 
-        if repair_mode == "root_cause_recovery":
-            repeated_text = (
-                "\n".join(
-                    f"- {signature}"
-                    for signature in repeated_signatures
-                )
-                or "(signature unavailable)"
-            )
-
-            history_text = json.dumps(
-                repair_history,
-                ensure_ascii=False,
-                indent=2,
-            )
-
-            error_log = (
-                "=== ROOT CAUSE RECOVERY REQUIRED ===\n"
-                "The previous repair did not resolve the "
-                "same static error.\n"
-                "Do not repeat the previous local rewrite.\n"
-                "Inspect the related type definition, producer, "
-                "consumer, and narrowing/control-flow together, "
-                "then fix the root cause with the smallest "
-                "spec-compliant change.\n\n"
-                "Repeated error signatures:\n"
-                f"{repeated_text}\n\n"
-                "Previous repair history:\n"
-                f"{history_text}\n\n"
-                + error_log
-            )
-
-        saved_files = (
-            repair_screen_with_result(
-                vertex_client,
-                screen_id,
-                validation_result,
-                error_log,
-                max_attempts=2,
-            )
-        )
-
-        repair_history.append(
-            {
-                "repair_mode":
-                    repair_mode,
-
-                "normal_repair_attempt":
-                    static_repair_count,
-
-                "root_cause_recovery_attempt":
-                    root_cause_recovery_count,
-
-                "input_error_signatures":
-                    current_signatures,
-
-                "changed_files":
-                    saved_files,
-            }
-        )
-
-        previous_repair_signatures = (
-            current_signatures
+        repair_screen_with_result(
+            vertex_client,
+            screen_id,
+            validation_result,
+            error_log,
+            max_attempts=2,
         )
 
         print()
@@ -2085,7 +1793,6 @@ def run_static_check_with_auto_repair(
             "Re-running static validation "
             "after repair..."
         )
-
 
 def run_post_implementation_check(
     vertex_client,
