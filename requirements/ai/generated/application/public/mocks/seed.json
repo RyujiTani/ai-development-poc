@@ -1,0 +1,59 @@
+{
+  "contractors": [
+    {
+      "contractor_id": "contractor-1",
+      "name": "外注A社",
+      "status": "ACTIVE",
+      "created_at": "2026-04-13T00:00:00Z",
+      "updated_at": "2026-04-13T00:00:00Z"
+    },
+    {
+      "contractor_id": "contractor-2",
+      "name": "外注B社",
+      "status": "ACTIVE",
+      "created_at": "2026-04-13T00:00:00Z",
+      "updated_at": "2026-04-13T00:00:00Z"
+    }
+  ],
+  "users": [
+    {
+      "user_id": "user-1",
+      "contractor_id": "contractor-1",
+      "role": "CONTRACTOR_MANAGER",
+      "login_id": "seeded_contractor_manager",
+      "password_plain": "correct_password",
+      "display_name": "外注先管理者 A",
+      "status": "ACTIVE",
+      "created_at": "2026-04-13T00:00:00Z",
+      "updated_at": "2026-04-13T00:00:00Z"
+    },
+    {
+      "user_id": "user-2",
+      "contractor_id": null,
+      "role": "FACTORY_ADMIN",
+      "login_id": "factory_admin",
+      "password_plain": "factory_password",
+      "display_name": "工場管理者",
+      "status": "ACTIVE",
+      "created_at": "2026-04-13T00:00:00Z",
+      "updated_at": "2026-04-13T00:00:00Z"
+    }
+  ],
+  "workers": [
+    {
+      "worker_id": "worker-1",
+      "contractor_id": "contractor-1",
+      "name": "田中 太郎",
+      "contact": "090-1234-5678",
+      "qualifications": ["QUAL_001"],
+      "trainings": [{"code": "TRN_001", "taken_at": "2026-01-10"}],
+      "status": "ACTIVE",
+      "created_at": "2026-04-13T00:00:00Z",
+      "updated_at": "2026-04-13T00:00:00Z"
+    }
+  ],
+  "attendance_records": [],
+  "attendance_corrections": [],
+  "photo_blobs": [],
+  "audit_logs": []
+}

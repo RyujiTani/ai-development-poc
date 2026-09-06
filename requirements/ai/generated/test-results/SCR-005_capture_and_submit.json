@@ -1,0 +1,9 @@
+{
+  "screen": "SCR-005_capture_and_submit",
+  "status": "TEST_TIMEOUT",
+  "passed": false,
+  "exit_code": null,
+  "timeout_seconds": 30,
+  "stdout": "\n\u001b[1m\u001b[7m\u001b[36m RUN \u001b[39m\u001b[27m\u001b[22m \u001b[36mv2.1.9 \u001b[39m\u001b[90m/tmp/SCR-005_capture_and_submit-6iZiPL\u001b[39m\n\n \u001b[32m✓\u001b[39m tests/SCR-005_capture_and_submit/page.test.tsx\u001b[2m > \u001b[22mSCR-005_capture_and_submit 撮影・送信画面\u001b[2m > \u001b[22mTST-SCR-005-001: 画面読み込み時にカメラを起動し、READY状態になること\n",
+  "stderr": "\u001b[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.\u001b[39m\n\u001b[90mstderr\u001b[2m | tests/SCR-005_capture_and_submit/page.test.tsx\u001b[2m > \u001b[22m\u001b[2mSCR-005_capture_and_submit 撮影・送信画面\u001b[2m > \u001b[22m\u001b[2mTST-SCR-005-001: 画面読み込み時にカメラを起動し、READY状態になること\n\u001b[22m\u001b[39mWarning: An update to CaptureSubmitPage inside a test was not wrapped in act(...).\n\nWhen testing, code that causes React state updates should be wrapped into act(...):\n\nact(() => {\n  /* fire events that update state */\n});\n/* assert on the output */\n\nThis ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act\n    at CaptureSubmitPage (/tmp/SCR-005_capture_and_submit-6iZiPL/app/(contractor)/capture-submit/page.tsx:63:39)\n\n\nVitest process exceeded 30 seconds and was terminated."
+}

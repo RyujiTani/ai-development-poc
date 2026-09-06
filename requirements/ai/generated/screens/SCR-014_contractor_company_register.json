@@ -1,0 +1,544 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-014_contractor_company_register.md"
+  },
+  "screen": {
+    "id": "SCR-014",
+    "name": "外注先企業登録画面",
+    "user_role": "FACTORY_ADMIN",
+    "path": "/app/(factory)/contractors/page.tsx",
+    "description": "工場側管理者が外注先企業の情報を登録・管理する画面。外注先企業の一覧表示、新規登録、編集、削除を行う。"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-014-FN-001",
+        "summary": "登録済みの外注先企業一覧を表示できる",
+        "detail": "システムに登録されている外注先企業データを取得し、一覧として画面上にレンダリングする。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-014-FN-002",
+        "summary": "外注先企業を新規登録できる",
+        "detail": "新規登録フォームに情報を入力し、新規に外注先企業データを追加保存する。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-014-FN-003",
+        "summary": "既存の外注先企業情報を編集できる",
+        "detail": "選択した外注先企業の情報をフォームにロードし、編集内容を保存・更新できる。",
+        "priority": "High"
+      },
+      {
+        "id": "SCR-014-FN-004",
+        "summary": "外注先企業を削除できる",
+        "detail": "不要となった外注先企業データを一覧およびデータベースから削除できる。",
+        "priority": "Mid"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-014-UI-001",
+        "summary": "外注先企業をリスト/テーブル形式で表示する",
+        "detail": "企業名やステータスなどの項目を整理されたテーブルで表示する。"
+      },
+      {
+        "id": "SCR-014-UI-002",
+        "summary": "「新規登録」ボタンをリスト上部に配置する",
+        "detail": "ユーザーが迷わず新規作成を開始できるよう、テーブルの上に目立つ位置でボタンを配置する。"
+      },
+      {
+        "id": "SCR-014-UI-003",
+        "summary": "各企業行に「編集」「削除」の操作ボタンを配置する",
+        "detail": "各行の右端などに操作用のアクションボタンを集約配置する。"
+      },
+      {
+        "id": "SCR-014-UI-004",
+        "summary": "新規登録・編集時はモーダルまたはインラインフォームで入力欄を表示する",
+        "detail": "モーダルダイアログまたはインラインの入力エリアを展開してフォーム入力を可能にする。"
+      },
+      {
+        "id": "SCR-014-UI-005",
+        "summary": "一覧はページネーションまたは無限スクロールで表示する",
+        "detail": "全データの一括ロードを避け、ページング制御を行って表示負荷を抑制する。"
+      },
+      {
+        "id": "SCR-014-UI-006",
+        "summary": "レスポンシブWebデザインでPC/スマホ両対応とする",
+        "detail": "Tailwind CSS 等を活用し、モバイル端末の狭い画面幅でも破綻しないレイアウト（カード形式への切り替えなど）を提供する。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-014-VL-001",
+        "summary": "企業名必須入力",
+        "detail": "フォーム送信時に企業名が入力されているか検証し、空の場合はエラーメッセージを表示して保存をブロックする。"
+      },
+      {
+        "id": "SCR-014-VL-002",
+        "summary": "削除操作前の確認ダイアログ表示",
+        "detail": "削除ボタンが誤タップされた際の防止策として、ブラウザ標準のconfirmまたはカスタムダイアログによる最終確認を行う。"
+      },
+      {
+        "id": "SCR-014-VL-003",
+        "summary": "認証・権限ガード",
+        "detail": "ログインしていない、または工場側管理者(FACTORY_ADMIN)のロールを持っていないアクセスを検知した場合、SCR-010 (管理者ログイン画面) へリダイレクトする。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-014-EV-001",
+        "summary": "「新規登録」ボタン押下",
+        "detail": "押下時に入力フォーム（新規モード）を開き、入力を促す。"
+      },
+      {
+        "id": "SCR-014-EV-002",
+        "summary": "「保存」ボタン押下かつバリデーション成功",
+        "detail": "入力データをAPIを介して保存処理し、完了後にフォームを閉じて一覧表示を再取得・更新する。"
+      },
+      {
+        "id": "SCR-014-EV-003",
+        "summary": "「編集」ボタン押下",
+        "detail": "該当外注先企業の既存情報（ID、企業名、ステータス等）をフォーム（編集モード）に読み込んで表示する。"
+      },
+      {
+        "id": "SCR-014-EV-004",
+        "summary": "「削除」ボタン押下かつ確認OK",
+        "detail": "確認ダイアログで承認された後、削除APIを呼び出し、削除が成功したら一覧表示を更新する。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-014-DT-001",
+        "summary": "GET /api/admin/contractors",
+        "detail": "外注先企業一覧のデータ取得。システム要件定義にある `Contractor` データ型を返却する。"
+      },
+      {
+        "id": "SCR-014-DT-002",
+        "summary": "POST /api/admin/contractors",
+        "detail": "外注先企業を新規追加するためのリクエスト送信。送信内容は `{ name: string, status: 'ACTIVE' | 'INACTIVE' }` とする。"
+      },
+      {
+        "id": "SCR-014-DT-003",
+        "summary": "PUT /api/admin/contractors/{id}",
+        "detail": "対象IDの外注先企業情報を更新するためのリクエスト送信。"
+      },
+      {
+        "id": "SCR-014-DT-004",
+        "summary": "DELETE /api/admin/contractors/{id}",
+        "detail": "対象IDの外注先企業情報を削除するためのリクエスト送信。"
+      }
+    ],
+    "api": [
+      {
+        "path": "/api/admin/contractors",
+        "method": "GET",
+        "description": "登録された外注先企業の一覧データを取得する（Mock / IndexedDB対応）"
+      },
+      {
+        "path": "/api/admin/contractors",
+        "method": "POST",
+        "description": "新しい外注先企業を登録する。登録データはIndexedDBに保持される"
+      },
+      {
+        "path": "/api/admin/contractors/{id}",
+        "method": "PUT",
+        "description": "特定IDの外注先企業データを更新する"
+      },
+      {
+        "path": "/api/admin/contractors/{id}",
+        "method": "DELETE",
+        "description": "特定IDの外注先企業データを削除する"
+      }
+    ],
+    "state": [
+      {
+        "name": "contractorsList",
+        "type": "Contractor[]",
+        "description": "取得した外注先企業の一覧"
+      },
+      {
+        "name": "isFormOpen",
+        "type": "boolean",
+        "description": "登録/編集フォームの開閉状態"
+      },
+      {
+        "name": "formMode",
+        "type": "'CREATE' | 'EDIT'",
+        "description": "フォームの登録・編集モード種別"
+      },
+      {
+        "name": "selectedContractor",
+        "type": "Contractor | null",
+        "description": "編集対象として現在選択されている外注先企業データ"
+      },
+      {
+        "name": "isLoading",
+        "type": "boolean",
+        "description": "データ通信中（モックアクセス含む）のローディング状態"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-014"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "AC-014-001",
+      "requirement_ids": [
+        "SCR-014-FN-001",
+        "SCR-014-UI-001",
+        "SCR-014-DT-001"
+      ],
+      "description": "画面表示時、現在IndexedDB等に登録されている外注先企業一覧（企業名、ステータス等）がテーブル形式で正しく表示されること。"
+    },
+    {
+      "id": "AC-014-002",
+      "requirement_ids": [
+        "SCR-014-UI-002",
+        "SCR-014-UI-004",
+        "SCR-014-EV-001"
+      ],
+      "description": "一覧上部の「新規登録」ボタンを押下した際、新規登録用の空フォーム（モーダルまたはインライン）が表示されること。"
+    },
+    {
+      "id": "AC-014-003",
+      "requirement_ids": [
+        "SCR-014-VL-001"
+      ],
+      "description": "企業名が未入力の状態で保存を試みた際、「必須入力です」等のエラーメッセージが表示され、APIリクエストの送信がブロックされること。"
+    },
+    {
+      "id": "AC-014-004",
+      "requirement_ids": [
+        "SCR-014-FN-002",
+        "SCR-014-EV-002",
+        "SCR-014-DT-002"
+      ],
+      "description": "フォームに有効な企業名を入力して「保存」を押下した際、新規登録API(POST)が正常に実行され、フォームが閉じ、一覧が自動的に最新化され登録した企業名が含まれていること。"
+    },
+    {
+      "id": "AC-014-005",
+      "requirement_ids": [
+        "SCR-014-FN-003",
+        "SCR-014-UI-003",
+        "SCR-014-UI-004",
+        "SCR-014-EV-003"
+      ],
+      "description": "任意の外注先企業行の「編集」ボタンを押下した際、その企業の登録値（企業名やステータス）があらかじめ入力された状態のフォームが表示されること。"
+    },
+    {
+      "id": "AC-014-006",
+      "requirement_ids": [
+        "SCR-014-FN-003",
+        "SCR-014-EV-002",
+        "SCR-014-DT-003"
+      ],
+      "description": "編集フォームで企業名を書き換えて「保存」を押下した際、更新API(PUT)が正常に実行され、一覧に反映されること。"
+    },
+    {
+      "id": "AC-014-007",
+      "requirement_ids": [
+        "SCR-014-FN-004",
+        "SCR-014-UI-003",
+        "SCR-014-VL-002",
+        "SCR-014-EV-004",
+        "SCR-014-DT-004"
+      ],
+      "description": "任意の外注先企業行の「削除」ボタンを押下した際、削除確認ダイアログが表示されること。OKを押下した場合にのみ削除API(DELETE)が走り、一覧から該当データが消えること。"
+    },
+    {
+      "id": "AC-014-008",
+      "requirement_ids": [
+        "SCR-014-VL-003"
+      ],
+      "description": "ログインしていない、もしくは権限が `FACTORY_ADMIN` ではないユーザーで直接この画面にアクセスしようとした際、管理者ログイン画面 `SCR-010` に即座にリダイレクトされること。"
+    },
+    {
+      "id": "AC-014-009",
+      "requirement_ids": [
+        "SCR-014-UI-005"
+      ],
+      "description": "登録件数が多い場合、ページネーションまたは無限スクロール要素が表示され、該当ページのデータだけが画面上に読み込まれること。"
+    },
+    {
+      "id": "AC-014-010",
+      "requirement_ids": [
+        "SCR-014-UI-006"
+      ],
+      "description": "スマートフォンの画面幅でアクセスした際、表が横にはみ出すことなく、適した縦並びのビューか、スクロール可能な状態のUIに最適化されること。"
+    }
+  ],
+  "tests": [
+    {
+      "id": "TS-014-001",
+      "test_type": "unit",
+      "requirement_ids": [
+        "SCR-014-FN-001",
+        "SCR-014-UI-001",
+        "SCR-014-DT-001"
+      ],
+      "input": "モックデータベース上に登録済みの外注先企業データ2件が存在する状態",
+      "steps": [
+        "工場側管理者ロールでSCR-014のコンポーネントをレンダリングする",
+        "Mock APIから一覧データが解決されるのを待つ"
+      ],
+      "expected": "画面上のテーブルに、登録されている企業2件の名前およびステータスが正しくテキスト表示されていること"
+    },
+    {
+      "id": "TS-014-002",
+      "test_type": "unit",
+      "requirement_ids": [
+        "SCR-014-UI-002",
+        "SCR-014-UI-004",
+        "SCR-014-EV-001"
+      ],
+      "input": "一覧が初期表示された画面状態",
+      "steps": [
+        "「新規登録」ボタンをクリックする"
+      ],
+      "expected": "新規登録フォーム用のモーダルまたはインラインフォームが画面上に出現すること"
+    },
+    {
+      "id": "TS-014-003",
+      "test_type": "unit",
+      "requirement_ids": [
+        "SCR-014-VL-001"
+      ],
+      "input": "新規登録フォームが表示されている状態",
+      "steps": [
+        "企業名入力欄を空文字にする",
+        "「保存」ボタンをクリックする"
+      ],
+      "expected": "フォームが閉じず、企業名入力欄付近に「必須入力」を促すバリデーションエラー文言が表示されること"
+    },
+    {
+      "id": "TS-014-004",
+      "test_type": "e2e",
+      "requirement_ids": [
+        "SCR-014-FN-002",
+        "SCR-014-EV-002",
+        "SCR-014-DT-002"
+      ],
+      "input": "新規登録フォームが表示されている状態",
+      "steps": [
+        "企業名入力欄に「テスト外注企業A」を入力する",
+        "「保存」ボタンをクリックする"
+      ],
+      "expected": "登録API(POST)が呼び出され、フォームが閉じ、一覧テーブルに「テスト外注企業A」という行が追加表示されていること"
+    },
+    {
+      "id": "TS-014-005",
+      "test_type": "unit",
+      "requirement_ids": [
+        "SCR-014-FN-003",
+        "SCR-014-UI-003",
+        "SCR-014-EV-003"
+      ],
+      "input": "既存データ（例: ID=1, 名前='既存企業X'）がテーブルに表示されている状態",
+      "steps": [
+        "「既存企業X」の行にある「編集」ボタンをクリックする"
+      ],
+      "expected": "編集用フォームが出現し、企業名の入力初期値として「既存企業X」が設定されていること"
+    },
+    {
+      "id": "TS-014-006",
+      "test_type": "e2e",
+      "requirement_ids": [
+        "SCR-014-FN-003",
+        "SCR-014-EV-002",
+        "SCR-014-DT-003"
+      ],
+      "input": "「既存企業X」の編集フォームが開いている状態",
+      "steps": [
+        "企業名を「既存企業X（更新後）」に書き換える",
+        "「保存」ボタンをクリックする"
+      ],
+      "expected": "更新API(PUT)が呼び出され、一覧の該当する行の表示名が「既存企業X（更新後）」に変更されていること"
+    },
+    {
+      "id": "TS-014-007",
+      "test_type": "e2e",
+      "requirement_ids": [
+        "SCR-014-FN-004",
+        "SCR-014-VL-002",
+        "SCR-014-EV-004",
+        "SCR-014-DT-004"
+      ],
+      "input": "既存データがテーブルに表示されている状態",
+      "steps": [
+        "対象行の「削除」ボタンをクリックする",
+        "確認アラートダイアログで「OK（削除する）」を押下する"
+      ],
+      "expected": "削除API(DELETE)が呼び出され、対象企業の行が一覧テーブルから消失していること"
+    },
+    {
+      "id": "TS-014-008",
+      "test_type": "unit",
+      "requirement_ids": [
+        "SCR-014-VL-003"
+      ],
+      "input": "未ログイン状態、もしくは外注先管理者(CONTRACTOR_MANAGER)のログイン状態",
+      "steps": [
+        "SCR-014への直接アクセスを試みる"
+      ],
+      "expected": "画面が表示されず、/login (管理者ログイン画面: SCR-010) へリダイレクトされること"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-014-001",
+      "target": "外注先企業の追加項目",
+      "reason": "画面設計において、企業名以外の情報項目（住所、連絡先、代表者名など）が追加で必要になるかどうかが未定とされている。システム要件定義書の Contractor 型定義上は name と status のみであり、追加の型定義は確認されていない。",
+      "sources": {
+        "system_requirements": "data_model.types.Contractor の定義（name、statusのみが存在）",
+        "trace_index": "N/A",
+        "screen_design": "確認事項: 「外注先企業情報の具体的な項目（企業名以外に住所、連絡先、代表者名等が必要か）が未定。」"
+      },
+      "resolution": "system_requirements (システム要件に定義されているContractor構造に合わせ、本テストフロントエンド上では企業名(name)とステータス(status)のみのシンプルな管理とし、不要な追加項目の入力は行わない)"
+    },
+    {
+      "id": "AMB-014-002",
+      "target": "作業員が紐づく外注先企業の削除制限",
+      "reason": "企業に紐づく作業員(workers)が存在する場合の削除可否のルールが未定義である。そのまま削除すると、作業員データ側での整合性エラーやデータの孤立を招くリスクがある。",
+      "sources": {
+        "system_requirements": "data_model.stores における workers (contractor_id を保持)",
+        "trace_index": "N/A",
+        "screen_design": "確認事項: 「企業に紐づく作業員が存在する場合の削除可否のルールが未定。」"
+      },
+      "resolution": "manual_confirmation (モックDB上での安全確保のため、該当外注先企業に関連する作業員が1名以上存在する場合は削除ボタン押下時に「紐づく作業員が存在するため削除できません」とのエラーダイアログを表示して動作を制限する暫定仕様とする)"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-014-FN-001",
+      "acceptance_ids": [
+        "AC-014-001"
+      ],
+      "test_ids": [
+        "TS-014-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-014-FN-002",
+      "acceptance_ids": [
+        "AC-014-004"
+      ],
+      "test_ids": [
+        "TS-014-004"
+      ]
+    },
+    {
+      "requirement_id": "SCR-014-FN-003",
+      "acceptance_ids": [
+        "AC-014-005",
+        "AC-014-006"
+      ],
+      "test_ids": [
+        "TS-014-005",
+        "TS-014-006"
+      ]
+    },
+    {
+      "requirement_id": "SCR-014-FN-004",
+      "acceptance_ids": [
+        "AC-014-007"
+      ],
+      "test_ids": [
+        "TS-014-007"
+      ]
+    },
+    {
+      "requirement_id": "SCR-014-UI-001",
+      "acceptance_ids": [
+        "AC-014-001"
+      ],
+      "test_ids": [
+        "TS-014-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-014-UI-002",
+      "acceptance_ids": [
+        "AC-014-002"
+      ],
+      "test_ids": [
+        "TS-014-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-014-UI-003",
+      "acceptance_ids": [
+        "AC-014-005",
+        "AC-014-007"
+      ],
+      "test_ids": [
+        "TS-014-005",
+        "TS-014-007"
+      ]
+    },
+    {
+      "requirement_id": "SCR-014-UI-004",
+      "acceptance_ids": [
+        "AC-014-002",
+        "AC-014-005"
+      ],
+      "test_ids": [
+        "TS-014-002",
+        "TS-014-005"
+      ]
+    },
+    {
+      "requirement_id": "SCR-014-UI-005",
+      "acceptance_ids": [
+        "AC-014-009"
+      ],
+      "test_ids": []
+    },
+    {
+      "requirement_id": "SCR-014-UI-006",
+      "acceptance_ids": [
+        "AC-014-010"
+      ],
+      "test_ids": []
+    },
+    {
+      "requirement_id": "SCR-014-VL-001",
+      "acceptance_ids": [
+        "AC-014-003"
+      ],
+      "test_ids": [
+        "TS-014-003"
+      ]
+    },
+    {
+      "requirement_id": "SCR-014-VL-002",
+      "acceptance_ids": [
+        "AC-014-007"
+      ],
+      "test_ids": [
+        "TS-014-007"
+      ]
+    },
+    {
+      "requirement_id": "SCR-014-VL-003",
+      "acceptance_ids": [
+        "AC-014-008"
+      ],
+      "test_ids": [
+        "TS-014-008"
+      ]
+    }
+  ]
+}
