@@ -32,9 +32,27 @@ const resultsRoot = path.join(
   'test-results'
 );
 
-const SCREEN_TEST_TIMEOUT_MS = 180_000;
-const SCREEN_TEST_TIMEOUT_SECONDS =
-  SCREEN_TEST_TIMEOUT_MS / 1000;
+/*
+ * incremental test で一度 TIMEOUT した画面を記録する。
+ *
+ * --through を使う incremental test の間だけ利用する。
+ *
+ * Cloud Build の通常実行では --through を付けないため、
+ * この履歴は利用せず、全画面を必ず再テストする。
+ */
+const incrementalTimeoutStateFile = path.join(
+  resultsRoot,
+  'incremental-timeouts.json'
+);
+
+/*
+ * 画面単位の Vitest プロセスタイムアウト。
+ *
+ * 通常の画面テストは数秒程度で完了するため、
+ * 60秒を超えた場合はハング・無限待ち等と判断する。
+ */
+const SCREEN_TEST_TIMEOUT_MS = 30_000;
+const SCREEN_TEST_TIMEOUT_SECONDS = SCREEN_TEST_TIMEOUT_MS / 1000;
 
 const args = process.argv.slice(2);
 
@@ -50,28 +68,23 @@ function getArgValue(name) {
 
 const throughScreen = getArgValue('--through');
 
+/*
+ * --through が指定されている場合のみ incremental test とみなす。
+ *
+ * incremental:
+ *   python の画面逐次生成中
+ *
+ * full:
+ *   Cloud Build の最終全画面テスト
+ */
+const isIncrementalRun = Boolean(throughScreen);
+
 function copyDir(source, destination) {
-  fs.mkdirSync(destination, {
-    recursive: true,
-  });
+  fs.mkdirSync(destination, { recursive: true });
 
-  for (
-    const entry of fs.readdirSync(
-      source,
-      {
-        withFileTypes: true,
-      }
-    )
-  ) {
-    const src = path.join(
-      source,
-      entry.name
-    );
-
-    const dst = path.join(
-      destination,
-      entry.name
-    );
+  for (const entry of fs.readdirSync(source, { withFileTypes: true })) {
+    const src = path.join(source, entry.name);
+    const dst = path.join(destination, entry.name);
 
     if (entry.isDirectory()) {
       copyDir(src, dst);
@@ -82,30 +95,35 @@ function copyDir(source, destination) {
 }
 
 function writeJson(file, value) {
-  fs.mkdirSync(
-    path.dirname(file),
-    {
-      recursive: true,
-    }
-  );
-
+  fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(
     file,
-    JSON.stringify(
-      value,
-      null,
-      2
-    ) + '\n',
+    JSON.stringify(value, null, 2) + '\n',
     'utf8'
   );
 }
 
+function readJsonIfExists(file) {
+  if (!fs.existsSync(file)) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(
+      fs.readFileSync(file, 'utf8')
+    );
+  } catch (error) {
+    console.warn(
+      `WARNING: Failed to read JSON file: ${file}`
+    );
+    console.warn(getErrorMessage(error));
+    return null;
+  }
+}
+
 function getErrorMessage(error) {
   if (error instanceof Error) {
-    return (
-      error.stack ??
-      error.message
-    );
+    return error.stack ?? error.message;
   }
 
   return String(error);
@@ -122,23 +140,19 @@ function removeIfExists(target) {
     );
   } catch (error) {
     throw new Error(
-      `Failed to remove generated test ` +
-      `infrastructure file: ${target}\n` +
+      `Failed to remove generated test infrastructure file: ${target}\n` +
       getErrorMessage(error)
     );
   }
 }
 
-function isolateRunnerInfrastructure(
-  workspaceDir
-) {
+function isolateRunnerInfrastructure(workspaceDir) {
   /*
-   * Generated Application側の設定ファイルに
-   * Vitest環境を支配させない。
+   * Generated application 側の設定ファイルによって
+   * Vitest / TypeScript のテスト基盤が変更されないようにする。
    *
-   * Applicationをworkspaceへコピーした後、
-   * build/test関連設定を削除し、
-   * test-runner側の固定設定を使用する。
+   * AI生成された設定ファイルを一旦削除し、
+   * test-runner 側の制御済み設定をコピーする。
    */
   const protectedNames = [
     'tsconfig.json',
@@ -167,16 +181,10 @@ function isolateRunnerInfrastructure(
 
   for (const name of protectedNames) {
     removeIfExists(
-      path.join(
-        workspaceDir,
-        name
-      )
+      path.join(workspaceDir, name)
     );
   }
 
-  /*
-   * test-runnerの固定設定をコピーする。
-   */
   for (
     const name of [
       'tsconfig.json',
@@ -184,26 +192,19 @@ function isolateRunnerInfrastructure(
       'setupTests.ts',
     ]
   ) {
-    const sourceConfig =
-      path.join(
-        runnerRoot,
-        name
-      );
+    const sourceConfig = path.join(
+      runnerRoot,
+      name
+    );
 
-    const destinationConfig =
-      path.join(
-        workspaceDir,
-        name
-      );
+    const destinationConfig = path.join(
+      workspaceDir,
+      name
+    );
 
-    if (
-      !fs.existsSync(
-        sourceConfig
-      )
-    ) {
+    if (!fs.existsSync(sourceConfig)) {
       throw new Error(
-        `Required test-runner file ` +
-        `not found: ${sourceConfig}`
+        `Required test-runner file not found: ${sourceConfig}`
       );
     }
 
@@ -215,45 +216,106 @@ function isolateRunnerInfrastructure(
 }
 
 /*
+ * incremental TIMEOUT 履歴を読み込む。
+ *
+ * この関数は --through 実行時だけ使用する。
+ *
+ * 形式:
+ *
+ * {
+ *   "screens": [
+ *     "SCR-001_contractor_login",
+ *     "SCR-003_punch_mode_select"
+ *   ]
+ * }
+ */
+function loadIncrementalTimeoutScreens() {
+  if (!isIncrementalRun) {
+    return new Set();
+  }
+
+  const state = readJsonIfExists(
+    incrementalTimeoutStateFile
+  );
+
+  if (
+    !state ||
+    !Array.isArray(state.screens)
+  ) {
+    return new Set();
+  }
+
+  return new Set(
+    state.screens.filter(
+      (screenId) =>
+        typeof screenId === 'string' &&
+        screenId.length > 0
+    )
+  );
+}
+
+/*
+ * incremental TIMEOUT 履歴を保存する。
+ *
+ * Cloud Build の full test では使用しない。
+ */
+function saveIncrementalTimeoutScreens(screenSet) {
+  if (!isIncrementalRun) {
+    return;
+  }
+
+  writeJson(
+    incrementalTimeoutStateFile,
+    {
+      screens: [...screenSet].sort(),
+    }
+  );
+}
+
+/*
  * Exit code:
  *
  * 0:
- *   all screen tests passed
+ *   全画面テスト成功
  *
  * 1:
- *   generated implementation/test
- *   failure (repairable)
+ *   AI生成実装またはテストの失敗
+ *   TEST_FAILED / TEST_TIMEOUT
+ *
+ *   incremental 中:
+ *     non-blocking として Python 側が次画面へ進む
+ *
+ *   Cloud Build:
+ *     repair 対象として扱う
  *
  * 2:
- *   test infrastructure failure
+ *   テスト基盤エラー
+ *   INFRA_ERROR
+ *
+ *   blocking failure
  */
 
-if (
-  !fs.existsSync(
-    applicationRoot
-  )
-) {
-  console.error(
-    `Application directory not found: ` +
-    `${applicationRoot}`
-  );
+// ============================================================
+// Pre-check
+// ============================================================
 
+if (!fs.existsSync(applicationRoot)) {
+  console.error(
+    `Application directory not found: ${applicationRoot}`
+  );
   process.exit(2);
 }
 
-if (
-  !fs.existsSync(
-    screenRequirementsRoot
-  )
-) {
+if (!fs.existsSync(screenRequirementsRoot)) {
   console.error(
-    `Generated screen requirement ` +
-    `directory not found: ` +
-    `${screenRequirementsRoot}`
+    `Generated screen requirement directory not found: ${screenRequirementsRoot}`
   );
-
   process.exit(2);
 }
+
+// ============================================================
+// Screen list
+// ============================================================
 
 let screenIds;
 
@@ -268,12 +330,8 @@ try {
     .filter(
       (entry) =>
         entry.isFile() &&
-        entry.name.startsWith(
-          'SCR-'
-        ) &&
-        entry.name.endsWith(
-          '.json'
-        )
+        entry.name.startsWith('SCR-') &&
+        entry.name.endsWith('.json')
     )
     .map(
       (entry) =>
@@ -285,45 +343,36 @@ try {
     .sort();
 } catch (error) {
   console.error(
-    'Failed to read generated ' +
-    'screen requirements.'
+    'Failed to read generated screen requirements.'
   );
-
   console.error(
     getErrorMessage(error)
   );
-
   process.exit(2);
 }
 
-if (
-  screenIds.length === 0
-) {
+if (screenIds.length === 0) {
   console.error(
-    'No generated screen requirement ' +
-    'JSON files found.'
+    'No generated screen requirement JSON files found.'
   );
-
   process.exit(2);
 }
 
+/*
+ * incremental regression test の場合、
+ * 今回生成した画面までを対象にする。
+ */
 if (throughScreen) {
   const throughIndex =
-    screenIds.indexOf(
-      throughScreen
-    );
+    screenIds.indexOf(throughScreen);
 
-  if (
-    throughIndex === -1
-  ) {
+  if (throughIndex === -1) {
     console.error(
-      `Unknown --through screen: ` +
-      `${throughScreen}`
+      `Unknown --through screen: ${throughScreen}`
     );
 
     console.error(
-      `Known screens: ` +
-      `${screenIds.join(', ')}`
+      `Known screens: ${screenIds.join(', ')}`
     );
 
     process.exit(2);
@@ -336,7 +385,28 @@ if (throughScreen) {
     );
 }
 
+// ============================================================
+// Load incremental TIMEOUT history
+// ============================================================
+
+/*
+ * resultsRoot はこのあと初期化するため、
+ * 削除前に TIMEOUT 履歴だけメモリへ退避する。
+ */
+const incrementalTimeoutScreens =
+  loadIncrementalTimeoutScreens();
+
+// ============================================================
+// Result directory
+// ============================================================
+
 try {
+  /*
+   * 前回のテスト結果は削除する。
+   *
+   * incremental TIMEOUT 履歴は上で既に
+   * incrementalTimeoutScreens に読み込んでいる。
+   */
   fs.rmSync(
     resultsRoot,
     {
@@ -351,10 +421,22 @@ try {
       recursive: true,
     }
   );
+
+  /*
+   * incremental の場合のみ、
+   * 削除前に読み込んだ TIMEOUT 履歴を復元する。
+   *
+   * full test（Cloud Build）の場合は復元しない。
+   * つまり Cloud Build では TIMEOUT 履歴がクリアされる。
+   */
+  if (isIncrementalRun) {
+    saveIncrementalTimeoutScreens(
+      incrementalTimeoutScreens
+    );
+  }
 } catch (error) {
   console.error(
-    'Failed to initialize ' +
-    'test result directory.'
+    'Failed to initialize test result directory.'
   );
 
   console.error(
@@ -364,58 +446,200 @@ try {
   process.exit(2);
 }
 
+// ============================================================
+// Execution information
+// ============================================================
+
 console.log(
-  `Found ${screenIds.length} ` +
-  `screen(s) to test.`
+  `Found ${screenIds.length} screen(s) to test.`
 );
 
 console.log(
-  `Integrated application: ` +
-  `${applicationRoot}`
+  `Integrated application: ${applicationRoot}`
 );
 
-if (throughScreen) {
+console.log(
+  `Screen test timeout: ${SCREEN_TEST_TIMEOUT_SECONDS} seconds`
+);
+
+if (isIncrementalRun) {
   console.log(
-    `Regression range: first ` +
-    `screen through ` +
-    `${throughScreen}`
+    'Test mode: incremental regression'
+  );
+
+  console.log(
+    `Regression range: first screen through ${throughScreen}`
+  );
+
+  if (incrementalTimeoutScreens.size > 0) {
+    console.log(
+      'Previous incremental TIMEOUT screens:'
+    );
+
+    for (
+      const screenId of
+      [...incrementalTimeoutScreens].sort()
+    ) {
+      console.log(
+        `  - ${screenId}`
+      );
+    }
+  }
+} else {
+  console.log(
+    'Test mode: full regression'
+  );
+
+  console.log(
+    'Previous incremental TIMEOUT history will be ignored.'
+  );
+
+  console.log(
+    'All screens will be executed.'
   );
 }
+
+// ============================================================
+// Counters
+// ============================================================
 
 const summary = [];
 
 let testFailed = 0;
 let testTimeout = 0;
+let skippedPreviousTimeout = 0;
 let infrastructureFailed = 0;
 let infrastructureError = false;
+
+// ============================================================
+// Screen tests
+// ============================================================
 
 for (
   let index = 0;
   index < screenIds.length;
   index += 1
 ) {
-  const screenId =
-    screenIds[index];
-
+  const screenId = screenIds[index];
   let workspaceDir = null;
 
   console.log('');
-
   console.log(
     '='.repeat(60)
   );
 
   console.log(
-    `[${index + 1}/` +
-    `${screenIds.length}] ` +
-    `Testing: ${screenId}`
+    `[${index + 1}/${screenIds.length}] Testing: ${screenId}`
   );
 
   console.log(
     '='.repeat(60)
   );
+
+  /*
+   * ==========================================================
+   * Previous TIMEOUT skip
+   * ==========================================================
+   *
+   * incremental test のときだけ適用する。
+   *
+   * 過去に TIMEOUT した画面は再実行しない。
+   *
+   * ただし今回の --through 対象画面そのものは
+   * 必ず実行する。
+   *
+   * これにより、
+   *
+   * SCR-001 TIMEOUT
+   *
+   * SCR-002生成後:
+   *   SCR-001 → SKIP
+   *   SCR-002 → RUN
+   *
+   * SCR-003生成後:
+   *   SCR-001 → SKIP
+   *   SCR-002 → RUN
+   *   SCR-003 → RUN
+   *
+   * となる。
+   */
+  const shouldSkipPreviousTimeout =
+    isIncrementalRun &&
+    screenId !== throughScreen &&
+    incrementalTimeoutScreens.has(screenId);
+
+  if (shouldSkipPreviousTimeout) {
+    skippedPreviousTimeout += 1;
+
+    /*
+     * 現在も「未解決TIMEOUT画面」として扱うため、
+     * testTimeout にも加算する。
+     *
+     * これにより exit code は 1 となり、
+     * Python 側では従来どおり
+     * TEST_TIMEOUT を含む regression failure として認識する。
+     */
+    testTimeout += 1;
+
+    const message =
+      'Skipped because this screen previously timed out ' +
+      'during incremental regression testing. ' +
+      'It will be executed again during the final full regression test.';
+
+    const detail = {
+      screen: screenId,
+      status: 'TEST_TIMEOUT',
+      passed: false,
+      exit_code: null,
+      timeout_seconds:
+        SCREEN_TEST_TIMEOUT_SECONDS,
+      skipped: true,
+      skip_reason:
+        'PREVIOUS_INCREMENTAL_TIMEOUT',
+      stdout: '',
+      stderr: message,
+    };
+
+    writeJson(
+      path.join(
+        resultsRoot,
+        `${screenId}.json`
+      ),
+      detail
+    );
+
+    summary.push({
+      screen: screenId,
+      status: 'TEST_TIMEOUT',
+      passed: false,
+      exit_code: null,
+      timeout_seconds:
+        SCREEN_TEST_TIMEOUT_SECONDS,
+      skipped: true,
+      skip_reason:
+        'PREVIOUS_INCREMENTAL_TIMEOUT',
+    });
+
+    console.log(
+      `SKIP: ${screenId}`
+    );
+
+    console.log(
+      'Reason: previous incremental TIMEOUT'
+    );
+
+    console.log(
+      'This screen will be tested again in the final full regression test.'
+    );
+
+    continue;
+  }
 
   try {
+    // ========================================================
+    // Temporary workspace
+    // ========================================================
+
     workspaceDir =
       fs.mkdtempSync(
         path.join(
@@ -425,7 +649,8 @@ for (
       );
 
     /*
-     * Application全体を一時workspaceへコピー。
+     * 各画面のテストは、
+     * 現時点の統合 application 全体をコピーして実行する。
      */
     copyDir(
       applicationRoot,
@@ -433,18 +658,16 @@ for (
     );
 
     /*
-     * Application自身が生成した
-     * Vitest / Vite / PostCSS / Tailwind /
-     * TypeScript設定をテストに使用しない。
+     * AI生成側の test/build config は使用しない。
      */
     isolateRunnerInfrastructure(
       workspaceDir
     );
 
-    /*
-     * test-runner/node_modules を
-     * controlled runtimeとして使用する。
-     */
+    // ========================================================
+    // node_modules
+    // ========================================================
+
     const runnerNodeModules =
       path.join(
         runnerRoot,
@@ -457,8 +680,7 @@ for (
       )
     ) {
       throw new Error(
-        `node_modules not found: ` +
-        `${runnerNodeModules}`
+        `node_modules not found: ${runnerNodeModules}`
       );
     }
 
@@ -471,9 +693,10 @@ for (
       'dir'
     );
 
-    /*
-     * 対象screen test
-     */
+    // ========================================================
+    // Screen test directory
+    // ========================================================
+
     const screenTestDirRelative =
       path.posix.join(
         'tests',
@@ -495,11 +718,9 @@ for (
       testFailed += 1;
 
       const message =
-        `Screen test directory not found: ` +
-        `${screenTestDirRelative}. ` +
-        'Each screen implementation must ' +
-        'generate at least one test under ' +
-        'tests/<screen_id>/.';
+        `Screen test directory not found: ${screenTestDirRelative}. ` +
+        'Each screen implementation must generate at least one test ' +
+        'under tests/<screen_id>/.';
 
       const detail = {
         screen: screenId,
@@ -525,7 +746,9 @@ for (
         exit_code: 1,
       });
 
-      console.error(message);
+      console.error(
+        message
+      );
 
       console.error(
         `FAIL: ${screenId}`
@@ -533,6 +756,10 @@ for (
 
       continue;
     }
+
+    // ========================================================
+    // Vitest executable
+    // ========================================================
 
     const vitestBin =
       path.join(
@@ -548,21 +775,19 @@ for (
       )
     ) {
       throw new Error(
-        `Vitest executable not found: ` +
-        `${vitestBin}`
+        `Vitest executable not found: ${vitestBin}`
       );
     }
 
-    /*
-     * 必ずtest-runner由来の
-     * vitest.config.tsを明示指定する。
-     */
+    // ========================================================
+    // Vitest execution
+    // ========================================================
+
     const result =
       spawnSync(
         vitestBin,
         [
           'run',
-
           screenTestDirRelative,
 
           '--config',
@@ -575,9 +800,11 @@ for (
         ],
         {
           cwd: workspaceDir,
-
           encoding: 'utf8',
 
+          /*
+           * 画面単位のプロセスタイムアウト。
+           */
           timeout:
             SCREEN_TEST_TIMEOUT_MS,
 
@@ -588,7 +815,6 @@ for (
 
             NODE_OPTIONS: [
               process.env.NODE_OPTIONS,
-
               '--max-old-space-size=1024',
             ]
               .filter(Boolean)
@@ -596,6 +822,10 @@ for (
           },
         }
       );
+
+    // ========================================================
+    // TIMEOUT
+    // ========================================================
 
     const timedOut =
       result.error?.code ===
@@ -606,31 +836,43 @@ for (
 
       const timeoutMessage =
         `Vitest process exceeded ` +
-        `${SCREEN_TEST_TIMEOUT_SECONDS} ` +
-        `seconds and was terminated.`;
+        `${SCREEN_TEST_TIMEOUT_SECONDS} seconds ` +
+        'and was terminated.';
+
+      /*
+       * incremental test の場合は、
+       * 次回以降の incremental regression で
+       * この画面を SKIP するため履歴へ登録する。
+       *
+       * Cloud Build full test では登録しない。
+       */
+      if (isIncrementalRun) {
+        incrementalTimeoutScreens.add(
+          screenId
+        );
+
+        saveIncrementalTimeoutScreens(
+          incrementalTimeoutScreens
+        );
+      }
 
       const detail = {
         screen: screenId,
-
-        status:
-          'TEST_TIMEOUT',
-
+        status: 'TEST_TIMEOUT',
         passed: false,
-
         exit_code: null,
-
         timeout_seconds:
           SCREEN_TEST_TIMEOUT_SECONDS,
-
+        skipped: false,
         stdout:
           result.stdout ?? '',
-
-        stderr: [
-          result.stderr ?? '',
-          timeoutMessage,
-        ]
-          .filter(Boolean)
-          .join('\n'),
+        stderr:
+          [
+            result.stderr ?? '',
+            timeoutMessage,
+          ]
+            .filter(Boolean)
+            .join('\n'),
       };
 
       writeJson(
@@ -643,16 +885,12 @@ for (
 
       summary.push({
         screen: screenId,
-
-        status:
-          'TEST_TIMEOUT',
-
+        status: 'TEST_TIMEOUT',
         passed: false,
-
         exit_code: null,
-
         timeout_seconds:
           SCREEN_TEST_TIMEOUT_SECONDS,
+        skipped: false,
       });
 
       if (result.stdout) {
@@ -675,12 +913,27 @@ for (
         `TIMEOUT: ${screenId}`
       );
 
+      if (isIncrementalRun) {
+        console.error(
+          'This screen was added to the incremental TIMEOUT skip list.'
+        );
+
+        console.error(
+          'It will not be executed again during later incremental regression tests.'
+        );
+
+        console.error(
+          'It will be executed again during the final full regression test.'
+        );
+      }
+
       continue;
     }
 
-    /*
-     * spawnSync自体の失敗。
-     */
+    // ========================================================
+    // Process / infrastructure error
+    // ========================================================
+
     if (result.error) {
       infrastructureError = true;
       infrastructureFailed += 1;
@@ -692,18 +945,13 @@ for (
 
       const detail = {
         screen: screenId,
-
-        status:
-          'INFRA_ERROR',
-
+        status: 'INFRA_ERROR',
         passed: false,
-
         exit_code: 2,
-
         stdout:
           result.stdout ?? '',
-
-        stderr: message,
+        stderr:
+          message,
       };
 
       writeJson(
@@ -716,12 +964,8 @@ for (
 
       summary.push({
         screen: screenId,
-
-        status:
-          'INFRA_ERROR',
-
+        status: 'INFRA_ERROR',
         passed: false,
-
         exit_code: 2,
       });
 
@@ -748,9 +992,12 @@ for (
       continue;
     }
 
+    // ========================================================
+    // Normal Vitest completion
+    // ========================================================
+
     const exitCode =
-      typeof result.status ===
-      'number'
+      typeof result.status === 'number'
         ? result.status
         : 1;
 
@@ -770,11 +1017,10 @@ for (
       screen: screenId,
       status,
       passed,
-      exit_code: exitCode,
-
+      exit_code:
+        exitCode,
       stdout:
         result.stdout ?? '',
-
       stderr:
         result.stderr ?? '',
     };
@@ -791,7 +1037,8 @@ for (
       screen: screenId,
       status,
       passed,
-      exit_code: exitCode,
+      exit_code:
+        exitCode,
     });
 
     if (result.stdout) {
@@ -812,6 +1059,10 @@ for (
         : `FAIL: ${screenId}`
     );
   } catch (error) {
+    // ========================================================
+    // Unexpected infrastructure error
+    // ========================================================
+
     infrastructureError = true;
     infrastructureFailed += 1;
 
@@ -820,16 +1071,10 @@ for (
 
     const detail = {
       screen: screenId,
-
-      status:
-        'INFRA_ERROR',
-
+      status: 'INFRA_ERROR',
       passed: false,
-
       exit_code: 2,
-
       stdout: '',
-
       stderr: message,
     };
 
@@ -843,8 +1088,7 @@ for (
       );
     } catch (writeError) {
       console.error(
-        'Failed to write ' +
-        'infrastructure error result.'
+        'Failed to write infrastructure error result.'
       );
 
       console.error(
@@ -856,12 +1100,8 @@ for (
 
     summary.push({
       screen: screenId,
-
-      status:
-        'INFRA_ERROR',
-
+      status: 'INFRA_ERROR',
       passed: false,
-
       exit_code: 2,
     });
 
@@ -873,6 +1113,10 @@ for (
       `INFRA ERROR: ${screenId}`
     );
   } finally {
+    // ========================================================
+    // Cleanup temporary workspace
+    // ========================================================
+
     if (workspaceDir) {
       try {
         fs.rmSync(
@@ -887,8 +1131,7 @@ for (
         infrastructureFailed += 1;
 
         console.error(
-          `Failed to remove temporary ` +
-          `workspace: ${workspaceDir}`
+          `Failed to remove temporary workspace: ${workspaceDir}`
         );
 
         console.error(
@@ -899,6 +1142,10 @@ for (
   }
 }
 
+// ============================================================
+// Summary
+// ============================================================
+
 const passed =
   summary.filter(
     (item) =>
@@ -906,6 +1153,17 @@ const passed =
   ).length;
 
 const summaryFile = {
+  mode:
+    isIncrementalRun
+      ? 'incremental'
+      : 'full',
+
+  through_screen:
+    throughScreen,
+
+  timeout_seconds:
+    SCREEN_TEST_TIMEOUT_SECONDS,
+
   total:
     summary.length,
 
@@ -916,6 +1174,9 @@ const summaryFile = {
 
   test_timeout:
     testTimeout,
+
+  skipped_previous_timeout:
+    skippedPreviousTimeout,
 
   infrastructure_failed:
     infrastructureFailed,
@@ -940,6 +1201,16 @@ try {
     ),
     summaryFile
   );
+
+  /*
+   * incremental の場合、
+   * 最終状態の TIMEOUT 履歴をもう一度保存しておく。
+   */
+  if (isIncrementalRun) {
+    saveIncrementalTimeoutScreens(
+      incrementalTimeoutScreens
+    );
+  }
 } catch (error) {
   console.error(
     'Failed to write summary.json.'
@@ -952,57 +1223,86 @@ try {
   process.exit(2);
 }
 
+// ============================================================
+// Console summary
+// ============================================================
+
 console.log('');
+console.log(
+  '='.repeat(60)
+);
+
+console.log(
+  'Integrated Application Screen Test Summary'
+);
 
 console.log(
   '='.repeat(60)
 );
 
 console.log(
-  'Integrated Application ' +
-  'Screen Test Summary'
+  `Mode                  : ${
+    isIncrementalRun
+      ? 'incremental'
+      : 'full'
+  }`
 );
 
 console.log(
-  '='.repeat(60)
+  `Total                 : ${summary.length}`
 );
 
 console.log(
-  `Total                 : ` +
-  `${summary.length}`
+  `Passed                : ${passed}`
 );
 
 console.log(
-  `Passed                : ` +
-  `${passed}`
+  `Test failed           : ${testFailed}`
 );
 
 console.log(
-  `Test failed           : ` +
-  `${testFailed}`
+  `Test timeout          : ${testTimeout}`
 );
 
 console.log(
-  `Test timeout          : ` +
-  `${testTimeout}`
+  `Skipped prev timeout  : ${skippedPreviousTimeout}`
 );
 
 console.log(
-  `Infrastructure failed : ` +
-  `${infrastructureFailed}`
+  `Infrastructure failed : ${infrastructureFailed}`
 );
 
 console.log(
-  `Results               : ` +
-  `${resultsRoot}`
+  `Results               : ${resultsRoot}`
 );
+
+if (
+  isIncrementalRun &&
+  incrementalTimeoutScreens.size > 0
+) {
+  console.log('');
+  console.log(
+    'Incremental TIMEOUT skip list:'
+  );
+
+  for (
+    const screenId of
+    [...incrementalTimeoutScreens].sort()
+  ) {
+    console.log(
+      `  - ${screenId}`
+    );
+  }
+}
+
+// ============================================================
+// Exit
+// ============================================================
 
 if (infrastructureError) {
   console.error('');
-
   console.error(
-    'Test infrastructure ' +
-    'error detected.'
+    'Test infrastructure error detected.'
   );
 
   process.exit(2);
@@ -1013,20 +1313,16 @@ if (
   testTimeout > 0
 ) {
   console.log('');
-
   console.log(
-    'Test failures or ' +
-    'timeouts detected.'
+    'Test failures or timeouts detected.'
   );
 
   process.exit(1);
 }
 
 console.log('');
-
 console.log(
-  'All integrated application ' +
-  'screen tests passed.'
+  'All integrated application screen tests passed.'
 );
 
 process.exit(0);
