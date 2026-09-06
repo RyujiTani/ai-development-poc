@@ -1,0 +1,358 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-002_contractor_home.md"
+  },
+  "screen": {
+    "id": "SCR-002",
+    "name": "外注先ホーム画面",
+    "user": "外注先管理者",
+    "path": "/contractor/home"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-002-FN-001",
+        "summary": "「打刻」メニューを選択して打刻モード選択画面へ遷移できる",
+        "detail": "ホーム画面に配置された「打刻」メニューボタンを押下すると、打刻モード選択画面（SCR-003）へ遷移する。"
+      },
+      {
+        "id": "SCR-002-FN-002",
+        "summary": "「作業員管理」メニューを選択して作業員一覧画面へ遷移できる",
+        "detail": "ホーム画面に配置された「作業員管理」メニューボタンを押下すると、作業員一覧画面（SCR-007）へ遷移する。"
+      },
+      {
+        "id": "SCR-002-FN-003",
+        "summary": "ログアウトができる",
+        "detail": "ログアウト導線（ログアウトボタン等）を配置し、押下時にセッションを破棄してログイン画面（SCR-001）へ遷移する。"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-002-UI-001",
+        "summary": "「打刻」「作業員管理」の2つの大きなメニューボタンを配置する",
+        "detail": "屋外や現場での操作を考慮し、誤操作を防ぐために十分な大きさ（最小タップ領域48px以上、Tailwind CSSを用いた視認性の高いスタイル）を持つボタンとして中央に並列または縦列配置する。"
+      },
+      {
+        "id": "SCR-002-UI-002",
+        "summary": "レスポンシブWebデザインでPC/スマホ両対応とする",
+        "detail": "Tailwind CSSを使用し、スマートフォン（モバイルファースト）からタブレット、PC画面までレイアウトが崩れないように対応する。"
+      },
+      {
+        "id": "SCR-002-UI-003",
+        "summary": "ログインユーザー名（外注先管理者名）を画面上部に表示する",
+        "detail": "ヘッダーエリア等にログイン中ユーザーの「display_name」（外注先管理者名）を表示する。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-002-VL-001",
+        "summary": "未認証リダイレクト",
+        "detail": "sessionStorageに有効なセッション（user_id、role等）が存在しない未認証状態で本画面にアクセスした場合、ログイン画面（SCR-001）へ即座にリダイレクトする。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-002-EV-001",
+        "summary": "「打刻」ボタン押下による画面遷移",
+        "detail": "「打刻」ボタンのクリックまたはタップにより、打刻モード選択画面（SCR-003）へ遷移する。"
+      },
+      {
+        "id": "SCR-002-EV-002",
+        "summary": "「作業員管理」ボタン押下による画面遷移",
+        "detail": "「作業員管理」ボタンのクリックまたはタップにより、作業員一覧画面（SCR-007）へ遷移する。"
+      },
+      {
+        "id": "SCR-002-EV-003",
+        "summary": "ログアウト操作によるセッション破棄と画面遷移",
+        "detail": "「ログアウト」ボタン押下時に、sessionStorageの 'user_id' および 'role' を削除し、ログイン画面（SCR-001）へ遷移する。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-002-DT-001",
+        "summary": "ログインユーザー情報の取得",
+        "detail": "セッション中のユーザーIDに紐づく情報をモックAPIまたはモックデータリポジトリから取得し、画面に反映する。"
+      }
+    ],
+    "api": [
+      {
+        "id": "SCR-002-API-001",
+        "method": "GET",
+        "path": "/api/user/me",
+        "summary": "ログインユーザー情報の取得API（モック対応）",
+        "description": "ログインしているユーザーのID、表示名、ロール、所属企業ID等のデータを取得する。"
+      }
+    ],
+    "state": [
+      {
+        "id": "SCR-002-ST-001",
+        "name": "currentUser",
+        "type": "User | null",
+        "description": "ログイン中のユーザー情報。APIレスポンスから取得して保持する。"
+      },
+      {
+        "id": "SCR-002-ST-002",
+        "name": "isLoading",
+        "type": "boolean",
+        "description": "ユーザー情報ロード中のスピナー表示等に利用する状態フラグ。"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-002"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "AC-SCR-002-001",
+      "requirement_id": "SCR-002-FN-001",
+      "input": "「打刻」メニューのタップ操作",
+      "steps": [
+        "1. ログイン済みの外注先管理者アカウントでホーム画面にアクセスする。",
+        "2. 画面上の「打刻」メニューボタンをタップする。"
+      ],
+      "expected": "打刻モード選択画面（SCR-003）へ遅滞なく（3秒以内）画面遷移すること。"
+    },
+    {
+      "id": "AC-SCR-002-002",
+      "requirement_id": "SCR-002-FN-002",
+      "input": "「作業員管理」メニューのタップ操作",
+      "steps": [
+        "1. ログイン済みの外注先管理者アカウントでホーム画面にアクセスする。",
+        "2. 画面上の「作業員管理」メニューボタンをタップする。"
+      ],
+      "expected": "作業員一覧画面（SCR-007）へ遅滞なく（3秒以内）画面遷移すること。"
+    },
+    {
+      "id": "AC-SCR-002-003",
+      "requirement_id": "SCR-002-FN-003",
+      "input": "「ログアウト」ボタンのタップ操作",
+      "steps": [
+        "1. ログイン済みの外注先管理者アカウントでホーム画面にアクセスする。",
+        "2. 画面上部にある「ログアウト」ボタンをタップする。"
+      ],
+      "expected": "sessionStorageからログインユーザーのセッション情報（'user_id'および'role'）が完全に削除され、ログイン画面（SCR-001）へリダイレクトされること。"
+    },
+    {
+      "id": "AC-SCR-002-004",
+      "requirement_id": "SCR-002-UI-001",
+      "input": "画面表示およびタップ領域の確認",
+      "steps": [
+        "1. スマートフォン実機またはブラウザのデベロッパーツール（モバイルビュー）でホーム画面を表示する。"
+      ],
+      "expected": "「打刻」および「作業員管理」ボタンがそれぞれ押しやすいサイズ（48px以上の高さ/幅）で適切にマージンを持って配置されていること。"
+    },
+    {
+      "id": "AC-SCR-002-005",
+      "requirement_id": "SCR-002-UI-003",
+      "input": "ログインユーザー名の表示確認",
+      "steps": [
+        "1. テスト用の管理者（例: display_nameが「外注管理者A」のユーザー）でログインする。",
+        "2. ホーム画面へ遷移する。"
+      ],
+      "expected": "画面上部（ヘッダー領域等）に「外注管理者A」がテキストとして正しく表示されていること。"
+    },
+    {
+      "id": "AC-SCR-002-006",
+      "requirement_id": "SCR-002-VL-001",
+      "input": "未ログイン状態での直接アクセス",
+      "steps": [
+        "1. ブラウザのsessionStorageが空（未ログイン）であることを確認する。",
+        "2. ホーム画面（SCR-002）のURL（例: /contractor/home）へ直接アクセスを試みる。"
+      ],
+      "expected": "画面が表示されることなく、ログイン画面（SCR-001 /login）へ強制的にリダイレクトされること。"
+    }
+  ],
+  "tests": [
+    {
+      "id": "TS-SCR-002-001",
+      "type": "unit",
+      "requirement_id": "SCR-002-VL-001",
+      "input": "sessionStorageが空の状態でマウント",
+      "steps": [
+        "1. sessionStorage.clear() を実行して未ログイン状態を作る。",
+        "2. Vitest + React Testing Library を使用して、SCR-002 画面コンポーネントをレンダリングする。"
+      ],
+      "expected": "Next.js の router.push が '/login' または '/(auth)/login' を引数として呼び出されること。"
+    },
+    {
+      "id": "TS-SCR-002-002",
+      "type": "unit",
+      "requirement_id": "SCR-002-UI-003",
+      "input": "ログインセッション情報が存在し、GET /api/user/me が成功する状態",
+      "steps": [
+        "1. sessionStorage.setItem('user_id', 'user-001'), sessionStorage.setItem('role', 'CONTRACTOR_MANAGER') を設定する。",
+        "2. モックAPI（GET /api/user/me）が { display_name: '山田 太郎' } を返却するようにモックサーバーまたはContext状態をセットアップする。",
+        "3. SCR-002 画面コンポーネントをレンダリングする。"
+      ],
+      "expected": "画面内に「山田 太郎」というテキストがレンダリングされていること。"
+    },
+    {
+      "id": "TS-SCR-002-003",
+      "type": "unit",
+      "requirement_id": "SCR-002-EV-001",
+      "input": "「打刻」メニューのクリックイベント発火",
+      "steps": [
+        "1. ログイン済みのセットアップで画面をレンダリングする。",
+        "2. 「打刻」とテキスト表示されたボタンを取得し、fireEvent.clickを実行する。"
+      ],
+      "expected": "Next.js の router.push が打刻モード選択画面のパス（SCR-003）を引数として呼び出されること。"
+    },
+    {
+      "id": "TS-SCR-002-004",
+      "type": "unit",
+      "requirement_id": "SCR-002-EV-002",
+      "input": "「作業員管理」メニューのクリックイベント発火",
+      "steps": [
+        "1. ログイン済みのセットアップで画面をレンダリングする。",
+        "2. 「作業員管理」とテキスト表示されたボタンを取得し、fireEvent.clickを実行する。"
+      ],
+      "expected": "Next.js の router.push が作業員一覧画面のパス（SCR-007）を引数として呼び出されること。"
+    },
+    {
+      "id": "TS-SCR-002-005",
+      "type": "unit",
+      "requirement_id": "SCR-002-EV-003",
+      "input": "「ログアウト」ボタンのクリックイベント発火",
+      "steps": [
+        "1. ログイン済みのセットアップ（sessionStorageにデータあり）で画面をレンダリングする。",
+        "2. 「ログアウト」と表示されたボタンを取得し、fireEvent.clickを実行する。"
+      ],
+      "expected": "sessionStorage.getItem('user_id') および sessionStorage.getItem('role') が null となり、router.push が '/login' を引数として呼び出されること。"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-SCR-002-001",
+      "target": "GET /api/user/me APIの具現化方法",
+      "reason": "システム要件では「バックエンドは実装せず、クライアント内で擬似的に保持・操作する」とされており、IndexedDBの利用やsessionStorageでの情報保持が定められている。これに対し画面設計では「GET /api/user/me」というWeb APIの呼び出しを前提とするような記述となっており、実用的な実装においてモックサービスレイヤーを経由するのか、あるいは IndexedDB/sessionStorage から直接値をSyncするのかが曖昧。",
+      "sources": {
+        "system_requirements": "認証：sessionStorageにuser_idとroleを保持。永続化：IndexedDB上のusersテーブル等と突合。",
+        "trace_index": "GET /api/user/me の定義あり（SCR-002-DT-001）",
+        "screen_design": "GET /api/user/me — ログインユーザー情報を取得して表示する"
+      },
+      "resolution": "system_requirements"
+    },
+    {
+      "id": "AMB-SCR-002-002",
+      "target": "ログアウト導線の配置UI仕様",
+      "reason": "ログアウトは「機能」および「イベント」としてHigh優先度で定義されているが、画面設計上の具体的なUI配置（右上のトグルメニューなのか、画面最下部のアクションボタンなのかなど）の記載がない。",
+      "sources": {
+        "system_requirements": "特になし",
+        "trace_index": "SCR-002-FN-003 ログアウト",
+        "screen_design": "ログアウトができる [ASSUMPTION] ホーム画面にログアウト導線を配置"
+      },
+      "resolution": "manual_confirmation"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement": "SCR-002-FN-001",
+      "acceptance": [
+        "AC-SCR-002-001"
+      ],
+      "tests": [
+        "TS-SCR-002-003"
+      ]
+    },
+    {
+      "requirement": "SCR-002-FN-002",
+      "acceptance": [
+        "AC-SCR-002-002"
+      ],
+      "tests": [
+        "TS-SCR-002-004"
+      ]
+    },
+    {
+      "requirement": "SCR-002-FN-003",
+      "acceptance": [
+        "AC-SCR-002-003"
+      ],
+      "tests": [
+        "TS-SCR-002-005"
+      ]
+    },
+    {
+      "requirement": "SCR-002-UI-001",
+      "acceptance": [
+        "AC-SCR-002-004"
+      ],
+      "tests": [
+        "TS-SCR-002-003",
+        "TS-SCR-002-004"
+      ]
+    },
+    {
+      "requirement": "SCR-002-UI-002",
+      "acceptance": [
+        "AC-SCR-002-004"
+      ],
+      "tests": []
+    },
+    {
+      "requirement": "SCR-002-UI-003",
+      "acceptance": [
+        "AC-SCR-002-005"
+      ],
+      "tests": [
+        "TS-SCR-002-002"
+      ]
+    },
+    {
+      "requirement": "SCR-002-VL-001",
+      "acceptance": [
+        "AC-SCR-002-006"
+      ],
+      "tests": [
+        "TS-SCR-002-001"
+      ]
+    },
+    {
+      "requirement": "SCR-002-EV-001",
+      "acceptance": [
+        "AC-SCR-002-001"
+      ],
+      "tests": [
+        "TS-SCR-002-003"
+      ]
+    },
+    {
+      "requirement": "SCR-002-EV-002",
+      "acceptance": [
+        "AC-SCR-002-002"
+      ],
+      "tests": [
+        "TS-SCR-002-004"
+      ]
+    },
+    {
+      "requirement": "SCR-002-EV-003",
+      "acceptance": [
+        "AC-SCR-002-003"
+      ],
+      "tests": [
+        "TS-SCR-002-005"
+      ]
+    },
+    {
+      "requirement": "SCR-002-DT-001",
+      "acceptance": [
+        "AC-SCR-002-005"
+      ],
+      "tests": [
+        "TS-SCR-002-002"
+      ]
+    }
+  ]
+}

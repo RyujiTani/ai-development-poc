@@ -1,0 +1,403 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-001_contractor_login.md"
+  },
+  "screen": {
+    "id": "SCR-001",
+    "name": "外注先ログイン画面",
+    "user": "外注先管理者",
+    "device": "スマホ／タブレット（Chrome）",
+    "description": "外注先管理者（職長など）がスマホ・タブレットからID/パスワードを入力してシステムにログインするための画面。"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-001-FN-001",
+        "summary": "IDとパスワードによるログイン認証ができる",
+        "description": "ユーザーが入力したIDとパスワードを用いて、モック認証（IndexedDBのusersテーブルとの突合）を行う。",
+        "priority": "High"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-001-UI-001",
+        "summary": "ID入力欄・パスワード入力欄・ログインボタンを画面中央に配置する",
+        "description": "ログイン用フォーム要素（ログインID、パスワード、送信ボタン）をビューポート中央のカードコンテナ内に配置する。"
+      },
+      {
+        "id": "SCR-001-UI-002",
+        "summary": "レスポンシブWebデザインでPC/スマホ両対応とする",
+        "description": "Tailwind CSSを使用し、PC、タブレット、スマートフォンの各画面サイズで破綻のないレイアウトを提供する。"
+      },
+      {
+        "id": "SCR-001-UI-003",
+        "summary": "スマホ利用時はボタンを大きくタップしやすいUIとする",
+        "description": "屋外での操作性を考慮し、スマートフォン表示においてログインボタンや入力エリアのタップ領域（最小タップターゲット44x44px以上）を広く確保する。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-001-VL-001",
+        "summary": "ID必須入力",
+        "description": "ID入力欄が空文字の場合、バリデーションエラーメッセージを表示し、送信を阻止する。"
+      },
+      {
+        "id": "SCR-001-VL-002",
+        "summary": "パスワード必須入力",
+        "description": "パスワード入力欄が空文字の場合、バリデーションエラーメッセージを表示し、送信を阻止する。"
+      },
+      {
+        "id": "SCR-001-VL-003",
+        "summary": "認証エラー表示",
+        "description": "IDとパスワードの組み合わせが不正な場合、またはアカウントが無効な場合、画面上に認証失敗のエラーメッセージを表示する。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-001-EV-001",
+        "summary": "ログインボタン押下かつ認証成功時に遷移する",
+        "description": "ログインボタンが押下され、入力バリデーションを通過し、認証に成功した場合、外注先ホーム画面（SCR-002）へ遷移する。"
+      },
+      {
+        "id": "SCR-001-EV-002",
+        "summary": "ログインボタン押下かつ認証失敗時の挙動",
+        "description": "ログインボタンが押下され、認証に失敗した場合、同一画面にエラーメッセージを表示し、画面遷移は行わない。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-001-DT-001",
+        "summary": "ログインAPIの呼び出し（モック）",
+        "description": "POST /api/auth/login（または対応するクライアントサイド認証モック）を呼び出す。リクエスト: { id, password }、レスポンス: { token, user_info }。"
+      },
+      {
+        "id": "SCR-001-DT-002",
+        "summary": "認証情報のセッション保持",
+        "description": "認証成功時、システム要件の規定に従い、sessionStorageに「user_id」および「role」を保持する。"
+      }
+    ],
+    "api": [
+      {
+        "id": "SCR-001-DT-001",
+        "name": "ログイン認証API",
+        "method": "POST",
+        "path": "/api/auth/login",
+        "request_body": {
+          "id": {
+            "type": "string",
+            "required": true
+          },
+          "password": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "response_body": {
+          "token": {
+            "type": "string"
+          },
+          "user_info": {
+            "type": "object",
+            "properties": {
+              "user_id": {
+                "type": "string"
+              },
+              "role": {
+                "type": "string"
+              },
+              "display_name": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "is_mock": true
+      }
+    ],
+    "state": [
+      {
+        "id": "SCR-001-ST-001",
+        "name": "loginFormState",
+        "description": "ログインIDとパスワードの入力値、およびバリデーションエラー状態（React Hook Form + Zodで管理）。"
+      },
+      {
+        "id": "SCR-001-ST-002",
+        "name": "isSubmitting",
+        "description": "認証APIリクエスト実行中のローディング状態。ボタンの非活性化やスピナーの表示制御に使用。"
+      },
+      {
+        "id": "SCR-001-ST-003",
+        "name": "authErrorMessage",
+        "description": "認証に失敗した際に、画面へ通知・表示するエラー文言を保持する状態。"
+      }
+    ]
+  },
+  "implementation": {
+    "scope": [
+      "SCR-001"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "AC-SCR-001-001",
+      "requirement_ids": [
+        "SCR-001-FN-001",
+        "SCR-001-UI-001",
+        "SCR-001-UI-002",
+        "SCR-001-UI-003"
+      ],
+      "scenario": "画面の初期表示およびレスポンシブ配置の検証",
+      "input": "ブラウザで外注先ログイン画面（例：/login）にアクセスする。",
+      "steps": [
+        "1. ビューポート中央にログインID、パスワードの入力フィールドとログインボタンが配置されていることを確認する。",
+        "2. デバイスの画面幅をスマホサイズ（375px以下）に変更し、ボタンや入力エリアが大きく、タップしやすいサイズに調整されていることを確認する。"
+      ],
+      "expected": "画面中央にきれいに整列したログインフォームが表示され、スマホ幅でもタップ領域が確保されておりレイアウト崩れがないこと。"
+    },
+    {
+      "id": "AC-SCR-001-002",
+      "requirement_ids": [
+        "SCR-001-VL-001",
+        "SCR-001-VL-002"
+      ],
+      "scenario": "未入力時のバリデーションエラー表示",
+      "input": "ログインIDとパスワードを空文字の状態で「ログイン」ボタンを押下する。",
+      "steps": [
+        "1. ログインID、パスワードの入力欄を空のままログインボタンを押下する。"
+      ],
+      "expected": "ID必須入力、パスワード必須入力のエラーメッセージが表示され、認証処理（API送信）が実行されないこと。"
+    },
+    {
+      "id": "AC-SCR-001-003",
+      "requirement_ids": [
+        "SCR-001-FN-001",
+        "SCR-001-VL-003",
+        "SCR-001-EV-002"
+      ],
+      "scenario": "誤った認証情報でのログイン失敗",
+      "input": "存在しないユーザーIDまたは不一致のパスワードを入力してログインを試みる。",
+      "steps": [
+        "1. ログインIDに「invalid_id」、パスワードに「wrong_pass」を入力してログインボタンを押下する。"
+      ],
+      "expected": "認証エラーが発生し、画面上に適切な認証エラーメッセージが表示され、画面遷移が発生しないこと。"
+    },
+    {
+      "id": "AC-SCR-001-004",
+      "requirement_ids": [
+        "SCR-001-FN-001",
+        "SCR-001-EV-001",
+        "SCR-001-DT-001",
+        "SCR-001-DT-002"
+      ],
+      "scenario": "正しい認証情報でのログイン成功および情報保持",
+      "input": "初期シードデータに存在する有効な外注先管理者のIDとパスワードを入力してログインする。",
+      "steps": [
+        "1. 有効な外注先管理者のログインIDとパスワードを入力してログインボタンを押下する。",
+        "2. sessionStorageを確認し、'user_id' と 'role' が正しく保存されているか検証する。"
+      ],
+      "expected": "認証に成功し、sessionStorageに正しい値が保存された後、外注先ホーム画面（SCR-002）に自動で画面遷移すること。"
+    }
+  ],
+  "tests": [
+    {
+      "id": "TST-SCR-001-001",
+      "test_type": "unit",
+      "requirement_ids": [
+        "SCR-001-UI-001",
+        "SCR-001-VL-001",
+        "SCR-001-VL-002"
+      ],
+      "input": "未入力のフォーム送信",
+      "steps": [
+        "1. VitestとReact Testing Libraryを用いて、外注先ログイン画面コンポーネントをレンダリングする。",
+        "2. ログインIDとパスワードの入力フォーム、およびログインボタンの存在を検証する。",
+        "3. 入力を行わずにログインボタンをクリックする。",
+        "4. IDとパスワードのそれぞれに対して、必須入力を促すバリデーションエラーが描画されることを確認する。"
+      ],
+      "expected": "各入力欄の下部にZodによって生成された必須エラー文言が表示されること。"
+    },
+    {
+      "id": "TST-SCR-001-002",
+      "test_type": "unit",
+      "requirement_ids": [
+        "SCR-001-FN-001",
+        "SCR-001-VL-003",
+        "SCR-001-EV-002"
+      ],
+      "input": "不正な認証データによる送信",
+      "steps": [
+        "1. ログインIDに 'unknown_user'、パスワードに 'bad_password' を入力する。",
+        "2. ログイン認証用APIモック（またはクライアント認証ロジック）をエラーが返却されるように設定する。",
+        "3. ログインボタンをクリックする。",
+        "4. 認証失敗エラーメッセージが画面に描画されること、およびrouter.pushが呼び出されていないことを確認する。"
+      ],
+      "expected": "ログイン失敗のトーストまたはエラー文言が表示され、同一画面を保持し続けること。"
+    },
+    {
+      "id": "TST-SCR-001-003",
+      "test_type": "unit",
+      "requirement_ids": [
+        "SCR-001-FN-001",
+        "SCR-001-EV-001",
+        "SCR-001-DT-001",
+        "SCR-001-DT-002"
+      ],
+      "input": "正常な認証データによる送信",
+      "steps": [
+        "1. ログインIDに 'valid_contractor'、パスワードに 'correct_password' を入力する。",
+        "2. ログイン認証モックが成功レスポンス（user_id: 'usr-001', role: 'CONTRACTOR_MANAGER'）を返却するように設定する。",
+        "3. ログインボタンをクリックする。",
+        "4. sessionStorageに 'user_id' と 'role' が正しく書き込まれたことを検証する。",
+        "5. router.pushが外注先ホーム（SCR-002）のパスを引数に呼び出されたことを検証する。"
+      ],
+      "expected": "セッションに認証が記録され、外注先ホーム画面へのパスでルーティング遷移処理が稼働すること。"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-001",
+      "target": "認証トークンおよびストレージ保存方式の整合性",
+      "reason": "画面設計（SCREEN_DESIGN_MD）のSCR-001-DT-002には「認証トークンをブラウザに保持する、JWT等のトークン方式を想定」と記載されているが、システム全体の仕様を規定するSYSTEM_REQUIREMENTS_JSONのauthentication.sessionには「sessionStorageにuser_id、roleを保持するモック認証（本番相当のセキュリティは非対象）」と定義されている。本プロトタイプはフロントエンド完結型であるため、システム要件の定義を優先し、JWT等の本番トークンではなく、sessionStorageへのID/ロール保持で擬似的な認可・制御を行うものとする。",
+      "sources": {
+        "system_requirements": "authentication.session.storage: sessionStorage, stored_keys: ['user_id', 'role']",
+        "trace_index": "SCR-001-DT-002: 認証トークン保持",
+        "screen_design": "SCR-001-DT-002: 認証トークンをブラウザに保持する [ASSUMPTION] JWT等のトークン方式を想定"
+      },
+      "resolution": "system_requirements"
+    },
+    {
+      "id": "AMB-002",
+      "target": "API通信方式とクライアント完結プロトタイプ制限",
+      "reason": "画面設計には「POST /api/auth/login」APIが定義されているが、システム要件では「バックエンドは実装せず、データはクライアント（IndexedDB）内で保持」「app/api/** からの外部通信は禁止」とされている。そのため、本画面における認証処理はNext.jsモックRoute Handlerの利用、もしくはリポジトリ層でIndexedDBのusersテーブルを直接参照して認証を検証するクライアント完結の挙動に擬似化する必要がある。",
+      "sources": {
+        "system_requirements": "scope.purpose: Next.js単体で動作する画面プロトタイプ / implementation_constraints.forbidden: GCPや外部DB接続禁止、外部エンドポイント接続禁止",
+        "trace_index": "SCR-001-DT-001: POST /api/auth/login",
+        "screen_design": "SCR-001-DT-001: POST /api/auth/login"
+      },
+      "resolution": "system_requirements"
+    },
+    {
+      "id": "AMB-003",
+      "target": "パスワードリセットおよびアカウントロック仕様の未確定",
+      "reason": "画面設計の確認事項に「パスワードリセット機能」「アカウントロック仕様」が未定と記載されており、SYSTEM_REQUIREMENTS_JSONにもこれらの本番セキュリティ仕様は記載されていない。フロントプロトタイプとしては対象外（明示的非ゴール）であるため、本要件定義時点では何も追加実装を行わないこととする。",
+      "sources": {
+        "system_requirements": "authentication.security_level: 本番相当のセキュリティ実装は行わない",
+        "trace_index": "特になし",
+        "screen_design": "確認事項：パスワードリセット機能の要否、ログイン失敗時のアカウントロック仕様が未定"
+      },
+      "resolution": "system_requirements"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-001-FN-001",
+      "acceptance_ids": [
+        "AC-SCR-001-003",
+        "AC-SCR-001-004"
+      ],
+      "test_ids": [
+        "TST-SCR-001-002",
+        "TST-SCR-001-003"
+      ]
+    },
+    {
+      "requirement_id": "SCR-001-UI-001",
+      "acceptance_ids": [
+        "AC-SCR-001-001"
+      ],
+      "test_ids": [
+        "TST-SCR-001-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-001-UI-002",
+      "acceptance_ids": [
+        "AC-SCR-001-001"
+      ],
+      "test_ids": [
+        "TST-SCR-001-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-001-UI-003",
+      "acceptance_ids": [
+        "AC-SCR-001-001"
+      ],
+      "test_ids": [
+        "TST-SCR-001-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-001-VL-001",
+      "acceptance_ids": [
+        "AC-SCR-001-002"
+      ],
+      "test_ids": [
+        "TST-SCR-001-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-001-VL-002",
+      "acceptance_ids": [
+        "AC-SCR-001-002"
+      ],
+      "test_ids": [
+        "TST-SCR-001-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-001-VL-003",
+      "acceptance_ids": [
+        "AC-SCR-001-003"
+      ],
+      "test_ids": [
+        "TST-SCR-001-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-001-EV-001",
+      "acceptance_ids": [
+        "AC-SCR-001-004"
+      ],
+      "test_ids": [
+        "TST-SCR-001-003"
+      ]
+    },
+    {
+      "requirement_id": "SCR-001-EV-002",
+      "acceptance_ids": [
+        "AC-SCR-001-003"
+      ],
+      "test_ids": [
+        "TST-SCR-001-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-001-DT-001",
+      "acceptance_ids": [
+        "AC-SCR-001-004"
+      ],
+      "test_ids": [
+        "TST-SCR-001-003"
+      ]
+    },
+    {
+      "requirement_id": "SCR-001-DT-002",
+      "acceptance_ids": [
+        "AC-SCR-001-004"
+      ],
+      "test_ids": [
+        "TST-SCR-001-003"
+      ]
+    }
+  ]
+}

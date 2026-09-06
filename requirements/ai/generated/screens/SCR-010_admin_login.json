@@ -1,0 +1,398 @@
+{
+  "version": "1.0",
+  "source": {
+    "system_requirements": "requirements/ai/generated/requirements/system_requirements.json",
+    "trace_index": "requirements/ai/generated/requirements/trace_index.json",
+    "screen_design": "/home/runner/work/ai-development-poc/ai-development-poc/requirements/ai/original/screens/SCR-010_admin_login.md"
+  },
+  "screen": {
+    "id": "SCR-010",
+    "name": "管理者ログイン画面",
+    "user": "工場側管理者",
+    "path": "app/(factory)/login/page.tsx"
+  },
+  "requirements": {
+    "functional": [
+      {
+        "id": "SCR-010-FN-001",
+        "summary": "IDとパスワードによるログイン認証ができる",
+        "description": "入力されたIDとパスワードをシステム（IndexedDBのusersテーブル）と照合し、工場側管理者（FACTORY_ADMIN）としての認証を行う。"
+      }
+    ],
+    "ui": [
+      {
+        "id": "SCR-010-UI-001",
+        "summary": "ID入力欄・パスワード入力欄・ログインボタンを画面中央に配置する",
+        "description": "視認性と操作性を考慮し、ログインに必要な主要要素を画面の中央にカード状のコンポーネントとして配置する。"
+      },
+      {
+        "id": "SCR-010-UI-002",
+        "summary": "レスポンシブWebデザインでPC/スマホ両対応とする",
+        "description": "工場側管理者はPC（Chrome）利用が主であるが、スマホやタブレット等の様々なデバイスサイズに適応するレスポンシブレイアウト（Tailwind CSS）を適用する。"
+      }
+    ],
+    "validation": [
+      {
+        "id": "SCR-010-VL-001",
+        "summary": "ID必須入力",
+        "description": "IDが入力されていない状態でログインが実行された場合、バリデーションエラーとして「IDを入力してください」等のメッセージを表示する。Zod / React Hook Formを使用する。"
+      },
+      {
+        "id": "SCR-010-VL-002",
+        "summary": "パスワード必須入力",
+        "description": "パスワードが入力されていない状態でログインが実行された場合、バリデーションエラーとして「パスワードを入力してください」等のメッセージを表示する。Zod / React Hook Formを使用する。"
+      },
+      {
+        "id": "SCR-010-VL-003",
+        "summary": "認証エラー表示",
+        "description": "入力されたIDとパスワードの組み合わせが不正な場合、または対象ユーザーが工場側管理者（FACTORY_ADMIN）のロールを持たない場合、認証エラーメッセージを画面上に表示する。パスワードの平文表示や詳細すぎるエラー（「IDが存在しません」等）はセキュリティの観点から避け、統一のエラーメッセージを表示する。"
+      }
+    ],
+    "events": [
+      {
+        "id": "SCR-010-EV-001",
+        "summary": "ログインボタン押下かつ認証成功",
+        "description": "バリデーションを通過し、IndexedDB内のモックユーザーデータとの突合に成功した場合、セッション情報（user_id, role）を sessionStorage に保存し、総合ダッシュボード（SCR-011）へ遷移する。"
+      },
+      {
+        "id": "SCR-010-EV-002",
+        "summary": "ログインボタン押下かつ認証失敗",
+        "description": "認証照合に失敗、または何らかのエラーが発生した場合は、画面上に認証エラーメッセージ（toast またはインラインメッセージ）を表示し、画面遷移を行わず入力状態を維持する。"
+      }
+    ],
+    "data": [
+      {
+        "id": "SCR-010-DT-001",
+        "summary": "認証リクエスト処理とレスポンスの模擬ハンドリング",
+        "description": "APIエンドポイント `POST /api/admin/auth/login` （モック実装またはフロントエンド層の直接処理）に `{ login_id, password }` を送信し、認証結果として `{ token, user_id, role, display_name }` を模擬取得する。"
+      },
+      {
+        "id": "SCR-010-DT-002",
+        "summary": "認証トークンおよびセッション情報の保持",
+        "description": "認証成功時、システム要件（authentication.session）に準拠し、sessionStorage に `user_id` と `role` (FACTORY_ADMIN) を保持する。画面設計に想定されたJWT等トークンの保持はモック化されたセッション管理機能として処理する。"
+      }
+    ],
+    "api": [
+      {
+        "id": "SCR-010-AP-001",
+        "method": "POST",
+        "path": "/api/admin/auth/login",
+        "request_body": {
+          "id": "string (login_id)",
+          "password": "string"
+        },
+        "response_body": {
+          "token": "string",
+          "admin_info": {
+            "user_id": "string",
+            "display_name": "string",
+            "role": "FACTORY_ADMIN"
+          }
+        },
+        "description": "工場側管理者向けのログインモックAPI。送信されたIDと平文化された（または簡易ハッシュされた）パスワードを、IndexedDBの `users` ストア内のレコードと照合する。"
+      }
+    ],
+    "state": []
+  },
+  "implementation": {
+    "scope": [
+      "SCR-010"
+    ],
+    "rules": [
+      "existing_codebase_first",
+      "reuse_existing_patterns",
+      "minimal_change",
+      "no_unrelated_refactoring"
+    ]
+  },
+  "acceptance": [
+    {
+      "id": "ACC-SCR-010-FN-001",
+      "requirement_id": "SCR-010-FN-001",
+      "steps": [
+        "画面内のID入力欄に正しい工場側管理者のIDを入力する。",
+        "パスワード入力欄に正しいパスワードを入力する。",
+        "ログインボタンをクリックする。"
+      ],
+      "expected": [
+        "IndexedDB内の `users` データと突合が行われ、認証が成功すること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-010-UI-001",
+      "requirement_id": "SCR-010-UI-001",
+      "steps": [
+        "ブラウザで管理者ログイン画面を表示する。"
+      ],
+      "expected": [
+        "ID入力欄、パスワード入力欄、ログインボタンが視覚的に画面中央に揃ってレイアウトされていること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-010-UI-002",
+      "requirement_id": "SCR-010-UI-002",
+      "steps": [
+        "PCおよびモバイル（スマホ・タブレット等）の画面サイズ（ビューポート）を変更する。"
+      ],
+      "expected": [
+        "表示崩れを起こさず、各デバイスに応じた適切な幅、パディング、フォントサイズでフォームが表示されること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-010-VL-001",
+      "requirement_id": "SCR-010-VL-001",
+      "steps": [
+        "ID入力欄を空にした状態でパスワードを入力し、ログインボタンをクリックする。"
+      ],
+      "expected": [
+        "ID入力欄の付近に必須入力である旨のエラーメッセージが表示され、APIリクエストが実行されないこと。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-010-VL-002",
+      "requirement_id": "SCR-010-VL-002",
+      "steps": [
+        "パスワード入力欄を空にした状態でIDを入力し、ログインボタンをクリックする。"
+      ],
+      "expected": [
+        "パスワード入力欄の付近に必須入力である旨のエラーメッセージが表示され、APIリクエストが実行されないこと。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-010-VL-003",
+      "requirement_id": "SCR-010-VL-003",
+      "steps": [
+        "登録されていない無効なID、または誤ったパスワードを入力してログインボタンをクリックする。"
+      ],
+      "expected": [
+        "認証に失敗した旨を示す明確なエラーメッセージが画面上に表示されること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-010-EV-001",
+      "requirement_id": "SCR-010-EV-001",
+      "steps": [
+        "有効な工場側管理者の認証情報を入力し、ログインボタンをクリックする。"
+      ],
+      "expected": [
+        "エラーを出さずに、総合ダッシュボード画面（SCR-011）に自動的に遷移すること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-010-EV-002",
+      "requirement_id": "SCR-010-EV-002",
+      "steps": [
+        "無効な認証情報を入力し、ログインボタンをクリックする。"
+      ],
+      "expected": [
+        "画面は遷移せず、エラーメッセージが表示されること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-010-DT-001",
+      "requirement_id": "SCR-010-DT-001",
+      "steps": [
+        "ログイン処理を行う際、開発者ツールのコンソールログまたはネットワークモックを確認する。"
+      ],
+      "expected": [
+        "POST /api/admin/auth/login への擬似的なリクエスト送信と、正常なレスポンス構造のシミュレーションが行われていること。"
+      ]
+    },
+    {
+      "id": "ACC-SCR-010-DT-002",
+      "requirement_id": "SCR-010-DT-002",
+      "steps": [
+        "ログイン成功後に、ブラウザの sessionStorage を確認する。"
+      ],
+      "expected": [
+        "sessionStorage に `user_id` と `role` (FACTORY_ADMIN) が正しく設定されていること。"
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "id": "TST-SCR-010-001",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-010-VL-001",
+        "SCR-010-VL-002"
+      ],
+      "input": "IDが空、またはパスワードが空の入力値",
+      "steps": [
+        "ID欄またはパスワード欄を未入力にする",
+        "ログインボタンをクリックする"
+      ],
+      "expected": "送信処理が中断され、バリデーションエラーメッセージが表示されること。"
+    },
+    {
+      "id": "TST-SCR-010-002",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-010-VL-003",
+        "SCR-010-EV-002"
+      ],
+      "input": "誤ったIDとパスワードの組み合わせ",
+      "steps": [
+        "誤ったID・パスワードを入力する",
+        "ログインボタンをクリックし、Mock APIの失敗レスポンスを受け取る"
+      ],
+      "expected": "画面が遷移せず、適切な認証失敗エラーメッセージが表示されること。"
+    },
+    {
+      "id": "TST-SCR-010-003",
+      "type": "integration",
+      "requirement_ids": [
+        "SCR-010-FN-001",
+        "SCR-010-EV-001",
+        "SCR-010-DT-001",
+        "SCR-010-DT-002"
+      ],
+      "input": "有効な工場側管理者のログインIDとパスワード（シードデータ準拠）",
+      "steps": [
+        "正しいID・パスワードを入力する",
+        "ログインボタンをクリックする"
+      ],
+      "expected": "POST /api/admin/auth/login のモック呼び出しが成功し、sessionStorage に user_id と role が保存され、SCR-011 へのルータープッシュが発生すること。"
+    },
+    {
+      "id": "TST-SCR-010-004",
+      "type": "unit",
+      "requirement_ids": [
+        "SCR-010-UI-001",
+        "SCR-010-UI-002"
+      ],
+      "input": "異なる画面解像度のビューポート環境",
+      "steps": [
+        "画面幅を 375px（モバイルサイズ）および 1440px（PCサイズ）に変更してレンダリングする"
+      ],
+      "expected": "カード部分およびフォーム要素が中央揃えかつデバイスに適した幅でレンダリングされていること。"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "AMB-010-001",
+      "target": "認証トークンとsessionStorage保存項目の整合性",
+      "reason": "画面設計の SCR-010-DT-002 では「JWT等のトークン方式を想定し、認証トークンをブラウザに保持する」とあるが、システム要件定義 (authentication.session) では「sessionStorageに user_id, role を保持する（モック認証）」と定められており、厳密なトークン検証ロジックを本番仕様で実装しない方針になっている。",
+      "sources": {
+        "system_requirements": "authentication.session の stored_keys: ['user_id', 'role'] を格納するモック仕様。",
+        "trace_index": "SCR-010-DT-002: 認証トークン保持",
+        "screen_design": "SCR-010-DT-002 [ASSUMPTION] JWT等のトークン方式を想定"
+      },
+      "resolution": "system_requirements の方針に準拠し、本テストプロジェクト用のモック認証として、認証成功時に sessionStorage へ user_id と role (FACTORY_ADMIN) を格納する実装とする。フロントエンドのみのプロトタイプ検証であるため、実サーバー連携によるJWTトークン取得・検証は省略する。"
+    },
+    {
+      "id": "AMB-010-002",
+      "target": "ログイン画面のルーティング設計",
+      "reason": "システム要件の naming や directory_structure では `app/(auth)/login/page.tsx` のみ定義されており、外注先管理者用と工場管理用のログイン画面が完全に物理パスとして別画面（例：`/factory/login`）で分かれるのか、同一ログインパスで切り替えるのかに一部不整合がある。",
+      "sources": {
+        "system_requirements": "directory_structure に `app/(auth)/login/page.tsx` を定義。",
+        "trace_index": "SCR-001（外注先ログイン）と SCR-010（管理者ログイン）を別画面のIDとして管理。",
+        "screen_design": "確認事項にて「別画面として記載されているため別画面とする」という想定あり。"
+      },
+      "resolution": "manual_confirmation。ただし、画面設計の「別画面として扱う」方針を尊重し、本画面は管理者専用パス `app/(factory)/login/page.tsx` または `app/(auth)/admin-login/page.tsx` のように物理的に分ける前提で設計する。既存のルートグループ配置（(factory)ルート配下の認証ガード）の設計意図に従い、実装の段階でパスを確定する。"
+    },
+    {
+      "id": "AMB-010-003",
+      "target": "パスワードリセット機能の要否",
+      "reason": "画面設計の確認事項に「パスワードリセット機能の要否が未定」とある。システム要件定義書側にはパスワードリセットに関する要件・データモデル・API定義が全く存在しない。",
+      "sources": {
+        "system_requirements": "パスワードリセットに関する記載なし。",
+        "trace_index": "該当機能に対するトレースIDなし。",
+        "screen_design": "確認事項に要否未定の旨が明記。"
+      },
+      "resolution": "system_requirements / No Hallucination Rule に従う。本プロトタイプ版（フロントエンド検証スコープ）ではパスワードリセット機能のUIおよびロジックは実装しない（対象外とする）。"
+    }
+  ],
+  "traceability": [
+    {
+      "requirement_id": "SCR-010-FN-001",
+      "acceptance_ids": [
+        "ACC-SCR-010-FN-001"
+      ],
+      "test_ids": [
+        "TST-SCR-010-003"
+      ]
+    },
+    {
+      "requirement_id": "SCR-010-UI-001",
+      "acceptance_ids": [
+        "ACC-SCR-010-UI-001"
+      ],
+      "test_ids": [
+        "TST-SCR-010-004"
+      ]
+    },
+    {
+      "requirement_id": "SCR-010-UI-002",
+      "acceptance_ids": [
+        "ACC-SCR-010-UI-002"
+      ],
+      "test_ids": [
+        "TST-SCR-010-004"
+      ]
+    },
+    {
+      "requirement_id": "SCR-010-VL-001",
+      "acceptance_ids": [
+        "ACC-SCR-010-VL-001"
+      ],
+      "test_ids": [
+        "TST-SCR-010-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-010-VL-002",
+      "acceptance_ids": [
+        "ACC-SCR-010-VL-002"
+      ],
+      "test_ids": [
+        "TST-SCR-010-001"
+      ]
+    },
+    {
+      "requirement_id": "SCR-010-VL-003",
+      "acceptance_ids": [
+        "ACC-SCR-010-VL-003"
+      ],
+      "test_ids": [
+        "TST-SCR-010-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-010-EV-001",
+      "acceptance_ids": [
+        "ACC-SCR-010-EV-001"
+      ],
+      "test_ids": [
+        "TST-SCR-010-003"
+      ]
+    },
+    {
+      "requirement_id": "SCR-010-EV-002",
+      "acceptance_ids": [
+        "ACC-SCR-010-EV-002"
+      ],
+      "test_ids": [
+        "TST-SCR-010-002"
+      ]
+    },
+    {
+      "requirement_id": "SCR-010-DT-001",
+      "acceptance_ids": [
+        "ACC-SCR-010-DT-001"
+      ],
+      "test_ids": [
+        "TST-SCR-010-003"
+      ]
+    },
+    {
+      "requirement_id": "SCR-010-DT-002",
+      "acceptance_ids": [
+        "ACC-SCR-010-DT-002"
+      ],
+      "test_ids": [
+        "TST-SCR-010-003"
+      ]
+    }
+  ]
+}

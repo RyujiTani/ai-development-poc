@@ -1,0 +1,56 @@
+{
+  "users": [
+    {
+      "user_id": "usr-001",
+      "contractor_id": "con-001",
+      "role": "CONTRACTOR_MANAGER",
+      "login_id": "valid_contractor",
+      "password_hash": "correct_password",
+      "display_name": "外注先管理者A",
+      "status": "ACTIVE",
+      "created_at": "2026-04-13T00:00:00+09:00",
+      "updated_at": "2026-04-13T00:00:00+09:00"
+    }
+  ],
+  "contractors": [
+    {
+      "contractor_id": "con-001",
+      "name": "第一工業",
+      "status": "ACTIVE",
+      "created_at": "2026-04-13T00:00:00+09:00",
+      "updated_at": "2026-04-13T00:00:00+09:00"
+    }
+  ],
+  "workers": [
+    {
+      "worker_id": "wrk-001",
+      "contractor_id": "con-001",
+      "name": "山田 太郎",
+      "qualifications": ["有機溶剤作業主任者"],
+      "trainings": [],
+      "status": "ACTIVE",
+      "created_at": "2026-04-13T00:00:00+09:00",
+      "updated_at": "2026-04-13T00:00:00+09:00"
+    },
+    {
+      "worker_id": "wrk-002",
+      "contractor_id": "con-001",
+      "name": "佐藤 次郎",
+      "qualifications": ["玉掛技能者"],
+      "trainings": [],
+      "status": "ACTIVE",
+      "created_at": "2026-04-13T00:00:00+09:00",
+      "updated_at": "2026-04-13T00:00:00+09:00"
+    },
+    {
+      "worker_id": "wrk-003",
+      "contractor_id": "con-001",
+      "name": "鈴木 三郎",
+      "qualifications": [],
+      "trainings": [],
+      "status": "ACTIVE",
+      "created_at": "2026-04-13T00:00:00+09:00",
+      "updated_at": "2026-04-13T00:00:00+09:00"
+    }
+  ]
+}
