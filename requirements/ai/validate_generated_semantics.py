@@ -350,38 +350,220 @@ def validate_scope(
 # Technology validation
 # ============================================================
 
+TECHNOLOGY_REQUIREMENTS = [
+    {
+        "label": "Next.js 14",
+        "aliases": ["Next.js", "Nextjs", "Next"],
+        "major_version": "14",
+    },
+    {
+        "label": "TypeScript 5",
+        "aliases": ["TypeScript"],
+        "major_version": "5",
+    },
+    {
+        "label": "Node.js 20",
+        "aliases": ["Node.js", "Nodejs", "Node"],
+        "major_version": "20",
+    },
+    {
+        "label": "React 18",
+        "aliases": ["React"],
+        "major_version": "18",
+    },
+    {
+        "label": "Tailwind CSS 3",
+        "aliases": ["Tailwind CSS", "TailwindCSS", "Tailwind"],
+        "major_version": "3",
+    },
+    {
+        "label": "shadcn/ui",
+        "aliases": ["shadcn/ui", "shadcn"],
+        "major_version": None,
+    },
+    {
+        "label": "React Hook Form",
+        "aliases": ["React Hook Form"],
+        "major_version": None,
+    },
+    {
+        "label": "Zod",
+        "aliases": ["Zod"],
+        "major_version": None,
+    },
+    {
+        "label": "Zustand",
+        "aliases": ["Zustand"],
+        "major_version": None,
+    },
+    {
+        "label": "IndexedDB",
+        "aliases": ["IndexedDB"],
+        "major_version": None,
+    },
+    {
+        "label": "idb",
+        "aliases": ["idb"],
+        "major_version": None,
+    },
+    {
+        "label": "HTML5",
+        "aliases": ["HTML5"],
+        "major_version": None,
+    },
+    {
+        "label": "getUserMedia",
+        "aliases": ["getUserMedia"],
+        "major_version": None,
+    },
+    {
+        "label": "papaparse",
+        "aliases": ["papaparse", "Papa Parse"],
+        "major_version": None,
+    },
+]
+
+
+def contains_any_alias(text: str, aliases: list[str]) -> bool:
+    normalized = normalize_text(text)
+
+    return any(
+        normalize_text(alias) in normalized
+        for alias in aliases
+    )
+
+
+def contains_major_version(text: str, major_version: str) -> bool:
+    """
+    major version の表現揺れを許容する。
+
+    例:
+      5
+      5.x
+      v5
+      version 5
+      5.0
+
+    ただし 15 や 50 を 5 と誤認しないよう数字境界を確認する。
+    """
+
+    normalized = normalize_text(text)
+
+    pattern = re.compile(
+        rf"(?<!\d)(?:v(?:ersion)?\s*)?{re.escape(major_version)}"
+        rf"(?:\.\d+|\.x)?(?!\d)",
+        flags=re.IGNORECASE,
+    )
+
+    return pattern.search(normalized) is not None
+
+
+def get_technology_entries(generated: Any) -> list[str]:
+    """
+    technology 配下を、技術単位で比較しやすい文字列へ変換する。
+
+    technology が通常の list なら各要素を1エントリとして扱う。
+    dict / string 形式にも耐える。
+    """
+
+    if not isinstance(generated, dict):
+        return []
+
+    technology = generated.get("technology")
+
+    if technology is None:
+        return []
+
+    if isinstance(technology, list):
+        return [
+            normalized_json_text(item)
+            for item in technology
+        ]
+
+    return [normalized_json_text(technology)]
+
+
+def source_requires_technology(
+    source_text: str,
+    aliases: list[str],
+    major_version: str | None,
+) -> bool:
+    """
+    原文に対象技術が存在するか判定する。
+
+    バージョン指定がある技術は、原文にも同じmajor versionがある場合だけ
+    そのバージョン要件を検証対象にする。
+    """
+
+    if not contains_any_alias(source_text, aliases):
+        return False
+
+    if major_version is None:
+        return True
+
+    return contains_major_version(source_text, major_version)
+
+
+def generated_preserves_technology(
+    generated: Any,
+    aliases: list[str],
+    major_version: str | None,
+) -> bool:
+    """
+    生成JSONが技術名とバージョンを保持しているかを意味的に確認する。
+
+    "TypeScript 5.x" のような1文字列だけでなく、
+    {"name": "TypeScript", "version": "5.x"}
+    のような構造化表現も許容する。
+    """
+
+    technology_entries = get_technology_entries(generated)
+
+    for entry in technology_entries:
+        if not contains_any_alias(entry, aliases):
+            continue
+
+        if major_version is None:
+            return True
+
+        if contains_major_version(entry, major_version):
+            return True
+
+    # technologyフィールド外に置かれた旧形式との互換性のため、
+    # バージョン無し技術のみJSON全体をfallback確認する。
+    if major_version is None:
+        whole_json = normalized_json_text(generated)
+        return contains_any_alias(whole_json, aliases)
+
+    return False
+
+
 def validate_technology(
     markdown: str,
     generated: Any,
     result: ValidationResult,
 ) -> None:
 
-    technologies = [
-        "Next.js 14",
-        "TypeScript 5",
-        "Node.js 20",
-        "React 18",
-        "Tailwind CSS 3",
-        "shadcn/ui",
-        "React Hook Form",
-        "Zod",
-        "Zustand",
-        "IndexedDB",
-        "idb",
-        "HTML5",
-        "getUserMedia",
-        "papaparse",
-    ]
-
-    source_normalized = normalize_text(markdown)
-    generated_normalized = normalized_json_text(generated)
-
     missing = []
 
-    for technology in technologies:
-        if normalize_text(technology) in source_normalized:
-            if normalize_text(technology) not in generated_normalized:
-                missing.append(technology)
+    for requirement in TECHNOLOGY_REQUIREMENTS:
+        label = requirement["label"]
+        aliases = requirement["aliases"]
+        major_version = requirement["major_version"]
+
+        if not source_requires_technology(
+            markdown,
+            aliases,
+            major_version,
+        ):
+            continue
+
+        if not generated_preserves_technology(
+            generated,
+            aliases,
+            major_version,
+        ):
+            missing.append(label)
 
     if missing:
         for technology in missing:

@@ -3,6 +3,8 @@ import argparse
 import json
 import re
 import shutil
+import subprocess
+import sys
 from typing import Any, Dict, List, Optional, Tuple
 
 
@@ -35,9 +37,9 @@ GENERATED_SCREEN_DIR = (
     GENERATED_DIR / "screens"
 )
 
-# 実装コードの出力先
-IMPLEMENTED_SCREEN_DIR = (
-    GENERATED_DIR / "implementation"
+# 統合Applicationの出力先
+APPLICATION_DIR = (
+    GENERATED_DIR / "application"
 )
 
 SYSTEM_PROMPT = (
@@ -56,10 +58,111 @@ IMPLEMENT_SCREEN_PROMPT = (
     PROMPTS_DIR / "implement_screen.md"
 )
 
-
 REPAIR_SCREEN_PROMPT = (
     PROMPTS_DIR / "repair_screen.md"
 )
+
+
+# ============================================================
+# Implementation protected files
+# ============================================================
+
+# AI implementation must never create or modify controlled build/test infrastructure.
+# package.json is intentionally allowed for the initial Application artifact.
+IMPLEMENTATION_PROTECTED_EXACT_PATHS = {
+    "tsconfig.json", "jsconfig.json",
+    "vitest.config.ts", "vitest.config.js", "vitest.config.mts", "vitest.config.mjs",
+    "vite.config.ts", "vite.config.js", "vite.config.mts", "vite.config.mjs",
+    "postcss.config.js", "postcss.config.cjs", "postcss.config.mjs", "postcss.config.ts",
+    "tailwind.config.js", "tailwind.config.cjs", "tailwind.config.mjs", "tailwind.config.ts",
+}
+
+def validate_implementation_file_paths(files: Dict[str, str]) -> None:
+    """Implementation生成からcontrolled build/test infrastructureを除外する。"""
+    violations: List[str] = []
+    for relative_path in files:
+        normalized = relative_path.replace("\\", "/").strip().lstrip("./")
+        if normalized in IMPLEMENTATION_PROTECTED_EXACT_PATHS:
+            violations.append(normalized)
+    if violations:
+        raise ValueError(
+            "Implementation generation attempted to create or modify controlled build/test infrastructure: "
+            + ", ".join(sorted(violations))
+            + ". Generate application/test source only; controlled build/test configuration must not be emitted."
+        )
+
+
+# ============================================================
+# Repair protected files
+# ============================================================
+
+# AI repair must never modify the validation/test infrastructure.
+# These files are owned by the controlled runner environment or are
+# application build configuration that must not be changed merely to
+# make validation pass.
+REPAIR_PROTECTED_EXACT_PATHS = {
+    "package.json",
+    "package-lock.json",
+    "pnpm-lock.yaml",
+    "yarn.lock",
+    "tsconfig.json",
+    "jsconfig.json",
+    "vitest.config.ts",
+    "vitest.config.js",
+    "vitest.config.mts",
+    "vitest.config.mjs",
+    "vite.config.ts",
+    "vite.config.js",
+    "vite.config.mts",
+    "vite.config.mjs",
+    "postcss.config.js",
+    "postcss.config.cjs",
+    "postcss.config.mjs",
+    "postcss.config.ts",
+    "tailwind.config.js",
+    "tailwind.config.cjs",
+    "tailwind.config.mjs",
+    "tailwind.config.ts",
+}
+
+
+def validate_repair_file_paths(
+    files: Dict[str, str],
+) -> None:
+    """
+    AI repairが保護対象のtest/build infrastructureを
+    変更しようとしていないことを確認する。
+    """
+
+    violations: List[str] = []
+
+    for relative_path in files:
+        normalized = (
+            relative_path
+            .replace("\\", "/")
+            .strip()
+            .lstrip("./")
+        )
+
+        if normalized == ".ai-repair-unresolved.txt":
+            continue
+
+        if normalized in REPAIR_PROTECTED_EXACT_PATHS:
+            violations.append(
+                normalized
+            )
+
+    if violations:
+        raise ValueError(
+            "AI repair attempted to modify protected "
+            "test/build infrastructure: "
+            + ", ".join(
+                sorted(violations)
+            )
+            + ". Repair application/test source instead; "
+            "controlled runner files must not be changed "
+            "by AI repair."
+        )
 
 
 # ============================================================
@@ -68,17 +171,32 @@ REPAIR_SCREEN_PROMPT = (
 
 def read_text(path: Path) -> str:
     """UTF-8 text fileを読み込む。"""
-    return path.read_text(encoding="utf-8")
+
+    return path.read_text(
+        encoding="utf-8"
+    )
 
 
-def write_text(path: Path, content: str) -> None:
+def write_text(
+    path: Path,
+    content: str,
+) -> None:
     """UTF-8 text fileへ書き込む。"""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(content, encoding="utf-8")
+
+    path.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    path.write_text(
+        content,
+        encoding="utf-8",
+    )
 
 
 def load_prompt(path: Path) -> str:
     """プロンプトを読み込む。"""
+
     return read_text(path)
 
 
@@ -89,10 +207,14 @@ def inject_prompt(
     """
     プロンプト内のプレースホルダを置換する。
     """
+
     result = prompt
 
     for placeholder, value in replacements.items():
-        result = result.replace(placeholder, value)
+        result = result.replace(
+            placeholder,
+            value,
+        )
 
     return result
 
@@ -101,6 +223,7 @@ def validate_required_files(
     paths: List[Path],
 ) -> None:
     """必要ファイルの存在を確認する。"""
+
     for path in paths:
         if not path.exists():
             raise FileNotFoundError(
@@ -112,7 +235,9 @@ def validate_required_files(
 # JSON utilities
 # ============================================================
 
-def extract_json(text: str) -> Any:
+def extract_json(
+    text: str,
+) -> Any:
     """
     AIレスポンスからJSONを取得する。
 
@@ -133,35 +258,141 @@ def extract_json(text: str) -> Any:
     match = re.search(
         r"```json\s*(.*?)\s*```",
         text,
-        flags=re.DOTALL | re.IGNORECASE,
+        flags=(
+            re.DOTALL
+            | re.IGNORECASE
+        ),
     )
 
     if match:
-        text = match.group(1).strip()
+        text = (
+            match
+            .group(1)
+            .strip()
+        )
 
     try:
-        return json.loads(text)
+        return json.loads(
+            text
+        )
+
     except json.JSONDecodeError as exc:
         raise ValueError(
             "Vertex AI response is not valid JSON."
         ) from exc
 
 
+def generate_json_with_retry(
+    vertex_client,
+    prompt: str,
+    max_attempts: int = 3,
+) -> Any:
+    """
+    Vertex AIへJSON生成を依頼し、
+    JSONとして解析できない場合のみ再生成する。
+
+    max_attemptsには初回生成を含む。
+    """
+
+    if max_attempts < 1:
+        raise ValueError(
+            "max_attempts must be greater than "
+            "or equal to 1."
+        )
+
+    last_error: Optional[
+        Exception
+    ] = None
+
+    for attempt in range(
+        1,
+        max_attempts + 1,
+    ):
+        print(
+            "JSON generation attempt "
+            f"{attempt}/{max_attempts}"
+        )
+
+        response = (
+            vertex_client.generate(
+                prompt
+            )
+        )
+
+        try:
+            data = extract_json(
+                response
+            )
+
+            print(
+                "Generated JSON format "
+                "validation passed."
+            )
+
+            return data
+
+        except ValueError as exc:
+            last_error = exc
+
+            print(
+                "Invalid JSON response: "
+                f"{exc}"
+            )
+
+            print()
+            print("-" * 60)
+
+            print(
+                "Vertex AI raw JSON response "
+                f"(attempt {attempt}/"
+                f"{max_attempts}):"
+            )
+
+            print(
+                response
+            )
+
+            print("-" * 60)
+            print()
+
+            if attempt < max_attempts:
+                print(
+                    "Retrying JSON generation..."
+                )
+
+    raise RuntimeError(
+        "Failed to generate valid JSON after "
+        f"{max_attempts} attempts."
+    ) from last_error
+
 
 # ============================================================
 # Generated implementation FILE parser
 # ============================================================
 
-FILE_START_MARKER = "<<<FILE_START>>>"
-CONTENT_START_MARKER = "<<<CONTENT_START>>>"
-CONTENT_END_MARKER = "<<<CONTENT_END>>>"
-FILE_END_MARKER = "<<<FILE_END>>>"
+FILE_START_MARKER = (
+    "<<<FILE_START>>>"
+)
+
+CONTENT_START_MARKER = (
+    "<<<CONTENT_START>>>"
+)
+
+CONTENT_END_MARKER = (
+    "<<<CONTENT_END>>>"
+)
+
+FILE_END_MARKER = (
+    "<<<FILE_END>>>"
+)
+
 
 def parse_generated_files(
     response_text: str,
 ) -> Dict[str, str]:
     """
-    Vertex AIの実装レスポンスからFILEブロックを取得する。
+    Vertex AIの実装レスポンスから
+    FILEブロックを取得する。
 
     対応形式:
 
@@ -180,7 +411,10 @@ def parse_generated_files(
             "Vertex AI response is empty."
         )
 
-    text = response_text.strip()
+    text = (
+        response_text
+        .strip()
+    )
 
     if not text.startswith(
         FILE_START_MARKER
@@ -209,7 +443,9 @@ def parse_generated_files(
     )
 
     matches = list(
-        pattern.finditer(text)
+        pattern.finditer(
+            text
+        )
     )
 
     if not matches:
@@ -223,7 +459,8 @@ def parse_generated_files(
 
     for match in matches:
         between = text[
-            cursor:match.start()
+            cursor:
+            match.start()
         ]
 
         if between.strip():
@@ -234,7 +471,9 @@ def parse_generated_files(
 
         cursor = match.end()
 
-    trailing = text[cursor:]
+    trailing = text[
+        cursor:
+    ]
 
     if trailing.strip():
         raise ValueError(
@@ -242,14 +481,18 @@ def parse_generated_files(
             "outside FILE blocks."
         )
 
-    result: Dict[str, str] = {}
+    result: Dict[
+        str,
+        str,
+    ] = {}
 
     for index, match in enumerate(
         matches,
         start=1,
     ):
         relative_path = (
-            match.group("path")
+            match
+            .group("path")
             .strip()
         )
 
@@ -259,13 +502,13 @@ def parse_generated_files(
 
         if not relative_path:
             raise ValueError(
-                f"FILE block {index} has "
-                "an empty PATH."
+                f"FILE block {index} "
+                "has an empty PATH."
             )
 
         if not content.strip():
             raise ValueError(
-                f"Generated file is empty: "
+                "Generated file is empty: "
                 f"{relative_path}"
             )
 
@@ -295,15 +538,118 @@ def parse_generated_files(
 
     return result
 
+
+def validate_screen_test_path(
+    files: Dict[str, str],
+    screen_id: str,
+) -> None:
+    """
+    対象画面のテストが、
+    完全なscreen_idを使用した
+
+    tests/<screen_id>/
+
+    配下に生成されていることを確認する。
+
+    例:
+
+      screen_id =
+      SCR-001_contractor_login
+
+    OK:
+
+      tests/SCR-001_contractor_login/page.test.tsx
+
+    NG:
+
+      tests/SCR-001/page.test.tsx
+      tests/contractor_login/page.test.tsx
+    """
+
+    expected_prefix = (
+        f"tests/{screen_id}/"
+    )
+
+    generated_test_files: List[
+        str
+    ] = []
+
+    invalid_test_files: List[
+        str
+    ] = []
+
+    for relative_path in files:
+        normalized = (
+            relative_path
+            .replace(
+                "\\",
+                "/",
+            )
+            .strip()
+            .lstrip("./")
+        )
+
+        if not normalized.startswith(
+            "tests/"
+        ):
+            continue
+
+        generated_test_files.append(
+            normalized
+        )
+
+        if not normalized.startswith(
+            expected_prefix
+        ):
+            invalid_test_files.append(
+                normalized
+            )
+
+    if invalid_test_files:
+        raise ValueError(
+            "Generated screen test path "
+            "is invalid. "
+            "Expected all generated tests "
+            f"under '{expected_prefix}', "
+            "but found: "
+            + ", ".join(
+                sorted(
+                    invalid_test_files
+                )
+            )
+        )
+
+    if not generated_test_files:
+        raise ValueError(
+            "No test file was generated for "
+            "the target screen. "
+            "At least one test file must be "
+            "generated under "
+            f"'{expected_prefix}'."
+        )
+
+    print(
+        "Screen test path validation "
+        "passed: "
+        f"{expected_prefix}"
+    )
+
+
 def generate_implementation_files(
     vertex_client,
     prompt: str,
     max_attempts: int = 3,
+    expected_screen_test_id:
+        Optional[str] = None,
 ) -> Dict[str, str]:
     """
     Vertex AIへ実装生成を依頼する。
 
-    FILE形式を解析できない場合は、
+    FILE形式を解析できない場合、
+    内容Validationに失敗した場合、
+    または対象画面のテストパスが
+    不正な場合は、
+
     不完全な生成物を保存せず再生成する。
     """
 
@@ -313,14 +659,16 @@ def generate_implementation_files(
             "or equal to 1."
         )
 
-    last_error: Optional[Exception] = None
+    last_error: Optional[
+        Exception
+    ] = None
 
     for attempt in range(
         1,
         max_attempts + 1,
     ):
         print(
-            f"Generation attempt "
+            "Generation attempt "
             f"{attempt}/{max_attempts}"
         )
 
@@ -341,6 +689,18 @@ def generate_implementation_files(
                 generated_files
             )
 
+            # Prompt instruction alone is not trusted.
+            # Reject controlled build/test infrastructure mechanically.
+            validate_implementation_file_paths(
+                generated_files
+            )
+
+            if expected_screen_test_id:
+                validate_screen_test_path(
+                    generated_files,
+                    expected_screen_test_id,
+                )
+
             print(
                 "Generated FILE format "
                 "validation passed."
@@ -358,11 +718,17 @@ def generate_implementation_files(
 
             print()
             print("-" * 60)
+
             print(
-                f"Vertex AI raw response "
-                f"(attempt {attempt}/{max_attempts}):"
+                "Vertex AI raw response "
+                f"(attempt {attempt}/"
+                f"{max_attempts}):"
             )
-            print(response)
+
+            print(
+                response
+            )
+
             print("-" * 60)
             print()
 
@@ -399,7 +765,8 @@ def save_json(
             data,
             ensure_ascii=False,
             indent=2,
-        ) + "\n",
+        )
+        + "\n",
         encoding="utf-8",
     )
 
@@ -441,19 +808,25 @@ def transform_system_requirement(
     )
 
     prompt = inject_prompt(
-        load_prompt(SYSTEM_PROMPT),
+        load_prompt(
+            SYSTEM_PROMPT
+        ),
         {
-            "{{SYSTEM_REQUIREMENTS_MD}}": source_md,
+            "{{SYSTEM_REQUIREMENTS_MD}}":
+                source_md,
         },
     )
 
     print(
-        "Generating system_requirements.json..."
+        "Generating "
+        "system_requirements.json..."
     )
 
-    response = vertex_client.generate(prompt)
-
-    data = extract_json(response)
+    data = generate_json_with_retry(
+        vertex_client,
+        prompt,
+        max_attempts=3,
+    )
 
     output_file = (
         GENERATED_REQUIREMENTS_DIR
@@ -493,9 +866,12 @@ def transform_trace_index(
     )
 
     prompt = inject_prompt(
-        load_prompt(TRACE_PROMPT),
+        load_prompt(
+            TRACE_PROMPT
+        ),
         {
-            "{{TRACE_INDEX_MD}}": source_md,
+            "{{TRACE_INDEX_MD}}":
+                source_md,
         },
     )
 
@@ -503,9 +879,11 @@ def transform_trace_index(
         "Generating trace_index.json..."
     )
 
-    response = vertex_client.generate(prompt)
-
-    data = extract_json(response)
+    data = generate_json_with_retry(
+        vertex_client,
+        prompt,
+        max_attempts=3,
+    )
 
     output_file = (
         GENERATED_REQUIREMENTS_DIR
@@ -560,19 +938,29 @@ def transform_screen_requirement(
     )
 
     prompt = inject_prompt(
-        load_prompt(SCREEN_PROMPT),
+        load_prompt(
+            SCREEN_PROMPT
+        ),
         {
             "{{SYSTEM_REQUIREMENTS_JSON}}":
-                read_text(system_requirements_file),
+                read_text(
+                    system_requirements_file
+                ),
 
             "{{TRACE_INDEX_JSON}}":
-                read_text(trace_index_file),
+                read_text(
+                    trace_index_file
+                ),
 
             "{{SCREEN_DESIGN_MD}}":
-                read_text(screen_file),
+                read_text(
+                    screen_file
+                ),
 
             "{{SCREEN_DESIGN_FILE}}":
-                str(screen_file),
+                str(
+                    screen_file
+                ),
         },
     )
 
@@ -581,12 +969,15 @@ def transform_screen_requirement(
     )
 
     print(
-        f"Generating screen requirement: {screen_id}"
+        "Generating screen requirement: "
+        f"{screen_id}"
     )
 
-    response = vertex_client.generate(prompt)
-
-    data = extract_json(response)
+    data = generate_json_with_retry(
+        vertex_client,
+        prompt,
+        max_attempts=3,
+    )
 
     output_file = (
         GENERATED_SCREEN_DIR
@@ -625,16 +1016,20 @@ def transform_all_screens(
     )
 
     screen_files = sorted(
-        SCREEN_DIR.glob("*.md")
+        SCREEN_DIR.glob(
+            "*.md"
+        )
     )
 
     if not screen_files:
         raise FileNotFoundError(
-            f"Screen design files not found: {SCREEN_DIR}"
+            "Screen design files not found: "
+            f"{SCREEN_DIR}"
         )
 
     print(
-        f"Found {len(screen_files)} screen files."
+        f"Found {len(screen_files)} "
+        "screen files."
     )
 
     for index, screen_file in enumerate(
@@ -667,7 +1062,9 @@ def validate_generated_requirements() -> None:
 
     print()
     print("=" * 60)
-    print("Generated Requirements Validation")
+    print(
+        "Generated Requirements Validation"
+    )
     print("=" * 60)
 
     # --------------------------------------------------------
@@ -675,18 +1072,23 @@ def validate_generated_requirements() -> None:
     # --------------------------------------------------------
 
     print()
-    print("=== Structural Validation ===")
+    print(
+        "=== Structural Validation ==="
+    )
     print()
 
     from requirements.ai.validate_generated_requirements import (
         main as validate_structure,
     )
 
-    structural_result = validate_structure()
+    structural_result = (
+        validate_structure()
+    )
 
     if structural_result != 0:
         raise RuntimeError(
-            "Generated requirements structural validation failed."
+            "Generated requirements structural "
+            "validation failed."
         )
 
     # --------------------------------------------------------
@@ -694,42 +1096,275 @@ def validate_generated_requirements() -> None:
     # --------------------------------------------------------
 
     print()
-    print("=== Semantic Validation ===")
+    print(
+        "=== Semantic Validation ==="
+    )
     print()
 
     from requirements.ai.validate_generated_semantics import (
         main as validate_semantics,
     )
 
-    semantic_result = validate_semantics()
+    semantic_result = (
+        validate_semantics()
+    )
 
     if semantic_result != 0:
         raise RuntimeError(
-            "Generated requirements semantic validation failed."
+            "Generated requirements semantic "
+            "validation failed."
         )
 
     print()
     print("=" * 60)
-    print("All generated requirement validations passed.")
+    print(
+        "All generated requirement "
+        "validations passed."
+    )
     print("=" * 60)
 
 
 # ============================================================
-# Implementation
+# Generated file validation
+# ============================================================
+
+def validate_generated_file_path(
+    relative_path: str,
+) -> Path:
+    """
+    AIが返した相対パスが、
+    出力ディレクトリ外へ脱出しないことを確認する。
+    """
+
+    if not isinstance(
+        relative_path,
+        str,
+    ):
+        raise ValueError(
+            "Generated file path must be string."
+        )
+
+    normalized = (
+        relative_path
+        .replace(
+            "\\",
+            "/",
+        )
+        .strip()
+    )
+
+    if not normalized:
+        raise ValueError(
+            "Generated file path is empty."
+        )
+
+    path = Path(
+        normalized
+    )
+
+    if path.is_absolute():
+        raise ValueError(
+            "Generated file path must be relative: "
+            f"{relative_path}"
+        )
+
+    if ".." in path.parts:
+        raise ValueError(
+            "Generated file path contains '..': "
+            f"{relative_path}"
+        )
+
+    return path
+
+
+def validate_generated_files_content(
+    files: Dict[str, str],
+) -> None:
+    """
+    AI生成ファイルの最低限の内容Validation。
+
+    主目的:
+      - 空ファイル防止
+      - Markdown fence混入防止
+      - FILE parser marker混入防止
+      - obvious diff output防止
+    """
+
+    if not files:
+        raise ValueError(
+            "No generated files."
+        )
+
+    reserved_markers = (
+        FILE_START_MARKER,
+        CONTENT_START_MARKER,
+        CONTENT_END_MARKER,
+        FILE_END_MARKER,
+    )
+
+    for relative_path, content in files.items():
+        validate_generated_file_path(
+            relative_path
+        )
+
+        if not isinstance(
+            content,
+            str,
+        ):
+            raise ValueError(
+                "Generated file content must be "
+                f"string: {relative_path}"
+            )
+
+        if not content.strip():
+            raise ValueError(
+                "Generated file content is empty: "
+                f"{relative_path}"
+            )
+
+        for marker in reserved_markers:
+            if marker in content:
+                raise ValueError(
+                    "Generated source contains "
+                    "reserved parser marker "
+                    f"{marker}: "
+                    f"{relative_path}"
+                )
+
+        stripped = content.lstrip()
+
+        if stripped.startswith(
+            "```"
+        ):
+            raise ValueError(
+                "Generated source must not contain "
+                "Markdown code fence: "
+                f"{relative_path}"
+            )
+
+        if (
+            stripped.startswith(
+                "*** Begin Patch"
+            )
+            or stripped.startswith(
+                "--- a/"
+            )
+            or stripped.startswith(
+                "+++ b/"
+            )
+        ):
+            raise ValueError(
+                "Generated source must not contain "
+                "diff/patch format: "
+                f"{relative_path}"
+            )
+
+
+# ============================================================
+# Existing application serialization
+# ============================================================
+
+def serialize_existing_application(
+    application_dir: Path,
+    include_tests: bool = True,
+) -> str:
+    """
+    現在の統合Applicationをpromptへ渡す形式に変換する。
+
+    include_tests=False:
+        次画面のincremental implementation用。
+        過去画面testsをAIへ見せず、現在画面以外のtestを
+        再出力・変更しようとすることを防ぐ。
+
+    include_tests=True:
+        repair用。Static/Test failureの原因がtests側にある場合も
+        調査・修正できるよう、実Application上のtestsを含める。
+
+    tests/の実ファイル自体は一切削除しない。
+    """
+
+    if not application_dir.exists():
+        return "(NO_EXISTING_APPLICATION)"
+
+    files: List[Path] = []
+
+    for path in application_dir.rglob("*"):
+        if not path.is_file():
+            continue
+
+        relative_path = (
+            path.relative_to(application_dir)
+            .as_posix()
+        )
+
+        if relative_path == ".ai-repair-unresolved.txt":
+            continue
+
+        if (
+            not include_tests
+            and (
+                relative_path == "tests"
+                or relative_path.startswith("tests/")
+            )
+        ):
+            continue
+
+        files.append(path)
+
+    files.sort()
+
+    if not files:
+        return "(NO_EXISTING_APPLICATION)"
+
+    blocks: List[str] = []
+
+    for file_path in files:
+        relative_path = (
+            file_path.relative_to(application_dir)
+            .as_posix()
+        )
+
+        try:
+            content = file_path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
+
+        blocks.append(
+            "<<<EXISTING_FILE_START>>>\n"
+            f"PATH: {relative_path}\n"
+            "<<<EXISTING_CONTENT_START>>>\n"
+            f"{content}\n"
+            "<<<EXISTING_CONTENT_END>>>\n"
+            "<<<EXISTING_FILE_END>>>"
+        )
+
+    if not blocks:
+        return "(NO_EXISTING_APPLICATION)"
+
+    return "\n\n".join(blocks)
+
+
+# ============================================================
+# Screen lookup
 # ============================================================
 
 def find_screen_requirement_file(
     screen: str,
 ) -> Path:
     """
-    指定された画面IDから画面要件JSONを取得する。
+    screen IDからgenerated/screens配下の
+    対象JSONを取得する。
 
-    例:
-        SCR-001
+    完全一致を優先する。
+
+    Example:
         SCR-001_contractor_login
-
-    のどちらでも検索できるようにする。
     """
+
+    if not screen:
+        raise ValueError(
+            "screen is required."
+        )
 
     exact_file = (
         GENERATED_SCREEN_DIR
@@ -739,216 +1374,168 @@ def find_screen_requirement_file(
     if exact_file.exists():
         return exact_file
 
-    candidates = sorted(
+    matches = sorted(
         GENERATED_SCREEN_DIR.glob(
-            f"{screen}_*.json"
+            f"{screen}*.json"
         )
     )
 
-    if len(candidates) == 1:
-        return candidates[0]
+    if not matches:
+        raise FileNotFoundError(
+            "Screen requirement JSON not found: "
+            f"{screen}"
+        )
 
-    if len(candidates) > 1:
-        raise RuntimeError(
-            f"Multiple screen requirement files matched "
-            f"'{screen}': "
+    if len(matches) > 1:
+        raise ValueError(
+            "Multiple screen requirement files "
+            f"matched '{screen}': "
             + ", ".join(
                 str(path)
-                for path in candidates
+                for path in matches
             )
         )
 
-    raise FileNotFoundError(
-        f"Screen requirement JSON not found: {screen}"
+    return matches[0]
+
+
+# ============================================================
+# Validation / test utilities
+# ============================================================
+
+def build_validation_error_log(
+    stdout: str,
+    stderr: str,
+    max_chars: int = 60000,
+) -> str:
+    """
+    静的検証等のstdout/stderrを
+    repair用ログへまとめる。
+    """
+
+    text = (
+        "=== STDOUT ===\n"
+        f"{stdout or ''}\n\n"
+        "=== STDERR ===\n"
+        f"{stderr or ''}"
+    )
+
+    if len(text) <= max_chars:
+        return text
+
+    return (
+        "[ERROR LOG TRUNCATED: LAST "
+        f"{max_chars} CHARACTERS]\n"
+        + text[
+            -max_chars:
+        ]
     )
 
 
-def validate_generated_file_path(
-    relative_path: str,
-) -> Path:
+def run_static_validation(
+    static_validator: Path,
+) -> subprocess.CompletedProcess:
     """
-    AIが生成したファイルパスが
-    出力ディレクトリ外へ脱出しないことを確認する。
+    generated/application を
+    test-runner/validate_generated_application.mjs
+    で静的検証する。
+
+    Exit:
+        0 = pass
+        1 = generated application failure
+        2 = infrastructure failure
     """
 
-    normalized = (
-        relative_path
-        .replace("\\", "/")
-        .strip()
+    return subprocess.run(
+        [
+            "node",
+            str(
+                static_validator
+            ),
+        ],
+        cwd=PROJECT_ROOT,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
     )
 
-    if not normalized:
-        raise ValueError(
-            "Generated file path is empty."
-        )
 
-    path = Path(normalized)
-
-    if path.is_absolute():
-        raise ValueError(
-            f"Generated file path must be relative: "
-            f"{relative_path}"
-        )
-
-    if ".." in path.parts:
-        raise ValueError(
-            f"Generated file path must not contain '..': "
-            f"{relative_path}"
-        )
-
-    # Windowsドライブ指定
-    if re.match(
-        r"^[A-Za-z]:",
-        normalized,
-    ):
-        raise ValueError(
-            f"Generated file path must not contain "
-            f"a drive letter: {relative_path}"
-        )
-
-    return path
-
-
-def validate_generated_content(
-    relative_path: str,
-    content: str,
-) -> None:
-    """
-    生成ファイル内容の最低限のValidationを行う。
-    """
-
-    if not content.strip():
-        raise ValueError(
-            "Generated file content is empty: "
-            f"{relative_path}"
-        )
-
-    for marker in (
-        FILE_START_MARKER,
-        CONTENT_START_MARKER,
-        CONTENT_END_MARKER,
-        FILE_END_MARKER,
-    ):
-        if marker in content:
-            raise ValueError(
-                "Generated source contains reserved "
-                f"parser marker {marker}: "
-                f"{relative_path}"
-            )
-
-
-def validate_generated_files_content(
-
-    files: Dict[str, str],
-) -> None:
-    """
-    保存前に全生成ファイルの内容をValidationする。
-    """
-
-    if not files:
-        raise ValueError(
-            "No generated files to validate."
-        )
-
-    for relative_path, content in files.items():
-        validate_generated_file_path(
-            relative_path
-        )
-
-        validate_generated_content(
-            relative_path,
-            content,
-        )
-
-
-def save_generated_files(
-    files: Dict[str, str],
-    output_dir: Path,
+def extract_static_error_signatures(
+    stdout: str,
+    stderr: str,
 ) -> List[str]:
+    """Static errorを行番号に依存しないsignatureへ正規化する。"""
 
-    if not files:
-        raise ValueError(
-            "No generated files to save."
+    text = f"{stdout or ''}\n{stderr or ''}"
+    signatures: List[str] = []
+
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+
+        # TypeScript: path(line,col): error TSxxxx: message
+        match = re.search(
+            r"^(?P<path>.+?)\(\d+,\d+\):\s*"
+            r"error\s+(?P<code>TS\d+):\s*(?P<message>.+)$",
+            line,
         )
-
-    validate_generated_files_content(
-        files
-    )
-
-    # 同じ画面を再生成した際に過去のファイルが残ると、
-    # 重複実装や古いテストが混在するため、
-    # 保存直前に画面単位の出力ディレクトリを作り直す。
-    if output_dir.exists():
-        shutil.rmtree(
-            output_dir
-        )
-
-    output_dir.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
-
-    output_root = output_dir.resolve()
-
-    saved_files: List[str] = []
-
-    for relative_path, content in files.items():
-
-        relative = validate_generated_file_path(
-            relative_path
-        )
-
-        file_path = (
-            output_dir / relative
-        )
-
-        resolved_file = (
-            file_path.resolve()
-        )
-
-        try:
-            resolved_file.relative_to(
-                output_root
+        if match:
+            signatures.append(
+                f"{match.group('path')}|{match.group('code')}|"
+                f"{match.group('message').strip()}"
             )
-        except ValueError as exc:
-            raise ValueError(
-                "Generated file path escapes "
-                f"output directory: {relative_path}"
-            ) from exc
+            continue
 
-        file_path.parent.mkdir(
-            parents=True,
-            exist_ok=True,
-        )
+        # Dependency allowlistなど、明示的なfailure/error行も保持する。
+        lowered = line.lower()
+        if (
+            "error" in lowered
+            or "failed" in lowered
+            or "cannot find module" in lowered
+        ):
+            normalized = re.sub(r"\s+", " ", line)
+            normalized = re.sub(r"\(\d+,\d+\)", "", normalized)
+            signatures.append(normalized)
 
-        file_path.write_text(
-            content,
-            encoding="utf-8",
-        )
-
-        saved_files.append(
-            str(file_path)
-        )
-
-    return saved_files
+    return list(dict.fromkeys(signatures))
 
 
-def implement_screen(
+def find_repeated_error_signatures(
+    previous: List[str],
+    current: List[str],
+) -> List[str]:
+    """前回と今回の両方に残っているerror signatureを返す。"""
+
+    previous_set = set(previous)
+    return [
+        signature
+        for signature in current
+        if signature in previous_set
+    ]
+
+
+def repair_screen_with_result(
     vertex_client,
     screen: str,
-) -> None:
+    validation_result: Dict[
+        str,
+        Any,
+    ],
+    error_log: str,
+    max_attempts: int = 2,
+) -> List[str]:
     """
-    生成済みJSONから1画面を実装する。
+    test-resultsファイルを経由せず、
+    任意の検証結果を直接repairへ渡す。
 
-    system_requirements.json
-    +
-    trace_index.json
-    +
-    SCR-xxx.json
-    +
-    implement_screen.md
-    ↓
-    Next.jsコード
+    主用途:
+        - STATIC_CHECK_FAILED
+        - TEST_FAILED
+
+    TEST_RESULT_JSONというplaceholder名は
+    既存repair promptとの互換性のため維持する。
     """
 
     system_requirements_file = (
@@ -962,7 +1549,427 @@ def implement_screen(
     )
 
     screen_requirement_file = (
-        find_screen_requirement_file(screen)
+        find_screen_requirement_file(
+            screen
+        )
+    )
+
+    validate_required_files(
+        [
+            system_requirements_file,
+            trace_index_file,
+            screen_requirement_file,
+            REPAIR_SCREEN_PROMPT,
+        ]
+    )
+
+    screen_id = (
+        screen_requirement_file.stem
+    )
+
+    generated_files_text = (
+        serialize_existing_application(
+            APPLICATION_DIR
+        )
+    )
+
+    result_json = json.dumps(
+        validation_result,
+        ensure_ascii=False,
+        indent=2,
+    )
+
+    repair_history_json = json.dumps(
+        validation_result.get("repair_history", []),
+        ensure_ascii=False,
+        indent=2,
+    )
+
+    prompt = inject_prompt(
+        load_prompt(
+            REPAIR_SCREEN_PROMPT
+        ),
+        {
+            "{{SYSTEM_REQUIREMENTS_JSON}}":
+                read_text(
+                    system_requirements_file
+                ),
+
+            "{{TRACE_INDEX_JSON}}":
+                read_text(
+                    trace_index_file
+                ),
+
+            "{{SCREEN_REQUIREMENT_JSON}}":
+                read_text(
+                    screen_requirement_file
+                ),
+
+            "{{GENERATED_FILES}}":
+                generated_files_text,
+
+            "{{TEST_RESULT_JSON}}":
+                result_json,
+
+            "{{ERROR_LOG}}":
+                error_log,
+
+            "{{REPAIR_HISTORY}}":
+                repair_history_json,
+        },
+    )
+
+    print()
+    print("=" * 60)
+    print(
+        "Repairing generated application "
+        "after validation failure: "
+        f"{screen_id}"
+    )
+    print("=" * 60)
+
+    repaired_files = (
+        generate_implementation_files(
+            vertex_client,
+            prompt,
+            max_attempts=max_attempts,
+        )
+    )
+
+    if (
+        ".ai-repair-unresolved.txt"
+        in repaired_files
+    ):
+        message = repaired_files[
+            ".ai-repair-unresolved.txt"
+        ].strip()
+
+        if (
+            message
+            == "SPECIFICATION_GAP"
+        ):
+            unresolved_file = (
+                APPLICATION_DIR
+                / ".ai-repair-unresolved.txt"
+            )
+
+            unresolved_file.write_text(
+                message + "\n",
+                encoding="utf-8",
+            )
+
+            raise RuntimeError(
+                "Automatic repair stopped because "
+                "a specification gap was detected: "
+                f"{screen_id}"
+            )
+
+    validate_repair_file_paths(
+        repaired_files
+    )
+
+    saved_files = (
+        apply_repaired_files(
+            repaired_files,
+            APPLICATION_DIR,
+        )
+    )
+
+    print()
+    print(
+        f"Applied {len(saved_files)} "
+        "repaired file(s):"
+    )
+
+    for file_path in saved_files:
+        print(
+            f"  {file_path}"
+        )
+
+    return [
+        Path(file_path)
+        .relative_to(APPLICATION_DIR)
+        .as_posix()
+        for file_path in saved_files
+    ]
+
+
+def run_static_check_with_auto_repair(
+    vertex_client,
+    screen_id: str,
+    static_validator: Path,
+    max_static_repair_count: int = 2,
+    reason: str = "post_implementation",
+) -> None:
+    """
+    Application全体のStatic Checkをblocking gateとして実行する。
+
+    - exit 0: PASS
+    - exit 2: infrastructure errorなので即停止
+    - exit 1: 通常AI repairを最大max_static_repair_count回
+    - 通常repair後も同一signatureが残る場合だけ、
+      root-cause recoveryを追加で1回許可する
+    - それでもNGなら次画面へ進ませない
+    """
+
+    normal_repair_count = 0
+    root_cause_recovery_count = 0
+    max_root_cause_recovery_count = 1
+    previous_signatures: List[str] = []
+    repair_history: List[Dict[str, Any]] = []
+
+    while True:
+        print("Running static validation...")
+        static_result = run_static_validation(static_validator)
+
+        if static_result.stdout:
+            print(
+                static_result.stdout,
+                end="" if static_result.stdout.endswith("\n") else "\n",
+            )
+        if static_result.stderr:
+            print(
+                static_result.stderr,
+                end="" if static_result.stderr.endswith("\n") else "\n",
+                file=sys.stderr,
+            )
+
+        if static_result.returncode == 0:
+            print("Static validation passed.")
+            return
+
+        if static_result.returncode == 2:
+            raise RuntimeError(
+                "Static validation infrastructure failed. "
+                "AI repair was not attempted."
+            )
+
+        current_signatures = extract_static_error_signatures(
+            static_result.stdout or "",
+            static_result.stderr or "",
+        )
+        repeated_signatures = find_repeated_error_signatures(
+            previous_signatures,
+            current_signatures,
+        )
+        same_error_after_previous_repair = bool(repeated_signatures)
+
+        if normal_repair_count < max_static_repair_count:
+            normal_repair_count += 1
+            repair_mode = "normal"
+            print()
+            print(
+                "Static validation failed. Starting automatic repair "
+                f"{normal_repair_count}/{max_static_repair_count}..."
+            )
+        elif (
+            same_error_after_previous_repair
+            and root_cause_recovery_count < max_root_cause_recovery_count
+        ):
+            root_cause_recovery_count += 1
+            repair_mode = "root_cause_recovery"
+            print()
+            print(
+                "Same static error signature remained after normal repairs. "
+                "Starting root-cause recovery "
+                f"{root_cause_recovery_count}/{max_root_cause_recovery_count}..."
+            )
+        else:
+            repeated_text = (
+                ", ".join(repeated_signatures)
+                if repeated_signatures
+                else "none"
+            )
+            raise RuntimeError(
+                "Static validation still failed after "
+                f"{normal_repair_count} automatic repair(s) "
+                f"and {root_cause_recovery_count} root-cause recovery attempt(s) "
+                f"for {screen_id}. Repeated signatures: {repeated_text}. "
+                "The generated application was not allowed to proceed "
+                "to the next screen."
+            )
+
+        error_log = build_validation_error_log(
+            static_result.stdout or "",
+            static_result.stderr or "",
+        )
+
+        if repair_mode == "root_cause_recovery":
+            error_log += (
+                "\n\n=== ROOT CAUSE RECOVERY REQUIRED ===\n"
+                "The same semantic/static error survived the normal repair budget.\n"
+                "Do not repeat the previous local edit. Inspect the related type/domain/"
+                "repository/service/usecase/interface, producer and consumer together, "
+                "then fix the actual contract mismatch with the smallest valid change.\n"
+            )
+
+        validation_result: Dict[str, Any] = {
+            "screen": screen_id,
+            "status": "STATIC_CHECK_FAILED",
+            "phase": "typescript",
+            "reason": reason,
+            "command": "tsc --noEmit --project tsconfig.json",
+            "exit_code": static_result.returncode,
+            "repair_mode": repair_mode,
+            "normal_repair_attempt": normal_repair_count,
+            "root_cause_recovery_attempt": root_cause_recovery_count,
+            "error_signatures": current_signatures,
+            "repeated_error_signatures": repeated_signatures,
+            "same_error_after_previous_repair": (
+                same_error_after_previous_repair
+            ),
+            "repair_history": repair_history,
+        }
+
+        changed_files = repair_screen_with_result(
+            vertex_client,
+            screen_id,
+            validation_result,
+            error_log,
+            max_attempts=2,
+        )
+
+        repair_history.append({
+            "repair_mode": repair_mode,
+            "normal_repair_attempt": normal_repair_count,
+            "root_cause_recovery_attempt": root_cause_recovery_count,
+            "input_error_signatures": current_signatures,
+            "repeated_error_signatures": repeated_signatures,
+            "changed_files": changed_files,
+        })
+
+        previous_signatures = current_signatures
+
+        print()
+        print("Re-running static validation after repair...")
+
+
+def run_post_implementation_check(
+    vertex_client,
+    screen_id: str,
+    max_static_repair_count: int = 2,
+) -> None:
+    """
+    1画面をApplicationへ追加した直後に、
+    統合Application全体のStatic Validationだけを実行する。
+
+    Flow:
+        1. integrated application全体をstatic validation
+        2. static failureならAI repair
+        3. repair後にstatic validationを再実行
+        4. PASSしたら次画面へ進む
+
+    方針:
+        - static validationはblocking gate。
+        - 通常static repairは最大2回。
+        - 通常repair後も同一error signatureが残る場合は、
+          root-cause recoveryを最大1回実行する。
+        - incremental生成中はVitestを実行しない。
+        - 画面機能テストは15画面生成完了後のCloud Buildで
+          全画面Regressionとして実行し、FAIL / TIMEOUTは
+          そこでAI repairする。
+    """
+
+    static_validator = (
+        PROJECT_ROOT
+        / "test-runner"
+        / "validate_generated_application.mjs"
+    )
+
+    validate_required_files(
+        [
+            static_validator,
+            REPAIR_SCREEN_PROMPT,
+        ]
+    )
+
+    print()
+    print("=" * 60)
+    print(
+        f"Post implementation static check: {screen_id}"
+    )
+    print("=" * 60)
+
+    # --------------------------------------------------------
+    # Integrated Application Static Validation
+    # --------------------------------------------------------
+    #
+    # TypeScript / import / dependency等のstatic failureを
+    # 残したまま次画面を生成すると、後続AIが壊れたApplicationを
+    # 既存コードとして引き継ぐ可能性がある。
+    #
+    # そのため、生成途中ではStaticだけをblocking gateとして使う。
+    # Vitestはここでは実行せず、最終Cloud Buildへ集約する。
+    # --------------------------------------------------------
+
+    run_static_check_with_auto_repair(
+        vertex_client=vertex_client,
+        screen_id=screen_id,
+        static_validator=static_validator,
+        max_static_repair_count=(
+            max_static_repair_count
+        ),
+        reason="post_implementation",
+    )
+
+    print()
+    print(
+        "Post implementation static check passed: "
+        f"{screen_id}"
+    )
+
+
+# ============================================================
+# Implementation
+# ============================================================
+
+def implement_screen(
+    vertex_client,
+    screen: str,
+) -> None:
+    """
+    生成済みJSONから対象画面を
+    統合Applicationへ追加実装する。
+
+    system_requirements.json
+    +
+    trace_index.json
+    +
+    SCR-xxx.json
+    +
+    現在のApplicationコード
+    +
+    implement_screen.md
+    ↓
+    変更が必要なファイルだけを生成
+    ↓
+    generated/application/へ追加・上書き
+
+    さらに、対象画面のテストは必ず
+
+        tests/<FULL_SCREEN_ID>/
+
+    配下に生成させる。
+
+    不正なテストパスの場合は
+    generate_implementation_files() 内で
+    実装生成そのものを再試行する。
+    """
+
+    system_requirements_file = (
+        GENERATED_REQUIREMENTS_DIR
+        / "system_requirements.json"
+    )
+
+    trace_index_file = (
+        GENERATED_REQUIREMENTS_DIR
+        / "trace_index.json"
+    )
+
+    screen_requirement_file = (
+        find_screen_requirement_file(
+            screen
+        )
     )
 
     validate_required_files(
@@ -974,64 +1981,143 @@ def implement_screen(
         ]
     )
 
-    prompt = inject_prompt(
-        load_prompt(IMPLEMENT_SCREEN_PROMPT),
-        {
-            "{{SYSTEM_REQUIREMENTS_JSON}}":
-                read_text(system_requirements_file),
-
-            "{{TRACE_INDEX_JSON}}":
-                read_text(trace_index_file),
-
-            "{{SCREEN_REQUIREMENT_JSON}}":
-                read_text(screen_requirement_file),
-        },
-    )
+    # --------------------------------------------------------
+    # IMPORTANT
+    # --------------------------------------------------------
+    #
+    # FULL_SCREEN_IDをpromptへ注入するため、
+    # prompt生成より前にscreen_idを確定する。
+    #
+    # Example:
+    #
+    # SCR-001_contractor_login
+    #
+    # --------------------------------------------------------
 
     screen_id = (
         screen_requirement_file.stem
     )
 
+    existing_application = (
+        serialize_existing_application(
+            APPLICATION_DIR,
+            include_tests=False,
+        )
+    )
+
+    prompt = inject_prompt(
+        load_prompt(
+            IMPLEMENT_SCREEN_PROMPT
+        ),
+        {
+            "{{SYSTEM_REQUIREMENTS_JSON}}":
+                read_text(
+                    system_requirements_file
+                ),
+
+            "{{TRACE_INDEX_JSON}}":
+                read_text(
+                    trace_index_file
+                ),
+
+            "{{SCREEN_REQUIREMENT_JSON}}":
+                read_text(
+                    screen_requirement_file
+                ),
+
+            "{{EXISTING_APPLICATION}}":
+                existing_application,
+
+            # 完全なscreen IDを明示的に渡す。
+            "{{FULL_SCREEN_ID}}":
+                screen_id,
+        },
+    )
+
     print()
     print("=" * 60)
     print(
-        f"Implementing screen: {screen_id}"
+        "Implementing screen into application: "
+        f"{screen_id}"
     )
     print("=" * 60)
 
-    print(
-        "Generating implementation..."
-    )
-
-    generated_files = generate_implementation_files(
-        vertex_client,
-        prompt,
-        max_attempts=3,
-    )
-
-    output_dir = (
-        IMPLEMENTED_SCREEN_DIR
-        / screen_id
-    )
-
-    saved_files = save_generated_files(
-        generated_files,
-        output_dir,
-    )
-
-    print()
-    print(
-        f"Generated {len(saved_files)} file(s):"
-    )
-
-    for path in saved_files:
+    if (
+        existing_application
+        == "(NO_EXISTING_APPLICATION)"
+    ):
         print(
-            f"  {path}"
+            "Existing application: "
+            "none (initial screen)"
+        )
+
+    else:
+        print(
+            "Existing application: loaded"
+        )
+
+    print(
+        "Expected test directory: "
+        f"tests/{screen_id}/"
+    )
+
+    print(
+        "Generating incremental "
+        "implementation..."
+    )
+
+    # --------------------------------------------------------
+    # Implementation generation
+    # --------------------------------------------------------
+    #
+    # FILE formatだけでなく、
+    #
+    # tests/<FULL_SCREEN_ID>/
+    #
+    # も機械Validationする。
+    #
+    # 例えばAIが
+    #
+    # tests/SCR-001/page.test.tsx
+    #
+    # と省略した場合、
+    # 保存せずGeneration retryになる。
+    #
+    # --------------------------------------------------------
+
+    generated_files = (
+        generate_implementation_files(
+            vertex_client,
+            prompt,
+            max_attempts=3,
+            expected_screen_test_id=screen_id,
+        )
+    )
+
+    # 初回生成でも追加実装でも、
+    # AIが返した変更ファイルだけを
+    # 統合Applicationへ追加・上書きする。
+    saved_files = (
+        apply_repaired_files(
+            generated_files,
+            APPLICATION_DIR,
+        )
+    )
+
+    print()
+    print(
+        f"Applied {len(saved_files)} file(s):"
+    )
+
+    for file_path in saved_files:
+        print(
+            f"  {file_path}"
         )
 
     print()
     print(
-        f"Implementation output: {output_dir}"
+        f"Application output: "
+        f"{APPLICATION_DIR}"
     )
 
 
@@ -1039,14 +2125,45 @@ def implement_all_screens(
     vertex_client,
 ) -> None:
     """
-    生成済みの全画面要件JSONから
-    すべての画面を実装する。
+    生成済みの全画面要件JSONを
+    1件ずつ処理し、
+    1つの統合Applicationを順次育てる。
 
-    generated/screens/*.json
-    ↓
-    1画面ずつ実装
-    ↓
-    generated/implementation/<screen_id>/
+    Flow:
+
+        SCR-001
+        ↓
+        implement
+        ↓
+        static check
+        ↓
+        SCR-001 tests
+        ↓
+        PASS / FAILを診断記録
+        ↓
+        次画面へ
+
+        SCR-002
+        ↓
+        existing SCR-001 Application
+        + SCR-002
+        ↓
+        static check
+        ↓
+        SCR-001 + SCR-002 tests
+        ↓
+        PASS / FAILを診断記録
+        ↓
+        次画面へ
+
+        ...
+
+        SCR-015
+
+    各画面のstatic validationはblocking。
+    accumulated regression testの
+    TEST_FAILED / TEST_TIMEOUTはnon-blockingとし、
+    最終的な全画面テストとrepairはCloud Buildへ委譲する。
     """
 
     validate_required_files(
@@ -1062,116 +2179,117 @@ def implement_all_screens(
     )
 
     screen_requirement_files = sorted(
-        GENERATED_SCREEN_DIR.glob("*.json")
+        GENERATED_SCREEN_DIR.glob(
+            "*.json"
+        )
     )
 
     if not screen_requirement_files:
         raise FileNotFoundError(
-            f"Screen requirement JSON files not found: "
+            "Screen requirement JSON files "
+            "not found: "
             f"{GENERATED_SCREEN_DIR}"
         )
 
+    # --------------------------------------------------------
+    # Clean application
+    # --------------------------------------------------------
+    #
+    # implement-all / allでは
+    # 毎回クリーンなApplicationから開始。
+    #
+    # 個別の
+    #
+    # --target implement --screen ...
+    #
+    # ではimplement_screen()だけ呼ばれるので、
+    # 既存Applicationは維持される。
+    #
+    # --------------------------------------------------------
+
+    if APPLICATION_DIR.exists():
+        shutil.rmtree(
+            APPLICATION_DIR
+        )
+
+    APPLICATION_DIR.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
     print(
-        f"Found {len(screen_requirement_files)} "
-        f"screen requirement files."
+        f"Found "
+        f"{len(screen_requirement_files)} "
+        "screen requirement files."
     )
 
     print()
     print("=" * 60)
-    print("Starting implementation of all screens")
+    print(
+        "Starting incremental "
+        "application implementation"
+    )
     print("=" * 60)
 
     for index, screen_requirement_file in enumerate(
         screen_requirement_files,
         start=1,
     ):
-        screen_id = screen_requirement_file.stem
+        screen_id = (
+            screen_requirement_file.stem
+        )
 
         print()
         print(
-            f"[{index}/{len(screen_requirement_files)}] "
-            f"Implementing: {screen_id}"
+            f"[{index}/"
+            f"{len(screen_requirement_files)}] "
+            "Implementing into application: "
+            f"{screen_id}"
         )
+
+        # ----------------------------------------------------
+        # 1. Implement current screen
+        # ----------------------------------------------------
 
         implement_screen(
             vertex_client,
             screen_id,
         )
 
+        # ----------------------------------------------------
+        # 2. Integrated application static check only
+        # ----------------------------------------------------
+
+        run_post_implementation_check(
+            vertex_client,
+            screen_id,
+        )
+
     print()
     print("=" * 60)
-    print("All screen implementations completed.")
+    print(
+        "Integrated application "
+        "implementation completed."
+    )
+
+    print(
+        f"Application output: "
+        f"{APPLICATION_DIR}"
+    )
+
     print("=" * 60)
 
 
 # ============================================================
-# Repair
+# Repair result utilities
 # ============================================================
-
-from pathlib import Path
-import json
-from typing import Dict, List, Optional
-
-
-def serialize_generated_files(
-    screen_dir: Path,
-) -> str:
-    """
-    現在生成済みの画面ファイルをrepair promptへ渡すため、
-    読み取り専用の専用形式へ変換する。
-    """
-
-    if not screen_dir.exists():
-        raise FileNotFoundError(
-            f"Implementation directory not found: {screen_dir}"
-        )
-
-    blocks: List[str] = []
-
-    files = sorted(
-        path
-        for path in screen_dir.rglob("*")
-        if path.is_file()
-        and path.name != ".ai-repair-unresolved.txt"
-    )
-
-    if not files:
-        raise FileNotFoundError(
-            f"No implementation files found: {screen_dir}"
-        )
-
-    for file_path in files:
-        relative_path = (
-            file_path
-            .relative_to(screen_dir)
-            .as_posix()
-        )
-
-        content = file_path.read_text(
-            encoding="utf-8"
-        )
-
-        blocks.append(
-            "\n".join(
-                [
-                    "<<<EXISTING_FILE_START>>>",
-                    f"PATH: {relative_path}",
-                    "<<<EXISTING_CONTENT_START>>>",
-                    content,
-                    "<<<EXISTING_CONTENT_END>>>",
-                    "<<<EXISTING_FILE_END>>>",
-                ]
-            )
-        )
-
-    return "\n\n".join(blocks)
-
 
 def load_test_result(
     screen_id: str,
 ) -> Dict:
     """
-    generated/test-results/<screen_id>.json を取得する。
+    generated/test-results/<screen_id>.json
+    を取得する。
     """
 
     result_file = (
@@ -1182,7 +2300,8 @@ def load_test_result(
 
     if not result_file.exists():
         raise FileNotFoundError(
-            f"Test result not found: {result_file}"
+            "Test result not found: "
+            f"{result_file}"
         )
 
     try:
@@ -1191,9 +2310,11 @@ def load_test_result(
                 encoding="utf-8"
             )
         )
+
     except json.JSONDecodeError as exc:
         raise ValueError(
-            f"Test result is not valid JSON: {result_file}"
+            "Test result is not valid JSON: "
+            f"{result_file}"
         ) from exc
 
 
@@ -1202,20 +2323,28 @@ def build_error_log(
     max_chars: int = 60000,
 ) -> str:
     """
-    stdout / stderrをrepair prompt用のエラーログへまとめる。
+    stdout / stderrをrepair prompt用の
+    エラーログへまとめる。
 
-    ログが極端に大きい場合は末尾を優先して制限する。
-    VitestのFailed Testsやstack traceは末尾に出ることが多いため。
+    ログが極端に大きい場合は
+    末尾を優先して制限する。
+
+    VitestのFailed Testsやstack traceは
+    末尾に出ることが多いため。
     """
 
-    stdout = test_result.get(
-        "stdout",
-        "",
+    stdout = (
+        test_result.get(
+            "stdout",
+            "",
+        )
     )
 
-    stderr = test_result.get(
-        "stderr",
-        "",
+    stderr = (
+        test_result.get(
+            "stderr",
+            "",
+        )
     )
 
     text = (
@@ -1231,7 +2360,9 @@ def build_error_log(
     return (
         "[ERROR LOG TRUNCATED: LAST "
         f"{max_chars} CHARACTERS]\n"
-        + text[-max_chars:]
+        + text[
+            -max_chars:
+        ]
     )
 
 
@@ -1240,10 +2371,13 @@ def apply_repaired_files(
     output_dir: Path,
 ) -> List[str]:
     """
-    repair結果を既存実装へ上書きする。
+    AI生成・repair結果を
+    既存Applicationへ追加・上書きする。
 
-    初回生成とは異なりoutput_dir全体は削除しない。
-    AIが返した修正対象ファイルだけを置換する。
+    output_dir全体は削除しない。
+
+    AIが返したファイルだけを
+    追加・置換する。
     """
 
     if not files:
@@ -1260,17 +2394,22 @@ def apply_repaired_files(
         exist_ok=True,
     )
 
-    output_root = output_dir.resolve()
+    output_root = (
+        output_dir.resolve()
+    )
 
     saved_files: List[str] = []
 
     for relative_path, content in files.items():
-        relative = validate_generated_file_path(
-            relative_path
+        relative = (
+            validate_generated_file_path(
+                relative_path
+            )
         )
 
         file_path = (
-            output_dir / relative
+            output_dir
+            / relative
         )
 
         resolved_file = (
@@ -1281,10 +2420,12 @@ def apply_repaired_files(
             resolved_file.relative_to(
                 output_root
             )
+
         except ValueError as exc:
             raise ValueError(
                 "Repaired file path escapes "
-                f"output directory: {relative_path}"
+                "output directory: "
+                f"{relative_path}"
             ) from exc
 
         file_path.parent.mkdir(
@@ -1298,11 +2439,16 @@ def apply_repaired_files(
         )
 
         saved_files.append(
-            str(file_path)
+            str(
+                file_path
+            )
         )
 
     return saved_files
 
+# ============================================================
+# Repair
+# ============================================================
 
 def repair_screen(
     vertex_client,
@@ -1310,7 +2456,8 @@ def repair_screen(
     max_attempts: int = 2,
 ) -> None:
     """
-    1画面のテスト失敗をAIへ返し、既存生成物を最小修正する。
+    1画面のテスト失敗をAIへ返し、
+    既存生成物を最小修正する。
 
     Inputs:
         system_requirements.json
@@ -1321,7 +2468,8 @@ def repair_screen(
         stdout / stderr
 
     Output:
-        修正が必要なファイルのみ既存implementationへ上書き
+        修正が必要なファイルのみ
+        統合Applicationへ上書きする。
     """
 
     system_requirements_file = (
@@ -1354,35 +2502,46 @@ def repair_screen(
     )
 
     implementation_dir = (
-        IMPLEMENTED_SCREEN_DIR
-        / screen_id
+        APPLICATION_DIR
     )
 
     generated_files_text = (
-        serialize_generated_files(
+        serialize_existing_application(
             implementation_dir
         )
     )
 
-    test_result = load_test_result(
-        screen_id
+    test_result = (
+        load_test_result(
+            screen_id
+        )
     )
 
-    if test_result.get("status") == "PASSED":
+    if (
+        test_result.get(
+            "status"
+        )
+        == "PASSED"
+    ):
         print(
-            f"Skip repair because screen already passed: "
+            "Skip repair because screen "
+            "already passed: "
             f"{screen_id}"
         )
         return
 
-    test_result_json = json.dumps(
-        test_result,
-        ensure_ascii=False,
-        indent=2,
+    test_result_json = (
+        json.dumps(
+            test_result,
+            ensure_ascii=False,
+            indent=2,
+        )
     )
 
-    error_log = build_error_log(
-        test_result
+    error_log = (
+        build_error_log(
+            test_result
+        )
     )
 
     prompt = inject_prompt(
@@ -1413,6 +2572,9 @@ def repair_screen(
 
             "{{ERROR_LOG}}":
                 error_log,
+
+            "{{REPAIR_HISTORY}}":
+                "[]",
         },
     )
 
@@ -1431,16 +2593,25 @@ def repair_screen(
         )
     )
 
-    # specification gapの場合
+    # --------------------------------------------------------
+    # Specification gap
+    # --------------------------------------------------------
+
     if (
         ".ai-repair-unresolved.txt"
         in repaired_files
     ):
-        message = repaired_files[
-            ".ai-repair-unresolved.txt"
-        ].strip()
+        message = (
+            repaired_files[
+                ".ai-repair-unresolved.txt"
+            ]
+            .strip()
+        )
 
-        if message == "SPECIFICATION_GAP":
+        if (
+            message
+            == "SPECIFICATION_GAP"
+        ):
             unresolved_file = (
                 implementation_dir
                 / ".ai-repair-unresolved.txt"
@@ -1455,16 +2626,28 @@ def repair_screen(
                 "Repair stopped because "
                 "specification gap was detected."
             )
+
             return
 
-    saved_files = apply_repaired_files(
-        repaired_files,
-        implementation_dir,
+    # --------------------------------------------------------
+    # Protected infrastructure guard
+    # --------------------------------------------------------
+
+    validate_repair_file_paths(
+        repaired_files
+    )
+
+    saved_files = (
+        apply_repaired_files(
+            repaired_files,
+            implementation_dir,
+        )
     )
 
     print()
     print(
-        f"Repaired {len(saved_files)} file(s):"
+        f"Repaired {len(saved_files)} "
+        "file(s):"
     )
 
     for file_path in saved_files:
@@ -1481,7 +2664,8 @@ def get_failed_screens() -> List[str]:
         TEST_FAILED
         TEST_TIMEOUT
 
-    INFRA_ERROR / infrastructure failureは対象外。
+    INFRA_ERROR /
+    infrastructure failureは対象外。
     """
 
     summary_file = (
@@ -1492,7 +2676,8 @@ def get_failed_screens() -> List[str]:
 
     if not summary_file.exists():
         raise FileNotFoundError(
-            f"Test summary not found: {summary_file}"
+            "Test summary not found: "
+            f"{summary_file}"
         )
 
     try:
@@ -1501,15 +2686,18 @@ def get_failed_screens() -> List[str]:
                 encoding="utf-8"
             )
         )
+
     except json.JSONDecodeError as exc:
         raise ValueError(
-            f"Test summary is not valid JSON: "
+            "Test summary is not valid JSON: "
             f"{summary_file}"
         ) from exc
 
-    screens = summary.get(
-        "screens",
-        []
+    screens = (
+        summary.get(
+            "screens",
+            [],
+        )
     )
 
     result: List[str] = []
@@ -1522,20 +2710,27 @@ def get_failed_screens() -> List[str]:
             continue
 
         if (
-            item.get("status")
+            item.get(
+                "status"
+            )
             in {
                 "TEST_FAILED",
                 "TEST_TIMEOUT",
             }
         ):
-            screen_id = item.get(
-                "screen"
+            screen_id = (
+                item.get(
+                    "screen"
+                )
             )
 
-            if isinstance(
-                screen_id,
-                str,
-            ) and screen_id:
+            if (
+                isinstance(
+                    screen_id,
+                    str,
+                )
+                and screen_id
+            ):
                 result.append(
                     screen_id
                 )
@@ -1548,14 +2743,18 @@ def repair_failed_screens(
     max_attempts: int = 2,
 ) -> None:
     """
-    summary.jsonでrepair対象となった画面を順番に修正する。
+    summary.jsonでrepair対象となった
+    画面を順番に修正する。
 
     対象:
         TEST_FAILED
         TEST_TIMEOUT
 
     PASSEDは対象外。
-    INFRA_ERROR / INFRASTRUCTURE_FAILEDも自動修正対象外。
+
+    INFRA_ERROR /
+    INFRASTRUCTURE_FAILEDも
+    自動修正対象外。
     """
 
     failed_screens = (
@@ -1564,7 +2763,8 @@ def repair_failed_screens(
 
     if not failed_screens:
         print(
-            "No repairable TEST_FAILED / TEST_TIMEOUT screens found."
+            "No repairable TEST_FAILED / "
+            "TEST_TIMEOUT screens found."
         )
         return
 
@@ -1577,7 +2777,8 @@ def repair_failed_screens(
 
     print(
         f"Found {len(failed_screens)} "
-        "repairable TEST_FAILED / TEST_TIMEOUT screen(s)."
+        "repairable TEST_FAILED / "
+        "TEST_TIMEOUT screen(s)."
     )
 
     for index, screen_id in enumerate(
@@ -1586,7 +2787,8 @@ def repair_failed_screens(
     ):
         print()
         print(
-            f"[{index}/{len(failed_screens)}] "
+            f"[{index}/"
+            f"{len(failed_screens)}] "
             f"Repairing: {screen_id}"
         )
 
@@ -1609,7 +2811,9 @@ def repair_failed_screens(
 # ============================================================
 
 def parse_args() -> argparse.Namespace:
-    """コマンドライン引数を解析する。"""
+    """
+    コマンドライン引数を解析する。
+    """
 
     parser = argparse.ArgumentParser(
         description=(
@@ -1632,14 +2836,18 @@ def parse_args() -> argparse.Namespace:
             "repair-all",
         ],
         default="all",
-        help="Execution target. default: all",
+        help=(
+            "Execution target. "
+            "default: all"
+        ),
     )
 
     parser.add_argument(
         "--screen",
         help=(
-            "Screen to implement. "
-            "Example: SCR-001_contractor_login"
+            "Screen to implement or repair. "
+            "Example: "
+            "SCR-001_contractor_login"
         ),
     )
 
@@ -1673,7 +2881,10 @@ def main(
     # system
     # --------------------------------------------------------
 
-    if args.target == "system":
+    if (
+        args.target
+        == "system"
+    ):
         transform_system_requirement(
             vertex_client
         )
@@ -1683,7 +2894,10 @@ def main(
     # trace
     # --------------------------------------------------------
 
-    if args.target == "trace":
+    if (
+        args.target
+        == "trace"
+    ):
         transform_trace_index(
             vertex_client
         )
@@ -1693,7 +2907,10 @@ def main(
     # screens
     # --------------------------------------------------------
 
-    if args.target == "screens":
+    if (
+        args.target
+        == "screens"
+    ):
         transform_all_screens(
             vertex_client
         )
@@ -1703,7 +2920,10 @@ def main(
     # validate
     # --------------------------------------------------------
 
-    if args.target == "validate":
+    if (
+        args.target
+        == "validate"
+    ):
         validate_generated_requirements()
         return
 
@@ -1711,7 +2931,10 @@ def main(
     # implement
     # --------------------------------------------------------
 
-    if args.target == "implement":
+    if (
+        args.target
+        == "implement"
+    ):
         if not args.screen:
             raise ValueError(
                 "--screen is required when "
@@ -1722,13 +2945,17 @@ def main(
             vertex_client,
             args.screen,
         )
+
         return
 
     # --------------------------------------------------------
     # implement-all
     # --------------------------------------------------------
 
-    if args.target == "implement-all":
+    if (
+        args.target
+        == "implement-all"
+    ):
         implement_all_screens(
             vertex_client
         )
@@ -1738,7 +2965,10 @@ def main(
     # repair
     # --------------------------------------------------------
 
-    if args.target == "repair":
+    if (
+        args.target
+        == "repair"
+    ):
         if not args.screen:
             raise ValueError(
                 "--screen is required when "
@@ -1750,17 +2980,22 @@ def main(
             args.screen,
             max_attempts=2,
         )
+
         return
 
     # --------------------------------------------------------
     # repair-all
     # --------------------------------------------------------
 
-    if args.target == "repair-all":
+    if (
+        args.target
+        == "repair-all"
+    ):
         repair_failed_screens(
             vertex_client,
             max_attempts=2,
         )
+
         return
 
     # --------------------------------------------------------
@@ -1774,6 +3009,8 @@ def main(
             SYSTEM_PROMPT,
             TRACE_PROMPT,
             SCREEN_PROMPT,
+            IMPLEMENT_SCREEN_PROMPT,
+            REPAIR_SCREEN_PROMPT,
         ]
     )
 
@@ -1802,7 +3039,8 @@ def main(
     )
 
     print(
-        "=== Generated Requirements Validation ==="
+        "=== Generated Requirements "
+        "Validation ==="
     )
 
     validate_generated_requirements()
@@ -1825,16 +3063,22 @@ def main(
 # ============================================================
 
 if __name__ == "__main__":
-    import sys
-
+    # requirements.ai.vertex_client を
+    # repository rootからimportできるようにする。
     project_root = (
-        Path(__file__).resolve().parents[2]
+        Path(__file__)
+        .resolve()
+        .parents[2]
     )
 
-    sys.path.insert(
-        0,
-        str(project_root),
-    )
+    if (
+        str(project_root)
+        not in sys.path
+    ):
+        sys.path.insert(
+            0,
+            str(project_root),
+        )
 
     from requirements.ai.vertex_client import (
         VertexClient,

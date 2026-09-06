@@ -50,6 +50,22 @@ jobs:
 
 
       # ======================================================
+      # 2.5 Node / Vitest for post-generation validation
+      # ======================================================
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+
+      - name: Install test runner dependencies
+        working-directory: test-runner
+        run: |
+          npm install --no-audit --no-fund
+
+
+      # ======================================================
       # 3. Authenticate to GCP
       # ======================================================
 
@@ -482,7 +498,7 @@ jobs:
           ### 生成物
 
           - AI生成コード
-            - \`requirements/ai/generated/implementation/\`
+            - \`requirements/ai/generated/application/\`
 
           - 最終テスト結果
             - \`requirements/ai/generated/test-results/\`
@@ -514,3 +530,22 @@ jobs:
             --head "${{ steps.branch.outputs.branch_name }}" \
             --title "AI generated implementation - run ${GITHUB_RUN_ID}" \
             --body-file pr-body.md
+
+
+      # ======================================================
+      # 11. Upload debug artifacts
+      #
+      # 途中でAI実装・static check・Vitest・Cloud Buildなどが
+      # 失敗しても、runner上の生成コードとテスト結果を保存する。
+      # ======================================================
+
+      - name: Upload generated application and test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-application-and-test-results-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            requirements/ai/generated/application
+            requirements/ai/generated/test-results
+          if-no-files-found: warn
+          retention-days: 7

@@ -40,6 +40,10 @@ TEST_RESULT_JSON:
 ERROR_LOG:
 
 {{ERROR_LOG}}
+
+REPAIR_HISTORY:
+
+{{REPAIR_HISTORY}}
 ```
 
 上記の本文そのものを入力として使用してください。
@@ -55,6 +59,10 @@ ERROR_LOG:
 `GENERATED_FILES` は、その画面について現在生成済みの実装・テストコードです。
 
 `TEST_RESULT_JSON` および `ERROR_LOG` は、その生成物を実際に検証した結果です。
+
+`REPAIR_HISTORY` は、同じ検証フェーズ内で既に実行されたrepairの履歴です。
+空配列 `[]` の場合は過去repairはありません。
+履歴が存在する場合は、過去のエラー、error signature、変更ファイルを確認し、同じ失敗を繰り返していないか必ず比較してください。
 
 対象画面と無関係な機能や他画面を変更してはいけません。
 
@@ -168,6 +176,38 @@ SPECIFICATION_GAP
 
 ---
 
+# 7.5. Previous Repair History / Repeated Failure
+
+`REPAIR_HISTORY` が空でない場合、今回のrepairは初回ではありません。
+
+必ず以下を行ってください。
+
+1. 過去repair前の `error_log` と今回の `ERROR_LOG` を比較する
+2. 過去に変更した `changed_files` を確認する
+3. `TEST_RESULT_JSON.same_error_after_previous_repair` が `true` の場合、前回repairで根本原因を解消できなかったと判断する
+4. `repeated_error_signatures` に同じTypeScript error等がある場合、前回と同じ局所修正を繰り返さない
+5. 呼び出し側だけでなく、関連する型定義・Domain・Repository・Service・UseCase・interfaceまで確認し、契約の根本原因を修正する
+6. エラーの行番号だけが変わっていても、error codeとmessageが同じなら「別エラー」とみなさない
+
+特に、前回repair後も同じerror signatureが残っている場合は禁止です。
+
+* 同じ条件分岐を書き換えるだけで同じ型エラーを別行へ移動する
+* `as any`、無意味なtype assertion、optional chaining等で症状だけ隠す
+* 同一API/型契約の別箇所へ同じ誤りをコピーする
+* 前回と同じ修正戦略を理由なく再実行する
+
+例えば `Result<T, E>` に対する `Property 'error' does not exist` がrepair後も残る場合、単に `result.error` の位置を書き換えるのではなく、次を確認してください。
+
+* `Result<T, E>` の実際のunion定義
+* discriminant propertyの型（literal `true | false` になっているか）
+* 呼び出し側で正しくnarrowingされているか
+* helper関数やResult生成側が契約と一致しているか
+* 同じ誤ったアクセスが対象ファイル内の別箇所に残っていないか
+
+前回repairで変更したファイル自体が根本原因ではなかった場合は、関連する別ファイルを修正して構いません。ただし、仕様とエラーに直接関係する必要最小限の範囲に限定してください。
+
+---
+
 # 8. Syntax / Type / Import Errors
 
 構文・型・importエラーが存在する場合は最優先で修正してください。
@@ -185,6 +225,48 @@ SPECIFICATION_GAP
 依存ライブラリ不足を解消するために、仕様にない新規npm packageを追加してはいけません。
 
 既存の標準APIまたはGENERATED_FILES内の実装で代替してください。
+
+
+---
+
+# 8.5. Protected Test / Build Infrastructure
+
+テストや静的検証を通す目的で、以下のファイルを新規作成・変更・削除してはいけません。
+これらはAI repairの管理対象外です。
+
+* `package.json`
+* `package-lock.json`
+* `pnpm-lock.yaml`
+* `yarn.lock`
+* `tsconfig.json`
+* `jsconfig.json`
+* `vitest.config.*`
+* `vite.config.*`
+* `postcss.config.*`
+* `tailwind.config.*`
+
+`Cannot find module`、TypeScriptエラー、Vitest失敗、PostCSS/Tailwindエラー等が発生しても、上記ファイルを変更して回避してはいけません。
+
+特に以下は禁止です。
+
+* `vitest.config.*` を生成してテスト挙動を変更する
+* `tsconfig.json` を緩めて型エラーを隠す
+* `postcss.config.*` / `tailwind.config.*` を変更してテスト環境へ依存を追加する
+* `package.json` に依存を追加して、controlled runnerに存在しないpackageを使える前提にする
+* `skipLibCheck`、`exclude`、path alias等で実装エラーを隠す
+
+修正対象は原則として以下に限定してください。
+
+* `app/**`
+* `components/**`
+* `features/**`
+* `lib/**`
+* `public/**`
+* `tests/**`
+
+テスト基盤の問題に見えても、ERROR_LOGとGENERATED_FILESを確認し、実装またはテストコード側の根本原因を修正してください。
+上記protected fileを変更しなければ解決できない場合は、勝手に変更せず `.ai-repair-unresolved.txt` を返してください。
+
 
 ---
 
@@ -409,6 +491,9 @@ Markdownコードブロックで囲んではいけません。
 出力前に内部的に確認してください。
 
 * ERROR_LOGの根本原因を特定した
+* REPAIR_HISTORYがある場合、前回repairとの差分を確認した
+* same_error_after_previous_repair=trueの場合、前回と同じ修正戦略を繰り返していない
+* repeated_error_signaturesがある場合、行番号変更だけで解決扱いにしていない
 * 元要件を変更していない
 * 実装が正しい場合はテストだけを修正した
 * テストが正しい場合は実装だけを修正した
@@ -424,6 +509,8 @@ Markdownコードブロックで囲んではいけません。
 * Browser API mockが必要ならテスト側へ追加した
 * timezoneを勝手に決めていない
 * エラーと無関係なファイルを変更していない
+* protected test/build infrastructureを変更していない
+* `vitest.config.*` / `tsconfig.json` / `postcss.config.*` / `tailwind.config.*` / `package.json` をrepair出力していない
 * テストケースを削除・skipしていない
 * assertionを無意味に弱めていない
 * 修正ファイルだけを出力している
