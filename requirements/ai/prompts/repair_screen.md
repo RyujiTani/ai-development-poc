@@ -8,7 +8,7 @@
 
 既に存在するApplicationを可能な限り維持しながら、テストまたは静的検証で確認された根本原因だけを修正してください。
 
-Python実行環境から提供される情報を唯一の入力として使用してください。
+Python実行環境から提供される以下の情報を唯一の入力として使用してください。
 
 AI自身がファイルシステム、GitHubリポジトリ、外部ファイル、Webサイト等を探索してはいけません。
 
@@ -56,7 +56,7 @@ REPAIR_HISTORY:
 
 # 2. Repair Target and Integrated Application
 
-今回テスト失敗が検出された主対象画面は `SCREEN_REQUIREMENT_JSON` に記載された画面です。
+今回テスト失敗または静的検証失敗が検出された主対象画面は `SCREEN_REQUIREMENT_JSON` に記載された画面です。
 
 ただし、現在の生成物は画面ごとに完全独立したApplicationではありません。
 
@@ -75,10 +75,12 @@ REPAIR_HISTORY:
 * Authentication / Authorization
 * Routing
 * Seed / Mock data contract
+* Result / Error type
+* 共通型定義
 
-したがって、対象画面のテストを修復するために共有ファイルを変更すると、現在PASSしている他画面へRegressionを発生させる可能性があります。
+したがって、対象画面の失敗を修復するために共有ファイルを変更すると、現在PASSしている他画面へRegressionを発生させる可能性があります。
 
-修正対象画面のテストをPASSさせることだけを目的にしてはいけません。
+修正対象画面だけをPASSさせることを目的にしてはいけません。
 
 **統合Application全体の既存契約を維持することを必須条件としてください。**
 
@@ -110,6 +112,8 @@ REPAIR_HISTORY:
 10. 新しい仕様を勝手に追加しない
 11. テストを通すだけの変更を行わない
 12. Repairによって新しいRegressionを作らない
+13. 同じerror signatureを別行へ移動するだけの修正を行わない
+14. 型エラーを `any` や不正な型assertionで隠さない
 
 Repairの成功条件は、
 
@@ -148,6 +152,7 @@ Repairの成功条件は、
 
 * syntax_error
 * type_error
+* result_type_narrowing_error
 * import_error
 * dependency_error
 * implementation_error
@@ -215,7 +220,9 @@ element not found
 以下を特に根本原因候補として確認してください。
 
 * 最初に出現したError / TypeError
+* TypeScript error
 * Repository / Service / UseCaseの失敗
+* Result型のnarrowing失敗
 * Seed初期化失敗
 * Browser API初期化失敗
 * React infinite render
@@ -294,6 +301,7 @@ SPECIFICATION_GAP
 * このファイルは対象画面専用か
 * 他画面からimportされる共有ファイルか
 * Repository / Service / UseCase / Domain / interfaceか
+* Result / Error type等の共通型か
 * Authentication / Authorizationに関係するか
 * DB / Seed / IndexedDBに関係するか
 * 共通Component / Hook / Contextか
@@ -360,11 +368,14 @@ GetUsersUseCase.execute()
 5. 前回の変更によって別のエラーへ変化した場合、前回変更が新しいRegressionを作っていないか確認する
 6. 呼び出し側だけでなく、関連する型定義・Domain・Repository・Service・UseCase・interfaceまで確認する
 7. エラーの行番号だけが変わっていても、error codeとmessageが同じなら別エラーとみなさない
+8. 同じTypeScript error codeとmessageが残っている場合、修正は失敗したものと判断する
 
 特に、前回repair後も同じerror signatureが残っている場合は禁止です。
 
 * 同じ条件分岐を書き換えるだけ
+* エラー行を別の場所へ移動するだけ
 * `as any` で隠す
+* 不要なtype assertionで隠す
 * optional chainingで症状だけ隠す
 * assertionを弱める
 * selectorだけ変更して根本原因を隠す
@@ -385,7 +396,63 @@ Error Bが前回変更によって発生したRegressionである可能性を確
 
 ---
 
-# 12. Syntax / Type / Import Errors
+# 12. Root Cause Recovery
+
+`same_error_after_previous_repair=true` または、同一error signatureが複数repairで継続している場合、このrepairは通常の局所修正ではなくRoot Cause Recoveryとして扱ってください。
+
+Root Cause Recoveryでは、前回と同じ修正戦略を繰り返してはいけません。
+
+特にTypeScript errorの場合、エラー行だけを見るのではなく、その値の型が定義・生成・返却される経路を逆方向に確認してください。
+
+例えば、
+
+```text
+Component
+↓
+UseCase
+↓
+Repository
+↓
+Domain
+↓
+Result / shared type
+```
+
+の順に契約を確認してください。
+
+以下を必ず確認してください。
+
+* エラー対象値の型定義
+* 呼び出しmethodの戻り値型
+* interface定義
+* 実装側return
+* helper / factory
+* generic型
+* union型
+* discriminant property
+* 呼び出し側narrowing
+* mockの戻り値
+* test側の契約
+
+前回repairでComponentだけを変更して同じerror signatureが残った場合、理由なく再度Componentだけを場当たり的に変更してはいけません。
+
+ただし、共有型やinterfaceが正しく、呼び出し側だけが誤っている場合は、共有型を変更せず呼び出し側を既存契約へ適合させてください。
+
+**修正前と同じerror signatureを別行へ移動するだけの変更は禁止です。**
+
+Root Cause Recoveryの最終目的は、
+
+「エラー行を変更すること」
+
+ではなく、
+
+**同一error signatureが再発しない状態へ契約全体を整合させること**
+
+です。
+
+---
+
+# 13. Syntax / Type / Import Errors
 
 構文・型・importエラーが存在する場合は最優先で修正してください。
 
@@ -399,12 +466,89 @@ Error Bが前回変更によって発生したRegressionである可能性を確
 * TypeScript型と実際の値が一致する
 * export / import形式が一致する
 * default / named exportが一致する
+* genericの型引数が一致する
+* union型のnarrowingが正しい
 
 依存ライブラリ不足を解消するために、仕様にない新規npm packageを追加してはいけません。
 
 ---
 
-# 13. Protected Test / Build Infrastructure
+# 14. Result Type Narrowing Rules
+
+`Result<T>`、`Result<T, E>`、Success / Failure union等の判別可能unionに対するTypeScriptエラーでは、エラー行だけを局所的に書き換えてはいけません。
+
+特に以下のようなエラーが発生した場合:
+
+* `Property 'error' does not exist on type 'Result<...>'`
+* `Property 'value' does not exist on type 'Result<...>'`
+* `Property 'error' does not exist on type '{ success: true; ... }'`
+* discriminated unionのnarrowing失敗
+* success / failure branchの型判定失敗
+
+必ず以下を確認してください。
+
+1. `Result` 型の実際の定義
+2. success branchの定義
+3. failure branchの定義
+4. discriminant propertyの名前
+5. discriminant propertyがliteral `true | false` 等として定義されているか
+6. Result生成側がその契約に従っているか
+7. UseCaseの戻り値型がinterface / implementationで一致しているか
+8. 呼び出し側のnarrowing方法がTypeScript上有効か
+9. mockが同じResult契約を返しているか
+10. 同じ誤ったproperty accessが対象コード内の別箇所に残っていないか
+
+同じTS2339がprevious repair後も残る場合、
+
+* `if` 文の位置変更
+* 行番号変更
+* optional chaining
+* property accessの場所変更
+* type assertion
+
+だけで再Repairしてはいけません。
+
+既存のResult型定義が正しい場合、Result型自体を変更せず、呼び出し側を既存契約へ合わせてください。
+
+TypeScriptがboolean discriminantで安全にnarrowingできない構造の場合は、既存型契約を維持したままproperty existence narrowingが利用可能か確認してください。
+
+例:
+
+```ts
+if ("error" in result) {
+  // failure branch
+  const message = result.error;
+}
+```
+
+または、
+
+```ts
+if ("value" in result) {
+  // success branch
+  const value = result.value;
+}
+```
+
+ただし、これは既存Result契約と一致する場合だけ使用してください。
+
+Result型定義そのものが誤っている場合のみ、その型を利用する他画面へのRegressionを確認した上で共有型を修正してください。
+
+以下は禁止です。
+
+```ts
+(result as any).error
+```
+
+```ts
+(result as { error: string }).error
+```
+
+等、型チェックを強制的に回避する修正。
+
+---
+
+# 15. Protected Test / Build Infrastructure
 
 以下のファイルを新規作成・変更・削除してはいけません。
 
@@ -419,13 +563,14 @@ Error Bが前回変更によって発生したRegressionである可能性を確
 * `postcss.config.*`
 * `tailwind.config.*`
 
-テストを通すために、
+テストや静的検証を通すために、
 
 * testTimeoutを延長
 * TypeScript設定を緩和
 * test対象をexclude
 * dependencyを追加
 * aliasを変更
+* compiler optionを緩和
 
 してはいけません。
 
@@ -442,7 +587,7 @@ protected fileを変更しなければ解決できない場合は `.ai-repair-un
 
 ---
 
-# 14. Repository / Service / UseCase Contract
+# 16. Repository / Service / UseCase Contract
 
 Repository / Service / UseCaseについて以下を確認してください。
 
@@ -481,7 +626,7 @@ xxx.execute is not a function
 
 ---
 
-# 15. React Hook Stability
+# 17. React Hook Stability
 
 Reactの無限renderや不要な再fetchを防いでください。
 
@@ -505,7 +650,7 @@ Reactの無限renderや不要な再fetchを防いでください。
 
 ---
 
-# 16. Async State / Testing Library
+# 18. Async State / Testing Library
 
 非同期初期化を行う画面では、テストが状態遷移を正しく待つ必要があります。
 
@@ -548,9 +693,11 @@ waitForElementToBeRemoved
 
 まず実装が正常に状態遷移できることを確認してください。
 
+React state更新により `act(...)` warningが発生している場合、テスト側の非同期操作が正しく待機されているか確認してください。
+
 ---
 
-# 17. Testing Library Selector
+# 19. Testing Library Selector
 
 Testing LibraryのqueryはDOM構造と仕様に合ったものを使用してください。
 
@@ -566,7 +713,7 @@ Testing LibraryのqueryはDOM構造と仕様に合ったものを使用してく
 
 ---
 
-# 18. Seed / Test Data Contract
+# 20. Seed / Test Data Contract
 
 Seed、fixture、mock、Application実装のデータ契約を一致させてください。
 
@@ -591,7 +738,7 @@ user-1
 
 ---
 
-# 19. Browser / Node Environment
+# 21. Browser / Node Environment
 
 jsdom / Node環境とブラウザ環境の差を考慮してください。
 
@@ -624,7 +771,7 @@ fetch("/mocks/seed.json")
 
 ---
 
-# 20. Resource Cleanup
+# 22. Resource Cleanup
 
 Timer、Camera、MediaStream、subscription等を使用する実装では、必ずcleanupを確認してください。
 
@@ -649,7 +796,7 @@ Component unmount後に処理を残してはいけません。
 
 ---
 
-# 21. Timezone / Date
+# 23. Timezone / Date
 
 日付・時刻に関する失敗では以下を確認してください。
 
@@ -660,7 +807,7 @@ Component unmount後に処理を残してはいけません。
 * `Intl.DateTimeFormat`
 * fake timer
 
-の扱いが一致しているか
+の扱いが一致しているか。
 
 仕様にtimezoneが明示されている場合は必ずそれを優先してください。
 
@@ -668,7 +815,7 @@ Component unmount後に処理を残してはいけません。
 
 ---
 
-# 22. Test Timeout Repair Rules
+# 24. Test Timeout Repair Rules
 
 `TEST_RESULT_JSON.status` が `TEST_TIMEOUT` の場合、タイムアウトは実装またはテストコードの修正対象です。
 
@@ -696,7 +843,7 @@ Component unmount後に処理を残してはいけません。
 * Promise / microtask infinite generation
 * render中state更新
 * recursive event handler
-  -成立しない `waitFor`
+* 成立しない `waitFor`
 * Repository / Service / UseCaseの無限再試行
 * MediaStream
 * timer
@@ -710,7 +857,7 @@ Component unmount後に処理を残してはいけません。
 
 ---
 
-# 23. Error Log Handling
+# 25. Error Log Handling
 
 ERROR_LOGには大量のログが含まれる場合があります。
 
@@ -718,6 +865,7 @@ ERROR_LOGには大量のログが含まれる場合があります。
 
 * `FAIL`
 * 最初の `Error`
+* `TSxxxx`
 * `TypeError`
 * `ReferenceError`
 * `AssertionError`
@@ -725,6 +873,8 @@ ERROR_LOGには大量のログが含まれる場合があります。
 * `Maximum update depth exceeded`
 * `Failed to parse URL`
 * `is not a function`
+* `Property 'error' does not exist`
+* `Property 'value' does not exist`
 * `Expected`
 * `Received`
 * `Failed to resolve import`
@@ -739,7 +889,41 @@ ERROR_LOGには大量のログが含まれる場合があります。
 
 ---
 
-# 24. Minimal Repair Rules
+# 26. Static Validation Repair
+
+静的検証でTypeScript、import、module resolution errorが発生した場合、テストコードより前に静的エラーを完全に解消してください。
+
+静的検証が通らない状態で、次画面やテスト向けの修正を優先してはいけません。
+
+特に同一TypeScript error signatureがrepair後も継続する場合、
+
+```text
+行番号だけ変わった
+```
+
+ことを改善とみなしてはいけません。
+
+例えば、
+
+```text
+page.tsx(52,27): TS2339
+↓ repair
+page.tsx(53,27): TS2339
+↓ repair
+page.tsx(49,27): TS2339
+```
+
+のような場合、
+
+**同一エラーが未解決のまま移動しただけ**
+
+と判断してください。
+
+この場合はRoot Cause Recoveryへ切り替え、型定義と呼び出し契約まで遡ってください。
+
+---
+
+# 27. Minimal Repair Rules
 
 以下を厳守してください。
 
@@ -760,46 +944,58 @@ ERROR_LOGには大量のログが含まれる場合があります。
 * timeout延長禁止
 * PASS済み機能の公開契約変更禁止
 * shared fileの不要な変更禁止
+* `any` による型エラー回避禁止
+* 不要なtype assertionによる型エラー回避禁止
+* 同一error signatureを別行へ移動するだけの修正禁止
 
 ---
 
-# 25. Repair Strategy
+# 28. Repair Strategy
 
 修正前に内部的に以下の順序で考えてください。
 
 ```text
 1. 最初の根本Errorを特定
 ↓
-2. implementation / test / mock / contract / environment のどこが原因か分類
+2. error signatureを確認
 ↓
-3. 仕様と既存interfaceを確認
+3. REPAIR_HISTORYと比較
 ↓
-4. 修正候補ファイルを特定
+4. implementation / test / mock / contract / type / environment のどこが原因か分類
 ↓
-5. 共有ファイルか画面専用ファイルか判定
+5. 仕様と既存interface / Domain / Result型を確認
 ↓
-6. 共有ファイルなら他画面へのRegression可能性を確認
+6. 値がどこで定義・生成・返却されているか追跡
 ↓
-7. 最小修正を決定
+7. 修正候補ファイルを特定
 ↓
-8. 実装・test・mock契約を再確認
+8. 共有ファイルか画面専用ファイルか判定
 ↓
-9. infinite render / async leakがないか確認
+9. 共有ファイルなら他画面へのRegression可能性を確認
 ↓
-10. 修正ファイルだけ出力
+10. 最小修正を決定
+↓
+11. 実装・test・mock・type契約を再確認
+↓
+12. 同じerror signatureが残らないことを確認
+↓
+13. infinite render / async leakがないか確認
+↓
+14. 修正ファイルだけ出力
 ```
 
-「テストが失敗したからテストを変更する」
+以下のような短絡的なRepairは禁止です。
 
-「要素がないからdata-testidを追加する」
-
-「Timeoutしたから待ち時間を延長する」
-
-という短絡的なRepairは禁止です。
+* テストが失敗したからテストを変更する
+* 要素がないからdata-testidを追加する
+* Timeoutしたから待ち時間を延長する
+* TypeScriptエラーがあるから `as any` を使う
+* `result.error` が怒られたから別のif文へ移動する
+* 同じerror signatureを行番号だけ変えて残す
 
 ---
 
-# 26. Output Format
+# 29. Output Format
 
 修正が必要なファイルだけを以下の専用FILE形式で出力してください。
 
@@ -820,7 +1016,7 @@ Markdownコードブロックで囲んではいけません。
 
 ---
 
-# 27. Output Rules
+# 30. Output Rules
 
 * 出力の先頭は `<<<FILE_START>>>`
 * 出力の末尾は `<<<FILE_END>>>`
@@ -840,20 +1036,28 @@ Markdownコードブロックで囲んではいけません。
 
 ---
 
-# 28. Final Check
+# 31. Final Check
 
 出力前に内部的に必ず確認してください。
 
 * ERROR_LOGの最初の根本原因を特定した
 * 派生的なAssertion Errorだけを修正していない
 * REPAIR_HISTORYを確認した
+* previous repairとの差分を確認した
+* same_error_after_previous_repair=trueを確認した
+* repeated_error_signaturesを確認した
 * 前回と同じ失敗戦略を繰り返していない
+* 同一error signatureを別行へ移動していない
 * 前回RepairによるRegressionの可能性を確認した
 * 元要件を変更していない
 * 実装が正しい場合はテストだけを修正した
 * テストが正しい場合は実装だけを修正した
 * interface / mock / importが一致している
 * Repository / Service / UseCase契約を壊していない
+* Result型と呼び出し側のnarrowingが一致している
+* `Result<T>` のsuccess / failure branchを正しく扱っている
+* `result.error` / `result.value` へ安全にアクセスしている
+* `as any` で型エラーを隠していない
 * PASS済み機能が利用する公開契約を壊していない
 * shared file変更が本当に必要か確認した
 * syntax errorがない
@@ -879,6 +1083,10 @@ Markdownコードブロックで囲んではいけません。
 特に最後にもう一度確認してください。
 
 **「このRepairによって、現在PASSしている別画面を壊す可能性のある共有契約変更を行っていないか？」**
+
+**「同じerror signatureを別の行へ移動しただけになっていないか？」**
+
+**「Result / Repository / UseCase等の既存契約が正しい場合、その契約を変更せず呼び出し側を正しく適合させているか？」**
 
 その可能性があり、既存契約を維持した別の修正方法がある場合は、必ず既存契約を維持する方法を選択してください。
 
