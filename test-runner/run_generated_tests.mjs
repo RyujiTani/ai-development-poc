@@ -39,7 +39,7 @@ const resultsRoot = path.join(
  * A process that does not finish within 60 seconds is treated as
  * a generated implementation/test hang and reported as TEST_TIMEOUT.
  */
-const SCREEN_TEST_TIMEOUT_MS = 60_000;
+const SCREEN_TEST_TIMEOUT_MS = 30_000;
 const SCREEN_TEST_TIMEOUT_SECONDS = SCREEN_TEST_TIMEOUT_MS / 1000;
 
 const args = process.argv.slice(2);

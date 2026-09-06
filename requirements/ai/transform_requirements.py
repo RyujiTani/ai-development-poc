@@ -1231,70 +1231,70 @@ def validate_generated_files_content(
 
 def serialize_existing_application(
     application_dir: Path,
+    include_tests: bool = True,
 ) -> str:
     """
-    現在の統合Application全体を
-    implement / repair promptへ渡す形式に変換する。
+    現在の統合Applicationをpromptへ渡す形式に変換する。
 
-    Format:
+    include_tests=False:
+        次画面のincremental implementation用。
+        過去画面testsをAIへ見せず、現在画面以外のtestを
+        再出力・変更しようとすることを防ぐ。
 
-    <<<EXISTING_FILE_START>>>
-    PATH: app/page.tsx
-    <<<EXISTING_CONTENT_START>>>
-    ...
-    <<<EXISTING_CONTENT_END>>>
-    <<<EXISTING_FILE_END>>>
+    include_tests=True:
+        repair用。Static/Test failureの原因がtests側にある場合も
+        調査・修正できるよう、実Application上のtestsを含める。
+
+    tests/の実ファイル自体は一切削除しない。
     """
 
     if not application_dir.exists():
-        return (
-            "(NO_EXISTING_APPLICATION)"
+        return "(NO_EXISTING_APPLICATION)"
+
+    files: List[Path] = []
+
+    for path in application_dir.rglob("*"):
+        if not path.is_file():
+            continue
+
+        relative_path = (
+            path.relative_to(application_dir)
+            .as_posix()
         )
 
-    files = sorted(
-        [
-            path
-            for path in application_dir.rglob(
-                "*"
+        if relative_path == ".ai-repair-unresolved.txt":
+            continue
+
+        if (
+            not include_tests
+            and (
+                relative_path == "tests"
+                or relative_path.startswith("tests/")
             )
-            if path.is_file()
-        ]
-    )
+        ):
+            continue
+
+        files.append(path)
+
+    files.sort()
 
     if not files:
-        return (
-            "(NO_EXISTING_APPLICATION)"
-        )
+        return "(NO_EXISTING_APPLICATION)"
 
     blocks: List[str] = []
 
     for file_path in files:
         relative_path = (
-            file_path
-            .relative_to(
-                application_dir
-            )
+            file_path.relative_to(application_dir)
             .as_posix()
         )
 
-        if (
-            relative_path
-            == ".ai-repair-unresolved.txt"
-        ):
-            continue
-
         try:
-            content = (
-                file_path.read_text(
-                    encoding="utf-8"
-                )
-            )
-
+            content = file_path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
-            # binary fileはpromptへ含めない。
             continue
 
-        block = (
+        blocks.append(
             "<<<EXISTING_FILE_START>>>\n"
             f"PATH: {relative_path}\n"
             "<<<EXISTING_CONTENT_START>>>\n"
@@ -1303,18 +1303,10 @@ def serialize_existing_application(
             "<<<EXISTING_FILE_END>>>"
         )
 
-        blocks.append(
-            block
-        )
-
     if not blocks:
-        return (
-            "(NO_EXISTING_APPLICATION)"
-        )
+        return "(NO_EXISTING_APPLICATION)"
 
-    return "\n\n".join(
-        blocks
-    )
+    return "\n\n".join(blocks)
 
 
 # ============================================================
@@ -1434,60 +1426,59 @@ def run_static_validation(
     )
 
 
-def run_regression_tests(
-    test_runner: Path,
-    screen_id: str,
-) -> subprocess.CompletedProcess:
-    """
-    先頭画面からscreen_idまでの
-    accumulated regression testsを実行する。
+def extract_static_error_signatures(
+    stdout: str,
+    stderr: str,
+) -> List[str]:
+    """Static errorを行番号に依存しないsignatureへ正規化する。"""
 
-    stdout/stderrをcaptureしつつ、
-    GitHub Actionsログにも出力する。
-    """
+    text = f"{stdout or ''}\n{stderr or ''}"
+    signatures: List[str] = []
 
-    result = subprocess.run(
-        [
-            "node",
-            str(
-                test_runner
-            ),
-            "--through",
-            screen_id,
-        ],
-        cwd=PROJECT_ROOT,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
-    )
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
 
-    if result.stdout:
-        print(
-            result.stdout,
-            end=(
-                ""
-                if result.stdout.endswith(
-                    "\n"
-                )
-                else "\n"
-            ),
+        # TypeScript: path(line,col): error TSxxxx: message
+        match = re.search(
+            r"^(?P<path>.+?)\(\d+,\d+\):\s*"
+            r"error\s+(?P<code>TS\d+):\s*(?P<message>.+)$",
+            line,
         )
+        if match:
+            signatures.append(
+                f"{match.group('path')}|{match.group('code')}|"
+                f"{match.group('message').strip()}"
+            )
+            continue
 
-    if result.stderr:
-        print(
-            result.stderr,
-            end=(
-                ""
-                if result.stderr.endswith(
-                    "\n"
-                )
-                else "\n"
-            ),
-            file=sys.stderr,
-        )
+        # Dependency allowlistなど、明示的なfailure/error行も保持する。
+        lowered = line.lower()
+        if (
+            "error" in lowered
+            or "failed" in lowered
+            or "cannot find module" in lowered
+        ):
+            normalized = re.sub(r"\s+", " ", line)
+            normalized = re.sub(r"\(\d+,\d+\)", "", normalized)
+            signatures.append(normalized)
 
-    return result
+    return list(dict.fromkeys(signatures))
+
+
+def find_repeated_error_signatures(
+    previous: List[str],
+    current: List[str],
+) -> List[str]:
+    """前回と今回の両方に残っているerror signatureを返す。"""
+
+    previous_set = set(previous)
+    return [
+        signature
+        for signature in current
+        if signature in previous_set
+    ]
 
 
 def repair_screen_with_result(
@@ -1499,7 +1490,7 @@ def repair_screen_with_result(
     ],
     error_log: str,
     max_attempts: int = 2,
-) -> None:
+) -> List[str]:
     """
     test-resultsファイルを経由せず、
     任意の検証結果を直接repairへ渡す。
@@ -1553,6 +1544,12 @@ def repair_screen_with_result(
         indent=2,
     )
 
+    repair_history_json = json.dumps(
+        validation_result.get("repair_history", []),
+        ensure_ascii=False,
+        indent=2,
+    )
+
     prompt = inject_prompt(
         load_prompt(
             REPAIR_SCREEN_PROMPT
@@ -1581,6 +1578,9 @@ def repair_screen_with_result(
 
             "{{ERROR_LOG}}":
                 error_log,
+
+            "{{REPAIR_HISTORY}}":
+                repair_history_json,
         },
     )
 
@@ -1651,6 +1651,11 @@ def repair_screen_with_result(
             f"  {file_path}"
         )
 
+    return [
+        str(path.relative_to(APPLICATION_DIR).as_posix())
+        for path in saved_files
+    ]
+
 
 def run_static_check_with_auto_repair(
     vertex_client,
@@ -1660,127 +1665,126 @@ def run_static_check_with_auto_repair(
     reason: str = "post_implementation",
 ) -> None:
     """
-    static validationを実行し、
-    generated application error(exit 1)なら
-    AI repairして再検証する。
+    Application全体のStatic Checkをblocking gateとして実行する。
 
-    exit 2はinfra errorなので
-    AI repairしない。
+    - exit 0: PASS
+    - exit 2: infrastructure errorなので即停止
+    - exit 1: 通常AI repairを最大max_static_repair_count回
+    - 通常repair後も同一signatureが残る場合だけ、
+      root-cause recoveryを追加で1回許可する
+    - それでもNGなら次画面へ進ませない
     """
 
-    static_repair_count = 0
+    normal_repair_count = 0
+    root_cause_recovery_count = 0
+    max_root_cause_recovery_count = 1
+    previous_signatures: List[str] = []
+    repair_history: List[Dict[str, Any]] = []
 
     while True:
-        print(
-            "Running static validation..."
-        )
-
-        static_result = (
-            run_static_validation(
-                static_validator
-            )
-        )
+        print("Running static validation...")
+        static_result = run_static_validation(static_validator)
 
         if static_result.stdout:
             print(
                 static_result.stdout,
-                end=(
-                    ""
-                    if static_result.stdout.endswith(
-                        "\n"
-                    )
-                    else "\n"
-                ),
+                end="" if static_result.stdout.endswith("\n") else "\n",
             )
-
         if static_result.stderr:
             print(
                 static_result.stderr,
-                end=(
-                    ""
-                    if static_result.stderr.endswith(
-                        "\n"
-                    )
-                    else "\n"
-                ),
+                end="" if static_result.stderr.endswith("\n") else "\n",
                 file=sys.stderr,
             )
 
         if static_result.returncode == 0:
-            print(
-                "Static validation passed."
-            )
+            print("Static validation passed.")
             return
 
         if static_result.returncode == 2:
             raise RuntimeError(
-                "Static validation infrastructure "
-                "failed. AI repair was not attempted."
+                "Static validation infrastructure failed. "
+                "AI repair was not attempted."
             )
 
-        if (
-            static_repair_count
-            >= max_static_repair_count
+        current_signatures = extract_static_error_signatures(
+            static_result.stdout or "",
+            static_result.stderr or "",
+        )
+        repeated_signatures = find_repeated_error_signatures(
+            previous_signatures,
+            current_signatures,
+        )
+        same_error_after_previous_repair = bool(repeated_signatures)
+
+        if normal_repair_count < max_static_repair_count:
+            normal_repair_count += 1
+            repair_mode = "normal"
+            print()
+            print(
+                "Static validation failed. Starting automatic repair "
+                f"{normal_repair_count}/{max_static_repair_count}..."
+            )
+        elif (
+            same_error_after_previous_repair
+            and root_cause_recovery_count < max_root_cause_recovery_count
         ):
+            root_cause_recovery_count += 1
+            repair_mode = "root_cause_recovery"
+            print()
+            print(
+                "Same static error signature remained after normal repairs. "
+                "Starting root-cause recovery "
+                f"{root_cause_recovery_count}/{max_root_cause_recovery_count}..."
+            )
+        else:
+            repeated_text = (
+                ", ".join(repeated_signatures)
+                if repeated_signatures
+                else "none"
+            )
             raise RuntimeError(
-                "Static validation still failed "
-                "after "
-                f"{static_repair_count} "
-                "automatic repair(s) "
-                f"for {screen_id}. "
-                "The generated application was "
-                "not allowed to proceed to the "
-                "next screen."
+                "Static validation still failed after "
+                f"{normal_repair_count} automatic repair(s) "
+                f"and {root_cause_recovery_count} root-cause recovery attempt(s) "
+                f"for {screen_id}. Repeated signatures: {repeated_text}. "
+                "The generated application was not allowed to proceed "
+                "to the next screen."
             )
 
-        static_repair_count += 1
-
-        print()
-        print(
-            "Static validation failed. "
-            "Starting automatic repair "
-            f"{static_repair_count}/"
-            f"{max_static_repair_count}..."
+        error_log = build_validation_error_log(
+            static_result.stdout or "",
+            static_result.stderr or "",
         )
 
-        validation_result: Dict[
-            str,
-            Any,
-        ] = {
-            "screen":
-                screen_id,
+        if repair_mode == "root_cause_recovery":
+            error_log += (
+                "\n\n=== ROOT CAUSE RECOVERY REQUIRED ===\n"
+                "The same semantic/static error survived the normal repair budget.\n"
+                "Do not repeat the previous local edit. Inspect the related type/domain/"
+                "repository/service/usecase/interface, producer and consumer together, "
+                "then fix the actual contract mismatch with the smallest valid change.\n"
+            )
 
-            "status":
-                "STATIC_CHECK_FAILED",
-
-            "phase":
-                "typescript",
-
-            "reason":
-                reason,
-
-            "command":
-                "tsc --noEmit "
-                "--project tsconfig.json",
-
-            "exit_code":
-                static_result.returncode,
-
-            "repair_attempt":
-                static_repair_count,
+        validation_result: Dict[str, Any] = {
+            "screen": screen_id,
+            "status": "STATIC_CHECK_FAILED",
+            "phase": "typescript",
+            "reason": reason,
+            "command": "tsc --noEmit --project tsconfig.json",
+            "exit_code": static_result.returncode,
+            "repair_mode": repair_mode,
+            "normal_repair_attempt": normal_repair_count,
+            "root_cause_recovery_attempt": root_cause_recovery_count,
+            "error_signatures": current_signatures,
+            "repeated_error_signatures": repeated_signatures,
+            "same_error_after_previous_repair": (
+                same_error_after_previous_repair
+            ),
+            "repair_history": repair_history,
         }
 
-        error_log = (
-            build_validation_error_log(
-                static_result.stdout
-                or "",
-
-                static_result.stderr
-                or "",
-            )
-        )
-
-        repair_screen_with_result(
+        changed_files = repair_screen_with_result(
             vertex_client,
             screen_id,
             validation_result,
@@ -1788,11 +1792,20 @@ def run_static_check_with_auto_repair(
             max_attempts=2,
         )
 
+        repair_history.append({
+            "repair_mode": repair_mode,
+            "normal_repair_attempt": normal_repair_count,
+            "root_cause_recovery_attempt": root_cause_recovery_count,
+            "input_error_signatures": current_signatures,
+            "repeated_error_signatures": repeated_signatures,
+            "changed_files": changed_files,
+        })
+
+        previous_signatures = current_signatures
+
         print()
-        print(
-            "Re-running static validation "
-            "after repair..."
-        )
+        print("Re-running static validation after repair...")
+
 
 def run_post_implementation_check(
     vertex_client,
@@ -1800,22 +1813,24 @@ def run_post_implementation_check(
     max_static_repair_count: int = 2,
 ) -> None:
     """
-    1画面をApplicationへ追加した直後に検証する。
+    1画面をApplicationへ追加した直後に、
+    統合Application全体のStatic Validationだけを実行する。
 
     Flow:
-        1. static validation
+        1. integrated application全体をstatic validation
         2. static failureならAI repair
-        3. accumulated regression tests
-        4. test failure / timeoutは記録して次画面へ進む
+        3. repair後にstatic validationを再実行
+        4. PASSしたら次画面へ進む
 
     方針:
-        - static validation failureは後続画面へ
-          壊れたコードを引き継ぐ危険があるためblocking。
-        - regression test failure / timeoutはnon-blocking。
-          生成中は診断として扱い、15画面の生成を継続する。
-        - 最終的な機能テストとAI repairは
-          Cloud Build / Repair loopへ委譲する。
-        - test runner infrastructure failureだけはblocking。
+        - static validationはblocking gate。
+        - 通常static repairは最大2回。
+        - 通常repair後も同一error signatureが残る場合は、
+          root-cause recoveryを最大1回実行する。
+        - incremental生成中はVitestを実行しない。
+        - 画面機能テストは15画面生成完了後のCloud Buildで
+          全画面Regressionとして実行し、FAIL / TIMEOUTは
+          そこでAI repairする。
     """
 
     static_validator = (
@@ -1824,16 +1839,9 @@ def run_post_implementation_check(
         / "validate_generated_application.mjs"
     )
 
-    test_runner = (
-        PROJECT_ROOT
-        / "test-runner"
-        / "run_generated_tests.mjs"
-    )
-
     validate_required_files(
         [
             static_validator,
-            test_runner,
             REPAIR_SCREEN_PROMPT,
         ]
     )
@@ -1841,19 +1849,20 @@ def run_post_implementation_check(
     print()
     print("=" * 60)
     print(
-        f"Post implementation check: {screen_id}"
+        f"Post implementation static check: {screen_id}"
     )
     print("=" * 60)
 
     # --------------------------------------------------------
-    # 1. Static validation
+    # Integrated Application Static Validation
     # --------------------------------------------------------
     #
-    # TypeScript / import / dependencyなどのstatic failureを
+    # TypeScript / import / dependency等のstatic failureを
     # 残したまま次画面を生成すると、後続AIが壊れたApplicationを
-    # 既存コードとして読み込み、問題が連鎖する可能性がある。
+    # 既存コードとして引き継ぐ可能性がある。
     #
-    # そのためstatic validationはblocking gateのまま維持する。
+    # そのため、生成途中ではStaticだけをblocking gateとして使う。
+    # Vitestはここでは実行せず、最終Cloud Buildへ集約する。
     # --------------------------------------------------------
 
     run_static_check_with_auto_repair(
@@ -1866,84 +1875,10 @@ def run_post_implementation_check(
         reason="post_implementation",
     )
 
-    # --------------------------------------------------------
-    # 2. Accumulated regression tests
-    # --------------------------------------------------------
-    #
-    # 生成途中のVitestは品質ゲートではなく診断として扱う。
-    # TEST_FAILED / TEST_TIMEOUTがあっても、ここではrepairせず
-    # 次画面の生成へ進む。
-    #
-    # 最終的な全画面テストとrepairはCloud Buildで実施する。
-    # --------------------------------------------------------
-
     print()
     print(
-        "Running regression tests through "
-        f"{screen_id}..."
-    )
-
-    test_result = run_regression_tests(
-        test_runner,
-        screen_id,
-    )
-
-    if test_result.returncode == 0:
-        print()
-        print(
-            "Post implementation check passed: "
-            f"{screen_id}"
-        )
-        return
-
-    # exit 2 = controlled test runner側の
-    # infrastructure failure。
-    # Applicationの機能不具合ではなく、テスト基盤そのものが
-    # 正常に実行できていないため、この場合だけ停止する。
-    if test_result.returncode == 2:
-        raise RuntimeError(
-            "Test infrastructure failed "
-            "immediately after implementing "
-            f"{screen_id}. "
-            "Application generation was stopped "
-            "because the regression result cannot "
-            "be trusted."
-        )
-
-    # exit 1 = TEST_FAILED / TEST_TIMEOUT。
-    # 生成途中ではnon-blockingとし、後続画面へ進む。
-    if test_result.returncode == 1:
-        print()
-        print("!" * 60)
-        print(
-            "Regression test reported TEST_FAILED "
-            "or TEST_TIMEOUT."
-        )
-        print(
-            f"Screen: {screen_id}"
-        )
-        print(
-            "This failure is non-blocking during "
-            "incremental generation."
-        )
-        print(
-            "The current application will be kept, "
-            "and implementation will continue to the "
-            "next screen."
-        )
-        print(
-            "Final full regression testing and AI repair "
-            "will be performed by Cloud Build."
-        )
-        print("!" * 60)
-        return
-
-    # run_generated_tests.mjsの契約外exit code。
-    # 想定外なので安全側に倒して停止する。
-    raise RuntimeError(
-        "Regression test runner returned an "
-        "unexpected exit code after implementing "
-        f"{screen_id}: {test_result.returncode}"
+        "Post implementation static check passed: "
+        f"{screen_id}"
     )
 
 
@@ -2028,7 +1963,8 @@ def implement_screen(
 
     existing_application = (
         serialize_existing_application(
-            APPLICATION_DIR
+            APPLICATION_DIR,
+            include_tests=False,
         )
     )
 
@@ -2284,7 +2220,7 @@ def implement_all_screens(
         )
 
         # ----------------------------------------------------
-        # 2. Static + accumulated regression tests
+        # 2. Integrated application static check only
         # ----------------------------------------------------
 
         run_post_implementation_check(
@@ -2599,6 +2535,9 @@ def repair_screen(
 
             "{{ERROR_LOG}}":
                 error_log,
+
+            "{{REPAIR_HISTORY}}":
+                "[]",
         },
     )
 
