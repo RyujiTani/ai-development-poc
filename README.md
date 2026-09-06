@@ -8,6 +8,20 @@ python requirements\ai\transform_requirements.py --target implement --screen SCR
 python requirements\ai\transform_requirements.py --target implement-all
 python requirements\ai\transform_requirements.py --target all
 
+# ローカル動作確認
+cd requirements\ai\generated\application
+npm install
+npm run dev
+
+http://localhost:3000 だと404になるときは
+http://localhost:3000/login でログイン画面へ
+
+パスワードは下記に記載される
+requirements\ai\generated\application\tests\SCR-001_contractor_login\page.test.tsx
+
+ない場合は下記にIDとBase64変換されたパスワードがある
+requirements\ai\generated\application\public\mocks\seed.json
+
 
 # GCP Generated Screen Test Runner
 
